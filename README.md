@@ -1,6 +1,6 @@
 # NeuroSims
 
-Free interactive simulations for teaching introductory neuroscience.
+Interactive simulations for intro neuro :) 
 
 **Live site:** https://nelurad.github.io/neurosims/
 
