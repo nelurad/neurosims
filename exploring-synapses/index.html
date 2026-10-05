@@ -57,14 +57,14 @@
   .info li.on { background: #fff59d; }
   .info p { margin: 6px 0; max-width: 80ch; }
 
-  details.instructors { margin-top: 18px; background: #f0efc6; border: 1.5px solid #8c8c70; border-radius: 10px; padding: 10px 18px; font-size: 15px; line-height: 1.5; }
-  details.instructors summary { font-size: 18px; font-weight: bold; cursor: pointer; }
-  details.instructors h3 { font-size: 16px; margin: 14px 0 4px; }
-  details.instructors p { margin: 4px 0; max-width: 80ch; }
-  details.instructors ul, details.instructors ol { margin: 0; padding-left: 22px; }
-  details.instructors li { margin: 4px 0; }
-  pre.embed { background: #fff; border: 1px solid #aaa; padding: 8px 10px; font-size: 13px; white-space: pre-wrap; word-break: break-all; }
-  .refs li { font-size: 14px; }
+    .extras { margin-top: 24px; padding-top: 12px; border-top: 1px dashed #8c8c70; font-size: 13px; color: #355; display: grid; grid-template-columns: minmax(0, 1fr); gap: 12px; }
+  .embed-box { display: flex; gap: 8px; align-items: center; background: #fff; border: 1px solid #9cc; border-radius: 6px; padding: 7px 10px; }
+  .embed-box b { white-space: nowrap; color: #111; }
+  .embed-box code { flex: 1; min-width: 0; overflow-x: auto; white-space: nowrap; font: 12px ui-monospace, Menlo, monospace; color: #111; }
+  .embed-box button { font: 13px Arial, sans-serif; border: 1px solid #555; background: #f0efc6; border-radius: 5px; padding: 3px 10px; cursor: pointer; }
+  .extras h4 { margin: 0 0 4px; font-size: 13px; color: #111; }
+  .extras .refs { margin: 0; padding-left: 18px; line-height: 1.45; }
+  .extras .refs li { margin: 2px 0; }
   footer { font-size: 13px; color: #355; margin-top: 14px; line-height: 1.5; }
   footer a { color: #1a4f8b; }
 </style>
@@ -165,58 +165,21 @@
     <p>This is a simplified model. Real synapses work hundreds of times faster than shown here, a single synapse changes the voltage much less, and real cells carry many kinds of receptors at once.</p>
   </div>
 
-  <details class="instructors">
-    <summary>For instructors</summary>
-
-    <h3>Learning goals</h3>
-    <p>After using this simulation, students should be able to:</p>
-    <ul>
-      <li>Put the steps of chemical synaptic transmission in order, from action potential to clean-up.</li>
-      <li>Explain the role of calcium in neurotransmitter release.</li>
-      <li>Distinguish fast ionotropic receptors from slower metabotropic (G-protein) receptors.</li>
-      <li>Explain how excitatory and inhibitory inputs move a cell toward or away from threshold, and how inputs add up (summation).</li>
-      <li>Describe how drugs can act at a synapse: blocking receptors, boosting receptors, blocking reuptake, or blocking breakdown.</li>
-    </ul>
-
-    <h3>Suggested 10-minute activity</h3>
-    <ol>
-      <li>Turn off "Release every 4 s." Pick Glutamate + AMPA and press Release once. Students narrate each step as it highlights.</li>
-      <li>Press Release several times quickly until the cell fires. Ask: why did one release not do it, but several did?</li>
-      <li>Switch to GABA + GABA-A and repeat. Compare the voltage chart.</li>
-      <li>Switch between a fast and a slow receptor for the same transmitter (for example GABA-A vs. GABA-B). Compare speed and duration.</li>
-      <li>Small groups each take one transmitter, turn on its drug, and report back: where does the drug act, and what changes?</li>
-    </ol>
-
-    <h3>Discussion questions</h3>
-    <ul>
-      <li>Why does the cell need a clean-up step at all? What would happen without it?</li>
-      <li>The same transmitter can excite one cell and inhibit another. How is that possible?</li>
-      <li>Cocaine and SSRIs both block reuptake. Why do they have such different effects?</li>
-      <li>Why might a fast receptor be useful for some jobs and a slow one for others?</li>
-    </ul>
-
-    <h3>Common misconceptions this addresses</h3>
-    <ul>
-      <li><b>"Each neurotransmitter is either excitatory or inhibitory."</b> The receptor decides the effect, not just the transmitter.</li>
-      <li><b>"The electrical signal jumps across the gap."</b> At chemical synapses, the signal is carried across by molecules.</li>
-      <li><b>"One input makes a neuron fire."</b> Usually many inputs have to add up to reach threshold.</li>
-    </ul>
-
-    <h3>Limitations of the model</h3>
-    <p>Timing is slowed down a lot, and a single synapse here changes the voltage far more than it would in a real cell. Each cell carries only one receptor type at a time. Glutamate and GABA clean-up is shown only on the sending neuron, though astrocytes do much of it. Drug effects are simplified to one main action each.</p>
-
-    <h3>Embed this simulation</h3>
-    <p>Paste this into a course site or LMS page that allows HTML:</p>
-    <pre class="embed">&lt;iframe src="https://nelurad.github.io/neurosims/exploring-synapses/" width="100%" height="1100" style="border:0" title="Exploring Synapses simulation"&gt;&lt;/iframe&gt;</pre>
-
-    <h3>Background reading</h3>
-    <ul class="refs">
-      <li>Purves, D., et al. (Eds.). <i>Neuroscience</i>. Oxford University Press / Sinauer. Chapters on synaptic transmission, neurotransmitters and their receptors.</li>
-      <li>Bear, M. F., Connors, B. W., &amp; Paradiso, M. A. <i>Neuroscience: Exploring the Brain</i>. Wolters Kluwer. Chapters on synaptic transmission and neurotransmitter systems.</li>
-      <li>Kandel, E. R., et al. <i>Principles of Neural Science</i>. McGraw Hill. Part on synaptic transmission.</li>
-    </ul>
-  </details>
-
+   <div class="extras">
+    <div class="embed-box">
+      <b>Embed:</b>
+      <code id="embedCode">&lt;iframe src="https://nelurad.github.io/neurosims/exploring-synapses/" width="100%" height="1100" style="border:0" title="Exploring Synapses"&gt;&lt;/iframe&gt;</code>
+      <button type="button" onclick="navigator.clipboard.writeText(document.getElementById('embedCode').textContent).then(()=>{this.textContent='Copied!'})">Copy</button>
+    </div>
+    <div>
+      <h4>Background reading</h4>
+      <ul class="refs">
+        <li>Purves, D., et al. (Eds.). <i>Neuroscience</i>. Oxford University Press / Sinauer.</li>
+        <li>Bear, M. F., Connors, B. W., &amp; Paradiso, M. A. <i>Neuroscience: Exploring the Brain</i>. Wolters Kluwer.</li>
+        <li>Kandel, E. R., et al. <i>Principles of Neural Science</i>. McGraw Hill.</li>
+      </ul>
+    </div>
+  </div>
   <footer>
     Part of <a href="../">NeuroSims</a>, made by <a href="https://nelurad.github.io/">Nelu Radpour</a> (Florida State University).<br>
     Content licensed <a href="https://creativecommons.org/licenses/by/4.0/">CC BY 4.0</a>; code licensed MIT. Free to use and adapt with credit.
