@@ -1,0 +1,399 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>The Action Potential</title>
+<link rel="icon" href="data:,">
+<meta name="description" content="Click anywhere on a hand-drawn action potential to zoom in on the neuron's membrane and see which ion gates are open at that moment.">
+<style>
+  :root{ --bg:#fffdf8; --ink:#2a2a2a; --muted:#6b6f76; --line:#e2ddd2; --red:#e5262a; --blue:#1f6fd1;
+    --hand:"Segoe Print","Ink Free","Noteworthy","Chalkboard SE","Bradley Hand","Comic Sans MS",cursive;
+    --sans:system-ui,-apple-system,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif;
+    --mono:ui-monospace,"SF Mono",Menlo,Consolas,monospace; }
+  *{box-sizing:border-box}
+  html{-webkit-text-size-adjust:100%}
+  html,body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.5 var(--sans);-webkit-font-smoothing:antialiased}
+  .wrap{margin:0 auto;padding:20px 16px 32px;max-width:1200px}
+  a{color:#3d6fa8}
+  .back{font-size:13.5px;color:var(--muted);text-decoration:none}
+  .back:hover{text-decoration:underline}
+  h1{font-family:Georgia,"Times New Roman",serif;font-weight:normal;font-size:clamp(24px,2.4vw,36px);margin:6px 0 8px;letter-spacing:-.01em}
+  .intro{margin:0 0 10px;max-width:46em;font-size:clamp(15px,1.2vw,17px)}
+  #cv{display:block;width:100%;touch-action:pan-y;cursor:crosshair}
+  #cv:focus-visible{outline:2px dashed var(--blue);outline-offset:4px}
+  .controls{display:flex;flex-wrap:wrap;gap:10px 16px;align-items:center;margin:6px 0 0}
+  button{font:inherit;font-size:15px;color:var(--ink);background:#fff;border:1.5px solid #9a958a;border-radius:6px;padding:5px 14px;cursor:pointer}
+  button:hover{border-color:var(--ink)}
+  :focus-visible{outline:2px solid #3d6fa8;outline-offset:2px}
+  label{color:var(--muted);font-size:15px;display:flex;align-items:center;gap:8px;flex:1;min-width:200px;max-width:520px}
+  input[type=range]{flex:1;accent-color:var(--blue);min-width:0}
+  .readout{font-variant-numeric:tabular-nums;color:var(--muted);font-size:15px}
+  .explain{margin:16px 0 0;max-width:46em;min-height:7.5em}
+  .explain h2{font-family:var(--hand);color:var(--red);font-weight:normal;font-size:clamp(22px,2.2vw,28px);margin:0 0 4px}
+  .explain p{margin:0;font-size:clamp(16px,1.35vw,19px);line-height:1.5}
+  .note{font-size:13px;color:var(--muted);margin:18px 0 0;max-width:60em}
+  .foot{margin-top:28px;padding-top:14px;border-top:1px dashed #c9c3b6;font-size:12.5px;color:var(--muted)}
+  .foot p{margin:0 0 8px}
+  .embed{display:flex;gap:8px;align-items:flex-start;flex-wrap:wrap}
+  .embed code{flex:1;min-width:0;font-family:var(--mono);font-size:11.5px;background:#fff;border:1px solid var(--line);padding:5px 8px;overflow-wrap:anywhere}
+  .embed button{font-size:12px;padding:4px 10px;border-width:1px}
+  .refs{margin:4px 0 10px;padding-left:18px}
+  .refs li{margin:0 0 3px}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <a class="back" href="../">← All NeuroSims</a>
+  <h1>The Action Potential</h1>
+  <p class="intro">An action potential is the quick electrical spike a neuron fires to send a message. <b>Click anywhere on the graph</b> (or drag along it) to zoom in on the cell’s outer skin, the membrane, at that moment.</p>
+
+  <canvas id="cv" tabindex="0" role="img" aria-label="Hand-drawn graph of an action potential: voltage inside the cell over 4 milliseconds, with a magnified view of the membrane at the selected moment. Use left and right arrow keys to move through time."></canvas>
+
+  <div class="controls">
+    <button id="play">Play</button>
+    <label for="tSl">Time <input type="range" id="tSl" min="0" max="4" step="0.01" value="0.25"></label>
+    <span class="readout" id="readout"></span>
+  </div>
+
+  <div class="explain" aria-live="polite">
+    <h2 id="phTitle"></h2>
+    <p id="phText"></p>
+  </div>
+
+  <p class="note">Simplified, not to scale. Voltages and timing are typical textbook values; real neurons vary. Real membranes also have “leak” channels that are always open and help set the resting voltage, and a single action potential barely changes how much Na⁺ and K⁺ is inside the cell.</p>
+
+  <footer class="foot">
+    <p class="embed"><span>Embed:</span>
+      <code id="embedCode">&lt;iframe src="https://nelurad.github.io/neurosims/action-potential/" width="100%" height="1000" style="border:0" title="The Action Potential"&gt;&lt;/iframe&gt;</code>
+      <button id="copyBtn">Copy</button></p>
+    <p style="margin-bottom:2px">References</p>
+    <ul class="refs">
+      <li>Hodgkin, A. L., &amp; Huxley, A. F. (1952). A quantitative description of membrane current and its application to conduction and excitation in nerve. <i>Journal of Physiology</i>, 117(4), 500–544.</li>
+      <li>Purves, D., et al. <i>Neuroscience</i>. Sinauer / Oxford University Press.</li>
+    </ul>
+    <p>Part of <a href="../">NeuroSims</a>, made by <a href="https://nelurad.github.io/">Nelu Radpour</a> (Florida State University) with help from Claude. Content licensed CC BY 4.0; code licensed MIT. Free to use and adapt with credit.</p>
+  </footer>
+</div>
+
+<script>
+(function(){
+'use strict';
+const $=id=>document.getElementById(id);
+const clamp=(v,a,b)=>v<a?a:v>b?b:v;
+const sstep=(a,b,x)=>{ const t=clamp((x-a)/(b-a),0,1); return t*t*(3-2*t); };
+const HAND=getComputedStyle(document.documentElement).getPropertyValue('--hand');
+const BLUE='#1f6fd1', CYAN='#2bb3e6', RED='#e5262a', INK='#2a2a2a', GREY='#8a8578';
+const NA='#f08a24', K='#7b4fc4';
+const mq=matchMedia('(prefers-reduced-motion: reduce)'); let RM=mq.matches;
+mq.addEventListener && mq.addEventListener('change',e=>RM=e.matches);
+
+/* ---------- the voltage trace (monotone cubic through textbook points) ---------- */
+const PTS=[[0,-70],[0.5,-70],[0.7,-66],[0.9,-55],[1.02,-25],[1.15,12],[1.33,30],[1.48,18],[1.62,-20],[1.76,-58],
+           [1.92,-84],[2.05,-90],[2.3,-87],[2.7,-78],[3.2,-71.5],[4,-70]];
+const xs=PTS.map(p=>p[0]), ys=PTS.map(p=>p[1]), n=xs.length, dxs=[], ms=[], c1=[], c2=[], c3=[];
+for(let i=0;i<n-1;i++){ dxs[i]=xs[i+1]-xs[i]; ms[i]=(ys[i+1]-ys[i])/dxs[i]; }
+c1[0]=ms[0];
+for(let i=1;i<n-1;i++){ if(ms[i-1]*ms[i]<=0) c1[i]=0; else { const cm=dxs[i-1]+dxs[i]; c1[i]=3*cm/((cm+dxs[i])/ms[i-1]+(cm+dxs[i-1])/ms[i]); } }
+c1[n-1]=ms[n-2];
+for(let i=0;i<n-1;i++){ const inv=1/dxs[i], cm=c1[i]+c1[i+1]-2*ms[i]; c2[i]=(ms[i]-c1[i]-cm)*inv; c3[i]=cm*inv*inv; }
+function V(t){ t=clamp(t,0,4); let i=0; while(i<n-2 && t>=xs[i+1]) i++; const d=t-xs[i]; return ys[i]+c1[i]*d+c2[i]*d*d+c3[i]*d*d*d; }
+
+/* ---------- gates over time ---------- */
+const naAct  = t => 0.3*sstep(0.5,0.86,t) + 0.7*sstep(0.86,0.98,t) - sstep(1.42,1.8,t);   // activation
+const naInact= t => sstep(1.25,1.42,t) - sstep(2.3,3.0,t);                                 // "locked"
+const naOpen = t => Math.max(0,naAct(t))*(1-naInact(t));
+const kOpen  = t => sstep(1.1,1.45,t) - sstep(2.0,2.9,t);
+
+/* ---------- phases ---------- */
+const PH=[
+ {k:'rest', t0:0,    t1:0.5,  lab:'resting', title:'Resting',
+  text:'The neuron is waiting. The inside is more negative than the outside, about −70 mV. The sodium (Na⁺) and potassium (K⁺) gates are closed.'},
+ {k:'stim', t0:0.5,  t1:0.86, lab:'stimulus', title:'Stimulus',
+  text:'Something nudges the cell, like a signal arriving from another neuron at a synapse. A few Na⁺ gates open, a little Na⁺ slips in, and the inside gets slightly less negative.'},
+ {k:'thr',  t0:0.86, t1:0.95, lab:'threshold', title:'Threshold',
+  text:'The tipping point, about −55 mV. Once the cell gets here it’s all or nothing: lots of Na⁺ gates snap open at once.'},
+ {k:'dep',  t0:0.95, t1:1.27, lab:'depolarization', title:'Depolarization (going up)',
+  text:'Na⁺ rushes in through the open gates. All that positive charge flooding in makes the voltage shoot up.'},
+ {k:'peak', t0:1.27, t1:1.43, lab:'peak', title:'Peak',
+  text:'For a split second the inside is positive, about +30 mV. The Na⁺ gates lock shut, and the slower K⁺ gates are opening.'},
+ {k:'rep',  t0:1.43, t1:1.83, lab:'repolarization', title:'Repolarization (coming down)',
+  text:'K⁺ flows out through its gates, carrying positive charge out of the cell, so the voltage falls back down.'},
+ {k:'hyp',  t0:1.83, t1:2.7,  lab:'hyperpolarization', title:'Hyperpolarization (the dip)',
+  text:'The K⁺ gates are slow to close, so a bit too much K⁺ leaves and the voltage dips below resting, toward −90 mV. For a moment the cell can’t easily fire again.'},
+ {k:'back', t0:2.7,  t1:4.01, lab:'back to rest', title:'Back to rest',
+  text:'The K⁺ gates close and the Na⁺ gates unlock, ready for next time. The voltage settles back at −70 mV. (Pumps in the membrane keep the Na⁺ and K⁺ levels steady over the long run.)'}
+];
+const phaseAt=t=>PH.find(p=>t>=p.t0&&t<p.t1)||PH[PH.length-1];
+
+/* ---------- hand-drawn strokes ---------- */
+function hashStr(k){ let h=2166136261; for(let i=0;i<k.length;i++){ h^=k.charCodeAt(i); h=Math.imul(h,16777619); } return h>>>0; }
+function rng(seed){ let s=seed||1; return ()=>{ s^=s<<13; s^=s>>>17; s^=s<<5; return (s>>>0)/4294967296; }; }
+function handPath(c,pts,key,amp){
+  const r=rng(hashStr(key)), p1=r()*6.28, p2=r()*6.28, f1=0.015+r()*0.015, f2=0.06+r()*0.05;
+  let s=0; c.beginPath();
+  for(let i=0;i<pts.length;i++){
+    const [x,y]=pts[i]; if(i) s+=Math.hypot(x-pts[i-1][0],y-pts[i-1][1]);
+    const a=pts[Math.max(0,i-1)], b=pts[Math.min(pts.length-1,i+1)];
+    let nx=-(b[1]-a[1]), ny=b[0]-a[0]; const L=Math.hypot(nx,ny)||1; nx/=L; ny/=L;
+    const o=amp*(0.7*Math.sin(s*f1+p1)+0.3*Math.sin(s*f2+p2));
+    i ? c.lineTo(x+nx*o,y+ny*o) : c.moveTo(x+nx*o,y+ny*o);
+  }
+  c.stroke();
+}
+function hline(c,x0,y0,x1,y1,key,amp=1.1){
+  const L=Math.hypot(x1-x0,y1-y0), k=Math.max(2,Math.ceil(L/6)), pts=[];
+  for(let i=0;i<=k;i++) pts.push([x0+(x1-x0)*i/k, y0+(y1-y0)*i/k]);
+  handPath(c,pts,key,amp);
+}
+function hdash(c,x0,y0,x1,y1,key){
+  const L=Math.hypot(x1-x0,y1-y0), ux=(x1-x0)/L, uy=(y1-y0)/L;
+  for(let s=0,i=0; s<L; s+=24,i++){ const e=Math.min(L,s+14); hline(c,x0+ux*s,y0+uy*s,x0+ux*e,y0+uy*e,key+i,0.6); }
+}
+function hcircle(c,cx,cy,r,key,amp=1.4){
+  const rr=rng(hashStr(key)), start=rr()*6.28, pts=[];
+  for(let i=0;i<=72;i++){ const a=start+i/66*Math.PI*2; pts.push([cx+Math.cos(a)*r, cy+Math.sin(a)*r]); }   // slight overshoot, like a pen
+  handPath(c,pts,key,amp);
+}
+function harrow(c,x0,y0,x1,y1,key,size=7){
+  hline(c,x0,y0,x1,y1,key,0.8);
+  const a=Math.atan2(y1-y0,x1-x0);
+  hline(c,x1,y1,x1-Math.cos(a-0.5)*size,y1-Math.sin(a-0.5)*size,key+'a',0.3);
+  hline(c,x1,y1,x1-Math.cos(a+0.5)*size,y1-Math.sin(a+0.5)*size,key+'b',0.3);
+}
+const fmtV=v=>{ const r=Math.round(v); return (r>0?'+':r<0?'−':'')+Math.abs(r)+' mV'; };
+const font=(px,w)=>(w||'')+' '+px+'px '+HAND;
+
+/* ---------- ions in the magnifier (fixed positions, normalised to lens radius) ---------- */
+const ions=(()=>{ const r=rng(12345), out=[];
+  const place=(type,side,count)=>{ let k=0, tries=0;
+    while(k<count && tries++<4000){ const x=r()*1.8-0.9, y=side<0 ? -(0.42+r()*0.36) : (0.42+r()*0.36);
+      if(x*x+y*y>0.74) continue; if(out.some(o=>Math.hypot(o.x-x,o.y-y)<0.13)) continue;
+      out.push({type,x,y,ph:r()*6.28,sp:0.6+r()*0.8}); k++; } };
+  place('na',-1,11); place('k',1,10); place('k',-1,2); place('na',1,2); return out; })();
+
+/* ---------- state ---------- */
+let t=0.25, playing=false, lastFrame=0, animT=0, W=0, H=0, G=null, Lz=null, labelBoxes=[];
+const cv=$('cv'), ctx=cv.getContext('2d');
+
+function layout(){
+  W=cv.parentElement.clientWidth;
+  const wide=W>=760, fs=clamp(W/48,13,21);
+  if(wide){
+    H=Math.round(clamp(W*0.5,420,580));
+    G={x:76, y:28, w:W*0.58-110, h:H-96, fs};
+    const r=Math.min(W*0.18,H*0.36);
+    Lz={cx:W*0.8, cy:H*0.44, r};
+  } else {
+    const gh=Math.round(W*1.0);
+    G={x:62, y:22, w:W-78, h:gh-80, fs};
+    const r=W*0.38;
+    Lz={cx:W/2, cy:gh+r+20, r};
+    H=Math.round(gh+2*r+86);
+  }
+  const d=window.devicePixelRatio||1;
+  cv.style.height=H+'px'; cv.width=Math.round(W*d); cv.height=Math.round(H*d);
+  ctx.setTransform(d,0,0,d,0,0);
+}
+const X=tt=>G.x+tt/4*G.w, Y=v=>G.y+(40-v)/140*G.h, Tof=x=>clamp((x-G.x)/G.w*4,0,4);
+
+/* ---------- drawing ---------- */
+function draw(){
+  ctx.clearRect(0,0,W,H);
+  ctx.lineCap='round'; ctx.lineJoin='round';
+  drawGraph(); drawLens();
+}
+function drawGraph(){
+  const c=ctx, fs=G.fs, ph=phaseAt(t);
+  // axes
+  c.strokeStyle=BLUE; c.lineWidth=3.2;
+  hline(c,G.x,G.y-6,G.x,G.y+G.h,'yax'); hline(c,G.x,G.y+G.h,G.x+G.w+8,G.y+G.h,'xax');
+  c.fillStyle=BLUE; c.font=font(fs); c.textAlign='right'; c.textBaseline='middle';
+  for(const v of [30,0,-55,-70,-90]){ const y=Y(v); hline(c,G.x-7,y,G.x,y,'yt'+v,0.3); c.fillText(v>0?'+'+v:v===0?'0':'−'+(-v),G.x-11,y); }
+  c.textAlign='center'; c.textBaseline='top';
+  for(let i=0;i<=4;i++){ const x=X(i); hline(c,x,G.y+G.h,x,G.y+G.h+7,'xt'+i,0.3); c.fillText(String(i),x,G.y+G.h+10); }
+  c.font=font(fs*1.05); c.fillText('time (ms)', G.x+G.w/2, G.y+G.h+fs+16);
+  c.save(); c.translate(G.x-fs*2.9, G.y+G.h/2); c.rotate(-Math.PI/2); c.textBaseline='middle';
+  c.fillText(W>=760?'voltage inside the cell (mV)':'voltage inside (mV)',0,0); c.restore();
+  // guides
+  c.strokeStyle=CYAN; c.lineWidth=2.2;
+  hdash(c,G.x,Y(30),X(1.33),Y(30),'g30'); hdash(c,G.x,Y(-55),X(0.9),Y(-55),'g55'); hdash(c,G.x,Y(-90),X(2.05),Y(-90),'g90');
+  c.strokeStyle='rgba(138,133,120,0.45)'; c.lineWidth=1.5; hdash(c,G.x,Y(0),G.x+G.w,Y(0),'g0');
+  // the trace
+  const pts=[]; for(let i=0;i<=400;i++){ const tt=i/100; pts.push([X(tt),Y(V(tt))]); }
+  c.strokeStyle=BLUE; c.lineWidth=4; handPath(c,pts,'trace',0.7);
+  // phase labels
+  labelBoxes=[];
+  const lab=(p,txt,x,y,rot,align)=>{ const on=p===ph; c.save(); c.translate(x,y); c.rotate(rot||0);
+    c.font=font(fs*(on?1.12:1), on?'bold':''); c.textAlign=align||'center'; c.textBaseline='middle';
+    c.fillStyle=on?RED:'rgba(229,38,42,0.42)'; c.fillText(txt,0,0);
+    const w=c.measureText(txt).width; c.restore();
+    const ox = align==='left'? w/2 : align==='right'? -w/2 : 0;
+    labelBoxes.push({p, x:x+Math.cos(rot||0)*ox, y:y+Math.sin(rot||0)*ox, r:Math.max(w,fs)/2+4, rot:rot||0, w}); };
+  const slope=(tt)=>{ const a=[X(tt-0.01),Y(V(tt-0.01))], b=[X(tt+0.01),Y(V(tt+0.01))]; return Math.atan2(b[1]-a[1],b[0]-a[0]); };
+  const P=k=>PH.find(p=>p.k===k);
+  lab(P('rest'),'resting',X(0.27),Y(-70)-fs*0.9);
+  lab(P('stim'),'stimulus',X(0.72)+fs*0.6,Y(-66)+fs*1.6,0,'left');
+  c.strokeStyle='rgba(229,38,42,'+(ph.k==='stim'?1:0.42)+')'; c.lineWidth=2; harrow(c,X(0.72)+fs*0.5,Y(-66)+fs*1.2,X(0.66)+3,Y(V(0.66))+6,'stimA',6);
+  lab(P('thr'),'threshold',G.x+fs*0.4,Y(-55)-fs*0.85,0,'left');
+  { const a=slope(1.07), x=X(1.07)-Math.sin(-a)*0, y=Y(V(1.07)); lab(P('dep'),'depolarization',x-fs*1.05,y,a); }
+  lab(P('peak'),'peak',X(1.33),Y(30)-fs*0.95);
+  { const a=slope(1.6), y=Y(V(1.6)); lab(P('rep'),'repolarization',X(1.6)+fs*1.05,y,a+Math.PI); }
+  lab(P('hyp'),'hyperpolarization',X(2.12),Y(-90)+fs*1.35,0,'left');
+  c.strokeStyle='rgba(229,38,42,'+(ph.k==='hyp'?1:0.42)+')'; c.lineWidth=2; harrow(c,X(2.15),Y(-90)+fs*0.8,X(2.06),Y(-89)+4,'hypA',6);
+  lab(P('back'),'back to rest',X(3.45),Y(-70)-fs*0.95);
+  // selected moment
+  const x=X(t), y=Y(V(t));
+  c.strokeStyle='rgba(42,42,42,0.35)'; c.lineWidth=1.5; hdash(c,x,G.y-4,x,G.y+G.h,'sel'+Math.round(t*50));
+  c.strokeStyle=INK; c.lineWidth=1.8; hcircle(c,x,y,15,'mag'+Math.round(t*20),0.8);
+  c.fillStyle=INK; c.beginPath(); c.arc(x,y,4.5,0,7); c.fill();
+  // lines from the small circle to the magnifier
+  const a=Math.atan2(Lz.cy-y,Lz.cx-x), sp=Math.asin(clamp((Lz.r-15)/Math.hypot(Lz.cx-x,Lz.cy-y),-1,1));
+  c.strokeStyle='rgba(42,42,42,0.3)'; c.lineWidth=1.3;
+  for(const sg of [-1,1]){ const b=a+sg*(Math.PI/2+sp);
+    hline(c,x+Math.cos(b)*15,y+Math.sin(b)*15,Lz.cx+Math.cos(b)*Lz.r,Lz.cy+Math.sin(b)*Lz.r,'z'+sg,0.6); }
+}
+function drawLens(){
+  const c=ctx, {cx,cy,r}=Lz, v=V(t), T=r*0.26, fs=clamp(r/9.5,11,17);
+  c.save(); c.beginPath(); c.arc(cx,cy,r,0,7); c.clip();
+  c.fillStyle='#eef6fc'; c.fillRect(cx-r,cy-r,2*r,r);
+  c.fillStyle='#fdf4e6'; c.fillRect(cx-r,cy,2*r,r);
+  // ions jiggling around
+  for(const o of ions){
+    const jx=RM?0:Math.sin(animT*o.sp+o.ph)*r*0.012, jy=RM?0:Math.cos(animT*o.sp*1.3+o.ph)*r*0.012;
+    ion(c,cx+o.x*r+jx, cy+o.y*r+jy, r*0.036, o.type);
+  }
+  // membrane: two rows of lipid heads with tails
+  c.fillStyle='#f7e9cc'; c.fillRect(cx-r,cy-T/2,2*r,T);
+  const hr=T*0.13, step=hr*2.3;
+  c.strokeStyle='#c79a4a'; c.lineWidth=1.1;
+  for(let x=cx-r, i=0; x<cx+r; x+=step, i++){
+    for(const sd of [-1,1]){ const hy=cy+sd*(T/2-hr);
+      hline(c,x-hr*0.35,hy-sd*hr,x-hr*0.35,cy-sd*T*0.06,'t'+i+sd,0.4); hline(c,x+hr*0.35,hy-sd*hr,x+hr*0.35,cy-sd*T*0.06,'u'+i+sd,0.4);
+      c.fillStyle='#f2d59a'; c.beginPath(); c.arc(x,hy,hr,0,7); c.fill(); c.stroke(); }
+  }
+  // charge along each side of the membrane
+  const nq=Math.round(Math.min(1,Math.abs(v)/70)*7);
+  if(nq){ c.font=font(fs*1.15,'bold'); c.textAlign='center'; c.textBaseline='middle';
+    const outPlus=v<0;
+    for(let i=0;i<nq;i++){ const x=cx-r*0.78+(i+0.5)*(r*1.56/nq);
+      c.fillStyle=outPlus?RED:BLUE; c.fillText(outPlus?'+':'−', x, cy-T/2-fs*0.75);
+      c.fillStyle=outPlus?BLUE:RED; c.fillText(outPlus?'−':'+', x, cy+T/2+fs*0.75); } }
+  // channels
+  const nao=naOpen(t), nai=naInact(t), ko=kOpen(t);
+  const naF=nao*(55-v)/125, kF=Math.max(0,ko)*(v+90)/120;
+  const ch=[{type:'na',x:-0.55,i:0},{type:'k',x:-0.12,i:0},{type:'na',x:0.3,i:1},{type:'k',x:0.66,i:1}];
+  for(const h of ch){
+    const x=cx+h.x*r; let state, flow=0;
+    if(h.type==='na'){ state = nai>0.5 ? 'locked' : nao>[0.15,0.6][h.i] ? 'open' : 'closed'; if(state==='open') flow=naF; }
+    else { state = ko>[0.3,0.7][h.i] ? 'open' : 'closed'; if(state==='open') flow=kF; }
+    channel(c,x,cy,T,h.type,state,flow,r,h.i);
+  }
+  c.font=font(fs*0.95); c.textAlign='center'; c.textBaseline='middle';
+  c.fillStyle='#55606b'; c.fillText('outside the cell', cx, cy-r*0.84);
+  c.fillStyle='#6b5a44'; c.fillText('inside the cell', cx, cy+r*0.86);
+  c.restore();
+  // lens rim and handle
+  c.strokeStyle=INK; c.lineWidth=3.2; hcircle(c,cx,cy,r,'lens',1.6);
+  const ha=Math.PI*0.27, hx=cx+Math.cos(ha)*r, hy=cy+Math.sin(ha)*r;
+  if(W>=760){ c.lineWidth=7; hline(c,hx+3,hy+3,hx+r*0.3,hy+r*0.3,'handle',0.8); }
+  // gate labels + legend + readout
+  c.font=font(fs); c.textAlign='center'; c.textBaseline='top'; c.fillStyle=INK;
+  const ly=cy+r+10;
+  c.fillText(fmtV(v)+' inside   ·   '+t.toFixed(2)+' ms', cx, ly);
+  c.font=font(fs*0.92);
+  const lg='Na⁺ sodium        K⁺ potassium', lw=c.measureText(lg).width, lx=cx-lw/2;
+  ion(c,lx-10,ly+fs*1.9,6,'na'); c.fillStyle=INK; c.textAlign='left'; c.fillText('Na⁺ sodium',lx,ly+fs*1.35);
+  const kx=lx+c.measureText('Na⁺ sodium        ').width; ion(c,kx-10,ly+fs*1.9,6,'k'); c.fillText('K⁺ potassium',kx,ly+fs*1.35);
+}
+function ion(c,x,y,rad,type){
+  c.fillStyle=type==='na'?NA:K; c.beginPath(); c.arc(x,y,rad,0,7); c.fill();
+  c.strokeStyle='rgba(0,0,0,0.25)'; c.lineWidth=0.8; c.stroke();
+}
+function channel(c,x,cy,T,type,state,flow,r,idx){
+  const col=type==='na'?NA:K, fill=type==='na'?'#fde3c8':'#e9e0f7';
+  const gap = state==='closed' ? 0 : T*0.3, pw=T*0.34, ph=T*1.3;
+  c.lineWidth=1.8; c.strokeStyle=col; c.fillStyle=fill;
+  for(const sd of [-1,1]){
+    const px = sd<0 ? x-gap/2-pw : x+gap/2;
+    c.beginPath(); c.roundRect ? c.roundRect(px,cy-ph/2,pw,ph,pw*0.45) : c.rect(px,cy-ph/2,pw,ph); c.fill();
+    c.strokeStyle=col; hline(c,px,cy-ph/2+3,px,cy+ph/2-3,'cl'+type+idx+sd,0.5); hline(c,px+pw,cy-ph/2+3,px+pw,cy+ph/2-3,'cr'+type+idx+sd,0.5);
+    hline(c,px+3,cy-ph/2,px+pw-3,cy-ph/2,'ct'+type+idx+sd,0.3); hline(c,px+3,cy+ph/2,px+pw-3,cy+ph/2,'cb'+type+idx+sd,0.3);
+  }
+  if(state==='locked'){   // inactivation "ball" plugging the pore from inside
+    c.strokeStyle=col; c.lineWidth=1.4; hline(c,x+gap/2+pw*0.5,cy+ph/2,x+gap*0.15,cy+ph/2+T*0.25,'chain'+idx,0.4);
+    c.fillStyle=col; c.beginPath(); c.arc(x,cy+ph/2-T*0.05,T*0.17,0,7); c.fill();
+  }
+  // ions moving through an open gate
+  if(Math.abs(flow)>0.04){
+    const inward = type==='na', y0 = inward ? cy-r*0.5 : cy+r*0.5, y1 = inward ? cy+r*0.5 : cy-r*0.5;
+    if(RM){ c.strokeStyle=col; c.lineWidth=2.5; harrow(c,x+T*0.75,y0*0.5+cy*0.5,x+T*0.75,y1*0.5+cy*0.5,'fa'+type+idx,8); }
+    else { const N=Math.max(1,Math.round(Math.abs(flow)*6));
+      for(let k=0;k<N;k++){ const p=((animT*0.55*(0.6+Math.abs(flow)))+k/N)%1;
+        const yy=y0+(y1-y0)*p, a=Math.sin(p*Math.PI);
+        c.globalAlpha=a; ion(c,x+Math.sin(p*9+k)*T*0.06,yy,r*0.036,type); c.globalAlpha=1; } }
+  }
+  c.font=font(clamp(r/11,10,14)); c.textAlign='center'; c.textBaseline='middle'; c.fillStyle=col;
+  c.fillText((type==='na'?'Na⁺ ':'K⁺ ')+state, x, type==='na' ? cy-T*0.95-r*0.06 : cy+T*0.95+r*0.06);   // stagger so labels don't collide
+}
+
+/* ---------- UI ---------- */
+let lastPh=null;
+function setT(v){
+  t=clamp(v,0,4); $('tSl').value=t.toFixed(2);
+  const vv=V(t), ph=phaseAt(t);
+  $('readout').textContent=t.toFixed(2)+' ms · '+fmtV(vv);
+  $('tSl').setAttribute('aria-valuetext', t.toFixed(2)+' milliseconds, '+Math.round(vv)+' millivolts, '+ph.title);
+  if(ph!==lastPh){ lastPh=ph; $('phTitle').textContent=ph.title; $('phText').textContent=ph.text; }
+}
+function setPlaying(p){ playing=p; $('play').textContent=p?'Pause':'Play'; if(p && t>=3.99) setT(0); }
+$('play').addEventListener('click',()=>setPlaying(!playing));
+$('tSl').addEventListener('input',e=>{ setPlaying(false); setT(+e.target.value); });
+let drag=false;
+function hitLabel(px,py){
+  for(const b of labelBoxes){ const dx=px-b.x, dy=py-b.y, ca=Math.cos(-b.rot), sa=Math.sin(-b.rot);
+    const lx=dx*ca-dy*sa, ly=dx*sa+dy*ca; if(Math.abs(lx)<b.w/2+4 && Math.abs(ly)<G.fs*0.7) return b.p; }
+  return null;
+}
+function inGraph(px,py){ return px>=G.x-10 && px<=G.x+G.w+10 && py>=G.y-20 && py<=G.y+G.h+10; }
+cv.addEventListener('pointerdown',e=>{
+  const r=cv.getBoundingClientRect(), px=e.clientX-r.left, py=e.clientY-r.top;
+  const p=hitLabel(px,py);
+  if(p){ setPlaying(false); setT(p.k==='thr'?0.9:p.k==='peak'?1.33:(p.t0+Math.min(p.t1,4))/2); return; }
+  if(inGraph(px,py)){ setPlaying(false); drag=true; cv.setPointerCapture(e.pointerId); setT(Tof(px)); }
+});
+cv.addEventListener('pointermove',e=>{
+  const r=cv.getBoundingClientRect(), px=e.clientX-r.left, py=e.clientY-r.top;
+  if(drag){ setT(Tof(px)); return; }
+  cv.style.cursor = hitLabel(px,py) ? 'pointer' : inGraph(px,py) ? 'crosshair' : 'default';
+});
+['pointerup','pointercancel'].forEach(ev=>cv.addEventListener(ev,()=>drag=false));
+cv.addEventListener('keydown',e=>{
+  const st=e.shiftKey?0.1:0.02;
+  if(e.key==='ArrowRight'){ setPlaying(false); setT(t+st); e.preventDefault(); }
+  else if(e.key==='ArrowLeft'){ setPlaying(false); setT(t-st); e.preventDefault(); }
+  else if(e.key==='Home'){ setPlaying(false); setT(0); e.preventDefault(); }
+  else if(e.key==='End'){ setPlaying(false); setT(4); e.preventDefault(); }
+  else if(e.key===' '){ setPlaying(!playing); e.preventDefault(); }
+});
+$('copyBtn').addEventListener('click',()=>{
+  const txt=$('embedCode').textContent, ok=()=>{ $('copyBtn').textContent='Copied'; setTimeout(()=>$('copyBtn').textContent='Copy',1500); };
+  if(navigator.clipboard&&navigator.clipboard.writeText) navigator.clipboard.writeText(txt).then(ok,()=>{});
+});
+
+function loop(ts){
+  const dt=Math.min(0.1,(ts-lastFrame)/1000||0); lastFrame=ts;
+  animT+=dt;
+  if(playing){ setT(t+dt*0.4); if(t>=4) setPlaying(false); }
+  draw();
+  requestAnimationFrame(loop);
+}
+window.addEventListener('resize',()=>{ layout(); });
+layout(); setT(0.25);
+if(document.fonts && document.fonts.ready) document.fonts.ready.then(()=>{});
+requestAnimationFrame(ts=>{ lastFrame=ts; requestAnimationFrame(loop); });
+if(/[?&]t=([\d.]+)/.test(location.search)) setT(+RegExp.$1);
+})();
+</script>
+</body>
+</html>
