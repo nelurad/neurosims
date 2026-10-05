@@ -8,26 +8,32 @@ Each simulation runs in the browser, with nothing to install. They were built fo
 
 ## Simulations
 
-| Simulation | Topic | Link |
+### Neurophysiology
+
+| Simulation | Topics | Link |
 |---|---|---|
-| Synaptic Pruning | Development: synapse overproduction, use-dependent strengthening, complement tagging, microglial removal | [Open](https://nelurad.github.io/neurosims/synaptic-pruning/) |
-| Exploring Synapses | Synaptic transmission: release, receptors (fast vs. slow), excitation vs. inhibition, drug actions | [Open](https://nelurad.github.io/neurosims/exploring-synapses/) |
+| The Salty Banana | Resting potential, graded potentials, threshold, Na⁺/K⁺ channels, refractory period, myelin | [Open](https://nelurad.github.io/neurosims/action-potential/) |
+| Exploring Synapses | Neurotransmitter release, fast vs. slow receptors, excitation vs. inhibition, drug actions | [Open](https://nelurad.github.io/neurosims/exploring-synapses/) |
 
-## For instructors
+### Developmental Neuroscience
 
-Each simulation page has a **For instructors** section with learning goals, a short class activity, discussion questions, common misconceptions, and references.
+| Simulation | Topics | Link |
+|---|---|---|
+| Synaptic Pruning | Synapse overproduction, use-dependent strengthening, complement tagging, microglial removal | [Open](https://nelurad.github.io/neurosims/synaptic-pruning/) |
 
-To embed a simulation in a course site or LMS, use an iframe:
+## Using the simulations
+
+You can link to any simulation directly, or embed it in a course site or LMS. Each simulation page has its embed code at the bottom, with a Copy button. For example:
 
 ```html
-<iframe src="https://nelurad.github.io/neurosims/synaptic-pruning/" width="100%" height="1100" style="border:0" title="Synaptic Pruning simulation"></iframe>
+<iframe src="https://nelurad.github.io/neurosims/synaptic-pruning/" width="100%" height="1100" style="border:0" title="Synaptic Pruning"></iframe>
 ```
 
 Each simulation is a single self-contained HTML file (`<name>/index.html`), so you can also download it and host it yourself.
 
 ## License and credit
 
-- **Content** (text, explanations, teaching materials): [CC BY 4.0](https://creativecommons.org/licenses/by/4.0/)
+- **Content** (text and explanations): [CC BY 4.0](https://creativecommons.org/licenses/by/4.0/)
 - **Code:** MIT (see `LICENSE`)
 
 Please credit: *Nelu Radpour, NeuroSims (https://nelurad.github.io/neurosims/)*
