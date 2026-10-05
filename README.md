@@ -1,4 +1,4 @@
-# neurosims
+
 ## Some interactive sims for teaching intro neuro :) 
 
 Free interactive simulations for teaching introductory neuroscience.
