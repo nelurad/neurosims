@@ -1,0 +1,380 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Neurotransmitter Pathways</title>
+<link rel="icon" href="data:,">
+<meta name="description" content="Pick a neurotransmitter and watch where it starts in the brain, where its fibers travel, what they do, and what happens when they go wrong.">
+<style>
+  :root{ --bg:#fffdf8; --ink:#2a2a2a; --muted:#6b6f76; --line:#e2ddd2;
+    --hand:"Segoe Print","Ink Free","Noteworthy","Chalkboard SE","Bradley Hand","Comic Sans MS",cursive;
+    --sans:system-ui,-apple-system,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif;
+    --mono:ui-monospace,"SF Mono",Menlo,Consolas,monospace;
+    --c:#e4572e; }
+  *{box-sizing:border-box}
+  html{-webkit-text-size-adjust:100%}
+  html,body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.5 var(--sans);-webkit-font-smoothing:antialiased}
+  .wrap{margin:0 auto;padding:20px 16px 32px;max-width:1280px}
+  a{color:#3d6fa8}
+  .back{font-size:13.5px;color:var(--muted);text-decoration:none}
+  .back:hover{text-decoration:underline}
+  h1{font-family:Georgia,"Times New Roman",serif;font-weight:normal;font-size:clamp(24px,2.4vw,36px);margin:6px 0 8px;letter-spacing:-.01em}
+  .intro{margin:0 0 14px;max-width:48em;font-size:clamp(15px,1.2vw,17px)}
+
+  .tabs{display:flex;flex-wrap:wrap;gap:8px;margin:0 0 10px}
+  .tab{font:inherit;font-family:var(--hand);font-size:clamp(16px,1.5vw,20px);background:transparent;border:0;border-bottom:3px solid transparent;
+    padding:4px 10px 2px;cursor:pointer;color:var(--muted)}
+  .tab .dot{display:inline-block;width:11px;height:11px;border-radius:50%;margin-right:7px;vertical-align:1px}
+  .tab[aria-pressed="true"]{color:var(--ink);border-bottom-color:currentColor}
+  .tab:hover{color:var(--ink)}
+  :focus-visible{outline:2px solid #3d6fa8;outline-offset:2px}
+
+  .stage{display:grid;grid-template-columns:minmax(0,1.75fr) minmax(280px,1fr);gap:24px;align-items:start}
+  svg{display:block;width:100%;height:auto;user-select:none;-webkit-user-select:none}
+  .struct{cursor:pointer}
+  .tip{font-size:14.5px;color:var(--muted);min-height:2.6em;margin:4px 0 0}
+  .tip b{color:var(--ink)}
+
+  .panel h2{font-family:var(--hand);font-weight:normal;font-size:clamp(26px,2.6vw,34px);margin:0;color:var(--c);line-height:1.2}
+  .panel .also{font-size:14px;color:var(--muted);margin:0 0 10px}
+  .panel h3{font-family:var(--hand);font-weight:normal;font-size:19px;margin:14px 0 2px;color:var(--ink)}
+  .panel p{margin:0 0 6px}
+  .routes{list-style:none;margin:6px 0 0;padding:0;display:flex;flex-direction:column;gap:6px}
+  .route{display:block;width:100%;text-align:left;font:inherit;font-size:15px;background:#fff;border:1.5px solid var(--line);border-radius:8px;padding:7px 10px;cursor:pointer;color:var(--ink)}
+  .route small{display:block;color:var(--muted);font-size:13px}
+  .route:hover{border-color:#bdb7aa}
+  .route[aria-pressed="true"]{border-color:var(--c);box-shadow:inset 4px 0 0 var(--c)}
+  .detail{margin-top:12px;padding-top:10px;border-top:1.5px dashed var(--line)}
+  .detail .wrong{background:#fff;border-left:3px solid var(--c);padding:6px 10px;margin-top:6px}
+  .showall{font:inherit;font-size:13.5px;background:none;border:0;padding:0;margin:8px 0 0;color:#3d6fa8;text-decoration:underline;cursor:pointer}
+
+  .note{font-size:13px;color:var(--muted);margin:22px 0 0;max-width:62em}
+  .foot{margin-top:28px;padding-top:14px;border-top:1px dashed #c9c3b6;font-size:12.5px;color:var(--muted)}
+  .foot p{margin:0 0 8px}
+  .embed{display:flex;gap:8px;align-items:flex-start;flex-wrap:wrap}
+  .embed code{flex:1;min-width:0;font-family:var(--mono);font-size:11.5px;background:#fff;border:1px solid var(--line);padding:5px 8px;overflow-wrap:anywhere}
+  .embed button{font:inherit;font-size:12px;padding:4px 10px;background:#fff;border:1px solid #bdb7aa;border-radius:4px;cursor:pointer}
+  .refs{margin:4px 0 10px;padding-left:18px}
+
+  @media (max-width:860px){ .stage{grid-template-columns:minmax(0,1fr)} }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <a class="back" href="../">← All NeuroSims</a>
+  <h1>Neurotransmitter Pathways</h1>
+  <p class="intro">A few small clusters of neurons deep in the brain send long fibers almost everywhere, each carrying one chemical messenger. Pick a messenger to see where it starts, where it travels, and what it does.</p>
+
+  <div class="tabs" role="group" aria-label="Choose a neurotransmitter" id="tabs"></div>
+
+  <div class="stage">
+    <div>
+      <svg id="brain" viewBox="20 40 890 690" role="img" aria-labelledby="svgTitle">
+        <title id="svgTitle">Side view of the brain showing the selected neurotransmitter pathway</title>
+        <defs>
+          <filter id="rough" x="-5%" y="-5%" width="110%" height="110%">
+            <feTurbulence type="fractalNoise" baseFrequency="0.035" numOctaves="2" seed="7"/>
+            <feDisplacementMap in="SourceGraphic" scale="3.2"/>
+          </filter>
+          <clipPath id="frontClip"><path d="M0 0 L330 0 C300 120 270 230 285 330 C295 400 330 440 360 470 L0 730 Z"/></clipPath>
+        </defs>
+        <g id="anatomy"></g>
+        <g id="paths" filter="url(#rough)"></g>
+        <g id="dots"></g>
+        <g id="labels"></g>
+      </svg>
+      <p class="tip" id="tip" aria-live="polite">Tap any part of the brain to see what it does.</p>
+    </div>
+    <div class="panel" id="panel" aria-live="polite"></div>
+  </div>
+
+  <p class="note">Simplified sketch, not to scale. Some structures (striatum, nucleus accumbens, amygdala, hippocampus) sit off the midline and are drawn as if seen through the brain. Real pathways are bundles of thousands of branching fibers. Glutamate and GABA, the brain’s main “go” and “stop” messengers, are left out because they are used almost everywhere rather than in a few long pathways.</p>
+
+  <footer class="foot">
+    <p class="embed"><span>Embed:</span>
+      <code id="embedCode">&lt;iframe src="https://nelurad.github.io/neurosims/neurotransmitter-pathways/" width="100%" height="1100" style="border:0" title="Neurotransmitter Pathways"&gt;&lt;/iframe&gt;</code>
+      <button id="copyBtn">Copy</button></p>
+    <p style="margin-bottom:2px">References</p>
+    <ul class="refs">
+      <li>Purves, D., et al. <i>Neuroscience</i>. Sinauer / Oxford University Press.</li>
+    </ul>
+    <p>Part of <a href="../">NeuroSims</a>, made by <a href="https://nelurad.github.io/">Nelu Radpour</a> (Florida State University) with help from Claude. Content licensed CC BY 4.0; code licensed MIT. Free to use and adapt with credit.</p>
+  </footer>
+</div>
+
+<script>
+(function(){
+'use strict';
+const $=id=>document.getElementById(id);
+const NS='http://www.w3.org/2000/svg';
+const HAND=getComputedStyle(document.documentElement).getPropertyValue('--hand');
+const mq=matchMedia('(prefers-reduced-motion: reduce)'); let RM=mq.matches;
+mq.addEventListener && mq.addEventListener('change',e=>{ RM=e.matches; });
+function el(tag,attrs,parent){ const e=document.createElementNS(NS,tag); for(const k in attrs) e.setAttribute(k,attrs[k]); if(parent) parent.appendChild(e); return e; }
+
+/* ================= anatomy (side view, front of the head on the left) ================= */
+const CEREBRUM='M165 380 C135 280 205 150 345 108 C465 70 645 72 765 140 C865 200 905 305 870 405 C855 445 810 462 750 458 C715 455 690 455 668 440 C640 470 610 520 545 528 C475 534 432 505 424 470 C410 448 340 452 268 444 C205 436 170 412 165 380 Z';
+const S={
+  cortex:      {name:'Cortex', blurb:'The wrinkled outer layer: thinking, senses, language and voluntary movement.'},
+  pfc:         {name:'Prefrontal cortex', blurb:'The very front of the brain: planning, decisions, focus and self-control.'},
+  striatum:    {name:'Striatum (caudate & putamen)', blurb:'Part of the basal ganglia. Helps pick and start movements, and builds habits.'},
+  accumbens:   {name:'Nucleus accumbens', blurb:'The brain’s reward hub (part of the ventral striatum). Drives wanting and motivation.'},
+  thalamus:    {name:'Thalamus', blurb:'Relay station: passes sensory signals up to the cortex and helps control alertness.'},
+  hypothalamus:{name:'Hypothalamus', blurb:'Controls hormones, hunger, thirst, body temperature and sleep timing.'},
+  pituitary:   {name:'Pituitary gland', blurb:'The “master” hormone gland, steered by the hypothalamus.'},
+  amygdala:    {name:'Amygdala', blurb:'Emotion center, especially fear and spotting threats.'},
+  hippocampus: {name:'Hippocampus', blurb:'Forms new memories and helps with finding your way.'},
+  cerebellum:  {name:'Cerebellum', blurb:'Coordination, balance and smooth, well-timed movement.'},
+  brainstem:   {name:'Brainstem', blurb:'Midbrain, pons and medulla: breathing, heart rate, sleep and wakefulness. Home of most of the cell clusters that start these pathways.'},
+  spinal:      {name:'Spinal cord', blurb:'Carries signals between the brain and the body.'},
+  callosum:    {name:'Corpus callosum', blurb:'A thick bridge of fibers connecting the left and right halves of the brain.'},
+  // source clusters
+  vta:   {name:'Ventral tegmental area (VTA)', blurb:'Dopamine cells in the midbrain that feed the reward and planning pathways.', src:true},
+  sn:    {name:'Substantia nigra', blurb:'“Black substance” in the midbrain. Its dopamine cells feed the striatum to help control movement.', src:true},
+  arc:   {name:'Arcuate nucleus', blurb:'Dopamine cells in the hypothalamus that keep the hormone prolactin in check.', src:true},
+  raphe: {name:'Raphe nuclei', blurb:'A chain of serotonin cell groups running down the middle of the brainstem.', src:true},
+  lc:    {name:'Locus coeruleus', blurb:'“Blue spot” in the pons: a tiny cluster that sends norepinephrine to nearly the whole brain.', src:true},
+  basalis:{name:'Nucleus basalis', blurb:'Acetylcholine cells at the base of the forebrain that reach the whole cortex.', src:true},
+  septum:{name:'Medial septum', blurb:'Acetylcholine cells that project to the hippocampus.', src:true},
+  ppt:   {name:'Pedunculopontine & laterodorsal tegmental nuclei', blurb:'Acetylcholine cells in the brainstem that reach the thalamus; important for waking and dreaming (REM) sleep.', src:true}
+};
+// shape + label for each structure. Label: [x, y, anchor, leaderTo?]
+const SHAPES={
+  cortex:      {draw:g=>{}, label:[520,62,'middle']},
+  pfc:         {draw:g=>el('path',{d:CEREBRUM,'clip-path':'url(#frontClip)'},g), label:[30,150,'start',[205,230]]},
+  callosum:    {draw:g=>el('path',{d:'M335 292 C390 215 600 200 690 268 C705 280 700 296 682 290 C600 238 410 240 360 300 C352 310 330 305 335 292 Z'},g), label:[520,205,'middle'], faint:true},
+  striatum:    {draw:g=>el('ellipse',{cx:455,cy:300,rx:56,ry:35,transform:'rotate(-14 455 300)'},g), label:[455,305,'middle']},
+  accumbens:   {draw:g=>el('ellipse',{cx:388,cy:356,rx:23,ry:15},g), label:[362,350,'end']},
+  thalamus:    {draw:g=>el('ellipse',{cx:548,cy:332,rx:58,ry:33},g), label:[550,337,'middle']},
+  hypothalamus:{draw:g=>el('ellipse',{cx:470,cy:392,rx:35,ry:19},g), label:[478,370,'start']},
+  pituitary:   {draw:g=>{ el('path',{d:'M463 408 C460 420 455 428 451 436',fill:'none','stroke-width':5},g); el('circle',{cx:448,cy:448,r:14},g); }, label:[426,452,'end']},
+  amygdala:    {draw:g=>el('ellipse',{cx:482,cy:470,rx:20,ry:14},g), label:[470,500,'end']},
+  hippocampus: {draw:g=>el('path',{d:'M502 482 C545 496 592 484 614 440 C618 432 606 428 602 436 C584 470 548 480 506 470 Z'},g), label:[575,512,'middle']},
+  brainstem:   {draw:g=>el('path',{d:'M560 412 C556 440 548 462 545 485 C530 515 535 555 575 568 C588 590 592 615 598 645 L600 712 L636 712 L634 645 C640 610 660 580 676 548 C670 505 652 455 645 410 Z'},g), label:[520,640,'end',[560,600]], faint:true},
+  spinal:      {draw:g=>{}, label:[660,712,'start'], faint:true},
+  cerebellum:  {draw:g=>el('path',{d:'M690 470 C730 452 840 455 870 505 C890 560 835 612 760 605 C712 600 680 560 690 470 Z'},g), label:[790,540,'middle']},
+  vta:   {pt:[572,448], label:[400,600,'end']},
+  sn:    {pt:[598,436], label:[400,630,'end']},
+  arc:   {pt:[470,402], label:[300,560,'end']},
+  raphe: {pt:[628,452], extra:[[612,500],[622,598]], label:[400,600,'end']},
+  lc:    {pt:[652,505], label:[400,600,'end']},
+  basalis:{pt:[418,384], label:[300,560,'end']},
+  septum:{pt:[402,268], label:[300,250,'end']},
+  ppt:   {pt:[640,470], label:[400,640,'end']}
+};
+const FILL={cortex:'#f7efe4',pfc:'#f7efe4',callosum:'#eadcc6',striatum:'#efe3d2',accumbens:'#efe3d2',thalamus:'#efe3d2',hypothalamus:'#efe3d2',
+  pituitary:'#efe3d2',amygdala:'#efe3d2',hippocampus:'#efe3d2',brainstem:'#eadbc8',cerebellum:'#efe3d0'};
+
+/* ================= the pathways ================= */
+const NT=[
+{ id:'da', name:'Dopamine', color:'#e4572e', also:'Starts in the midbrain (substantia nigra and VTA), plus a small group in the hypothalamus.',
+  idea:'Movement, motivation and reward. Dopamine says “that was worth it, do it again” and helps get movements going.',
+  wrong:'Too little in one pathway causes Parkinson’s disease; too much activity in another is linked to the hallucinations of schizophrenia. Many addictive drugs hijack it.',
+  sources:['sn','vta','arc'],
+  routes:[
+   {name:'Nigrostriatal pathway', from:'Substantia nigra', to:'Striatum', src:'sn', targets:['striatum'],
+    d:['M598 436 C580 400 525 342 470 306'],
+    does:'Helps you start and smooth out movements, and learn habits.',
+    wrong:'In Parkinson’s disease these dopamine cells die, causing slowness, stiffness and tremor. The drug L-DOPA, which the brain turns into dopamine, eases the symptoms.'},
+   {name:'Mesolimbic pathway', from:'VTA', to:'Nucleus accumbens, amygdala, hippocampus', src:'vta', targets:['accumbens','amygdala','hippocampus'],
+    d:['M572 448 C520 432 440 388 398 362','M572 448 C548 462 515 468 492 468','M572 448 C585 458 590 466 588 474'],
+    does:'Reward and motivation: a burst of dopamine here marks something as “better than expected” so you want it again.',
+    wrong:'Many addictive drugs, such as cocaine and amphetamines, flood this pathway with dopamine. Overactivity here is linked to hallucinations and delusions in schizophrenia, which is why antipsychotic drugs block dopamine receptors.'},
+   {name:'Mesocortical pathway', from:'VTA', to:'Prefrontal cortex', src:'vta', targets:['pfc'],
+    d:['M572 448 C500 420 380 380 320 330 C285 300 255 262 240 215','M572 448 C500 425 360 390 300 360 C260 340 225 320 205 300','M572 448 C500 430 380 410 320 410 C290 410 260 405 235 395'],
+    does:'Focus, planning and working memory (holding information in mind while you use it).',
+    wrong:'Too little activity here is linked to the trouble with focus and motivation seen in schizophrenia and ADHD. Stimulant ADHD medicines raise dopamine (and norepinephrine) levels.'},
+   {name:'Tuberoinfundibular pathway', from:'Hypothalamus (arcuate nucleus)', to:'Pituitary gland', src:'arc', targets:['pituitary'],
+    d:['M470 402 C468 418 458 430 450 440'],
+    does:'Keeps the hormone prolactin (which triggers milk production) switched down.',
+    wrong:'Antipsychotic drugs block dopamine here too, so they can raise prolactin, causing breast milk production or missed periods.'}
+  ]},
+{ id:'5ht', name:'Serotonin', color:'#1f6fd1', also:'Starts in the raphe nuclei, a chain of cell groups along the middle of the brainstem.',
+  idea:'Tunes mood, sleep, appetite, impulse control and pain. Rather than carrying one message, it sets the brain’s “background mood.”',
+  wrong:'SSRIs (such as fluoxetine, sold as Prozac), which boost serotonin signaling, are used for depression and anxiety. Psychedelics like LSD and psilocybin act on a serotonin receptor in the cortex.',
+  sources:['raphe'],
+  routes:[
+   {name:'Up to the cortex', from:'Upper raphe nuclei', to:'Nearly all of the cortex', src:'raphe', targets:['cortex','pfc'],
+    d:['M628 452 C560 420 440 400 340 360 C250 330 200 280 230 200 C270 130 420 100 560 105 C700 112 800 170 840 260 C860 320 850 370 830 400'],
+    does:'Mood, impulse control and how we react to stress.',
+    wrong:'SSRI antidepressants act here (and elsewhere), increasing serotonin signaling; they are used for depression, anxiety and OCD.'},
+   {name:'To the emotion & control centers', from:'Upper raphe nuclei', to:'Thalamus, hypothalamus, striatum, amygdala, hippocampus', src:'raphe', targets:['thalamus','hypothalamus','striatum','amygdala','hippocampus'],
+    d:['M628 452 C605 400 575 355 550 335','M628 452 C580 430 520 405 474 393','M628 452 C590 410 520 330 466 302','M628 452 C580 462 522 470 494 469','M628 452 C622 468 614 470 606 466'],
+    does:'Sleep and wake cycles, appetite, and emotional reactions.',
+    wrong:'Serotonin changes are linked to sleep and appetite problems in depression. Migraine drugs called triptans act on serotonin receptors.'},
+   {name:'Down to the cerebellum & spinal cord', from:'Lower raphe nuclei', to:'Cerebellum, spinal cord', src:'raphe', targets:['cerebellum','spinal'],
+    d:['M622 598 C680 590 720 560 762 535','M622 598 C620 640 618 680 618 712'],
+    does:'Turns down pain signals coming up the spinal cord and supports movement.',
+    wrong:'This is one reason some antidepressants are also used to treat long-term (chronic) pain.'}
+  ]},
+{ id:'ne', name:'Norepinephrine', color:'#2a9d55', also:'Starts in the locus coeruleus (“blue spot”), a tiny cluster in the pons that reaches almost the entire brain.',
+  idea:'Alertness and attention: the brain’s “wake up and pay attention” signal, especially under stress.',
+  wrong:'Overactivity is linked to anxiety, panic and PTSD. Some ADHD medicines and some antidepressants (SNRIs) raise norepinephrine levels.',
+  sources:['lc'],
+  routes:[
+   {name:'Up to the cortex', from:'Locus coeruleus', to:'The whole cortex', src:'lc', targets:['cortex','pfc'],
+    d:['M652 505 C620 450 560 400 480 380 C380 352 262 332 222 262 C218 182 340 116 500 101 C650 95 790 150 845 250 C870 320 860 380 840 410'],
+    does:'Alertness and focused attention; sharpens the response to anything new or important.',
+    wrong:'Too little is linked to poor focus (ADHD); too much to feeling on edge. It is nearly silent during sleep, especially dreaming (REM) sleep.'},
+   {name:'To the emotion & control centers', from:'Locus coeruleus', to:'Thalamus, hypothalamus, amygdala, hippocampus', src:'lc', targets:['thalamus','hypothalamus','amygdala','hippocampus'],
+    d:['M652 505 C640 440 590 362 556 337','M652 505 C600 470 522 420 476 396','M652 505 C590 490 530 476 494 471','M652 505 C640 490 622 468 610 452'],
+    does:'The stress response and emotional memory: it helps scary or exciting moments get stored strongly.',
+    wrong:'Overactivity here is linked to the hypervigilance and vivid memories of PTSD.'},
+   {name:'Down to the cerebellum & spinal cord', from:'Locus coeruleus', to:'Cerebellum, spinal cord', src:'lc', targets:['cerebellum','spinal'],
+    d:['M652 505 C690 500 730 510 766 526','M652 505 C640 560 625 640 618 712'],
+    does:'Adjusts movement and dampens pain signals in the spinal cord.',
+    wrong:'Like serotonin, this helps explain why SNRI antidepressants can ease chronic pain.'}
+  ]},
+{ id:'ach', name:'Acetylcholine', color:'#8a4fc4', also:'Starts in the base of the forebrain (nucleus basalis, medial septum) and in the brainstem.',
+  idea:'Attention, learning and memory, and dreaming (REM) sleep. (Outside the brain it is also the messenger that makes muscles contract.)',
+  wrong:'In Alzheimer’s disease, the basal forebrain acetylcholine cells are lost early. Drugs like donepezil slow the breakdown of acetylcholine to help memory. Nicotine acts on acetylcholine receptors.',
+  sources:['basalis','septum','ppt'],
+  routes:[
+   {name:'Basal forebrain to cortex', from:'Nucleus basalis', to:'The whole cortex', src:'basalis', targets:['cortex','pfc'],
+    d:['M418 384 C360 362 262 332 226 252 C230 172 350 112 500 102 C650 98 790 150 845 250 C868 320 860 385 838 412','M418 384 C330 402 262 420 212 396'],
+    does:'Attention: it helps the cortex focus on what matters and learn from it.',
+    wrong:'These are among the first cells lost in Alzheimer’s disease, which is why boosting acetylcholine (with drugs such as donepezil) can help memory for a while.'},
+   {name:'Septum to hippocampus', from:'Medial septum', to:'Hippocampus', src:'septum', targets:['hippocampus'],
+    d:['M402 268 C455 226 562 232 616 292 C650 332 646 400 612 442'],
+    does:'Forming new memories.',
+    wrong:'Drugs that block acetylcholine (some allergy, sleep and bladder medicines) can cause confusion and memory problems, especially in older adults.'},
+   {name:'Brainstem to thalamus', from:'Pedunculopontine & laterodorsal tegmental nuclei', to:'Thalamus', src:'ppt', targets:['thalamus'],
+    d:['M640 470 C620 420 590 372 562 342'],
+    does:'Waking up and dreaming: these cells are active when you are awake and during REM sleep.',
+    wrong:'Damage to these cells is linked to sleep problems and to some of the walking difficulties in Parkinson’s disease.'}
+  ]}
+];
+
+/* ================= build the drawing ================= */
+const gA=$('anatomy'), gP=$('paths'), gD=$('dots'), gL=$('labels');
+const shapeEls={}, labelEls={};
+(function build(){
+  // cerebrum
+  const cg=el('g',{class:'struct','data-k':'cortex',filter:'url(#rough)'},gA);
+  el('path',{d:CEREBRUM,fill:FILL.cortex,stroke:'#4a4440','stroke-width':2.6},cg);
+  // a few gyri squiggles for texture
+  const gy=el('g',{fill:'none',stroke:'#cdbfae','stroke-width':1.6,'stroke-linecap':'round'},cg);
+  ['M250 200 C270 230 300 215 310 240','M380 140 C395 170 430 160 440 190','M560 115 C565 150 600 150 600 180','M700 150 C690 185 720 200 715 230',
+   'M800 230 C780 255 800 280 785 305','M230 330 C255 320 270 345 295 335','M840 340 C815 350 820 380 800 390','M300 160 C320 175 315 200 340 205',
+   'M470 120 C480 145 505 140 510 165','M640 120 C650 140 675 140 670 165','M760 190 C750 215 770 230 760 255','M200 260 C225 260 230 285 255 285'].forEach(d=>el('path',{d},gy));
+  shapeEls.cortex=cg;
+  for(const k of ['pfc','callosum','brainstem','cerebellum','striatum','accumbens','thalamus','hypothalamus','pituitary','amygdala','hippocampus']){
+    const g=el('g',{class:'struct','data-k':k,filter:'url(#rough)',fill:FILL[k],stroke:'#4a4440','stroke-width':k==='pfc'?0:2.2},gA);
+    if(k==='pfc'){ g.setAttribute('fill','transparent'); }
+    SHAPES[k].draw(g); shapeEls[k]=g;
+    if(k==='cerebellum'){ const f=el('g',{fill:'none',stroke:'#c9b79f','stroke-width':1.5},g);
+      ['M705 500 C760 480 830 490 860 520','M700 530 C760 512 830 520 865 548','M705 560 C760 545 820 555 850 578','M720 585 C760 578 800 585 825 596'].forEach(d=>el('path',{d},f)); }
+  }
+  // source clusters as small dots
+  for(const k in SHAPES){ const s=SHAPES[k]; if(!s.pt) continue;
+    const g=el('g',{class:'struct','data-k':k},gA);
+    for(const p of [s.pt].concat(s.extra||[])) el('circle',{cx:p[0],cy:p[1],r:7,fill:'#bfb4a6',stroke:'#4a4440','stroke-width':1.5},g);
+    shapeEls[k]=g; }
+  // labels
+  for(const k in SHAPES){ const s=SHAPES[k], [x,y,anchor,lead]=s.label;
+    const g=el('g',{class:'struct','data-k':k},gL);
+    let leadTo = lead || (s.pt ? s.pt : null);
+    if(leadTo){ const tw=S[k].name.length*7.2; const sx= anchor==='end'? x+6 : anchor==='start'? x-6 : x;
+      el('path',{d:'M'+sx+' '+(y-5)+' L'+leadTo[0]+' '+leadTo[1],stroke:'#8a8578','stroke-width':1.3,fill:'none','stroke-dasharray':'1 4','stroke-linecap':'round'},g); }
+    const t=el('text',{x,y,'text-anchor':anchor,'font-family':HAND,'font-size':s.pt?17:16,fill:'#6b6f76','paint-order':'stroke',stroke:'#fffdf8','stroke-width':4,'stroke-linejoin':'round'},g);
+    t.textContent = s.pt ? S[k].name.replace(/ \(VTA\)/,'').replace('Pedunculopontine & laterodorsal tegmental nuclei','PPT / LDT nuclei') : S[k].name.replace(' (caudate & putamen)','');
+    labelEls[k]=g; }
+  // tap to learn
+  for(const node of document.querySelectorAll('.struct')) node.addEventListener('click',()=>{ const k=node.getAttribute('data-k'); $('tip').innerHTML='<b>'+S[k].name+'.</b> '+S[k].blurb; });
+})();
+
+/* ================= selection & rendering ================= */
+let cur=NT[0], route=null, drawn=[], startT=0;
+function tabs(){
+  const box=$('tabs');
+  NT.forEach((n,i)=>{ const b=document.createElement('button'); b.className='tab'; b.style.color=''; b.setAttribute('aria-pressed',i===0);
+    b.innerHTML='<span class="dot" style="background:'+n.color+'"></span>'+n.name;
+    b.addEventListener('click',()=>select(n,null)); box.appendChild(b); n.btn=b; });
+}
+function select(n,r){
+  cur=n; route=r;
+  NT.forEach(m=>{ m.btn.setAttribute('aria-pressed',m===n); m.btn.style.color = m===n ? n.color : ''; });
+  document.documentElement.style.setProperty('--c',n.color);
+  render(); panel();
+}
+function activeRoutes(){ return route ? [route] : cur.routes; }
+function render(){
+  gP.innerHTML=''; gD.innerHTML=''; drawn=[];
+  const col=cur.color, rs=activeRoutes();
+  const targets=new Set(), sources=new Set();
+  rs.forEach(r=>{ r.targets.forEach(t=>targets.add(t)); sources.add(r.src); });
+  // arrowhead marker in this color
+  let m=document.getElementById('arrow'); if(m) m.remove();
+  m=el('marker',{id:'arrow',viewBox:'0 0 10 10',refX:'6',refY:'5',markerWidth:'5',markerHeight:'5',orient:'auto-start-reverse'},document.querySelector('defs'));
+  el('path',{d:'M0 0 L10 5 L0 10 z',fill:col},m);
+  rs.forEach(r=>r.d.forEach(d=>{
+    const p=el('path',{d,fill:'none',stroke:col,'stroke-width':4.5,'stroke-linecap':'round','marker-end':'url(#arrow)',opacity:0.9},gP);
+    const L=p.getTotalLength(); drawn.push({p,L});
+    if(!RM){ p.style.strokeDasharray=L; p.style.strokeDashoffset=L; p.getBoundingClientRect(); p.style.transition='stroke-dashoffset 1.4s ease-out'; p.style.strokeDashoffset=0; }
+  }));
+  // highlight structures
+  for(const k in shapeEls){
+    const on=targets.has(k), src=sources.has(k), g=shapeEls[k];
+    if(SHAPES[k] && SHAPES[k].pt){ g.querySelectorAll('circle').forEach(c=>{ c.setAttribute('fill',src?col:'#d8cfc4'); c.setAttribute('r',src?9:6); c.setAttribute('stroke',src?'#2a2a2a':'#a89f93'); }); g.style.display = src||cur.sources.includes(k)?'':'none'; continue; }
+    if(k==='cortex'){ g.querySelector('path').setAttribute('fill', on? tint(col,0.13) : FILL.cortex); continue; }
+    if(k==='pfc'){ g.querySelector('path').setAttribute('fill', on? tint(col,0.28) : 'transparent'); continue; }
+    g.setAttribute('fill', on? tint(col,0.35) : FILL[k]);
+    g.setAttribute('stroke', on? shade(col) : '#4a4440');
+  }
+  for(const k in labelEls){
+    const on=targets.has(k)||sources.has(k), isSrc=SHAPES[k].pt, t=labelEls[k].querySelector('text');
+    if(isSrc){ labelEls[k].style.display = sources.has(k) ? '' : 'none'; }
+    t.setAttribute('fill', on? shade(col) : (SHAPES[k].faint?'#a29d93':'#8a8578'));
+    t.setAttribute('font-weight', on? 'bold':'normal');
+    t.setAttribute('font-size', (on? (isSrc?19:18) : 15)*fsK());
+  }
+  // stack source labels so they don't overlap
+  const shown=cur.sources.filter(k=>sources.has(k)); shown.forEach((k,i)=>{ const t=labelEls[k].querySelector('text'), ln=labelEls[k].querySelector('path');
+    const y=600+i*34*fsK(), x=430; t.setAttribute('x',x); t.setAttribute('y',y); t.setAttribute('text-anchor','end');
+    const pt=SHAPES[k].pt; ln.setAttribute('d','M'+(x+6)+' '+(y-6)+' L'+pt[0]+' '+pt[1]); });
+  startT=performance.now();
+}
+function fsK(){ const w=$('brain').clientWidth||800; return Math.min(1.7,Math.max(1,700/w)); }
+function tint(hex,a){ const n=parseInt(hex.slice(1),16), r=n>>16, g=(n>>8)&255, b=n&255; const m=v=>Math.round(255-(255-v)*a); return 'rgb('+m(r)+','+m(g)+','+m(b)+')'; }
+function shade(hex){ const n=parseInt(hex.slice(1),16), r=n>>16, g=(n>>8)&255, b=n&255; const m=v=>Math.round(v*0.78); return 'rgb('+m(r)+','+m(g)+','+m(b)+')'; }
+function panel(){
+  const n=cur, P=$('panel');
+  let h='<h2>'+n.name+'</h2><p class="also">'+n.also+'</p>';
+  h+='<h3>Big idea</h3><p>'+n.idea+'</p>';
+  h+='<h3>Routes</h3><ul class="routes">';
+  n.routes.forEach((r,i)=>{ h+='<li><button class="route" data-i="'+i+'" aria-pressed="'+(r===route)+'">'+r.name+'<small>'+r.from+' → '+r.to+'</small></button></li>'; });
+  h+='</ul>';
+  if(route){ h+='<div class="detail"><h3 style="margin-top:0">What it does</h3><p>'+route.does+'</p><h3>When it goes wrong</h3><p class="wrong">'+route.wrong+'</p><button class="showall" id="showAll">Show all '+n.name.toLowerCase()+' routes</button></div>'; }
+  else { h+='<div class="detail"><h3 style="margin-top:0">When it goes wrong</h3><p class="wrong">'+n.wrong+'</p><p style="font-size:14px;color:var(--muted);margin-top:8px">Pick a route above to follow it on its own.</p></div>'; }
+  P.innerHTML=h;
+  P.querySelectorAll('.route').forEach(b=>b.addEventListener('click',()=>{ const r=n.routes[+b.dataset.i]; select(n, route===r?null:r); }));
+  const sa=$('showAll'); if(sa) sa.addEventListener('click',()=>select(n,null));
+}
+
+/* ================= signals flowing along the fibers ================= */
+function tick(now){
+  gD.innerHTML='';
+  if(!RM){
+    const el0=(now-startT)/1000, grow=Math.min(1,el0/1.4);
+    for(const {p,L} of drawn){
+      const N=Math.max(2,Math.round(L/70));
+      for(let i=0;i<N;i++){
+        const f=((now/1000)*0.22*(320/Math.max(L,120))+i/N)%1;
+        if(f>grow) continue;
+        const pt=p.getPointAtLength(f*L);
+        el('circle',{cx:pt.x,cy:pt.y,r:4.2,fill:cur.color,stroke:'#fffdf8','stroke-width':1.5,opacity:(Math.sin(f*Math.PI)*0.9+0.1).toFixed(2)},gD);
+      }
+    }
+  }
+  requestAnimationFrame(tick);
+}
+
+$('copyBtn').addEventListener('click',()=>{ const t=$('embedCode').textContent; if(navigator.clipboard) navigator.clipboard.writeText(t).then(()=>{ $('copyBtn').textContent='Copied'; setTimeout(()=>$('copyBtn').textContent='Copy',1500); },()=>{}); });
+tabs(); select(NT[0],null);
+let rz; window.addEventListener('resize',()=>{ clearTimeout(rz); rz=setTimeout(()=>render(),150); }); requestAnimationFrame(tick);
+const q=location.search.match(/nt=(\w+)/); if(q){ const n=NT.find(x=>x.id===q[1]); if(n) select(n,null); }
+})();
+</script>
+</body>
+</html>
