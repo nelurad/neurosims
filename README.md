@@ -44,4 +44,4 @@ Found a bug or a scientific inaccuracy, or have an idea for a new simulation? Pl
 
 ---
 
-Made by [Nelu Radpour](https://nelurad.github.io/), Department of Psychology, Florida State University, with help from Claude.
+Made by [Nelu Radpour](https://nelurad.github.io/), Department of Psychology, Florida State University.
