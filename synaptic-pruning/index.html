@@ -57,14 +57,14 @@
   footer a { color: #1a4f8b; }
   .info ul { margin: 0; padding-left: 22px; }
   .info li { margin: 5px 0; }
-  details.instructors { margin-top: 18px; background: #f0efc6; border: 1.5px solid #8c8c70; border-radius: 10px; padding: 10px 18px; font-size: 15px; line-height: 1.5; }
-  details.instructors summary { font-size: 18px; font-weight: bold; cursor: pointer; }
-  details.instructors h3 { font-size: 16px; margin: 14px 0 4px; }
-  details.instructors p { margin: 4px 0; max-width: 80ch; }
-  details.instructors ul, details.instructors ol { margin: 0; padding-left: 22px; }
-  details.instructors li { margin: 4px 0; }
-  pre.embed { background: #fff; border: 1px solid #aaa; padding: 8px 10px; font-size: 13px; white-space: pre-wrap; word-break: break-all; }
-  .refs li { font-size: 14px; }
+   .extras { margin-top: 24px; padding-top: 12px; border-top: 1px dashed #8c8c70; font-size: 13px; color: #355; display: grid; grid-template-columns: minmax(0, 1fr); gap: 12px; }
+  .embed-box { display: flex; gap: 8px; align-items: center; background: #fff; border: 1px solid #9cc; border-radius: 6px; padding: 7px 10px; }
+  .embed-box b { white-space: nowrap; color: #111; }
+  .embed-box code { flex: 1; min-width: 0; overflow-x: auto; white-space: nowrap; font: 12px ui-monospace, Menlo, monospace; color: #111; }
+  .embed-box button { font: 13px Arial, sans-serif; border: 1px solid #555; background: #f0efc6; border-radius: 5px; padding: 3px 10px; cursor: pointer; }
+  .extras h4 { margin: 0 0 4px; font-size: 13px; color: #111; }
+  .extras .refs { margin: 0; padding-left: 18px; line-height: 1.45; }
+  .extras .refs li { margin: 2px 0; }
 </style>
 </head>
 <body>
@@ -156,63 +156,22 @@
     <p>Artificial neural networks get pruned too. After training, deleting the smallest weights often costs little accuracy.</p>
   </div>
 
-  <details class="instructors">
-    <summary>For instructors</summary>
-
-    <h3>Learning goals</h3>
-    <p>After using this simulation, students should be able to:</p>
-    <ul>
-      <li>Describe how synapse number changes from birth to adulthood (overproduction, then pruning).</li>
-      <li>Explain "use it or lose it": activity strengthens synapses, and weak ones are removed.</li>
-      <li>Name the roles of complement proteins and microglia in synaptic pruning.</li>
-      <li>Explain why early experience matters more for some circuits than later experience.</li>
-    </ul>
-
-    <h3>Suggested 10-minute activity</h3>
-    <ol>
-      <li>Run the sim once with all experiences checked. Ask students to predict the shape of the synapse count graph before it finishes.</li>
-      <li>Restart. Uncheck <b>Music</b> right away and let it run to age 20. Compare the orange pathway to the others.</li>
-      <li>Restart again. Leave Music on until age 10, then uncheck it. What changes, and why?</li>
-      <li>Pair discussion: what might this mean for learning a language or an instrument at different ages?</li>
-    </ol>
-
-    <h3>Discussion questions</h3>
-    <ul>
-      <li>Why would a brain build more synapses than it needs, only to remove them later?</li>
-      <li>The adult network has fewer synapses than the 2-year-old one. Is it "worse"? Why or why not?</li>
-      <li>What could go wrong if pruning removed too many synapses, or too few?</li>
-      <li>How is this different from how new memories form in adults?</li>
-    </ul>
-
-    <h3>Common misconceptions this addresses</h3>
-    <ul>
-      <li><b>"More synapses means a smarter brain."</b> Efficient circuits come from removing unused connections, not keeping all of them.</li>
-      <li><b>"Brain development is just growth."</b> A lot of development is subtraction.</li>
-      <li><b>"Microglia only fight infection."</b> They also sculpt healthy circuits.</li>
-    </ul>
-
-    <h3>Limitations of the model</h3>
-    <p>58 neurons stand in for billions, and timing is compressed. Removed synapses never regrow here, but real brains keep forming new synapses throughout life. Different cortical regions prune on different schedules, which the model does not show.</p>
-
-    <h3>Embed this simulation</h3>
-    <p>Paste this into a course site or LMS page that allows HTML:</p>
-    <pre class="embed">&lt;iframe src="https://nelurad.github.io/neurosims/synaptic-pruning/" width="100%" height="1100" style="border:0" title="Synaptic Pruning simulation"&gt;&lt;/iframe&gt;</pre>
-
-    <h3>References</h3>
-    <ul class="refs">
-      <li>Huttenlocher, P. R., &amp; Dabholkar, A. S. (1997). Regional differences in synaptogenesis in human cerebral cortex. <i>Journal of Comparative Neurology, 387</i>(2), 167&ndash;178.</li>
-      <li>Petanjek, Z., et al. (2011). Extraordinary neoteny of synaptic spines in the human prefrontal cortex. <i>PNAS, 108</i>(32), 13281&ndash;13286.</li>
-      <li>Stevens, B., et al. (2007). The classical complement cascade mediates CNS synapse elimination. <i>Cell, 131</i>(6), 1164&ndash;1178.</li>
-      <li>Schafer, D. P., et al. (2012). Microglia sculpt postnatal neural circuits in an activity and complement-dependent manner. <i>Neuron, 74</i>(4), 691&ndash;705.</li>
-    </ul>
-  </details>
-
-  <footer>
-    Part of <a href="../">NeuroSims</a>, made by <a href="https://nelurad.github.io/">Nelu Radpour</a> (Florida State University).<br>
-    Content licensed <a href="https://creativecommons.org/licenses/by/4.0/">CC BY 4.0</a>; code licensed MIT. Free to use and adapt with credit.
-  </footer>
-</div>
-
+    <div class="extras">
+    <div class="embed-box">
+      <b>Embed:</b>
+      <code id="embedCode">&lt;iframe src="https://nelurad.github.io/neurosims/synaptic-pruning/" width="100%" height="1100" style="border:0" title="Synaptic Pruning"&gt;&lt;/iframe&gt;</code>
+      <button type="button" onclick="navigator.clipboard.writeText(document.getElementById('embedCode').textContent).then(()=>{this.textContent='Copied!'})">Copy</button>
+    </div>
+    <div>
+      <h4>References</h4>
+      <ul class="refs">
+        <li>Huttenlocher, P. R., &amp; Dabholkar, A. S. (1997). Regional differences in synaptogenesis in human cerebral cortex. <i>Journal of Comparative Neurology, 387</i>(2), 167&ndash;178.</li>
+        <li>Petanjek, Z., et al. (2011). Extraordinary neoteny of synaptic spines in the human prefrontal cortex. <i>PNAS, 108</i>(32), 13281&ndash;13286.</li>
+        <li>Stevens, B., et al. (2007). The classical complement cascade mediates CNS synapse elimination. <i>Cell, 131</i>(6), 1164&ndash;1178.</li>
+        <li>Schafer, D. P., et al. (2012). Microglia sculpt postnatal neural circuits in an activity and complement-dependent manner. <i>Neuron, 74</i>(4), 691&ndash;705.</li>
+      </ul>
+    </div>
+  </div>
 <script>
 (() => {
   const COL = { bg: '#e2fcfc', syn: '#5d7088', tag: '#e53935', glia: '#8bd24a', gliaEdge: '#2e7d32', soma: '#ffe94a', somaFire: '#fff7b0', edge: '#333' };
