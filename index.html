@@ -26,6 +26,18 @@
   .card.soon { background: #eef6f6; border-style: dashed; color: #666; justify-content: center; text-align: center; min-height: 200px; }
   .card.soon .body { padding: 24px; }
 
+  .modules { display: flex; flex-wrap: wrap; gap: 8px; margin: 0 0 8px; }
+  .modules a { background: #f0efc6; border: 1.5px solid #8c8c70; border-radius: 999px; padding: 6px 14px; color: #111; text-decoration: none; font-size: 15px; }
+  .modules a:hover { background: #f6ec3c; }
+  .module { margin-top: 26px; }
+  .module-head { border-bottom: 2px solid #8c8c70; padding-bottom: 8px; margin-bottom: 14px; }
+  .module-head .num { font-size: 13px; font-weight: bold; letter-spacing: 1px; text-transform: uppercase; color: #355; }
+  .module-head h2 { font-size: 26px; margin: 2px 0 4px; }
+  .module-head p { margin: 0; font-size: 15px; max-width: 75ch; line-height: 1.45; }
+  .card h3 { font-size: 20px; margin: 0; }
+  .order { font-size: 13px; font-weight: bold; color: #355; }
+  .soon-line { margin: 26px 0 0; font-size: 15px; color: #355; }
+  .soon-line a { color: #1a4f8b; }
   .box { background: #fff; border: 1px solid #9cc; padding: 6px 20px 14px; margin-top: 28px; font-size: 15px; line-height: 1.5; }
   .box h2 { font-size: 20px; margin: 14px 0 6px; }
   .box p { margin: 6px 0; max-width: 80ch; }
@@ -40,41 +52,60 @@
   <p class="tag">Free interactive simulations for teaching introductory neuroscience.</p>
   <p class="intro">Each simulation runs in the browser, with nothing to install. They were built for Introduction to Neuroscience (PSB 2000) at Florida State University, and any teacher or student is welcome to use them.</p>
 
-  <div class="grid">
-    <a class="card" href="synaptic-pruning/">
-      <img src="synaptic-pruning/thumb.png" alt="Network of yellow neurons connected by synapses, with green microglia">
-      <div class="body">
-        <h2>Synaptic Pruning</h2>
-        <p>Watch a young brain overproduce synapses, then keep the ones experience uses and remove the rest.</p>
-        <span class="meta">Development · Intro undergrad / AP</span>
-      </div>
-    </a>
+  <nav class="modules" aria-label="Modules">
+    <a href="#neurophysiology">Neurophysiology</a>
+    <a href="#development">Developmental Neuroscience</a>
+  </nav>
 
-    <a class="card" href="exploring-synapses/">
-      <img src="exploring-synapses/thumb.png" alt="Two neurons with vesicles releasing neurotransmitter across the synaptic gap onto receptors">
-      <div class="body">
-        <h2>Exploring Synapses</h2>
-        <p>Release a neurotransmitter, watch it cross the gap, and see how receptors and drugs change the receiving cell.</p>
-        <span class="meta">Synaptic transmission · Intro undergrad / AP</span>
-      </div>
-    </a>
-
-    <a class="card" href="action-potential/">
-      <img src="action-potential/thumb.png" alt="Cartoon membrane with sodium and potassium ions and a banana showing the voltage">
-      <div class="body">
-        <h2>The Salty Banana</h2>
-        <p>A step-by-step story of the action potential: resting potential, threshold, spike, refractory period, and myelin.</p>
-        <span class="meta">Action potentials · Intro undergrad / AP</span>
-      </div>
-    </a>
-
-    <div class="card soon">
-      <div class="body">
-        <h2>More coming soon</h2>
-        <p>Ideas for a topic? Suggest one through <a href="https://github.com/nelurad/neurosims/issues">GitHub Issues</a>.</p>
-      </div>
+  <section class="module" id="neurophysiology">
+    <div class="module-head">
+      <span class="num">Module 1</span>
+      <h2>Neurophysiology</h2>
+      <p>How a single neuron fires, and how it passes the message to the next one. Start with the action potential, then move to the synapse.</p>
     </div>
-  </div>
+    <div class="grid">
+      <a class="card" href="action-potential/">
+        <img src="action-potential/thumb.png" alt="Cartoon membrane with sodium and potassium ions and a banana showing the voltage">
+        <div class="body">
+          <span class="order">1.1</span>
+          <h3>The Salty Banana</h3>
+          <p>A step-by-step story of the action potential: resting potential, threshold, spike, refractory period, and myelin.</p>
+          <span class="meta">Action potentials · Intro undergrad / AP</span>
+        </div>
+      </a>
+
+      <a class="card" href="exploring-synapses/">
+        <img src="exploring-synapses/thumb.png" alt="Two neurons with vesicles releasing neurotransmitter across the synaptic gap onto receptors">
+        <div class="body">
+          <span class="order">1.2</span>
+          <h3>Exploring Synapses</h3>
+          <p>Release a neurotransmitter, watch it cross the gap, and see how receptors and drugs change the receiving cell.</p>
+          <span class="meta">Synaptic transmission · Intro undergrad / AP</span>
+        </div>
+      </a>
+    </div>
+  </section>
+
+  <section class="module" id="development">
+    <div class="module-head">
+      <span class="num">Module 2</span>
+      <h2>Developmental Neuroscience</h2>
+      <p>How the brain builds and refines its wiring from birth through adolescence.</p>
+    </div>
+    <div class="grid">
+      <a class="card" href="synaptic-pruning/">
+        <img src="synaptic-pruning/thumb.png" alt="Network of yellow neurons connected by synapses, with green microglia">
+        <div class="body">
+          <span class="order">2.1</span>
+          <h3>Synaptic Pruning</h3>
+          <p>Watch a young brain overproduce synapses, then keep the ones experience uses and remove the rest.</p>
+          <span class="meta">Development · Intro undergrad / AP</span>
+        </div>
+      </a>
+    </div>
+  </section>
+
+  <p class="soon-line">More modules coming soon. Ideas for a topic? Suggest one through <a href="https://github.com/nelurad/neurosims/issues">GitHub Issues</a>.</p>
 
   <div class="box">
     <h2>For instructors</h2>
