@@ -6,21 +6,6 @@ Interactive simulations for intro neuro :)
 
 Each simulation runs in the browser, with nothing to install. They were built for Introduction to Neuroscience (PSB 2000) at Florida State University, and any teacher or student is welcome to use them.
 
-## Simulations
-
-### Neurophysiology
-
-| Simulation | Topics | Link |
-|---|---|---|
-| The Salty Banana | Resting potential, graded potentials, threshold, Na⁺/K⁺ channels, refractory period, myelin | [Open](https://nelurad.github.io/neurosims/action-potential/) |
-| Exploring Synapses | Neurotransmitter release, fast vs. slow receptors, excitation vs. inhibition, drug actions | [Open](https://nelurad.github.io/neurosims/exploring-synapses/) |
-
-### Developmental Neuroscience
-
-| Simulation | Topics | Link |
-|---|---|---|
-| Synaptic Pruning | Synapse overproduction, use-dependent strengthening, complement tagging, microglial removal | [Open](https://nelurad.github.io/neurosims/synaptic-pruning/) |
-
 ## Using the simulations
 
 You can link to any simulation directly, or embed it in a course site or LMS. Each simulation page has its embed code at the bottom, with a Copy button. For example:
