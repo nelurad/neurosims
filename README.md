@@ -1,5 +1,4 @@
-
-## Some interactive sims for teaching intro neuro :) 
+# NeuroSims
 
 Free interactive simulations for teaching introductory neuroscience.
 
@@ -12,6 +11,7 @@ Each simulation runs in the browser, with nothing to install. They were built fo
 | Simulation | Topic | Link |
 |---|---|---|
 | Synaptic Pruning | Development: synapse overproduction, use-dependent strengthening, complement tagging, microglial removal | [Open](https://nelurad.github.io/neurosims/synaptic-pruning/) |
+| Exploring Synapses | Synaptic transmission: release, receptors (fast vs. slow), excitation vs. inhibition, drug actions | [Open](https://nelurad.github.io/neurosims/exploring-synapses/) |
 
 ## For instructors
 
@@ -34,8 +34,8 @@ Please credit: *Nelu Radpour, NeuroSims (https://nelurad.github.io/neurosims/)*
 
 ## Feedback
 
-Found a bug or a scientific inaccuracy, or have an idea for a new simulation? Shoot Nelu a message!
+Found a bug or a scientific inaccuracy, or have an idea for a new simulation? Please [open an issue](https://github.com/nelurad/neurosims/issues).
+
 ---
 
 Made by [Nelu Radpour](https://nelurad.github.io/), Department of Psychology, Florida State University, with help from Claude.
-
