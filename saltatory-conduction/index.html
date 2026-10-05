@@ -1,0 +1,851 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Saltatory Conduction · NeuroSims</title>
+<style>
+  :root{ --bg:#f7f5f0; --ink:#1f2328; --muted:#6b6f76; --line:#d8d3c8; --warm:#d9542b; --cool:#3d6fa8; --na:#c48a00; --k:#7a55b5; }
+  *{box-sizing:border-box}
+  html,body{margin:0;background:var(--bg);color:var(--ink);
+    font-family:system-ui,-apple-system,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif;-webkit-font-smoothing:antialiased}
+  .wrap{margin:0 auto;padding:20px 16px 32px;max-width:1400px}
+  .back{display:inline-block;font-size:14px;color:var(--muted);margin-bottom:8px}
+  h1{font-family:Georgia,"Times New Roman",serif;font-weight:normal;font-size:clamp(24px,2.4vw,38px);margin:0 0 14px;letter-spacing:-.01em}
+
+  .caption{font-size:clamp(15px,1.3vw,20px);line-height:1.45;margin:0 0 14px;min-height:2.9em;max-width:62em}
+  .caption .stepno{color:var(--muted);font-size:.8em;margin-right:.5em;font-variant-numeric:tabular-nums}
+
+  .controls{display:flex;flex-wrap:wrap;align-items:center;gap:8px 18px;margin-bottom:14px;font-size:14.5px}
+  .btns{display:flex;gap:6px}
+  button{font:inherit;color:var(--ink);background:#fff;border:1px solid #bdb7aa;border-radius:4px;padding:5px 12px;cursor:pointer}
+  button:hover{border-color:var(--ink)}
+  label{display:inline-flex;align-items:center;gap:6px;cursor:pointer;user-select:none}
+  input[type=checkbox],input[type=range]{accent-color:var(--ink);margin:0}
+  input[type=range]{width:100px}
+  .speed{color:var(--muted)}
+
+  .stage{margin:0 auto;display:flex;flex-direction:column;gap:6px}
+  .panel{border:1px solid var(--line);background:#fff}
+  .panel canvas{display:block;width:100%;height:auto}
+  .panel.hidden{display:none}
+  .key{font-size:13px;color:var(--muted);margin-top:6px}
+  .key b{font-weight:600}
+
+  .tip{position:fixed;z-index:10;pointer-events:none;max-width:300px;background:#fff;border:1px solid #bdb7aa;
+    border-radius:4px;padding:8px 10px;font-size:13.5px;line-height:1.42;box-shadow:0 4px 14px rgba(0,0,0,.08);display:none}
+  .tip.on{display:block}
+  .tip strong{display:block;margin-bottom:2px}
+
+  .takeaway{margin:22px auto 0;font-size:clamp(15px,1.15vw,18px);line-height:1.55;max-width:62em}
+  .takeaway p{margin:0 0 8px}
+  .foot{color:var(--muted);font-size:13px}
+
+  .extras{max-width:62em;margin:28px auto 0;padding-top:12px;border-top:1px dashed var(--line);font-size:13px;color:var(--muted);display:grid;grid-template-columns:minmax(0,1fr);gap:12px}
+  .embed-box{display:flex;gap:8px;align-items:center;background:#fff;border:1px solid var(--line);border-radius:4px;padding:7px 10px}
+  .embed-box b{white-space:nowrap;color:var(--ink)}
+  .embed-box code{flex:1;min-width:0;overflow-x:auto;white-space:nowrap;font:12px ui-monospace,Menlo,monospace;color:var(--ink)}
+  .embed-box button{font-size:13px;padding:3px 10px}
+  .extras h4{margin:0 0 4px;font-size:13px;color:var(--ink)}
+  .extras .refs{margin:0;padding-left:18px;line-height:1.45}
+  .extras .refs li{margin:2px 0}
+  footer{max-width:62em;margin:14px auto 0;font-size:13px;color:var(--muted);line-height:1.5}
+  footer a{color:var(--ink)}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div id="top">
+    <a class="back" href="../">&larr; All NeuroSims</a>
+    <h1>Why does the action potential “jump”?</h1>
+    <p class="caption" aria-live="polite"><span class="stepno" id="stepNo"></span><span id="captionTxt"></span></p>
+    <div class="controls">
+      <div class="btns">
+        <button id="playBtn">Pause</button>
+        <button id="stepBtn">Next step</button>
+        <button id="restartBtn">Restart</button>
+      </div>
+      <label class="speed">speed <input type="range" id="speed" min="0.25" max="3" step="0.25" value="1"></label>
+      <label><input type="checkbox" id="tCompare"> compare with unmyelinated axon</label>
+      <label><input type="checkbox" id="tDemy"> demyelination (e.g. MS)</label>
+      <label><input type="checkbox" id="tInsul"> myelin as insulation</label>
+    </div>
+  </div>
+
+  <div class="stage" id="stage">
+    <div class="panel"><canvas id="cvAxon"></canvas></div>
+    <div class="panel hidden" id="panelU"><canvas id="cvUnmy"></canvas></div>
+    <div class="panel"><canvas id="cvPlot"></canvas></div>
+    <div class="key">
+      <b style="color:var(--warm)">orange</b> = inside positive (depolarized) ·
+      <b style="color:var(--cool)">blue</b> = resting ·
+      <b style="color:var(--na)">yellow dots</b> Na⁺ ·
+      <b style="color:var(--k)">purple dots</b> K⁺ ·
+      streaks inside the axon = current flow · hover anything for details
+    </div>
+  </div>
+
+  <div class="takeaway" id="takeaway">
+    <p><b>Takeaway.</b> Nothing leaps through the fluid: current flows continuously along the inside of the axon, and myelin insulates each internode so the current reaches the next node before it fades below threshold. What is discrete is where the action potential is <em>regenerated</em>: only at the nodes of Ranvier. That makes conduction faster and cheaper, because far fewer Na⁺ ions have to be pumped back out.</p>
+    <p class="foot">Not to scale: real nodes are ~1 µm wide and internodes hundreds of µm long. Keys: space = play/pause, → = next step, R = restart.</p>
+  </div>
+
+  <div class="extras">
+    <div class="embed-box">
+      <b>Embed:</b>
+      <code id="embedCode">&lt;iframe src="https://nelurad.github.io/neurosims/saltatory-conduction/" width="100%" height="1100" style="border:0" title="Saltatory Conduction"&gt;&lt;/iframe&gt;</code>
+      <button type="button" onclick="navigator.clipboard.writeText(document.getElementById('embedCode').textContent).then(()=>{this.textContent='Copied!'})">Copy</button>
+    </div>
+    <div>
+      <h4>References</h4>
+      <ul class="refs">
+        <li>Huxley, A. F., &amp; Stämpfli, R. (1949). Evidence for saltatory conduction in peripheral myelinated nerve fibres. <i>Journal of Physiology, 108</i>(3), 315&ndash;339.</li>
+        <li>Purves, D., et al. (Eds.). <i>Neuroscience</i>. Oxford University Press / Sinauer.</li>
+      </ul>
+    </div>
+  </div>
+
+  <footer>
+    Part of <a href="../">NeuroSims</a>, made by <a href="https://nelurad.github.io/">Nelu Radpour</a> (Florida State University) with help from Claude.<br>
+    Content licensed <a href="https://creativecommons.org/licenses/by/4.0/">CC BY 4.0</a>; code licensed MIT. Free to use and adapt with credit.
+  </footer>
+</div>
+<div class="tip" id="tip"></div>
+
+<script>
+(() => {
+"use strict";
+/* ---------------- constants ---------------- */
+const W = 1200;
+const NODES = [100, 300, 500, 700, 900, 1100];
+const NH = 14;                       // node half-width
+const REST = -70, THR = -55, SPEAK = 108, SUND = 12;
+const LAM = 200 / 1.2;               // length constant (px) under healthy myelin
+const LAM_D = 50;                    // length constant in demyelinated (leaky) internode
+const VF = 364, VF_D = 260;          // passive-spread front speed (px per sim unit)
+const LAT = 0.1, REACH_SOFT = 0.22;
+const DAMAGED = 2;                   // internode between Node 3 and Node 4
+const T_START = -0.6;
+const UNITS_PER_SEC = 0.6;
+const SPEED_RATIO = 4;               // unmyelinated is this many times slower (real ratio is larger)
+
+// axon panel geometry
+const HA = 282, M_TOP = 112, M_BOT = 188, MT = 32, AXIS = 150;
+// unmyelinated panel geometry
+const HU = 180, U_TOP = 58, U_BOT = 134;
+// plot geometry
+const HP = 230, P_TOP = 26, P_BOT = 196, V_MAX = 50, V_MIN = -90;
+
+const C = {
+  ecf: "#edf2f5", axo: "#ffffff", text: "#1f2328", muted: "#6b6f76",
+  warm: [217, 84, 43], cool: [61, 111, 168], na: "#c48a00", k: "#7a55b5",
+  teal: "#1f8a80", ok: "#2f8a4a", fail: "#c8323c", myelin: "#efe6d2", lam: "rgba(140,118,80,0.45)",
+  grey: "#a3a7ad", plotBg: "#ffffff"
+};
+const FONT = 'system-ui,-apple-system,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif';
+
+/* ---------------- state ---------------- */
+const state = { compare: false, demy: false, insul: false, playing: true, speed: 1 };
+let t = T_START, target = null;
+let fire = [], crossT = [], failNode = -1, failT = 0;
+let V_U = 70, stages = [], loopEnd = 6;
+const Ecum = new Float32Array(W + 1), Tcum = new Float32Array(W + 1);
+
+/* ---------------- helpers ---------------- */
+const clamp = (v, a, b) => v < a ? a : v > b ? b : v;
+const ease = u => u <= 0 ? 0 : u >= 1 ? 1 : 0.5 - 0.5 * Math.cos(Math.PI * u);
+const rand = (a, b) => a + Math.random() * (b - a);
+const rgba = (c, a) => `rgba(${c[0]},${c[1]},${c[2]},${a})`;
+function vColor(v, a = 1) {
+  const u = clamp((v - REST) / SPEAK, 0, 1);
+  return rgba([0, 1, 2].map(i => Math.round(C.cool[i] + (C.warm[i] - C.cool[i]) * u)), a);
+}
+
+// Action-potential "source" waveform at a node (mV of depolarization from rest)
+function S(tau) {
+  if (tau <= 0) return 0;
+  if (tau < 0.4) return SPEAK * Math.sin(tau / 0.4 * Math.PI / 2);
+  if (tau < 1.3) return SPEAK - (SPEAK + SUND) * ease((tau - 0.4) / 0.9);
+  if (tau < 3.0) return -SUND * (1 - ease((tau - 1.3) / 1.7));
+  return 0;
+}
+const gNa = tau => (tau > 0 && tau < 0.45) ? Math.pow(Math.sin(Math.PI * tau / 0.45), 1.5) : 0;
+const gK = tau => (tau > 0.3 && tau < 1.7) ? Math.sin(Math.PI * (tau - 0.3) / 1.4) : 0;
+const inact = tau => tau >= 0.42 && tau < 2.2;
+const naCum = tau => ease(tau / 0.45);
+
+/* ---------------- cable model (myelinated) ---------------- */
+function isDamaged(x) {
+  return state.demy && x > NODES[DAMAGED] + NH && x < NODES[DAMAGED + 1] - NH;
+}
+function buildCable() {
+  let e = 0, tt = 0;
+  for (let x = 1; x <= W; x++) {
+    const d = isDamaged(x - 0.5);
+    e += 1 / (d ? LAM_D : LAM); tt += 1 / (d ? VF_D : VF);
+    Ecum[x] = e; Tcum[x] = tt;
+  }
+}
+// depolarization (mV above rest) at x, time tt: superposition of passive (electrotonic)
+// spread from every node that has fired, decaying exponentially with distance.
+function depolM(x, tt) {
+  const xi = clamp(Math.round(x), 0, W);
+  let d = 0;
+  for (let k = 0; k < fire.length; k++) {
+    const tau = tt - fire[k];
+    if (tau <= 0) continue;
+    const s = S(tau);
+    if (s === 0) continue;
+    const xk = NODES[k];
+    const r = (tau - Math.abs(Tcum[xi] - Tcum[xk])) / REACH_SOFT;
+    if (r <= 0) continue;
+    d += s * Math.exp(-Math.abs(Ecum[xi] - Ecum[xk])) * ease(r);
+  }
+  return d;
+}
+const Vm = (x, tt) => clamp(REST + depolM(x, tt), -92, 52);
+
+function computeFiring() {
+  fire = [0]; crossT = [-LAT]; failNode = -1; failT = 0;
+  for (let k = 1; k < NODES.length; k++) {
+    const t0 = fire[k - 1];
+    let found = false;
+    for (let tt = t0; tt < t0 + 3; tt += 0.002) {
+      if (REST + depolM(NODES[k], tt) >= THR) { crossT.push(tt); fire.push(tt + LAT); found = true; break; }
+    }
+    if (!found) {
+      failNode = k;
+      failT = t0 + (Tcum[NODES[k]] - Tcum[NODES[k - 1]]) + 0.15;   // when the faded signal arrives
+      break;
+    }
+  }
+}
+
+/* ---------------- unmyelinated model ---------------- */
+const tauU = (x, tt) => tt - Math.abs(x - NODES[0]) / V_U;
+function depolU(x, tt) {
+  if (x < NODES[0]) return depolU(NODES[0], tt) * Math.exp(-(NODES[0] - x) / 22);
+  const tau = tauU(x, tt);
+  if (tau < 0) return 20 * Math.exp(tau * V_U / 22);
+  return S(tau) + 20 * (1 - ease(Math.min(1, tau / 0.4)));
+}
+const Vu = (x, tt) => clamp(REST + depolU(x, tt), -92, 52);
+
+/* ---------------- stages / captions ---------------- */
+function buildStages() {
+  const st = [];
+  st.push({ t: -0.45, html: "At rest the inside of the axon is negative (−70 mV). Na⁺ is concentrated outside, K⁺ inside. Myelin covers almost all of the membrane; only the nodes of Ranvier touch the fluid outside." });
+  st.push({ t: fire[0] + 0.22, html: "Node 1 fires. Its Na⁺ channels open, Na⁺ rushes in, and the inside of the node turns positive." });
+  st.push({ t: fire[0] + 0.38, html: "That positive charge spreads along the <em>inside</em> of the axon, under the myelin. It’s ordinary current flow, not a jump, and it fades with distance." });
+  st.push({ t: crossT[1] + 0.03, html: "By the time it reaches Node 2 it has shrunk, but it is still above threshold (−55 mV)…" });
+  st.push({ t: fire[1] + 0.3, html: "…so Node 2’s Na⁺ channels open and regenerate a full-size action potential. Node 1 is now refractory (grey), so the signal can’t run backwards." });
+  let mDone;
+  if (failNode > 0) {
+    st.push({ t: fire[failNode - 1] + 0.28, html: `Node ${failNode} fires normally, but the next internode has lost most of its myelin, as in multiple sclerosis…` });
+    st.push({ t: failT + 0.12, html: `…so current leaks out through the bare membrane. The signal fades too fast and reaches Node ${failNode + 1} below threshold: conduction fails.` });
+    mDone = failT + 0.12;
+  } else {
+    st.push({ t: fire[3] + 0.15, html: "This repeats at every node: spread passively, arrive above threshold, regenerate. On the plot, the “jump” is just where the voltage gets boosted back up." });
+    mDone = fire[5] + 0.45;
+    st.push({ t: mDone, html: state.compare
+      ? "The myelinated signal has already arrived. The unmyelinated axon has to regenerate the action potential at every patch of membrane, so it is still creeping along."
+      : "The signal reached the end, regenerated only at the nodes. That’s faster, and cheaper: Na⁺ entered only at the nodes, so the Na⁺/K⁺ pumps have less to undo." });
+  }
+  let uDone = 0;
+  if (state.compare) {
+    if (failNode > 0) st.push({ t: mDone + 0.9, html: "The damaged myelinated axon has failed. The unmyelinated one keeps creeping along, regenerating at every patch of membrane." });
+    uDone = (NODES[5] - NODES[0]) / V_U + 0.45;
+    st.push({ t: uDone, html: "The unmyelinated signal finally arrives, much later and after letting in far more Na⁺. In real nerves the gap is bigger still: up to ~120 m/s myelinated vs ~0.5–2 m/s for small unmyelinated axons." });
+  }
+  st.sort((a, b) => a.t - b.t);
+  stages = st;
+  loopEnd = Math.max(mDone, uDone) + 2.2;
+}
+
+/* ---------------- canvases ---------------- */
+function makePanel(id, H) {
+  const canvas = document.getElementById(id);
+  canvas.style.aspectRatio = `${W} / ${H}`;
+  return { canvas, ctx: canvas.getContext("2d"), H, scale: 1, dpr: 1 };
+}
+const PA = makePanel("cvAxon", HA), PU = makePanel("cvUnmy", HU), PP = makePanel("cvPlot", HP);
+const panels = [PA, PU, PP];
+function resizePanel(p) {
+  const cssW = p.canvas.clientWidth || 1;
+  const dpr = Math.min(2.5, window.devicePixelRatio || 1);
+  p.canvas.width = Math.round(cssW * dpr);
+  p.canvas.height = Math.round(cssW * p.H / W * dpr);
+  p.scale = cssW / W; p.dpr = dpr;
+}
+function begin(p) {
+  const c = p.ctx;
+  c.setTransform(p.scale * p.dpr, 0, 0, p.scale * p.dpr, 0, 0);
+  c.clearRect(0, 0, W, p.H);
+  return c;
+}
+function fit() {
+  const stage = document.getElementById("stage");
+  const topH = document.getElementById("top").getBoundingClientRect().height;
+  const totalH = HA + HP + (state.compare ? HU : 0) + 50;
+  const avail = window.innerHeight - topH - 50;
+  stage.style.maxWidth = Math.max(640, Math.min(1400, avail * W / totalH)) + "px";
+  panels.forEach(resizePanel);
+}
+
+/* ---------------- drawing primitives ---------------- */
+function label(c, text, x, y, o = {}) {
+  c.font = `${o.weight || 400} ${o.size || 13}px ${FONT}`;
+  c.textAlign = o.align || "left"; c.textBaseline = "middle";
+  if (o.halo !== false) { c.lineJoin = "round"; c.lineWidth = 4; c.strokeStyle = o.haloColor || C.ecf; c.strokeText(text, x, y); }
+  c.fillStyle = o.color || C.text; c.fillText(text, x, y);
+}
+function leader(c, x1, y1, x2, y2) {
+  c.strokeStyle = "rgba(31,35,40,0.55)"; c.lineWidth = 1;
+  c.beginPath(); c.moveTo(x1, y1); c.lineTo(x2, y2); c.stroke();
+}
+function rrect(c, x, y, w, h, r) {
+  c.beginPath(); c.moveTo(x + r, y); c.lineTo(x + w - r, y); c.quadraticCurveTo(x + w, y, x + w, y + r);
+  c.lineTo(x + w, y + h - r); c.quadraticCurveTo(x + w, y + h, x + w - r, y + h); c.lineTo(x + r, y + h);
+  c.quadraticCurveTo(x, y + h, x, y + h - r); c.lineTo(x, y + r); c.quadraticCurveTo(x, y, x + r, y); c.closePath();
+}
+function arrow(c, x1, y1, x2, y2, color, w = 1.5) {
+  const a = Math.atan2(y2 - y1, x2 - x1), h = 5 + w;
+  c.strokeStyle = color; c.fillStyle = color; c.lineWidth = w;
+  c.beginPath(); c.moveTo(x1, y1); c.lineTo(x2 - Math.cos(a) * h * 0.6, y2 - Math.sin(a) * h * 0.6); c.stroke();
+  c.beginPath(); c.moveTo(x2, y2);
+  c.lineTo(x2 - Math.cos(a - 0.45) * h, y2 - Math.sin(a - 0.45) * h);
+  c.lineTo(x2 - Math.cos(a + 0.45) * h, y2 - Math.sin(a + 0.45) * h); c.closePath(); c.fill();
+}
+// Myelin: concentric lamellae; each wrap ends in a loop on the axon (paranode),
+// outer wraps reaching closest to the node.
+function bandPath(c, xs, xe, y0, rho, top) {
+  const r = MT;
+  c.moveTo(xs + r - rho, y0);
+  if (top) {
+    c.arc(xs + r, y0, rho, Math.PI, Math.PI * 1.5, false);
+    c.lineTo(xe - r, y0 - rho);
+    c.arc(xe - r, y0, rho, Math.PI * 1.5, Math.PI * 2, false);
+  } else {
+    c.arc(xs + r, y0, rho, Math.PI, Math.PI * 0.5, true);
+    c.lineTo(xe - r, y0 + rho);
+    c.arc(xe - r, y0, rho, Math.PI * 0.5, 0, true);
+  }
+}
+function drawMyelin(c, xs, xe, damaged) {
+  for (const top of [true, false]) {
+    const y0 = top ? M_TOP : M_BOT;
+    if (damaged) {   // thin, ragged remnant of the sheath
+      c.fillStyle = C.myelin; c.strokeStyle = "rgba(140,118,80,0.6)"; c.lineWidth = 1;
+      c.beginPath();
+      if (top) { c.rect(xs + 30, y0 - 6, 26, 6); c.rect(xs + 74, y0 - 4, 18, 4); c.rect(xe - 46, y0 - 6, 22, 6); }
+      else { c.rect(xs + 40, y0, 30, 6); c.rect(xe - 70, y0, 18, 4); c.rect(xe - 40, y0, 14, 6); }
+      c.fill(); c.stroke();
+      continue;
+    }
+    c.fillStyle = C.myelin;
+    c.beginPath(); bandPath(c, xs, xe, y0, MT, top); c.closePath(); c.fill();
+    c.strokeStyle = C.lam; c.lineWidth = 0.9;
+    for (let i = 1; i < 8; i++) { c.beginPath(); bandPath(c, xs, xe, y0, MT * i / 8, top); c.stroke(); }
+    c.strokeStyle = "rgba(120,100,68,0.75)"; c.lineWidth = 1.1;
+    c.beginPath(); bandPath(c, xs, xe, y0, MT, top); c.stroke();
+  }
+}
+function channel(c, x, y, kind, st, g = 0, h = 12) {
+  // st: 'closed' | 'open' | 'inact'
+  const half = 2.0;
+  const gap = st === "open" ? 0.6 + 2.2 * g : 0.5;
+  c.fillStyle = st === "inact" ? C.grey : kind === "na" ? C.na : C.k;
+  c.globalAlpha = st === "closed" ? 0.55 : 1;
+  c.fillRect(x - gap / 2 - half, y - h / 2, half, h);
+  c.fillRect(x + gap / 2, y - h / 2, half, h);
+  c.globalAlpha = 1;
+}
+function chargeGlyph(c, x, y, positive, alpha) {
+  if (alpha <= 0.02) return;
+  c.globalAlpha = alpha;
+  c.strokeStyle = positive ? rgba(C.warm, 1) : rgba(C.cool, 1); c.lineWidth = 1.5;
+  c.beginPath(); c.moveTo(x - 3, y); c.lineTo(x + 3, y);
+  if (positive) { c.moveTo(x, y - 3); c.lineTo(x, y + 3); }
+  c.stroke(); c.globalAlpha = 1;
+}
+// Axoplasm tint from local voltage: orange where depolarized, slightly bluer during the undershoot.
+function voltageField(c, Vfn, y0, y1) {
+  const warm = c.createLinearGradient(0, 0, W, 0), cool = c.createLinearGradient(0, 0, W, 0);
+  for (let x = 0; x <= W; x += 4) {
+    const v = Vfn(x), u = clamp((v - REST) / SPEAK, 0, 1);
+    warm.addColorStop(x / W, rgba(C.warm, u > 0.005 ? 0.04 + 0.5 * Math.pow(u, 0.8) : 0));
+    cool.addColorStop(x / W, rgba(C.cool, 0.06 + clamp((REST - v) / 14, 0, 1) * 0.12));
+  }
+  c.fillStyle = cool; c.fillRect(0, y0, W, y1 - y0);
+  c.fillStyle = warm; c.fillRect(0, y0, W, y1 - y0);
+}
+function fadeEnds(c, y0, y1) {
+  for (const [x0, x1] of [[0, 46], [W, W - 46]]) {
+    const g = c.createLinearGradient(x0, 0, x1, 0);
+    g.addColorStop(0, C.ecf); g.addColorStop(1, "rgba(237,242,245,0)");
+    c.fillStyle = g; c.fillRect(Math.min(x0, x1), y0, 46, y1 - y0);
+  }
+}
+
+/* ---------------- particles ---------------- */
+function makeAmbient(n, regions) {
+  const arr = [];
+  for (let i = 0; i < n; i++) { const r = regions[i % regions.length]; arr.push({ x: rand(0, W), y: rand(r[0], r[1]), r }); }
+  return arr;
+}
+const naOutA = makeAmbient(80, [[6, M_TOP - 3], [M_BOT + 3, HA - 6]]);
+const kInA = makeAmbient(26, [[M_TOP + 6, M_BOT - 6]]);
+const naOutU = makeAmbient(60, [[6, U_TOP - 3], [U_BOT + 3, HU - 6]]);
+const kInU = makeAmbient(26, [[U_TOP + 6, U_BOT - 6]]);
+function tracers(n, y0, y1) { const a = []; for (let i = 0; i < n; i++) a.push({ x: rand(20, W - 20), y: rand(y0, y1), vx: 0 }); return a; }
+const trA = tracers(80, M_TOP + 8, M_BOT - 8);
+const trU = tracers(60, U_TOP + 8, U_BOT - 8);
+let fluxA = [], fluxU = [];
+function resetFlux() { fluxA = []; fluxU = []; }
+
+function jitter(arr, dtR) {
+  for (const p of arr) {
+    p.x += (Math.random() - 0.5) * 50 * dtR;
+    p.y += (Math.random() - 0.5) * 50 * dtR;
+    if (p.x < 0) p.x += W; if (p.x > W) p.x -= W;
+    p.y = clamp(p.y, p.r[0], p.r[1]);
+  }
+}
+function updateTracers(arr, Vfn, dt, y0, y1) {
+  for (const p of arr) {
+    const grad = (Vfn(p.x + 3, t) - Vfn(p.x - 3, t)) / 6;
+    p.vx = clamp(-400 * grad, -320, 320);   // current ∝ −dV/dx (Ohm's law along the axoplasm)
+    p.x += p.vx * dt;
+    if (p.x < 15 || p.x > W - 15 || Math.random() < dt * 0.9) { p.x = rand(20, W - 20); p.y = rand(y0, y1); }
+  }
+}
+function pushFlux(arr, kind, x, ys, ye, life) { arr.push({ kind, x, y: ys, ys, ye, age: 0, life }); }
+function spawnFlux(dt) {
+  if (dt <= 0) return;
+  // myelinated: Na+ in and K+ out only at nodes
+  for (let k = 0; k < fire.length; k++) {
+    const tau = t - fire[k], xk = NODES[k];
+    if (Math.random() < 45 * gNa(tau) * dt) {
+      const top = Math.random() < 0.5;
+      pushFlux(fluxA, "na", xk + rand(-9, 9), top ? M_TOP - rand(8, 30) : M_BOT + rand(8, 30), top ? M_TOP + rand(6, 22) : M_BOT - rand(6, 22), 0.55);
+    }
+    if (Math.random() < 22 * gK(tau) * dt) {
+      const top = Math.random() < 0.5, side = Math.random() < 0.5 ? -1 : 1;
+      pushFlux(fluxA, "k", xk + side * rand(6, 12), top ? M_TOP + rand(4, 16) : M_BOT - rand(4, 16), top ? M_TOP - rand(10, 30) : M_BOT + rand(10, 30), 0.7);
+    }
+  }
+  // leak through demyelinated membrane
+  if (state.demy) {
+    const xa = NODES[DAMAGED] + NH + 6, xb = NODES[DAMAGED + 1] - NH - 6;
+    for (let i = 0; i < 6; i++) {
+      const x = rand(xa, xb), d = depolM(x, t) / SPEAK;
+      if (d > 0 && Math.random() < d * dt * 40) {
+        const top = Math.random() < 0.5;
+        pushFlux(fluxA, "leak", x, top ? M_TOP + 4 : M_BOT - 4, top ? M_TOP - 34 : M_BOT + 34, 0.6);
+      }
+    }
+  }
+  // unmyelinated: Na+/K+ all along the membrane near the active zone
+  if (state.compare) {
+    const xf = NODES[0] + V_U * t;
+    for (let i = 0; i < 8; i++) {
+      const x = rand(xf - 45, xf + 4);
+      if (x < 20 || x > W - 20) continue;
+      if (Math.random() < gNa(tauU(x, t)) * 1.7 * dt * 49 / 8) {
+        const top = Math.random() < 0.5;
+        pushFlux(fluxU, "na", x, top ? U_TOP - rand(8, 26) : U_BOT + rand(8, 26), top ? U_TOP + rand(6, 20) : U_BOT - rand(6, 20), 0.55);
+      }
+    }
+    for (let i = 0; i < 6; i++) {
+      const x = rand(xf - 110, xf - 20);
+      if (x < 20 || x > W - 20) continue;
+      if (Math.random() < gK(tauU(x, t)) * 0.7 * dt * 90 / 6) {
+        const top = Math.random() < 0.5;
+        pushFlux(fluxU, "k", x, top ? U_TOP + rand(4, 14) : U_BOT - rand(4, 14), top ? U_TOP - rand(10, 26) : U_BOT + rand(10, 26), 0.7);
+      }
+    }
+  }
+}
+function ageFlux(arr, dt) {
+  for (const p of arr) { p.age += dt; p.y = p.ys + (p.ye - p.ys) * ease(Math.min(1, p.age / (p.life * 0.65))); }
+  return arr.filter(p => p.age < p.life);
+}
+function drawFlux(c, arr) {
+  for (const p of arr) {
+    c.globalAlpha = 1 - clamp((p.age - p.life * 0.6) / (p.life * 0.4), 0, 1);
+    c.fillStyle = p.kind === "na" ? C.na : p.kind === "k" ? C.k : rgba(C.warm, 1);
+    c.beginPath(); c.arc(p.x, p.y, 2.2, 0, Math.PI * 2); c.fill();
+  }
+  c.globalAlpha = 1;
+}
+function drawAmbient(c, arr, col, alpha, r = 1.5) {
+  c.fillStyle = col; c.globalAlpha = alpha;
+  c.beginPath();
+  for (const p of arr) { c.moveTo(p.x + r, p.y); c.arc(p.x, p.y, r, 0, Math.PI * 2); }
+  c.fill(); c.globalAlpha = 1;
+}
+function drawTracers(c, arr) {
+  c.lineCap = "round"; c.lineWidth = 1.5;
+  for (const p of arr) {
+    const a = clamp(Math.abs(p.vx) / 110, 0, 1) * 0.8;
+    if (a < 0.04) continue;
+    const len = clamp(p.vx * 0.06, -14, 14);
+    c.strokeStyle = rgba(C.warm, a);
+    c.beginPath(); c.moveTo(p.x - len, p.y); c.lineTo(p.x, p.y); c.stroke();
+  }
+}
+
+/* ---------------- axon panel ---------------- */
+function drawAxon() {
+  const c = begin(PA);
+  c.fillStyle = C.ecf; c.fillRect(0, 0, W, HA);
+  c.fillStyle = C.axo; c.fillRect(0, M_TOP, W, M_BOT - M_TOP);
+  voltageField(c, x => Vm(x, t), M_TOP, M_BOT);
+  drawTracers(c, trA);
+  drawAmbient(c, kInA, C.k, 0.5);
+  drawAmbient(c, naOutA, C.na, 0.55);
+  drawFlux(c, fluxA);
+
+  // myelin sheaths (stubs at both ends continue off-screen)
+  drawMyelin(c, -200, NODES[0] - NH, false);
+  for (let i = 0; i < NODES.length - 1; i++) drawMyelin(c, NODES[i] + NH, NODES[i + 1] - NH, state.demy && i === DAMAGED);
+  drawMyelin(c, NODES[NODES.length - 1] + NH, W + 200, false);
+
+  // membrane, coloured by local voltage
+  for (let x = 0; x < W; x += 4) {
+    c.fillStyle = vColor(Vm(x + 2, t), 0.8);
+    c.fillRect(x, M_TOP - 1, 4.2, 1.6); c.fillRect(x, M_BOT - 0.6, 4.2, 1.6);
+  }
+  // nodes: Na+ cluster, juxtaparanodal K+ channels, charges across the membrane
+  for (let k = 0; k < NODES.length; k++) {
+    const xk = NODES[k], v = Vm(xk, t);
+    const tau = k < fire.length ? t - fire[k] : -1;
+    c.fillStyle = vColor(v, 1);
+    c.fillRect(xk - NH, M_TOP - 1.5, 2 * NH, 3); c.fillRect(xk - NH, M_BOT - 1.5, 2 * NH, 3);
+    const g = gNa(tau);
+    const st = tau > 0 && g > 0.02 ? "open" : tau > 0 && inact(tau) ? "inact" : "closed";
+    for (const dx of [-9.75, -3.25, 3.25, 9.75]) { channel(c, xk + dx, M_TOP, "na", st, g); channel(c, xk + dx, M_BOT, "na", st, g); }
+    const kst = tau > 0 && gK(tau) > 0.05 ? "open" : "closed";
+    for (const dx of [-56, -48, 48, 56]) {
+      if (k === 0 && dx < 0) continue;
+      channel(c, xk + dx, M_TOP, "k", kst, gK(tau), 10); channel(c, xk + dx, M_BOT, "k", kst, gK(tau), 10);
+    }
+    const pos = v > 0, a = clamp(Math.abs(v) / 25, 0, 1) * 0.9;
+    for (const dx of [-7, 7]) {
+      chargeGlyph(c, xk + dx, M_TOP - 8, !pos, a); chargeGlyph(c, xk + dx, M_TOP + 9, pos, a);
+      chargeGlyph(c, xk + dx, M_BOT - 9, pos, a); chargeGlyph(c, xk + dx, M_BOT + 8, !pos, a);
+    }
+  }
+  // one stray Na+ channel per internode: almost none under the myelin
+  for (let i = 0; i < NODES.length - 1; i++) {
+    if (state.demy && i === DAMAGED) continue;
+    const xm = (NODES[i] + NODES[i + 1]) / 2 + 17;
+    channel(c, xm, M_TOP, "na", "closed", 0, 9); channel(c, xm - 40, M_BOT, "na", "closed", 0, 9);
+  }
+  fadeEnds(c, M_TOP - MT - 2, M_BOT + MT + 2);
+
+  // labels: kept to a minimum, the rest lives in hover tooltips
+  if (state.compare) label(c, "Myelinated axon", 20, 18, { weight: 600 });
+  label(c, "outside (extracellular fluid)", 20, state.compare ? 40 : 22, { color: C.muted });
+  label(c, "node of Ranvier", 300, 40, { align: "center" });
+  leader(c, 300, 48, 300, 76);
+  label(c, "myelin", 420, 40);
+  label(c, "(Schwann cell in PNS / oligodendrocyte in CNS)", 466, 40, { color: C.muted, size: 12 });
+  leader(c, 432, 48, 440, 80);
+  label(c, "inside (axoplasm)", 1000, AXIS, { align: "center", color: C.muted, haloColor: "#f6f8fb" });
+  for (let k = 0; k < NODES.length; k++) {
+    const tau = k < fire.length ? t - fire[k] : -1;
+    const refr = tau > 0.42 && tau < 2.2;
+    const failed = k === failNode && t >= failT;
+    label(c, `Node ${k + 1}`, NODES[k], 236, { align: "center", size: 12.5, color: failed ? C.fail : refr ? C.grey : C.text });
+    if (refr) label(c, "refractory", NODES[k], 251, { align: "center", size: 11, color: C.grey });
+  }
+  const bx0 = NODES[3] + NH, bx1 = NODES[4] - NH;
+  c.strokeStyle = "rgba(31,35,40,0.45)"; c.lineWidth = 1;
+  c.beginPath(); c.moveTo(bx0, 248); c.lineTo(bx0, 254); c.lineTo(bx1, 254); c.lineTo(bx1, 248); c.stroke();
+  label(c, "internode", (bx0 + bx1) / 2, 267, { align: "center", size: 12.5, color: C.muted });
+
+  if (state.demy) label(c, "demyelinated", (NODES[DAMAGED] + NODES[DAMAGED + 1]) / 2, 204, { align: "center", size: 12, color: C.fail });
+  if (failNode > 0 && t >= failT) {
+    const xf = NODES[failNode];
+    c.globalAlpha = clamp((t - failT) / 0.25, 0, 1); c.strokeStyle = C.fail; c.lineWidth = 2.5;
+    c.beginPath(); c.moveTo(xf - 8, AXIS - 8); c.lineTo(xf + 8, AXIS + 8); c.moveTo(xf + 8, AXIS - 8); c.lineTo(xf - 8, AXIS + 8); c.stroke();
+    c.globalAlpha = 1;
+  }
+  if (state.insul) drawInsulation(c);
+  if (state.compare) drawNaMeter(c, HA - 14, naEnteredM());
+}
+function drawInsulation(c) {
+  // leak arrows: tiny through healthy myelin, large through the damaged stretch
+  for (let i = 0; i < NODES.length - 1; i++) {
+    const xm = (NODES[i] + NODES[i + 1]) / 2;
+    if (state.demy && i === DAMAGED) {
+      for (const dx of [-40, 0, 40]) {
+        const d = clamp(depolM(xm + dx, t) / 40, 0.25, 1);
+        arrow(c, xm + dx, M_TOP - 2, xm + dx, M_TOP - 16 - 14 * d, rgba(C.warm, 0.9), 2);
+      }
+      label(c, "leaks", xm + 52, 90, { size: 12, color: rgba(C.warm, 1) });
+    } else {
+      arrow(c, xm - 30, M_TOP - MT - 1, xm - 30, M_TOP - MT - 8, rgba(C.warm, 0.55), 1);
+    }
+  }
+  const x = W - 20;
+  label(c, "Myelin insulates the internode:", x, 22, { align: "right", weight: 600 });
+  label(c, "high resistance, so little current leaks out", x, 39, { align: "right", size: 12.5 });
+  label(c, "low capacitance, so little charge is stored on the membrane", x, 55, { align: "right", size: 12.5 });
+}
+function naEnteredM() {
+  let s = 0;
+  for (let k = 0; k < fire.length; k++) s += 2 * (2 * NH) * naCum(t - fire[k]);
+  return s;
+}
+function naEnteredU() {
+  let s = 0;
+  for (let x = NODES[0]; x < NODES[5]; x += 5) s += 2 * 5 * naCum(tauU(x + 2.5, t));
+  return s;
+}
+function drawNaMeter(c, y, val) {
+  const max = 2 * (NODES[5] - NODES[0]), x0 = 1030, w = 150;
+  label(c, "Na⁺ let in", x0 - 8, y, { align: "right", size: 12, color: C.muted });
+  c.strokeStyle = "rgba(31,35,40,0.35)"; c.lineWidth = 1; c.strokeRect(x0, y - 4, w, 8);
+  c.fillStyle = C.na; c.fillRect(x0, y - 4, w * clamp(val / max, 0, 1), 8);
+}
+
+/* ---------------- unmyelinated panel ---------------- */
+function drawUnmy() {
+  const c = begin(PU);
+  c.fillStyle = C.ecf; c.fillRect(0, 0, W, HU);
+  c.fillStyle = C.axo; c.fillRect(0, U_TOP, W, U_BOT - U_TOP);
+  voltageField(c, x => Vu(x, t), U_TOP, U_BOT);
+  drawTracers(c, trU);
+  drawAmbient(c, kInU, C.k, 0.5);
+  drawAmbient(c, naOutU, C.na, 0.55);
+  drawFlux(c, fluxU);
+  for (let x = 0; x < W; x += 4) {
+    c.fillStyle = vColor(Vu(x + 2, t), 0.9);
+    c.fillRect(x, U_TOP - 1, 4.2, 2); c.fillRect(x, U_BOT - 1, 4.2, 2);
+  }
+  for (let x = 30; x < W - 20; x += 18) {
+    const tau = tauU(x, t);
+    const st = gNa(tau) > 0.02 ? "open" : inact(tau) ? "inact" : "closed";
+    channel(c, x, U_TOP, "na", st, gNa(tau), 10); channel(c, x + 9, U_BOT, "na", st, gNa(tau), 10);
+  }
+  for (let x = 48; x < W - 20; x += 54) {
+    const tau = tauU(x, t), st = gK(tau) > 0.05 ? "open" : "closed";
+    channel(c, x, U_BOT, "k", st, gK(tau), 9); channel(c, x + 27, U_TOP, "k", st, gK(tau), 9);
+  }
+  fadeEnds(c, U_TOP - 10, U_BOT + 10);
+  label(c, "Unmyelinated axon", 20, 18, { weight: 600, color: C.teal });
+  label(c, "Na⁺ channels all along the membrane, so the action potential is regenerated everywhere", 158, 18, { size: 12.5, color: C.muted });
+  drawNaMeter(c, HU - 14, naEnteredU());
+}
+
+/* ---------------- voltage plot ---------------- */
+const yOf = v => P_TOP + (V_MAX - v) / (V_MAX - V_MIN) * (P_BOT - P_TOP);
+function drawPlot() {
+  const c = begin(PP);
+  const bg = C.plotBg, L = 44, R = W - 8;
+  c.fillStyle = bg; c.fillRect(0, 0, W, HP);
+  if (state.demy) {
+    c.fillStyle = "rgba(200,50,60,0.05)";
+    c.fillRect(NODES[DAMAGED] + NH, P_TOP, NODES[DAMAGED + 1] - NODES[DAMAGED] - 2 * NH, P_BOT - P_TOP);
+  }
+  c.strokeStyle = "rgba(31,35,40,0.08)"; c.lineWidth = 1;
+  for (const xk of NODES) { c.beginPath(); c.moveTo(xk, P_TOP); c.lineTo(xk, P_BOT); c.stroke(); }
+  c.beginPath(); c.moveTo(L, yOf(0)); c.lineTo(R, yOf(0)); c.stroke();
+  c.strokeStyle = "rgba(31,35,40,0.4)";
+  c.beginPath(); c.moveTo(L, P_TOP); c.lineTo(L, P_BOT); c.lineTo(R, P_BOT); c.stroke();
+  const lab = (txt, x, y, o = {}) => label(c, txt, x, y, Object.assign({ haloColor: bg, size: 12, color: C.muted }, o));
+  lab("+40", L - 6, yOf(40), { align: "right" });
+  lab("0", L - 6, yOf(0), { align: "right" });
+  c.setLineDash([5, 4]); c.lineWidth = 1;
+  c.strokeStyle = "rgba(31,35,40,0.6)"; c.beginPath(); c.moveTo(L, yOf(THR)); c.lineTo(R, yOf(THR)); c.stroke();
+  c.strokeStyle = rgba(C.cool, 0.6); c.beginPath(); c.moveTo(L, yOf(REST)); c.lineTo(R, yOf(REST)); c.stroke();
+  c.setLineDash([]);
+  lab("−55", L - 6, yOf(THR), { align: "right" });
+  lab("−70", L - 6, yOf(REST) + 2, { align: "right" });
+  lab("threshold", R - 4, yOf(THR) - 8, { align: "right", color: C.text });
+  lab("rest", R - 4, yOf(REST) + 9, { align: "right", color: C.cool });
+  lab("Voltage along the axon (mV)", L + 4, 12, { color: C.text, weight: 600, size: 12.5 });
+  for (let k = 0; k < NODES.length; k++) lab(`Node ${k + 1}`, NODES[k], 211, { align: "center" });
+
+  // dashed sawtooth: peak depolarization that spread forward from each node
+  c.strokeStyle = rgba(C.warm, 0.5); c.lineWidth = 1.5; c.setLineDash([5, 4]);
+  for (let k = 0; k < fire.length; k++) {
+    const tau = t - fire[k]; if (tau <= 0) continue;
+    const pk = S(Math.min(tau, 0.4)), xk = NODES[k];
+    const xEnd = k + 1 < NODES.length ? NODES[k + 1] : R;
+    c.beginPath();
+    for (let x = xk; x <= xEnd; x += 2) {
+      if (Tcum[x] - Tcum[xk] > tau) break;
+      const y = yOf(REST + pk * Math.exp(-(Ecum[x] - Ecum[xk])));
+      x === xk ? c.moveTo(x, y) : c.lineTo(x, y);
+    }
+    c.stroke();
+  }
+  c.setLineDash([]);
+
+  if (state.compare) {
+    c.strokeStyle = C.teal; c.lineWidth = 1.8;
+    c.beginPath();
+    for (let x = L + 2; x <= R; x += 2) { const y = yOf(Vu(x, t)); x === L + 2 ? c.moveTo(x, y) : c.lineTo(x, y); }
+    c.stroke();
+  }
+  c.strokeStyle = rgba(C.warm, 1); c.lineWidth = 2.2;
+  c.beginPath();
+  for (let x = L + 2; x <= R; x += 2) { const y = yOf(Vm(x, t)); x === L + 2 ? c.moveTo(x, y) : c.lineTo(x, y); }
+  c.stroke();
+
+  // where the arriving signal lands at each node
+  for (let k = 1; k < NODES.length; k++) {
+    const xk = NODES[k], v = REST + SPEAK * Math.exp(-(Ecum[xk] - Ecum[NODES[k - 1]]));
+    if (k < fire.length && t >= crossT[k]) dot(c, xk, yOf(v), C.ok);
+    else if (k === failNode && t >= failT) {
+      dot(c, xk, yOf(v), C.fail);
+      lab("arrives below threshold", xk + 10, yOf(v) - 11, { color: C.fail });
+    }
+  }
+  if (fire.length > 1 && t >= crossT[1] && t < crossT[1] + 1.6 && failNode !== 1) {
+    const v = REST + SPEAK * Math.exp(-(Ecum[NODES[1]] - Ecum[NODES[0]]));
+    lab("still above threshold", NODES[1] + 10, yOf(v) - 2, { color: C.ok });
+  }
+  // legend
+  let lx = 640;
+  const leg = [[rgba(C.warm, 1), false, "voltage now"], [rgba(C.warm, 0.6), true, "peak spreading from each node"]];
+  if (state.compare) { leg.push([C.teal, false, "unmyelinated"]); lx = 500; }
+  for (const [col, dash, txt] of leg) {
+    c.strokeStyle = col; c.lineWidth = 2; if (dash) c.setLineDash([5, 4]);
+    c.beginPath(); c.moveTo(lx, 12); c.lineTo(lx + 20, 12); c.stroke(); c.setLineDash([]);
+    lab(txt, lx + 26, 12);
+    lx += 26 + c.measureText(txt).width + 22;
+  }
+}
+function dot(c, x, y, col) {
+  c.fillStyle = "#fff"; c.strokeStyle = col; c.lineWidth = 1.8;
+  c.beginPath(); c.arc(x, y, 4, 0, Math.PI * 2); c.fill(); c.stroke();
+}
+
+/* ---------------- tooltips ---------------- */
+const TIPS = {
+  node: ["Node of Ranvier", "A short gap (~1 µm) between myelin segments. The membrane here is bare, touches the extracellular fluid directly, and is packed with voltage-gated Na⁺ channels. This is where the action potential is regenerated."],
+  myelin: ["Myelin", "Many layers of glial membrane wrapped around the axon: Schwann cells in the PNS, oligodendrocytes in the CNS. Being mostly lipid, it insulates: higher membrane resistance (less leak) and lower capacitance (less charge needed to change the voltage)."],
+  demyelin: ["Demyelinated internode", "The myelin here is damaged, as in multiple sclerosis. Current leaks out and more charge is needed to change the membrane voltage, so the signal fades much faster. Few Na⁺ channels are here to regenerate it."],
+  internode: ["Internode", "The myelinated stretch between two nodes (really a few hundred µm to ~1 mm long). Current spreads passively along the inside; with almost no Na⁺ channels, the signal is not regenerated here and slowly fades."],
+  na: ["Voltage-gated Na⁺ channels", "Open when the membrane depolarizes past threshold (~−55 mV), letting Na⁺ rush in. They inactivate within about a millisecond, making the node briefly refractory. Clustered densely at nodes, nearly absent under myelin."],
+  naU: ["Voltage-gated Na⁺ channels", "In an unmyelinated axon they are spread along the whole membrane, so every patch must open its channels in turn. Regeneration is continuous: slower, and more Na⁺ gets in."],
+  k: ["Voltage-gated K⁺ channels", "Open more slowly than Na⁺ channels; K⁺ flows out and repolarizes the membrane. In myelinated axons, some K⁺ channels sit at the node itself, and many more sit just beside it, tucked under the edge of the myelin (the juxtaparanode). The model simplifies this by drawing them all beside the node."],
+  axo: ["Axoplasm", "The cytoplasm inside the axon, rich in K⁺. It conducts current: positive charge entering at a node flows along the inside toward the next node (the orange streaks)."],
+  ecf: ["Extracellular fluid", "The salty fluid outside the cell, rich in Na⁺. In a myelinated axon the membrane only touches it at the nodes, which is why that’s where Na⁺ can rush in."]
+};
+function hitAxon(x, y) {
+  for (const xk of NODES) {
+    if (Math.abs(x - xk) <= 12 && (Math.abs(y - M_TOP) <= 8 || Math.abs(y - M_BOT) <= 8)) return "na";
+    for (const dx of [-52, 52]) if (Math.abs(x - xk - dx) <= 8 && (Math.abs(y - M_TOP) <= 7 || Math.abs(y - M_BOT) <= 7)) return "k";
+  }
+  if (y > 244 && y < 276 && x > NODES[3] && x < NODES[4]) return "internode";
+  for (const xk of NODES) if (Math.abs(x - xk) <= NH + 2 && y > 30 && y < 244) return "node";
+  if (y >= M_TOP && y <= M_BOT) return "axo";
+  if ((y >= M_TOP - MT && y < M_TOP) || (y > M_BOT && y <= M_BOT + MT)) return isDamaged(x) ? "demyelin" : "myelin";
+  if (y > 30 && y < 50 && x > 410 && x < 760) return "myelin";
+  return "ecf";
+}
+function hitUnmy(x, y) {
+  if (Math.abs(y - U_TOP) <= 7 || Math.abs(y - U_BOT) <= 7) return "naU";
+  if (y > U_TOP && y < U_BOT) return "axo";
+  return "ecf";
+}
+const tip = document.getElementById("tip");
+function bindTip(p, fn) {
+  p.canvas.addEventListener("mousemove", e => {
+    const r = p.canvas.getBoundingClientRect();
+    const [h, body] = TIPS[fn((e.clientX - r.left) / r.width * W, (e.clientY - r.top) / r.height * p.H)];
+    tip.innerHTML = `<strong>${h}</strong>${body}`;
+    tip.classList.add("on");
+    const tw = tip.offsetWidth, th = tip.offsetHeight;
+    let lx = e.clientX + 14, ly = e.clientY + 14;
+    if (lx + tw > window.innerWidth - 8) lx = e.clientX - tw - 14;
+    if (ly + th > window.innerHeight - 8) ly = e.clientY - th - 14;
+    tip.style.left = Math.max(8, lx) + "px"; tip.style.top = Math.max(8, ly) + "px";
+  });
+  p.canvas.addEventListener("mouseleave", () => tip.classList.remove("on"));
+}
+bindTip(PA, hitAxon); bindTip(PU, hitUnmy);
+
+/* ---------------- UI ---------------- */
+const $ = id => document.getElementById(id);
+let lastStage = -1;
+function updateCaption() {
+  let idx = 0;
+  for (let i = 0; i < stages.length; i++) if (t >= stages[i].t - 1e-4) idx = i;
+  if (idx === lastStage) return;
+  lastStage = idx;
+  $("captionTxt").innerHTML = stages[idx].html;
+  $("stepNo").textContent = `${idx + 1}/${stages.length}`;
+}
+function setPlaying(p) { state.playing = p; $("playBtn").textContent = p ? "Pause" : "Play"; }
+function restart() { t = T_START; target = null; resetFlux(); lastStage = -1; }
+function step() {
+  setPlaying(false);
+  const nxt = stages.find(s => s.t > (target ?? t) + 0.005);
+  if (!nxt) { restart(); return; }
+  target = nxt.t;
+}
+function recompute() { buildCable(); computeFiring(); buildStages(); restart(); }
+$("playBtn").addEventListener("click", () => {
+  if (!state.playing && t >= loopEnd - 0.01) restart();
+  target = null; setPlaying(!state.playing);
+});
+$("stepBtn").addEventListener("click", step);
+$("restartBtn").addEventListener("click", restart);
+$("speed").addEventListener("input", e => { state.speed = +e.target.value; });
+$("tCompare").addEventListener("change", e => {
+  state.compare = e.target.checked; $("panelU").classList.toggle("hidden", !state.compare);
+  recompute(); fit();
+});
+$("tDemy").addEventListener("change", e => { state.demy = e.target.checked; recompute(); });
+$("tInsul").addEventListener("change", e => { state.insul = e.target.checked; });
+window.addEventListener("keydown", e => {
+  if (e.target.tagName === "INPUT" && e.target.type === "range") return;
+  if (e.code === "Space") { e.preventDefault(); $("playBtn").click(); }
+  else if (e.code === "ArrowRight") { e.preventDefault(); step(); }
+  else if (e.key === "r" || e.key === "R") restart();
+});
+window.addEventListener("resize", fit);
+
+/* ---------------- init + loop ---------------- */
+buildCable(); computeFiring();
+V_U = (NODES[5] - NODES[0]) / fire[5] / SPEED_RATIO;
+buildStages();
+fit();
+
+let last = performance.now();
+function frame(now) {
+  const dtR = Math.min(0.05, (now - last) / 1000); last = now;
+  let dt = 0;
+  if (target !== null) {
+    if (t < target) { dt = Math.min(dtR * state.speed * UNITS_PER_SEC * 1.6, target - t); t += dt; }
+    if (t >= target - 1e-6) { t = target; target = null; }
+  } else if (state.playing) {
+    dt = dtR * state.speed * UNITS_PER_SEC;
+    t += dt;
+    if (t > loopEnd) { restart(); dt = 0; }
+  }
+  jitter(naOutA, dtR); jitter(kInA, dtR);
+  if (state.compare) { jitter(naOutU, dtR); jitter(kInU, dtR); }
+  if (dt > 0) {
+    updateTracers(trA, Vm, dt, M_TOP + 8, M_BOT - 8);
+    if (state.compare) updateTracers(trU, Vu, dt, U_TOP + 8, U_BOT - 8);
+    spawnFlux(dt);
+    fluxA = ageFlux(fluxA, dt); fluxU = ageFlux(fluxU, dt);
+  }
+  updateCaption();
+  drawAxon();
+  if (state.compare) drawUnmy();
+  drawPlot();
+  requestAnimationFrame(frame);
+}
+requestAnimationFrame(frame);
+})();
+</script>
+</body>
+</html>
