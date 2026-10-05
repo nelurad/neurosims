@@ -34,8 +34,7 @@ Please credit: *Nelu Radpour, NeuroSims (https://nelurad.github.io/neurosims/)*
 
 ## Feedback
 
-Found a bug or a scientific inaccuracy, or have an idea for a new simulation? [Shoot Nelu a message!](radpour@psy.fsu.edu)
-
+Found a bug or a scientific inaccuracy, or have an idea for a new simulation? Shoot Nelu a message!
 ---
 
 Made by [Nelu Radpour](https://nelurad.github.io/), Department of Psychology, Florida State University, with help from Claude.
