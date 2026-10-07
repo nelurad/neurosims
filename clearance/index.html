@@ -1,594 +1,449 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Synaptic Clearance Explorer</title>
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,700&family=Atkinson+Hyperlegible:ital,wght@0,400;0,700;1,400&family=JetBrains+Mono:wght@400;500&display=swap">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Synaptic Clearance Mechanisms</title>
+<link rel="icon" href="data:,">
+<meta name="description" content="Explore how neurotransmitters are removed from the synaptic cleft via enzymatic breakdown, presynaptic reuptake, glial absorption, and passive diffusion.">
 <style>
-:root {
-  --bg: #f2f5f7; --panel: #ffffff; --fg: #15202b; --muted: #566373; --line: #d5dce3;
-  --pre: #e1eaf3; --post: #e5eee1; --cleft: #fafbfc; --membrane: #c48a74; --protein: #5d6b7c; --receptor: #44566b;
-  --excite: #d9480f; --inhibit: #1864ab; --gq: #ae3ec9;
-  --na: #f76707; --k: #6741d9; --cl: #1098ad; --ca: #2f9e44; --mg: #868e96;
-  --glu: #e03131; --gaba: #1c7ed6; --ach: #0c8599; --da: #9c36b5; --sht: #e0a100; --ne: #5c940d;
-  --display: "Bricolage Grotesque", "Avenir Next", "Segoe UI", sans-serif;
-  --body: "Atkinson Hyperlegible", "Verdana", system-ui, sans-serif;
-  --mono: "JetBrains Mono", ui-monospace, Menlo, Consolas, monospace;
-}
-@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) {
-  --bg: #0e1318; --panel: #151c23; --fg: #e6ebf0; --muted: #98a4b1; --line: #29333d;
-  --pre: #1a2633; --post: #1b2a1e; --cleft: #10161c; --membrane: #a8705e; --protein: #8494a6; --receptor: #9fb2c6;
-  --excite: #ff8a50; --inhibit: #5aa2ff; --gq: #da77f2;
-  --na: #ff922b; --k: #9775fa; --cl: #66d9e8; --ca: #69db7c; --mg: #adb5bd;
-  --glu: #ff6b6b; --gaba: #4dabf7; --ach: #3bc9db; --da: #cc5de8; --sht: #fcc419; --ne: #94d82d;
-  color-scheme: dark; } }
-:root[data-theme="dark"] {
-  --bg: #0e1318; --panel: #151c23; --fg: #e6ebf0; --muted: #98a4b1; --line: #29333d;
-  --pre: #1a2633; --post: #1b2a1e; --cleft: #10161c; --membrane: #a8705e; --protein: #8494a6; --receptor: #9fb2c6;
-  --excite: #ff8a50; --inhibit: #5aa2ff; --gq: #da77f2;
-  --na: #ff922b; --k: #9775fa; --cl: #66d9e8; --ca: #69db7c; --mg: #adb5bd;
-  --glu: #ff6b6b; --gaba: #4dabf7; --ach: #3bc9db; --da: #cc5de8; --sht: #fcc419; --ne: #94d82d;
-  color-scheme: dark; }
+  :root {
+    --bg: #fffdf8; --ink: #2a2a2a; --muted: #6b6f76; --line: #e2ddd2; --red: #e5262a; --blue: #1f6fd1;
+    --hand: "Segoe Print", "Ink Free", "Noteworthy", "Chalkboard SE", "Bradley Hand", "Comic Sans MS", cursive;
+    --serif: Georgia, "Times New Roman", serif;
+    --sans: system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+    --mono: ui-monospace, "SF Mono", Menlo, Consolas, monospace;
+    --glu: #d9480f; --ach: #0c8599; --monoamine: #862e9c; --diff: #2b8a3e;
+  }
+  * { box-sizing: border-box; }
+  html { -webkit-text-size-adjust: 100%; }
+  html, body { margin: 0; background: var(--bg); color: var(--ink); font: 16px/1.5 var(--sans); -webkit-font-smoothing: antialiased; }
+  .wrap { margin: 0 auto; padding: 20px 16px 32px; max-width: 1100px; }
+  a { color: #3d6fa8; }
+  .back { font-size: 13.5px; color: var(--muted); text-decoration: none; }
+  .back:hover { text-decoration: underline; }
+  h1 { font-family: var(--serif); font-weight: normal; font-size: clamp(26px, 2.8vw, 38px); margin: 6px 0 8px; letter-spacing: -.01em; }
+  .intro { margin: 0 0 16px; max-width: 48em; font-size: clamp(15px, 1.25vw, 17px); }
+  
+  .mech-selector { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 16px; }
+  .mech-btn { font-family: var(--sans); font-size: 14.5px; padding: 6px 14px; border: 1.5px solid #9a958a; border-radius: 6px; background: #fff; cursor: pointer; color: var(--ink); transition: all 0.15s ease; }
+  .mech-btn:hover { border-color: var(--ink); }
+  .mech-btn.active { background: var(--ink); color: #fff; border-color: var(--ink); font-weight: bold; }
 
-body { background: var(--bg); color: var(--fg); font-family: var(--body); font-size: 16px; line-height: 1.5; margin: 0; }
-.wrap { max-width: 1240px; margin: 0 auto; padding-inline: 20px; padding-block: 26px 64px; display: grid; gap: 26px; }
+  #cv { display: block; width: 100%; touch-action: pan-y; cursor: pointer; border-radius: 8px; }
+  #cv:focus-visible { outline: 2px dashed var(--blue); outline-offset: 4px; }
+  
+  .controls { display: flex; flex-wrap: wrap; gap: 10px 16px; align-items: center; margin: 12px 0 0; }
+  button.action-btn { font: inherit; font-size: 15px; color: var(--ink); background: #fff; border: 1.5px solid #9a958a; border-radius: 6px; padding: 5px 14px; cursor: pointer; }
+  button.action-btn:hover { border-color: var(--ink); }
+  :focus-visible { outline: 2px solid #3d6fa8; outline-offset: 2px; }
+  label { color: var(--muted); font-size: 15px; display: flex; align-items: center; gap: 8px; flex: 1; min-width: 200px; max-width: 450px; }
+  input[type=range] { flex: 1; accent-color: var(--blue); min-width: 0; }
+  .readout { font-variant-numeric: tabular-nums; color: var(--muted); font-size: 15px; }
 
-header { display: grid; gap: 8px; max-width: 70ch; }
-.eyebrow { margin: 0; font-family: var(--mono); font-size: 12px; letter-spacing: .08em; text-transform: uppercase; color: var(--muted); }
-h1 { margin: 0; font-family: var(--display); font-weight: 700; font-size: clamp(30px, 4.6vw, 46px); line-height: 1.05; letter-spacing: -.01em; text-wrap: balance; }
-.lead { margin: 0; color: var(--muted); font-size: 17px; }
-kbd { font-family: var(--mono); font-size: 13px; border: 1px solid var(--line); border-bottom-width: 2px; border-radius: 4px; padding: 0 5px; color: var(--fg); }
+  .explain { margin: 20px 0 0; max-width: 50em; min-height: 8.5em; padding: 14px 18px; background: #fbf9f3; border: 1px solid var(--line); border-radius: 8px; }
+  .explain h2 { font-family: var(--hand); color: var(--red); font-weight: normal; font-size: clamp(22px, 2.2vw, 27px); margin: 0 0 6px; }
+  .explain p { margin: 0; font-size: clamp(15px, 1.3vw, 18px); line-height: 1.5; }
+  .explain .detail { margin-top: 8px; font-size: 14px; color: var(--muted); }
 
-.lab { display: grid; grid-template-columns: minmax(0, 1fr) 340px; gap: 20px; align-items: start; }
-@media (max-width: 960px) { .lab { grid-template-columns: minmax(0, 1fr); } }
-.viz { display: grid; gap: 12px; min-width: 0; }
-.scene { position: relative; aspect-ratio: 1000 / 560; max-width: 100%; border: 1px solid var(--line); border-radius: 8px; overflow: hidden; background: var(--cleft); }
-.scene canvas, .trace canvas { position: absolute; inset: 0; width: 100%; height: 100%; display: block; }
-.trace { position: relative; height: 150px; border: 1px solid var(--line); border-radius: 8px; background: var(--panel); overflow: hidden; }
-
-.steps { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(6, minmax(0, 1fr)); gap: 6px; }
-@media (max-width: 700px) { .steps { grid-template-columns: repeat(3, minmax(0, 1fr)); } }
-.steps li { border: 1px solid var(--line); border-radius: 6px; padding: 7px 9px; font-size: 13px; line-height: 1.25; color: var(--muted); background: var(--panel); transition: background .15s, color .15s, border-color .15s; }
-.steps li b { display: block; font-family: var(--mono); font-weight: 500; font-size: 11px; margin-bottom: 2px; }
-.steps li.on { color: var(--fg); border-color: var(--fg); }
-
-.panel { display: grid; gap: 18px; background: var(--panel); border: 1px solid var(--line); border-radius: 8px; padding: 16px; min-width: 0; }
-.panel h2 { margin: 0 0 8px; font-family: var(--mono); font-weight: 500; font-size: 11px; letter-spacing: .1em; text-transform: uppercase; color: var(--muted); }
-button { font: 700 14px/1.15 var(--body); color: var(--fg); background: transparent; border: 1px solid var(--line); border-radius: 6px; padding: 9px 11px; cursor: pointer; }
-button:hover { border-color: var(--muted); }
-button:focus-visible { outline: 2px solid var(--fg); outline-offset: 2px; }
-.mechgrid { display: grid; grid-template-columns: 1fr; gap: 6px; }
-.mechgrid button { display: flex; align-items: center; gap: 10px; text-align: left; }
-.mechgrid .dot { width: 12px; height: 12px; border-radius: 50%; background: var(--c); flex: none; }
-.mechgrid button[aria-pressed="true"] { border-color: var(--c); box-shadow: inset 0 0 0 1px var(--c); }
-
-.release { width: 100%; font-family: var(--display); font-size: 20px; padding: 14px; background: var(--c); border-color: var(--c); color: #fff; }
-.release:hover { filter: brightness(1.08); border-color: var(--c); }
-.toggles { display: grid; gap: 6px; }
-.tog { display: flex; justify-content: space-between; align-items: center; gap: 10px; width: 100%; text-align: left; font-weight: 400; }
-.tog .sw { flex: none; width: 34px; height: 20px; border-radius: 10px; background: var(--line); position: relative; transition: background .15s; }
-.tog .sw::after { content: ""; position: absolute; top: 3px; left: 3px; width: 14px; height: 14px; border-radius: 50%; background: var(--panel); transition: transform .15s; }
-.tog[aria-pressed="true"] .sw { background: var(--fg); }
-.tog[aria-pressed="true"] .sw::after { transform: translateX(14px); }
-.note { margin: 6px 0 0; font-size: 14px; color: var(--muted); }
-
-.info { display: grid; gap: 10px; border-top: 1px solid var(--line); padding-top: 14px; }
-.info h3 { margin: 0; font-family: var(--display); font-size: 24px; line-height: 1.1; }
-.pills { display: flex; flex-wrap: wrap; gap: 6px; }
-.pill { font-size: 12px; font-weight: 700; border-radius: 999px; padding: 3px 9px; border: 1px solid var(--line); }
-.pill.fast { color: var(--excite); border-color: var(--excite); }
-.pill.slow { color: var(--inhibit); border-color: var(--inhibit); }
-.info p { margin: 0; font-size: 15px; }
-.info dl { margin: 0; display: grid; gap: 8px; }
-.info dt { font-family: var(--mono); font-size: 11px; letter-spacing: .08em; text-transform: uppercase; color: var(--muted); }
-.info dd { margin: 0; font-size: 14px; }
-.idea { border-left: 3px solid var(--c); padding-left: 10px; font-size: 15px !important; }
-
-.ref { display: grid; gap: 12px; }
-.ref h2 { margin: 0; font-family: var(--display); font-size: 28px; }
-.ref > p { margin: 0; color: var(--muted); max-width: 70ch; }
-.tablewrap { overflow-x: auto; border: 1px solid var(--line); border-radius: 8px; background: var(--panel); }
-table { border-collapse: collapse; width: 100%; min-width: 760px; font-size: 14px; }
-th, td { text-align: left; padding: 9px 12px; border-bottom: 1px solid var(--line); vertical-align: top; }
-th { font-family: var(--mono); font-weight: 500; font-size: 11px; letter-spacing: .08em; text-transform: uppercase; color: var(--muted); }
-tbody tr:last-child td { border-bottom: 0; }
-td.mech { font-weight: 700; white-space: nowrap; }
-td.mech span { display: inline-block; width: 100px; height: 10px; border-radius: 50%; margin-right: 8px; background: var(--c); }
-.foot { margin: 0; font-size: 14px; color: var(--muted); max-width: 80ch; }
-@media (prefers-reduced-motion: reduce) { * { transition: none !important; } }
+  .note { font-size: 13.5px; color: var(--muted); margin: 20px 0 0; max-width: 60em; }
+  .foot { margin-top: 28px; padding-top: 14px; border-top: 1px dashed #c9c3b6; font-size: 12.5px; color: var(--muted); }
+  .foot p { margin: 0 0 8px; }
+  .embed { display: flex; gap: 8px; align-items: flex-start; flex-wrap: wrap; }
+  .embed code { flex: 1; min-width: 0; font-family: var(--mono); font-size: 11.5px; background: #fff; border: 1px solid var(--line); padding: 5px 8px; overflow-wrap: anywhere; }
+  .embed button { font-size: 12px; padding: 4px 10px; border-width: 1px; }
+  .refs { margin: 4px 0 10px; padding-left: 18px; }
+  .refs li { margin: 0 0 3px; }
 </style>
 </head>
 <body>
+<div class="wrap">
+  <a class="back" href="../">← All NeuroSims</a>
+  <h1>Synaptic Clearance Mechanisms</h1>
+  <p class="intro">After neurotransmitters cross the synaptic cleft, they must be removed immediately to turn off the signal and prepare for the next message. Choose a mechanism below to see how different synapses clear the cleft.</p>
 
-<main class="wrap">
-  <header>
-    <p class="eyebrow">Neuroscience · Synaptic Clearance</p>
-    <h1>Clearing the Cleft</h1>
-    <p class="lead">Explore how neurotransmitters are removed from the synaptic cleft to terminate signaling. Select a clearance mechanism and trigger a release (or press <kbd>Space</kbd>) to compare kinetics and cleft concentration dynamics.</p>
-  </header>
+  <div class="mech-selector" role="tablist" aria-label="Clearance Mechanisms">
+    <button class="mech-btn active" id="btn-ach" onclick="selectMech('ach')">1. Acetylcholinesterase (AChE Breakdown)</button>
+    <button class="mech-btn" id="btn-glu" onclick="selectMech('glu')">2. Glial Absorption (Astrocyte EAAT)</button>
+    <button class="mech-btn" id="btn-da" onclick="selectMech('da')">3. Reuptake Transporters (DAT/NET/SERT)</button>
+    <button class="mech-btn" id="btn-diff" onclick="selectMech('diff')">4. Passive Diffusion & Escape</button>
+  </div>
 
-  <section class="lab">
-    <div class="viz">
-      <div class="scene" id="scene"><canvas id="sc" role="img" aria-label="Animated synapse showing transmitter clearance mechanism"></canvas></div>
-      <ol class="steps" id="steps" aria-label="Stages of clearance mechanism">
-        <li id="st0"><b>1</b>Release into cleft</li>
-        <li id="st1"><b>2</b>Peak concentration</li>
-        <li id="st2"><b>3</b>Receptor binding</li>
-        <li id="st3"><b>4</b>Clearance active</li>
-        <li id="st4"><b>5</b>Cleft depletion</li>
-        <li id="st5"><b>6</b>Basal state restored</li>
-      </ol>
-      <div class="trace"><canvas id="tr" role="img" aria-label="Neurotransmitter concentration in the synaptic cleft over time"></canvas></div>
-    </div>
+  <canvas id="cv" tabindex="0" role="img" aria-label="Hand-drawn diagram of synaptic cleft showing neurotransmitter clearance mechanisms. Use Play button or slider to control time."></canvas>
 
-    <aside class="panel" id="panel">
-      <div>
-        <h2>Clearance Mechanism</h2>
-        <div class="mechgrid" id="mechgrid"></div>
-      </div>
-      <button class="release" id="release" type="button">Release</button>
-      <div class="toggles">
-        <button class="tog" id="drug" type="button" aria-pressed="false"><span id="drugLabel">Inhibit Clearance</span><span class="sw"></span></button>
-        <p class="note" id="drugNote"></p>
-        <button class="tog" id="auto" type="button" aria-pressed="true"><span>Auto-release every 4 s</span><span class="sw"></span></button>
-        <button class="tog" id="slow" type="button" aria-pressed="false"><span>Slow motion</span><span class="sw"></span></button>
-      </div>
-      <div class="info" id="info"></div>
-    </aside>
-  </section>
+  <div class="controls">
+    <button class="action-btn" id="play">Release Signals</button>
+    <label for="tSl">Time <input type="range" id="tSl" min="0" max="3" step="0.01" value="0.2"></label>
+    <span class="readout" id="readout">0.20 s</span>
+  </div>
 
-  <section class="ref">
-    <h2>Quick reference</h2>
-    <p>Comparisons of major synaptic neurotransmitter clearance mechanisms, responsible cell types, kinetic speeds, and pharmacological targets.</p>
-    <div class="tablewrap"><table>
-      <thead><tr><th>Mechanism</th><th>Primary Transmitters</th><th>Location / Mediator</th><th>Speed</th><th>Key Inhibitors / Drugs</th><th>Biological Role</th></tr></thead>
-      <tbody id="refbody"></tbody>
-    </table></div>
-    <p class="foot">Model speeds are scaled for visual clarity (~100x slower than real time). The concentration trace displays real millisecond kinetics.</p>
-  </section>
-</main>
+  <div class="explain" aria-live="polite">
+    <h2 id="phTitle">Enzymatic Breakdown (Acetylcholinesterase)</h2>
+    <p id="phText">Enzymes sitting directly in the cleft snap acetylcholine into choline and acetate within 1–2 milliseconds.</p>
+    <div class="detail" id="phDetail"><b>Key location:</b> Neuromuscular junction & autonomic synapses.</div>
+  </div>
+
+  <p class="note">Simplified hand-drawn model. Clearance rates and times are scaled for visual clarity. In living tissue, enzymatic breakdown occurs in less than 2 milliseconds, whereas presynaptic reuptake and diffusion take tens of milliseconds.</p>
+
+  <footer class="foot">
+    <p class="embed"><span>Embed:</span>
+      <code id="embedCode">&lt;iframe src="https://nelurad.github.io/neurosims/synaptic-clearance/" width="100%" height="850" style="border:0" title="Synaptic Clearance Mechanisms"&gt;&lt;/iframe&gt;</code>
+      <button class="action-btn" id="copyBtn">Copy</button></p>
+    <p style="margin-bottom:2px">References</p>
+    <ul class="refs">
+      <li>Purves, D., et al. <i>Neuroscience</i>. Sinauer / Oxford University Press.</li>
+      <li>Kandel, E. R., et al. <i>Principles of Neural Science</i>. McGraw-Hill.</li>
+    </ul>
+    <p>Part of <a href="../">NeuroSims</a>, made by <a href="https://nelurad.github.io/">Nelu Radpour</a> (Florida State University). Content licensed CC BY 4.0; code licensed MIT. Free to use and adapt with credit.</p>
+  </footer>
+</div>
 
 <script>
-(() => {
-  // ---------- clearance mechanism data ----------
-  const MECHS = [
-    {
-      id: 'ach',
-      name: 'Enzymatic Degradation',
-      colorVar: 'ach',
-      speed: 'Ultra-fast · ~1–2 ms',
-      speedTag: 'fast',
-      txName: 'Acetylcholine (ACh)',
-      role: 'Rapid extracellular enzymatic cleavage terminates signaling instantly at neuromuscular junctions and autonomic synapses.',
-      text: 'Acetylcholinesterase (AChE) sits directly in the synaptic cleft membrane matrix. It breaks ACh into Choline and Acetate at near-diffusion-limited speeds. Free choline is recycled back into the axon terminal via high-affinity choline transporters.',
-      idea: 'Speed is essential: enzymatic destruction allows muscle fibers to rapidly re-arm and fire consecutive action potentials without tetanic lockup.',
-      rate: 18.0,
-      drug: { name: 'Donepezil / Neostigmine', text: 'Inhibits AChE. Transmitter lingers in the cleft, causing prolonged receptor activation. Used in Alzheimer’s and Myasthenia Gravis.' },
-      ref: { tx: 'Acetylcholine', loc: 'Basal lamina / AChE enzyme', speed: '< 2 ms', drugs: 'Donepezil, Organophosphates, Edrophonium', role: 'Muscle contraction, rapid focal signaling' }
-    },
-    {
-      id: 'glu',
-      name: 'Glial Astrocytic Reuptake',
-      colorVar: 'glu',
-      speed: 'Fast · ~5–10 ms',
-      speedTag: 'fast',
-      txName: 'Glutamate',
-      role: 'Astrocytic EAAT transporters rapidly clear glutamate to prevent excitotoxicity and maintain high signal-to-noise ratio.',
-      text: 'Excitatory Amino Acid Transporters (EAAT1/EAAT2) on surrounding astrocyte end-feet clear >80% of cleft glutamate. Inside the astrocyte, glutamate is converted to glutamine by glutamine synthetase and shuttled safely back to the neuron.',
-      idea: 'Astrocytes are not passive scaffold cells—they actively shape synaptic timing and shield neighboring synapses from crosstalk.',
-      rate: 8.5,
-      drug: { name: 'TBOA (EAAT Inhibitor)', text: 'Blocks astrocytic glutamate uptake, leading to prolonged synaptic currents and toxic glutamate accumulation.' },
-      ref: { tx: 'Glutamate', loc: 'Astrocyte end-feet (EAAT1/2)', speed: '5–10 ms', drugs: 'TBOA, Ceftriaxone (upregulator)', role: 'Excitotoxicity prevention, spatial confinement' }
-    },
-    {
-      id: 'da',
-      name: 'Presynaptic Reuptake (DAT/SERT/NET)',
-      colorVar: 'da',
-      speed: 'Moderate · ~20–50 ms',
-      speedTag: 'slow',
-      txName: 'Dopamine / Serotonin / NE',
-      role: 'Secondary active transport utilizes Na⁺/Cl⁻ gradients to haul intact monoamines directly back into the presynaptic terminal.',
-      text: 'Transporters like DAT, SERT, and NET bind monoamines along with Na⁺ and Cl⁻ ions, undergoing conformational flips that dump the neurotransmitter back inside the presynaptic terminal for vesicular repackaging.',
-      idea: 'Blocking monoamine reuptake is the foundational mechanism for most modern antidepressants and psychostimulants.',
-      rate: 4.2,
-      drug: { name: 'Cocaine / SSRIs (e.g. Fluoxetine)', text: 'Competitive transporter inhibitors that lock transporters, causing monoamines to pool in the cleft and continuously excite receptors.' },
-      ref: { tx: 'Dopamine, Serotonin, NE', loc: 'Presynaptic terminal membrane', speed: '10–50 ms', drugs: 'Cocaine, SSRIs, Methylphenidate', role: 'Reward tuning, mood regulation, tone' }
-    },
-    {
-      id: 'ne',
-      name: 'Passive Diffusion & Extrasynaptic Escape',
-      colorVar: 'ne',
-      speed: 'Slow · ~50–200 ms',
-      speedTag: 'slow',
-      txName: 'Neuropeptides / Monoamines',
-      role: 'Molecules diffuse out of the synaptic cleft into the extracellular space to act on distant receptors or undergo distant breakdown.',
-      text: 'Without dense local enzymes or high-affinity transporters, transmitters spill out of the synaptic cleft. They undergo wide volume transmission, hitting extrasynaptic receptors before eventually being degraded by enzymes like COMT or MAO.',
-      idea: 'Diffusion allows volume transmission—modulating broad neural microcircuits rather than just a single postsynaptic target.',
-      rate: 1.5,
-      drug: { name: 'COMT / MAO Inhibitors', text: 'Inhibits peripheral and extracellular degradation enzymes, extending extracellular lifespan after diffusion.' },
-      ref: { tx: 'Neuropeptides, Catecholamines', loc: 'Extracellular space / COMT / MAO', speed: '> 100 ms', drugs: 'Entacapone, Phenelzine', role: 'Volume transmission, neuromodulation' }
+(function(){
+'use strict';
+const $ = id => document.getElementById(id);
+const clamp = (v, a, b) => v < a ? a : v > b ? b : v;
+const HAND = getComputedStyle(document.documentElement).getPropertyValue('--hand');
+const BLUE = '#1f6fd1', RED = '#e5262a', INK = '#2a2a2a', GREY = '#8a8578', MEMB = '#c79a4a', PRE_BG = '#eef6fc', POST_BG = '#fdf4e6', ASTRO_BG = '#e8f5e9';
+
+const MECHS = {
+  ach: {
+    title: "1. Enzymatic Degradation (Acetylcholinesterase / AChE)",
+    text: "Acetylcholinesterase enzymes (AChE) sit attached to the basal lamina right in the cleft. They rapidly slice Acetylcholine (ACh) into Choline and Acetate, instantly terminating the muscle or nerve stimulus.",
+    detail: "Choline is hauled back into the terminal by choline transporters to rebuild acetylcholine.",
+    txName: "Acetylcholine (ACh)",
+    color: '#0c8599'
+  },
+  glu: {
+    title: "2. Glial Cell Absorption (Astrocytes & EAAT)",
+    text: "Astrocytes envelope the synapse with end-feet processes. Excitatory Amino Acid Transporters (EAAT) suck up glutamate from the cleft, preventing toxic glutamate buildup (excitotoxicity).",
+    detail: "Inside the astrocyte, glutamate is safely converted to glutamine and recycled back to the neuron.",
+    txName: "Glutamate",
+    color: '#d9480f'
+  },
+  da: {
+    title: "3. Presynaptic Reuptake (DAT, NET, SERT Transporters)",
+    text: "Membrane pumps (like DAT for dopamine, SERT for serotonin, NET for norepinephrine) use Na⁺ gradients to suck whole transmitter molecules back directly into the presynaptic terminal for repackaging.",
+    detail: "Targeted by drugs like SSRIs and cocaine, which block these pumps and leave transmitters lingering in the cleft.",
+    txName: "Dopamine / Serotonin",
+    color: '#862e9c'
+  },
+  diff: {
+    title: "4. Passive Diffusion & Extrasynaptic Escape",
+    text: "Transmitters simply float away out of the synaptic cleft into extracellular space. Once diluted, they can no longer reach threshold concentrations on postsynaptic receptors.",
+    detail: "Common for neuropeptides and volume-transmission signals acting on distant extrasynaptic targets.",
+    txName: "Neuropeptides",
+    color: '#2b8a3e'
+  }
+};
+
+let currentMech = 'ach';
+let t = 0.2, playing = false, lastFrame = 0, W = 0, H = 0;
+
+/* ---------- Hand-drawn graphics helpers ---------- */
+function hashStr(k){ let h=2166136261; for(let i=0;i<k.length;i++){ h^=k.charCodeAt(i); h=Math.imul(h,16777619); } return h>>>0; }
+function rng(seed){ let s=seed||1; return ()=>{ s^=s<<13; s^=s>>>17; s^=s<<5; return (s>>>0)/4294967296; }; }
+
+function handPath(c, pts, key, amp=1.0){
+  const r=rng(hashStr(key)), p1=r()*6.28, p2=r()*6.28, f1=0.015+r()*0.015, f2=0.06+r()*0.05;
+  let s=0; c.beginPath();
+  for(let i=0;i<pts.length;i++){
+    const [x,y]=pts[i]; if(i) s+=Math.hypot(x-pts[i-1][0],y-pts[i-1][1]);
+    const a=pts[Math.max(0,i-1)], b=pts[Math.min(pts.length-1,i+1)];
+    let nx=-(b[1]-a[1]), ny=b[0]-a[0]; const L=Math.hypot(nx,ny)||1; nx/=L; ny/=L;
+    const o=amp*(0.7*Math.sin(s*f1+p1)+0.3*Math.sin(s*f2+p2));
+    i ? c.lineTo(x+nx*o,y+ny*o) : c.moveTo(x+nx*o,y+ny*o);
+  }
+  c.stroke();
+}
+
+function hline(c,x0,y0,x1,y1,key,amp=1.1){
+  const L=Math.hypot(x1-x0,y1-y0), k=Math.max(2,Math.ceil(L/6)), pts=[];
+  for(let i=0;i<=k;i++) pts.push([x0+(x1-x0)*i/k, y0+(y1-y0)*i/k]);
+  handPath(c,pts,key,amp);
+}
+
+function hcircle(c,cx,cy,r,key,amp=1.4){
+  const rr=rng(hashStr(key)), start=rr()*6.28, pts=[];
+  for(let i=0;i<=60;i++){ const a=start+i/54*Math.PI*2; pts.push([cx+Math.cos(a)*r, cy+Math.sin(a)*r]); }
+  handPath(c,pts,key,amp);
+}
+
+function harrow(c,x0,y0,x1,y1,key,size=7){
+  hline(c,x0,y0,x1,y1,key,0.8);
+  const a=Math.atan2(y1-y0,x1-x0);
+  hline(c,x1,y1,x1-Math.cos(a-0.5)*size,y1-Math.sin(a-0.5)*size,key+'a',0.3);
+  hline(c,x1,y1,x1-Math.cos(a+0.5)*size,y1-Math.sin(a+0.5)*size,key+'b',0.3);
+}
+
+const cv = $('cv'), ctx = cv.getContext('2d');
+
+function layout(){
+  W = cv.parentElement.clientWidth;
+  H = Math.round(clamp(W * 0.52, 380, 520));
+  const d = window.devicePixelRatio || 1;
+  cv.style.height = H + 'px'; cv.width = Math.round(W * d); cv.height = Math.round(H * d);
+  ctx.setTransform(d, 0, 0, d, 0, 0);
+}
+
+/* ---------- Drawing main scene ---------- */
+function draw(){
+  ctx.clearRect(0,0,W,H);
+  ctx.lineCap='round'; ctx.lineJoin='round';
+  
+  const m = MECHS[currentMech];
+  const scale = W / 900;
+  
+  // Backgrounds for cellular regions
+  // Presynaptic terminal (Left)
+  ctx.fillStyle = PRE_BG;
+  ctx.beginPath();
+  ctx.roundRect ? ctx.roundRect(20*scale, 40*scale, 280*scale, 380*scale, [30]) : ctx.rect(20*scale, 40*scale, 280*scale, 380*scale);
+  ctx.fill();
+  ctx.strokeStyle = MEMB; ctx.lineWidth = 3.5;
+  hline(ctx, 300*scale, 40*scale, 300*scale, 420*scale, 'preMemb', 1.2);
+
+  // Postsynaptic terminal (Right bottom)
+  ctx.fillStyle = POST_BG;
+  ctx.beginPath();
+  ctx.roundRect ? ctx.roundRect(460*scale, 180*scale, 420*scale, 240*scale, [30]) : ctx.rect(460*scale, 180*scale, 420*scale, 240*scale);
+  ctx.fill();
+  ctx.strokeStyle = MEMB; ctx.lineWidth = 3.5;
+  hline(ctx, 460*scale, 180*scale, 460*scale, 420*scale, 'postMemb', 1.2);
+
+  // Labels
+  ctx.font = `16px ${HAND}`; ctx.fillStyle = INK; ctx.textAlign = 'center';
+  ctx.fillText("Presynaptic Terminal", 150*scale, 70*scale);
+  ctx.fillText("Postsynaptic Neuron", 640*scale, 400*scale);
+  ctx.fillStyle = GREY; ctx.font = `13px ${HAND}`;
+  ctx.fillText("Synaptic Cleft", 380*scale, 60*scale);
+
+  // Astrocytes if Glial Absorption mode
+  if (currentMech === 'glu') {
+    ctx.fillStyle = ASTRO_BG;
+    ctx.beginPath();
+    ctx.roundRect ? ctx.roundRect(460*scale, 40*scale, 420*scale, 120*scale, [20]) : ctx.rect(460*scale, 40*scale, 420*scale, 120*scale);
+    ctx.fill();
+    ctx.strokeStyle = '#2b8a3e'; ctx.lineWidth = 2.5;
+    hline(ctx, 460*scale, 160*scale, 880*scale, 160*scale, 'astroMemb', 1.0);
+    ctx.fillStyle = '#1b5e20'; ctx.font = `bold 15px ${HAND}`; ctx.textAlign = 'left';
+    ctx.fillText("Astrocyte End-Foot (Glial Cell)", 480*scale, 75*scale);
+    
+    // EAAT Transporter Proteins on Astrocyte
+    for(let y = 80; y <= 140; y += 30) {
+      ctx.fillStyle = m.color;
+      ctx.fillRect(450*scale, y*scale, 20*scale, 16*scale);
+      ctx.fillStyle = '#fff'; ctx.font = `9px ${HAND}`; ctx.fillText("EAAT", 452*scale, (y+12)*scale);
     }
-  ];
-
-  // ---------- geometry & constants ----------
-  const SW = 1000, SH = 560, PRE_Y = 230, POST_Y = 330, SITE_Y = POST_Y - 38;
-  const TR_X = [220, 380, 620, 780];
-  const ASTRO_X = [120, 880];
-  const VES_HOME = [[330, 150], [410, 178], [490, 138], [570, 178], [650, 150]];
-  const TRACE_WIN = 10; // seconds
-
-  const clamp = (v, a, b) => Math.min(b, Math.max(a, v));
-  const rnd = (a, b) => a + Math.random() * (b - a);
-
-  let tok = {};
-  function readTokens() {
-    const cs = getComputedStyle(document.documentElement);
-    ['bg', 'panel', 'fg', 'muted', 'line', 'pre', 'post', 'cleft', 'membrane', 'protein', 'receptor', 'excite', 'inhibit',
-     'glu', 'gaba', 'ach', 'da', 'sht', 'ne', 'display', 'body', 'mono']
-      .forEach(n => { tok[n] = cs.getPropertyValue('--' + n).trim(); });
-  }
-  readTokens();
-  matchMedia('(prefers-color-scheme: dark)').addEventListener('change', readTokens);
-  new MutationObserver(readTokens).observe(document.documentElement, { attributes: true, attributeFilter: ['data-theme'] });
-
-  // ---------- state ----------
-  const reduced = matchMedia('(prefers-reduced-motion: reduce)').matches;
-  let mechI = 0, drugOn = false, slow = false, auto = !reduced;
-  let T = 0, conc = 0, lastAP = -9, lastClear = -9, nextAuto = 0.8;
-  let mols, ves, recs, enz, trace, marks;
-
-  const mech = () => MECHS[mechI];
-
-  function reset() {
-    mols = []; trace = []; marks = [];
-    ves = VES_HOME.map(([x, y]) => ({ hx: x, hy: y, x, y, st: 'idle', t: 0, grow: 1 }));
-    recs = [280, 420, 580, 720].map(x => ({ x, bound: null, tBound: 0 }));
-    enz = [[280, 280], [440, 295], [560, 275], [720, 290]].map(([x, y], i) => ({ x, y, bx: x, by: y, ph: i * 1.5 }));
-    conc = 0;
   }
 
-  function release() {
-    lastAP = T; marks.push(T);
-    ves.filter(v => v.st === 'idle').slice(0, 3).forEach((v, i) => {
-      v.st = 'wait'; v.t = T + 0.1 + i * 0.05; v.tx = clamp(v.hx + rnd(-20, 20), 320, 680); v.spawned = false;
+  // Presynaptic Reuptake Transporters (DAT / NET / SERT)
+  if (currentMech === 'da') {
+    for(let y of [120, 240, 340]) {
+      ctx.fillStyle = m.color;
+      ctx.fillRect(290*scale, y*scale, 20*scale, 32*scale);
+      ctx.strokeStyle = INK; ctx.lineWidth = 1.5;
+      ctx.strokeRect(290*scale, y*scale, 20*scale, 32*scale);
+      ctx.fillStyle = '#fff'; ctx.font = `bold 9px sans-serif`; ctx.textAlign='center';
+      ctx.fillText("DAT", 300*scale, (y+18)*scale);
+    }
+  }
+
+  // Acetylcholinesterase Enzymes in Cleft
+  if (currentMech === 'ach') {
+    const enzY = [140, 220, 300, 360];
+    enzY.forEach((ey, idx) => {
+      ctx.fillStyle = '#0c8599';
+      hcircle(ctx, 380*scale, ey*scale, 14*scale, 'eCircle'+idx, 0.8);
+      ctx.fillStyle = '#0c8599'; ctx.fill();
+      ctx.fillStyle = '#fff'; ctx.font = `bold 10px sans-serif`; ctx.textAlign='center';
+      ctx.fillText("AChE", 380*scale, (ey+4)*scale);
     });
   }
 
-  // ---------- simulation step ----------
-  function step(dt) {
-    T += dt;
-    const m = mech();
-    const effectiveRate = drugOn ? m.rate * 0.15 : m.rate;
-
-    if (auto && T >= nextAuto) { release(); nextAuto = T + 4; }
-
-    // Vesicle cycle
-    for (const v of ves) {
-      if (v.st === 'wait' && T >= v.t) v.st = 'dock';
-      if (v.st === 'dock') {
-        const dx = v.tx - v.x, dy = (PRE_Y - 24) - v.y, dd = Math.hypot(dx, dy);
-        if (dd < 3) { v.st = 'fuse'; v.t = T; }
-        else { const s = Math.min(dd, 420 * dt); v.x += dx / dd * s; v.y += dy / dd * s; }
-      } else if (v.st === 'fuse') {
-        if (!v.spawned) {
-          v.spawned = true;
-          for (let i = 0; i < 14; i++) {
-            mols.push({ x: v.x + rnd(-12, 12), y: PRE_Y + 10, vx: rnd(-90, 90), vy: rnd(50, 140), st: 'free', t: T });
-          }
-        }
-        if (T - v.t > 0.2) { v.st = 'refill'; v.t = T + 1.5; }
-      } else if (v.st === 'refill' && T >= v.t) { v.st = 'idle'; v.x = v.hx; v.y = v.hy; v.grow = 0; }
-      else if (v.st === 'idle') v.grow = Math.min(1, v.grow + dt * 3);
-    }
-
-    // Enzymatic motion
-    for (const e of enz) { e.ph += dt; e.x = e.bx + Math.sin(e.ph * 1.2) * 12; e.y = e.by + Math.cos(e.ph * 1.5) * 6; }
-
-    // Molecules physics & clearance
-    const damp = Math.pow(0.2, dt);
-    let freeCount = 0;
-
-    for (const mol of mols) {
-      if (mol.st === 'free') {
-        freeCount++;
-        mol.vx = (mol.vx + (Math.random() - 0.5) * 1200 * dt) * damp;
-        mol.vy = (mol.vy + (Math.random() - 0.5) * 1200 * dt) * damp;
-
-        // Diffusion drive for mechanism 4
-        if (m.id === 'ne') {
-          if (mol.x < 500) mol.vx -= 120 * dt;
-          else mol.vx += 120 * dt;
-        }
-
-        mol.x += mol.vx * dt; mol.y += mol.vy * dt;
-
-        // Membrane boundaries
-        if (mol.y < PRE_Y + 8) { mol.y = PRE_Y + 8; mol.vy = Math.abs(mol.vy); }
-        if (mol.y > POST_Y - 8) { mol.y = POST_Y - 8; mol.vy = -Math.abs(mol.vy); }
-
-        // Receptor binding
-        for (const r of recs) {
-          if (!r.bound && Math.hypot(mol.x - r.x, mol.y - SITE_Y) < 16) {
-            r.bound = mol; mol.st = 'bound'; mol.r = r; mol.x = r.x; mol.y = SITE_Y;
-            mol.until = T + rnd(0.15, 0.35); break;
-          }
-        }
-
-        if (mol.st !== 'free') continue;
-
-        // Clearance processing by active mechanism
-        if (m.id === 'ach') { // Enzymatic
-          for (const e of enz) {
-            if (Math.hypot(mol.x - e.x, mol.y - e.y) < 22 && Math.random() < effectiveRate * dt) {
-              mol.st = 'split'; mol.t = T; lastClear = T; break;
-            }
-          }
-        } else if (m.id === 'glu') { // Astrocytic EAAT
-          if ((mol.x < 180 || mol.x > 820) && Math.random() < effectiveRate * dt) {
-            mol.st = 'astro'; mol.t = T; lastClear = T;
-          }
-        } else if (m.id === 'da') { // Presynaptic DAT
-          for (const x of TR_X) {
-            if (Math.hypot(mol.x - x, mol.y - (PRE_Y + 12)) < 26 && Math.random() < effectiveRate * dt) {
-              mol.st = 'reuptake'; mol.t = T; mol.x = x; lastClear = T; break;
-            }
-          }
-        } else if (m.id === 'ne') { // Diffusion
-          if ((mol.x < 60 || mol.x > 940) && Math.random() < effectiveRate * dt) {
-            mol.st = 'escaped'; mol.t = T; lastClear = T;
-          }
-        }
-      } else if (mol.st === 'bound') {
-        if (T >= mol.until) {
-          mol.st = 'free'; mol.r.bound = null; mol.r = null; mol.vy = -80; mol.y -= 6;
-        }
-      } else if (mol.st === 'reuptake') {
-        mol.y -= 80 * dt;
-      } else if (mol.st === 'astro') {
-        mol.x += (mol.x < 500 ? -90 : 90) * dt;
-      } else if (mol.st === 'escaped') {
-        mol.x += (mol.x < 500 ? -60 : 60) * dt;
-      }
-    }
-
-    mols = mols.filter(mol => !((mol.st === 'reuptake' || mol.st === 'split' || mol.st === 'astro' || mol.st === 'escaped') && T - mol.t > 0.4));
-
-    // Calculate Cleft Concentration Trace
-    conc = freeCount * 2.8;
-    trace.push({ t: T, c: conc });
-    while (trace.length && trace[0].t < T - TRACE_WIN) trace.shift();
-    while (marks.length && marks[0] < T - TRACE_WIN) marks.shift();
+  // Postsynaptic Receptors
+  for(let ry of [220, 290, 360]) {
+    ctx.fillStyle = '#3d6fa8';
+    ctx.fillRect(450*scale, ry*scale, 18*scale, 30*scale);
+    ctx.fillStyle = '#fff'; ctx.font = `10px sans-serif`; ctx.textAlign = 'center';
+    ctx.fillText("Rec", 459*scale, (ry+18)*scale);
   }
 
-  // ---------- rendering ----------
-  const scene = document.getElementById('scene'), sc = document.getElementById('sc'), ctx = sc.getContext('2d');
-  const trWrap = document.querySelector('.trace'), tr = document.getElementById('tr'), tctx = tr.getContext('2d');
-  let dpr = 1, cw = 0, ch = 0, tw = 0, th = 0;
-
-  function resize() {
-    dpr = window.devicePixelRatio || 1;
-    cw = scene.clientWidth; ch = scene.clientHeight; sc.width = Math.round(cw * dpr); sc.height = Math.round(ch * dpr);
-    tw = trWrap.clientWidth; th = trWrap.clientHeight; tr.width = Math.round(tw * dpr); tr.height = Math.round(th * dpr);
-  }
-  new ResizeObserver(resize).observe(scene);
-  new ResizeObserver(resize).observe(trWrap);
-
-  function rrect(c, x, y, w, h, r) { c.beginPath(); c.roundRect(x, y, w, h, r); }
-  function hex(c, x, y, r) { c.beginPath(); for (let i = 0; i < 6; i++) { const a = i / 6 * 6.283 + 0.52; i ? c.lineTo(x + Math.cos(a) * r, y + Math.sin(a) * r) : c.moveTo(x + Math.cos(a) * r, y + Math.sin(a) * r); } c.closePath(); }
-  function label(c, text, x, y, size, color, align = 'left', weight = 400) {
-    c.font = `${weight} ${size}px ${tok.body}`; c.fillStyle = color; c.textAlign = align; c.textBaseline = 'middle'; c.fillText(text, x, y);
-  }
-
-  function drawScene() {
-    const s = cw / SW, c = ctx, m = mech(), color = tok[m.colorVar];
-    c.setTransform(dpr * s, 0, 0, dpr * s, 0, 0);
-    c.fillStyle = tok.cleft; c.fillRect(0, 0, SW, SH);
-    const small = Math.max(13, 11 / s);
-
-    // Astrocytes on sides if Glutamate or Passive
-    if (m.id === 'glu') {
-      rrect(c, -40, 100, 190, 360, 40); c.fillStyle = tok.protein; c.globalAlpha = 0.25; c.fill(); c.globalAlpha = 1; c.strokeStyle = tok.line; c.stroke();
-      rrect(c, 850, 100, 190, 360, 40); c.fillStyle = tok.protein; c.globalAlpha = 0.25; c.fill(); c.globalAlpha = 1; c.strokeStyle = tok.line; c.stroke();
-      label(c, 'Astrocyte (EAAT)', 55, 280, small, tok.fg, 'center', 700);
-      label(c, 'Astrocyte (EAAT)', 945, 280, small, tok.fg, 'center', 700);
-    }
-
-    // Postsynaptic cell
-    rrect(c, 60, POST_Y, 880, 320, 70); c.fillStyle = tok.post; c.fill();
-    c.strokeStyle = tok.membrane; c.lineWidth = 9; c.stroke(); c.strokeStyle = tok.post; c.lineWidth = 2; c.stroke();
-
-    // Presynaptic terminal
-    rrect(c, 120, -60, 760, 290, 80); c.fillStyle = tok.pre; c.fill();
-    const ap = (T - lastAP) / 0.32;
-    if (ap >= 0 && ap < 1) {
-      c.save(); c.clip();
-      const y = -40 + ap * 270, g = c.createLinearGradient(0, y - 50, 0, y + 20);
-      g.addColorStop(0, 'transparent'); g.addColorStop(0.75, tok.excite); g.addColorStop(1, 'transparent');
-      c.globalAlpha = 0.28; c.fillStyle = g; c.fillRect(120, y - 50, 760, 70); c.restore(); c.globalAlpha = 1;
-      rrect(c, 120, -60, 760, 290, 80);
-    }
-    c.strokeStyle = tok.membrane; c.lineWidth = 9; c.stroke(); c.strokeStyle = tok.pre; c.lineWidth = 2; c.stroke();
-
-    label(c, 'Presynaptic Terminal', 150, 30, small, tok.muted);
-    label(c, 'Synaptic Cleft', 140, 280, small, tok.muted);
-    label(c, 'Postsynaptic Membrane', 96, 530, small, tok.muted);
-
-    // Vesicles
-    for (const v of ves) {
-      if (v.st === 'refill') continue;
-      let r = 22 * (v.st === 'idle' ? v.grow : 1);
-      if (v.st === 'fuse') r *= 1 - clamp((T - v.t) / 0.2, 0, 1) * 0.8;
-      c.beginPath(); c.arc(v.x, v.y, r, 0, 6.283); c.fillStyle = tok.cleft; c.fill();
-      c.strokeStyle = tok.membrane; c.lineWidth = 3; c.stroke();
-      if (v.st !== 'fuse') for (let i = 0; i < 5; i++) {
-        const a = i / 5 * 6.283 + v.hx; c.beginPath(); c.arc(v.x + Math.cos(a) * r * 0.45, v.y + Math.sin(a) * r * 0.45, r * 0.18, 0, 6.283); c.fillStyle = color; c.fill();
-      }
-    }
-
-    // Specific Clearance Hardware rendering
-    if (m.id === 'ach') { // Acetylcholinesterase
-      for (const e of enz) {
-        c.beginPath(); c.moveTo(e.x, e.y); c.arc(e.x, e.y, 14, 0.5, 6.283 - 0.5); c.closePath();
-        c.fillStyle = tok.protein; c.globalAlpha = drugOn ? 0.3 : 1.0; c.fill(); c.globalAlpha = 1;
-        if (drugOn) { hex(c, e.x + 8, e.y, 8); c.fillStyle = tok.excite; c.fill(); }
-      }
-      label(c, 'AChE Enzymes in Cleft', 500, 310, small, tok.muted, 'center');
-    } else if (m.id === 'da') { // Reuptake Transporters (DAT/SERT/NET)
-      for (const x of TR_X) {
-        rrect(c, x - 14, PRE_Y - 16, 28, 34, 6); c.fillStyle = tok.protein; c.globalAlpha = drugOn ? 0.3 : 1.0; c.fill(); c.globalAlpha = 1;
-        c.fillStyle = tok.pre; c.fillRect(x - 4, PRE_Y - 8, 8, 26);
-        if (drugOn) { hex(c, x, PRE_Y + 18, 8); c.fillStyle = tok.excite; c.fill(); }
-      }
-      label(c, 'Monoamine Transporters (DAT/SERT/NET)', 500, PRE_Y - 30, small, tok.muted, 'center');
-    }
-
-    // Receptors
-    for (const r of recs) {
-      c.fillStyle = tok.receptor;
-      rrect(c, r.x - 16, POST_Y - 30, 14, 60, 5); c.fill();
-      rrect(c, r.x + 2, POST_Y - 30, 14, 60, 5); c.fill();
-      if (!r.bound) { c.strokeStyle = color; c.lineWidth = 2; c.beginPath(); c.arc(r.x, SITE_Y, 7, 0, 6.283); c.stroke(); }
-    }
-
-    // Transmitter molecules
-    for (const mol of mols) {
-      let a = 1, x = mol.x, y = mol.y;
-      if (mol.st === 'reuptake' || mol.st === 'astro' || mol.st === 'escaped') a = 1 - (T - mol.t) / 0.4;
-      c.globalAlpha = clamp(a, 0, 1); c.fillStyle = color;
-
-      if (mol.st === 'split') {
-        const k = (T - mol.t) / 0.4; c.globalAlpha = 1 - k;
-        c.beginPath(); c.arc(x - 8 * k, y, 4, 0, 6.283); c.fill();
-        c.fillStyle = tok.muted; c.beginPath(); c.arc(x + 8 * k, y, 4, 0, 6.283); c.fill();
-      } else {
-        c.beginPath(); c.arc(x, y, 6.5, 0, 6.283); c.fill();
-      }
-      c.globalAlpha = 1;
-    }
-  }
-
-  // ---------- concentration trace rendering ----------
-  function drawTrace() {
-    const c = tctx, w = tw, h = th, L = 88, Rp = 12, top = 12, bot = 24;
-    const cMax = 100;
-    const px = t => L + (1 - (T - t) / TRACE_WIN) * (w - L - Rp);
-    const py = v => top + (1 - clamp(v, 0, cMax) / cMax) * (h - top - bot);
-
-    c.setTransform(dpr, 0, 0, dpr, 0, 0); c.clearRect(0, 0, w, h);
-    c.font = `11px ${tok.mono}`; c.textBaseline = 'middle';
-
-    c.strokeStyle = tok.line; c.lineWidth = 1;
-    c.beginPath(); c.moveTo(L, py(0)); c.lineTo(w - Rp, py(0)); c.stroke();
-    c.fillStyle = tok.muted; c.textAlign = 'right';
-    c.fillText('0 %', L - 8, py(0)); c.fillText('100 % peak', L - 8, py(100));
-
-    c.textAlign = 'center';
-    c.fillText('−1000 ms', px(T - TRACE_WIN) + 26, h - 10); c.fillText('−500 ms', px(T - TRACE_WIN / 2), h - 10);
-    c.textAlign = 'right'; c.fillText('now', w - Rp, h - 10);
-
-    for (const m of marks) {
-      const x = px(m); c.fillStyle = tok[mech().colorVar];
-      c.beginPath(); c.moveTo(x, h - bot + 2); c.lineTo(x - 5, h - bot + 10); c.lineTo(x + 5, h - bot + 10); c.fill();
-    }
-    if (trace.length < 2) return;
-
-    // Gradient fill under trace
-    c.beginPath(); c.moveTo(px(trace[0].t), py(0));
-    for (const p of trace) c.lineTo(px(p.t), py(p.c));
-    c.lineTo(px(trace[trace.length - 1].t), py(0)); c.closePath();
-    c.globalAlpha = 0.2; c.fillStyle = tok[mech().colorVar]; c.fill(); c.globalAlpha = 1;
-
-    // Trace line
-    c.beginPath(); trace.forEach((p, i) => i ? c.lineTo(px(p.t), py(p.c)) : c.moveTo(px(p.t), py(p.c)));
-    c.strokeStyle = tok.fg; c.lineWidth = 2; c.stroke();
-
-    const last = trace[trace.length - 1];
-    c.fillStyle = tok.fg; c.beginPath(); c.arc(px(last.t), py(last.c), 3.5, 0, 6.283); c.fill();
-    c.textAlign = 'left'; c.font = `500 12px ${tok.mono}`;
-    c.fillText(`Cleft conc: ${Math.round(last.c)}%`, L + 6, top + 4);
-  }
-
-  // ---------- UI & binding ----------
-  const $ = id => document.getElementById(id);
-
-  function buildMechs() {
-    $('mechgrid').innerHTML = '';
-    MECHS.forEach((m, i) => {
-      const b = document.createElement('button');
-      b.type = 'button'; b.id = 'mech-' + m.id; b.style.setProperty('--c', `var(--${m.colorVar})`);
-      b.innerHTML = `<span class="dot"></span>${m.name}`;
-      b.setAttribute('aria-pressed', String(i === mechI));
-      b.addEventListener('click', () => { mechI = i; drugOn = false; reset(); render(); });
-      $('mechgrid').appendChild(b);
-    });
-  }
-
-  function render() {
-    const m = mech();
-    document.querySelectorAll('#mechgrid button').forEach((b, i) => b.setAttribute('aria-pressed', String(i === mechI)));
-    $('panel').style.setProperty('--c', `var(--${m.colorVar})`);
-
-    $('drugLabel').textContent = `${m.drug.name}`;
-    $('drug').setAttribute('aria-pressed', String(drugOn));$('drugNote').textContent = m.drug.text;
-    $('auto').setAttribute('aria-pressed', String(auto));$('slow').setAttribute('aria-pressed', String(slow));
-
-    $('info').innerHTML = `
-      <h3>${m.name}</h3>
-      <div class="pills">
-        <span class="pill ${m.speedTag}">${m.speed}</span>
-        <span class="pill">${m.txName}</span>
-      </div>
-      <p>${m.text}</p>
-      <dl>
-        <div><dt>Primary Neurotransmitter</dt><dd>${m.txName}</dd></div>
-        <div><dt>Biological Function</dt><dd>${m.role}</dd></div>
-      </dl>
-      <p class="idea">${m.idea}</p>`;
-  }
-
-  function buildRef() {
-    const rows = MECHS.map(m => `
-      <tr style="--c: var(--${m.colorVar})">
-        <td class="mech"><span></span>${m.name}</td>
-        <td>${m.ref.tx}</td>
-        <td>${m.ref.loc}</td>
-        <td>${m.ref.speed}</td>
-        <td>${m.ref.drugs}</td>
-        <td>${m.ref.role}</td>
-      </tr>`).join('');
-    $('refbody').innerHTML = rows;
-  }
-
-  $('release').addEventListener('click', release);$('drug').addEventListener('click', () => { drugOn = !drugOn; render(); });
-  $('auto').addEventListener('click', () => { auto = !auto; nextAuto = T + 0.5; render(); });$('slow').addEventListener('click', () => { slow = !slow; render(); });
-  document.addEventListener('keydown', e => {
-    if (e.code === 'Space' && !(e.target instanceof HTMLButtonElement)) { e.preventDefault(); release(); }
+  // Draw Vesicles in Presynaptic Terminal
+  const vesLocs = [[100, 150], [180, 180], [120, 260], [220, 280], [150, 340]];
+  vesLocs.forEach(([vx, vy], i) => {
+    ctx.strokeStyle = MEMB; ctx.lineWidth = 2;
+    hcircle(ctx, vx*scale, vy*scale, 18*scale, 'ves'+i, 0.8);
+    ctx.fillStyle = '#fffdf8'; ctx.fill();
+    // Inner dots
+    ctx.fillStyle = m.color;
+    ctx.beginPath(); ctx.arc((vx-4)*scale, (vy-4)*scale, 3*scale, 0, 7); ctx.fill();
+    ctx.beginPath(); ctx.arc((vx+4)*scale, (vy+2)*scale, 3*scale, 0, 7); ctx.fill();
   });
 
-  buildMechs(); buildRef(); reset(); render(); resize();
-  let last = performance.now();
-  function frame(now) {
-    let dt = Math.min(0.05, (now - last) / 1000); last = now;
-    if (slow) dt *= 0.35;
-    while (dt > 1e-6) { const h = Math.min(1 / 60, dt); step(h); dt -= h; }
-    drawScene(); drawTrace();
+  // Transmitter Dynamics according to time 't'
+  drawTransmitters(scale, m);
+}
 
-    const a = T - lastAP;
-    const active = [
-      a < 0.2,
-      conc > 60,
-      recs.some(r => r.bound),
-      T - lastClear < 0.3,
-      conc > 5 && conc < 40,
-      conc <= 5 && a > 1.2
-    ];
-    active.forEach((on, i) => $('st' + i).classList.toggle('on', on));
-    requestAnimationFrame(frame);
+function drawTransmitters(scale, m) {
+  const c = ctx;
+  const numMols = 24;
+  
+  for(let i=0; i<numMols; i++) {
+    const seed = i * 137.5;
+    const r = rng(seed);
+    
+    // Initial release trajectory across cleft
+    let startX = 305 * scale;
+    let startY = (100 + (i / numMols) * 300) * scale;
+    
+    let curX = startX;
+    let curY = startY;
+    
+    // Dynamics phases
+    if (t < 0.5) {
+      // Release & flooding into cleft
+      const progress = t / 0.5;
+      curX = startX + progress * (80 + r()*40) * scale;
+      curY = startY + Math.sin(progress * 3 + seed) * 15 * scale;
+      
+      c.fillStyle = m.color;
+      c.beginPath(); c.arc(curX, curY, 5*scale, 0, 7); c.fill();
+    } 
+    else {
+      // Clearance Mechanism Action
+      const progress = (t - 0.5) / 2.5; // 0 to 1
+      
+      if (currentMech === 'ach') {
+        // Enzymatic degradation: Molecules split into 2 half-circles at middle cleft
+        const splitPoint = 375 * scale;
+        curX = startX + 70 * scale;
+        
+        if (progress < 0.3) {
+          c.fillStyle = m.color;
+          c.beginPath(); c.arc(splitPoint, curY, 5*scale, 0, 7); c.fill();
+        } else {
+          // Splitting into Choline & Acetate
+          const d = (progress - 0.3) * 80 * scale;
+          // Choline going back left
+          c.fillStyle = '#0c8599';
+          c.beginPath(); c.arc(splitPoint - d, curY - d*0.2, 4*scale, 0, 7); c.fill();
+          // Acetate drifting away
+          c.fillStyle = '#888';
+          c.beginPath(); c.arc(splitPoint + d*0.5, curY + d*0.8, 3*scale, 0, 7); c.fill();
+        }
+      }
+      else if (currentMech === 'glu') {
+        // Glial absorption: Molecules pulled UP into Astrocyte end-foot
+        const targetX = (470 + r()*30) * scale;
+        const targetY = (120 + r()*30) * scale;
+        
+        curX = startX + 70*scale + progress * (targetX - (startX + 70*scale));
+        curY = startY + progress * (targetY - startY);
+        
+        c.fillStyle = m.color;
+        c.globalAlpha = clamp(1.2 - progress, 0.2, 1);
+        c.beginPath(); c.arc(curX, curY, 5*scale, 0, 7); c.fill();
+        c.globalAlpha = 1.0;
+      }
+      else if (currentMech === 'da') {
+        // Presynaptic Reuptake: Pulled BACK into presynaptic membrane pumps
+        const targetX = 270 * scale;
+        curX = (startX + 80*scale) - progress * (startX + 80*scale - targetX);
+        
+        c.fillStyle = m.color;
+        c.globalAlpha = clamp(1.3 - progress, 0.1, 1);
+        c.beginPath(); c.arc(curX, curY, 5*scale, 0, 7); c.fill();
+        c.globalAlpha = 1.0;
+      }
+      else if (currentMech === 'diff') {
+        // Passive diffusion: Molecules drift up/down out of cleft
+        const angle = (i % 2 === 0 ? -1 : 1) * (0.5 + r());
+        curX = startX + 70*scale + progress * 140 * scale;
+        curY = startY + progress * angle * 180 * scale;
+        
+        c.fillStyle = m.color;
+        c.globalAlpha = clamp(1.1 - progress, 0, 1);
+        c.beginPath(); c.arc(curX, curY, 5*scale, 0, 7); c.fill();
+        c.globalAlpha = 1.0;
+      }
+    }
   }
-  requestAnimationFrame(frame);
+}
+
+/* ---------- State & Interaction ---------- */
+window.selectMech = function(key) {
+  currentMech = key;
+  document.querySelectorAll('.mech-btn').forEach(b => b.classList.remove('active'));
+  $(`btn-${key}`).classList.add('active');
+  
+  const m = MECHS[key];
+  $('phTitle').textContent = m.title;
+  $('phTitle').style.color = m.color;
+  $('phText').textContent = m.text;
+  $('phDetail').innerHTML = `<b>Key transmitters & role:</b> ${m.txName}. ${m.detail}`;
+  
+  t = 0.2;
+  $('tSl').value = t;
+  updateReadout();
+  draw();
+};
+
+function setT(val) {
+  t = clamp(val, 0, 3);
+  $('tSl').value = t.toFixed(2);
+  updateReadout();
+  draw();
+}
+
+function updateReadout() {
+  $('readout').textContent = t.toFixed(2) + ' s';
+}
+
+function setPlaying(p) {
+  playing = p;
+  $('play').textContent = p ? 'Pause' : 'Release Signals';
+  if (p && t >= 2.95) setT(0);
+}
+
+$('play').addEventListener('click', () => setPlaying(!playing));$('tSl').addEventListener('input', e => { setPlaying(false); setT(+e.target.value); });
+
+// Keyboard controls
+cv.addEventListener('keydown', e => {
+  const st = e.shiftKey ? 0.1 : 0.02;
+  if (e.key === 'ArrowRight') { setPlaying(false); setT(t + st); e.preventDefault(); }
+  else if (e.key === 'ArrowLeft') { setPlaying(false); setT(t - st); e.preventDefault(); }
+  else if (e.key === ' ') { setPlaying(!playing); e.preventDefault(); }
+});
+
+$('copyBtn').addEventListener('click', () => {
+  const txt = $('embedCode').textContent;
+  if (navigator.clipboard && navigator.clipboard.writeText) {
+    navigator.clipboard.writeText(txt).then(() => {
+      $('copyBtn').textContent = 'Copied';
+      setTimeout(() => $('copyBtn').textContent = 'Copy', 1500);
+    });
+  }
+});
+
+function loop(ts) {
+  const dt = Math.min(0.1, (ts - lastFrame) / 1000 || 0);
+  lastFrame = ts;
+  if (playing) {
+    setT(t + dt * 0.6);
+    if (t >= 3.0) setPlaying(false);
+  }
+  draw();
+  requestAnimationFrame(loop);
+}
+
+window.addEventListener('resize', () => { layout(); draw(); });
+
+// Initialization
+layout();
+selectMech('ach');
+requestAnimationFrame(ts => { lastFrame = ts; requestAnimationFrame(loop); });
+
 })();
 </script>
 </body>
