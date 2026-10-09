@@ -1,980 +1,696 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Agonists vs. Antagonists</title>
-<meta name="description" content="A simple interactive synapse: see how everyday and street drugs like nicotine, alcohol, cocaine, LSD and ketamine act as agonists or antagonists on ionotropic and metabotropic receptors.">
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,700&family=Atkinson+Hyperlegible:ital,wght@0,400;0,700;1,400&family=JetBrains+Mono:wght@400;500&display=swap">
+<link rel="icon" href="data:,">
+<meta name="description" content="See how drugs act as agonists (turn a receptor up) or antagonists (block it), how ionotropic and metabotropic receptors differ, and how everyday and street drugs change signaling at the synapse.">
 <style>
-:root {
-  --bg: #f2f5f7; --panel: #ffffff; --fg: #15202b; --muted: #566373; --line: #d5dce3; --soft: #f7f9fa;
-  --pre: #e1eaf3; --post: #e5eee1; --cleft: #fafbfc; --membrane: #c48a74; --protein: #5d6b7c; --receptor: #44566b;
-  --excite: #d9480f; --inhibit: #1864ab; --gq: #ae3ec9;
-  --na: #f76707; --k: #6741d9; --cl: #1098ad; --ca: #2f9e44; --msg: #f08c00;
-  --glu: #e03131; --gaba: #1c7ed6; --ach: #0c8599; --da: #9c36b5; --sht: #e0a100; --ne: #5c940d;
-  --on: #2b8a3e; --off: #c92a2a; --muscle: #e8590c; --heart: #e03131;
-  --display: "Bricolage Grotesque", "Avenir Next", "Segoe UI", sans-serif;
-  --body: "Atkinson Hyperlegible", "Verdana", system-ui, sans-serif;
-  --mono: "JetBrains Mono", ui-monospace, Menlo, Consolas, monospace;
-}
-@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) {
-  --bg: #0e1318; --panel: #151c23; --fg: #e6ebf0; --muted: #98a4b1; --line: #29333d; --soft: #10161c;
-  --pre: #1a2633; --post: #1b2a1e; --cleft: #10161c; --membrane: #a8705e; --protein: #8494a6; --receptor: #9fb2c6;
-  --excite: #ff8a50; --inhibit: #5aa2ff; --gq: #da77f2;
-  --na: #ff922b; --k: #9775fa; --cl: #66d9e8; --ca: #69db7c; --msg: #ffc078;
-  --glu: #ff6b6b; --gaba: #4dabf7; --ach: #3bc9db; --da: #cc5de8; --sht: #fcc419; --ne: #94d82d;
-  --on: #69db7c; --off: #ff6b6b; --muscle: #ff922b; --heart: #ff6b6b;
-  color-scheme: dark; } }
-:root[data-theme="dark"] {
-  --bg: #0e1318; --panel: #151c23; --fg: #e6ebf0; --muted: #98a4b1; --line: #29333d; --soft: #10161c;
-  --pre: #1a2633; --post: #1b2a1e; --cleft: #10161c; --membrane: #a8705e; --protein: #8494a6; --receptor: #9fb2c6;
-  --excite: #ff8a50; --inhibit: #5aa2ff; --gq: #da77f2;
-  --na: #ff922b; --k: #9775fa; --cl: #66d9e8; --ca: #69db7c; --msg: #ffc078;
-  --glu: #ff6b6b; --gaba: #4dabf7; --ach: #3bc9db; --da: #cc5de8; --sht: #fcc419; --ne: #94d82d;
-  --on: #69db7c; --off: #ff6b6b; --muscle: #ff922b; --heart: #ff6b6b;
-  color-scheme: dark; }
+  :root{ --bg:#fffdf8; --ink:#2a2a2a; --muted:#6b6f76; --line:#e2ddd2;
+    --hand:"Segoe Print","Ink Free","Noteworthy","Chalkboard SE","Bradley Hand","Comic Sans MS",cursive;
+    --sans:system-ui,-apple-system,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif;
+    --mono:ui-monospace,"SF Mono",Menlo,Consolas,monospace;
+    --on:#2f8f46; --off:#c8423b; --c:#e4572e; }
+  *{box-sizing:border-box}
+  html{-webkit-text-size-adjust:100%}
+  html,body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.5 var(--sans);-webkit-font-smoothing:antialiased}
+  .wrap{margin:0 auto;padding:20px 16px 32px;max-width:1280px}
+  a{color:#3d6fa8}
+  .back{font-size:13.5px;color:var(--muted);text-decoration:none}
+  .back:hover{text-decoration:underline}
+  h1{font-family:Georgia,"Times New Roman",serif;font-weight:normal;font-size:clamp(24px,2.4vw,36px);margin:6px 0 8px;letter-spacing:-.01em}
+  .intro{margin:0 0 14px;max-width:48em;font-size:clamp(15px,1.2vw,17px)}
+  h2{font-family:var(--hand);font-weight:normal;font-size:clamp(24px,2.4vw,32px);margin:34px 0 4px;line-height:1.2}
+  .sub{margin:0 0 14px;max-width:52em;color:var(--muted)}
+  .hand{font-family:var(--hand)}
+  svg{display:block;width:100%;height:auto;user-select:none;-webkit-user-select:none}
+  svg text{font-family:var(--hand)}
+  :focus-visible{outline:2px solid #3d6fa8;outline-offset:2px}
 
-* { box-sizing: border-box; }
-body { background: var(--bg); color: var(--fg); font-family: var(--body); font-size: 16px; line-height: 1.5; margin: 0; }
-.wrap { max-width: 1240px; margin: 0 auto; padding-inline: 20px; padding-block: 26px 64px; display: grid; gap: 34px; }
-@media (max-width: 600px) { .wrap { padding-inline: 16px; } }
-header { display: grid; gap: 8px; max-width: 70ch; }
-.eyebrow { margin: 0; font-family: var(--mono); font-size: 12px; letter-spacing: .08em; text-transform: uppercase; color: var(--muted); }
-h1 { margin: 0; font-family: var(--display); font-weight: 700; font-size: clamp(30px, 4.6vw, 46px); line-height: 1.05; letter-spacing: -.01em; }
-h2 { margin: 0; font-family: var(--display); font-size: clamp(24px, 3vw, 30px); line-height: 1.1; }
-.lead { margin: 0; color: var(--muted); font-size: 17px; }
-.sec { display: grid; gap: 14px; }
-.sec > p { margin: 0; color: var(--muted); max-width: 72ch; font-size: 16.5px; }
-kbd { font-family: var(--mono); font-size: 13px; border: 1px solid var(--line); border-bottom-width: 2px; border-radius: 4px; padding: 0 5px; color: var(--fg); }
-button { font: 700 14px/1.15 var(--body); color: var(--fg); background: transparent; border: 1px solid var(--line); border-radius: 6px; padding: 9px 11px; cursor: pointer; }
-button:hover { border-color: var(--muted); }
-button:focus-visible { outline: 2px solid var(--fg); outline-offset: 2px; }
+  .btn{font:inherit;font-size:15px;background:#fff;border:1.5px solid var(--line);border-radius:8px;padding:8px 14px;cursor:pointer;color:var(--ink)}
+  .btn:hover{border-color:#bdb7aa}
+  .go{font-family:var(--hand);font-size:20px;background:var(--c);border-color:var(--c);color:#fff;padding:8px 22px}
+  .go:hover{filter:brightness(1.06);border-color:var(--c)}
+  .check{display:inline-flex;align-items:center;gap:8px;font:inherit;font-size:15px;background:none;border:0;padding:6px 2px;cursor:pointer;color:var(--ink)}
+  .check .box{width:18px;height:18px;border:1.8px solid #4a4440;border-radius:4px;display:grid;place-items:center;font-size:13px;line-height:1;background:#fff}
+  .check[aria-pressed="true"] .box::after{content:"✓"}
+  .check.red[aria-pressed="true"] .box{background:var(--off);border-color:var(--off);color:#fff}
 
-/* basics */
-.basics { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 10px; }
-.basics.two { grid-template-columns: repeat(2, minmax(0, 1fr)); }
-@media (max-width: 760px) { .basics, .basics.two { grid-template-columns: minmax(0, 1fr); } }
-.bcard { background: var(--panel); border: 1px solid var(--line); border-top: 4px solid var(--bc); border-radius: 8px; padding: 14px 16px; display: grid; gap: 4px; align-content: start; }
-.bcard h3 { margin: 0; font-family: var(--display); font-size: 21px; color: var(--bc); }
-.bcard p { margin: 0; font-size: 15px; }
-.bcard small { color: var(--muted); font-size: 13.5px; }
+  /* hero: normal vs agonist vs antagonist */
+  .trio{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:18px}
+  @media (max-width:820px){ .trio{grid-template-columns:minmax(0,1fr);max-width:440px} }
+  .card{background:#fff;border:1.5px solid var(--line);border-radius:12px;padding:12px 14px 14px}
+  .card h3{font-family:var(--hand);font-weight:normal;font-size:24px;margin:0;line-height:1.2}
+  .card .cap{margin:6px 0 0;font-size:15px}
+  .card .eg{margin:6px 0 0;font-size:13.5px;color:var(--muted)}
+  .meter{display:grid;grid-template-columns:auto minmax(0,1fr) auto;gap:8px;align-items:center;margin-top:8px;font-size:14px}
+  .meter .bar{position:relative;height:14px;border:1.8px solid #4a4440;border-radius:8px;background:#fff;overflow:hidden}
+  .meter .fill{position:absolute;inset:0 auto 0 0;width:0;background:var(--mc,#4a4440);border-radius:6px 0 0 6px}
+  .meter .norm{position:absolute;top:-2px;bottom:-2px;width:0;border-left:2px dashed #4a4440;opacity:.55}
+  .meter .word{font-family:var(--hand);font-size:17px;min-width:5.5em;text-align:right}
+  .key{display:flex;flex-wrap:wrap;gap:6px 18px;margin:12px 0 0;padding:0;list-style:none;font-size:14px;color:var(--muted)}
+  .key li{display:flex;align-items:center;gap:6px}
+  .key svg{width:auto}
 
-/* acetylcholine */
-.achgrid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 14px; }
-@media (max-width: 820px) { .achgrid { grid-template-columns: minmax(0, 1fr); } }
-.achcard { background: var(--panel); border: 1px solid var(--line); border-radius: 8px; padding: 14px; display: grid; gap: 10px; align-content: start; }
-.achhead { display: flex; justify-content: space-between; align-items: baseline; gap: 10px; flex-wrap: wrap; }
-.achhead h3 { margin: 0; font-family: var(--display); font-size: 24px; }
-.achcv { position: relative; aspect-ratio: 500 / 420; border: 1px solid var(--line); border-radius: 8px; overflow: hidden; background: var(--cleft); }
-.achcv canvas { position: absolute; inset: 0; width: 100%; height: 100%; }
-.status { margin: 0; font-family: var(--display); font-size: 19px; min-height: 1.4em; }
-.facts { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px; margin: 0; }
-.facts div { background: var(--soft); border: 1px solid var(--line); border-radius: 6px; padding: 8px 10px; }
-.facts dt { font-family: var(--mono); font-size: 10.5px; letter-spacing: .08em; text-transform: uppercase; color: var(--muted); }
-.facts dd { margin: 0; font-size: 14.5px; font-weight: 700; }
-.achctl { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; }
-.achctl .release { width: auto; flex: 1 1 260px; }
+  /* acetylcholine */
+  .types{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:18px;margin-bottom:18px}
+  .duo{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:18px}
+  @media (max-width:820px){ .types,.duo{grid-template-columns:minmax(0,1fr)} }
+  .type{display:grid;grid-template-columns:96px minmax(0,1fr);gap:12px;align-items:center}
+  .type p{margin:2px 0 0;font-size:15px}
+  .type small{color:var(--muted);font-size:13.5px}
+  .tag{display:inline-block;font-family:var(--sans);font-size:13px;color:var(--muted);margin-left:6px}
+  .status{font-family:var(--hand);font-size:20px;margin:6px 0 0;min-height:1.3em}
+  .achctl{display:flex;flex-wrap:wrap;gap:10px 18px;align-items:center;margin-top:16px}
 
-.tag { flex: none; font: 500 11px/1 var(--mono); letter-spacing: .05em; text-transform: uppercase; border: 1px solid currentColor; border-radius: 999px; padding: 5px 8px; color: var(--muted); }
-.tag.iono { color: var(--excite); }
-.tag.metabo { color: var(--gq); }
+  /* drug lab */
+  .tabs{display:flex;flex-wrap:wrap;gap:8px;margin:0 0 10px}
+  .tab{font:inherit;font-family:var(--hand);font-size:clamp(16px,1.5vw,20px);background:transparent;border:0;border-bottom:3px solid transparent;padding:4px 10px 2px;cursor:pointer;color:var(--muted)}
+  .tab .dot{display:inline-block;width:11px;height:11px;border-radius:50%;margin-right:7px;vertical-align:1px}
+  .tab[aria-pressed="true"]{color:var(--ink);border-bottom-color:var(--tc)}
+  .tab:hover{color:var(--ink)}
+  .stage{display:grid;grid-template-columns:minmax(0,1.75fr) minmax(280px,1fr);gap:24px;align-items:start}
+  @media (max-width:860px){ .stage{grid-template-columns:minmax(0,1fr)} }
+  .labsvg{border:1.5px solid var(--line);border-radius:12px;background:#fff;overflow:hidden}
+  .panel h3{font-family:var(--hand);font-weight:normal;font-size:19px;margin:14px 0 4px}
+  .panel h3:first-child{margin-top:0}
+  .recs,.drugs{display:flex;flex-direction:column;gap:6px}
+  .opt{display:flex;justify-content:space-between;align-items:center;gap:10px;width:100%;text-align:left;font:inherit;font-size:15px;background:#fff;border:1.5px solid var(--line);border-radius:8px;padding:7px 10px;cursor:pointer;color:var(--ink)}
+  .opt small{color:var(--muted);font-size:13px;text-align:right}
+  .opt:hover{border-color:#bdb7aa}
+  .opt[aria-pressed="true"]{border-color:var(--oc,var(--c));box-shadow:inset 4px 0 0 var(--oc,var(--c))}
+  .grp{font-size:14px;font-weight:600;margin:10px 0 4px}
+  .grp.up{color:var(--on)} .grp.down{color:var(--off)}
+  .recnote{font-size:14px;color:var(--muted);margin:6px 0 0}
+  .detail{margin-top:14px;padding-top:10px;border-top:1.5px dashed var(--line)}
+  .detail h4{font-family:var(--hand);font-weight:normal;font-size:26px;margin:0;line-height:1.2}
+  .detail .aka{font-size:14px;color:var(--muted);margin:0 0 6px}
+  .detail p{margin:0 0 8px}
+  .detail .what{background:#fff;border-left:3px solid var(--oc);padding:6px 10px}
+  .badge{display:inline-block;font-size:13px;font-weight:600;border:1.5px solid currentColor;border-radius:999px;padding:1px 9px;margin-bottom:6px}
+  .labctl{display:flex;flex-wrap:wrap;gap:10px 16px;align-items:center;margin-top:10px}
 
-/* lab */
-.nttabs { display: grid; grid-template-columns: repeat(6, minmax(0, 1fr)); gap: 8px; }
-@media (max-width: 900px) { .nttabs { grid-template-columns: repeat(3, minmax(0, 1fr)); } }
-@media (max-width: 560px) { .nttabs { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
-.nttabs button { display: grid; gap: 3px; text-align: left; background: var(--panel); padding: 10px 12px; min-width: 0; }
-.nttabs .nm { display: flex; align-items: center; gap: 8px; font-family: var(--display); font-size: clamp(15px, 1.6vw, 18px); overflow-wrap: anywhere; }
-.nttabs .dot { width: 12px; height: 12px; border-radius: 50%; background: var(--c); flex: none; }
-.nttabs small { font-weight: 400; font-size: 12.5px; color: var(--muted); line-height: 1.25; }
-.nttabs button[aria-pressed="true"] { border-color: var(--c); box-shadow: inset 0 0 0 1px var(--c); }
+  table{border-collapse:collapse;width:100%;min-width:720px;font-size:14.5px;background:#fff}
+  .tablewrap{overflow-x:auto;border:1.5px solid var(--line);border-radius:12px}
+  th,td{text-align:left;padding:9px 12px;border-bottom:1px solid var(--line);vertical-align:top}
+  th{font-family:var(--hand);font-weight:normal;font-size:16px}
+  tbody tr:last-child td{border-bottom:0}
+  td .dot{display:inline-block;width:10px;height:10px;border-radius:50%;margin-right:7px}
+  td.up{color:var(--on)} td.down{color:var(--off)}
 
-.lab { display: grid; grid-template-columns: minmax(0, 1fr) 350px; gap: 20px; align-items: start; }
-@media (max-width: 980px) { .lab { grid-template-columns: minmax(0, 1fr); } }
-.viz { display: grid; gap: 12px; min-width: 0; }
-.scene { position: relative; aspect-ratio: 1000 / 560; border: 1px solid var(--line); border-radius: 8px; overflow: hidden; background: var(--cleft); }
-.scene canvas, .chart canvas { position: absolute; inset: 0; width: 100%; height: 100%; display: block; }
-.chart { position: relative; height: 170px; border: 1px solid var(--line); border-radius: 8px; background: var(--panel); overflow: hidden; }
-.legend { display: flex; flex-wrap: wrap; gap: 6px 16px; font-size: 13.5px; color: var(--muted); margin: 0; padding: 0; list-style: none; }
-.legend li { display: flex; align-items: center; gap: 6px; }
-.legend i { display: inline-block; flex: none; }
-.lg-nt { width: 11px; height: 11px; border-radius: 50%; background: var(--c); }
-.lg-drug { width: 13px; height: 13px; background: var(--cc); clip-path: polygon(25% 5%, 75% 5%, 100% 50%, 75% 95%, 25% 95%, 0 50%); }
-.lg-ion { width: 7px; height: 7px; border-radius: 50%; background: var(--ic); }
-.lg-msg { width: 9px; height: 9px; background: var(--msg); transform: rotate(45deg); }
-
-.panel { display: grid; gap: 18px; background: var(--panel); border: 1px solid var(--line); border-radius: 8px; padding: 16px; min-width: 0; }
-.panel h2 { margin: 0 0 8px; font-family: var(--mono); font-weight: 500; font-size: 11px; letter-spacing: .1em; text-transform: uppercase; color: var(--muted); }
-.recgrid { display: grid; gap: 6px; }
-.recgrid button { display: flex; justify-content: space-between; align-items: center; gap: 10px; text-align: left; }
-.recgrid button[aria-pressed="true"] { border-color: var(--c); box-shadow: inset 0 0 0 1px var(--c); }
-.recnote { margin: 8px 0 0; font-size: 14.5px; color: var(--muted); }
-.druggroups { display: grid; gap: 12px; }
-.druggroups h3 { margin: 0 0 6px; font-size: 14px; }
-.druggroups h3.up { color: var(--on); }
-.druggroups h3.down { color: var(--off); }
-.druglist { display: grid; gap: 6px; }
-.druglist button { display: flex; justify-content: space-between; align-items: center; gap: 8px; text-align: left; }
-.druglist .hx { width: 12px; height: 12px; background: var(--cc); flex: none; clip-path: polygon(25% 5%, 75% 5%, 100% 50%, 75% 95%, 25% 95%, 0 50%); }
-.druglist .l { display: flex; align-items: center; gap: 9px; min-width: 0; }
-.druglist .k { flex: none; font-weight: 400; font-size: 12px; color: var(--muted); text-align: right; }
-.druglist button[aria-pressed="true"] { border-color: var(--cc); box-shadow: inset 0 0 0 1px var(--cc); }
-.release { width: 100%; font-family: var(--display); font-size: 20px; padding: 14px; background: var(--c); border-color: var(--c); color: #fff; }
-.release:hover { filter: brightness(1.08); border-color: var(--c); }
-.toggles { display: grid; gap: 6px; }
-.tog { display: flex; justify-content: space-between; align-items: center; gap: 10px; width: 100%; text-align: left; font-weight: 400; }
-.tog .sw { flex: none; width: 34px; height: 20px; border-radius: 10px; background: var(--line); position: relative; transition: background .15s; }
-.tog .sw::after { content: ""; position: absolute; top: 3px; left: 3px; width: 14px; height: 14px; border-radius: 50%; background: var(--panel); transition: transform .15s; }
-.tog[aria-pressed="true"] .sw { background: var(--fg); }
-.tog[aria-pressed="true"] .sw::after { transform: translateX(14px); }
-.tog.drugtog[aria-pressed="true"] .sw { background: var(--cc); }
-.tog.blk[aria-pressed="true"] .sw { background: var(--off); }
-.achctl .tog { width: auto; flex: 1 1 220px; }
-
-.info { display: grid; gap: 10px; border-top: 1px solid var(--line); padding-top: 14px; }
-.info h3 { margin: 0; font-family: var(--display); font-size: 26px; line-height: 1.1; }
-.pills { display: flex; flex-wrap: wrap; gap: 6px; }
-.pill { font-size: 12.5px; font-weight: 700; border-radius: 999px; padding: 3px 10px; border: 1px solid var(--line); }
-.pill.up { color: var(--on); border-color: var(--on); }
-.pill.down { color: var(--off); border-color: var(--off); }
-.info p { margin: 0; font-size: 15.5px; }
-.info dl { margin: 0; display: grid; gap: 8px; }
-.info dt { font-family: var(--mono); font-size: 11px; letter-spacing: .08em; text-transform: uppercase; color: var(--muted); }
-.info dd { margin: 0; font-size: 15px; }
-
-.tablewrap { overflow-x: auto; border: 1px solid var(--line); border-radius: 8px; background: var(--panel); }
-table { border-collapse: collapse; width: 100%; min-width: 820px; font-size: 14.5px; }
-th, td { text-align: left; padding: 10px 12px; border-bottom: 1px solid var(--line); vertical-align: top; }
-th { font-family: var(--mono); font-weight: 500; font-size: 11px; letter-spacing: .08em; text-transform: uppercase; color: var(--muted); }
-tbody tr:last-child td { border-bottom: 0; }
-td.nm { font-weight: 700; white-space: nowrap; }
-td.nm span { display: inline-block; width: 10px; height: 10px; border-radius: 50%; margin-right: 8px; background: var(--c); }
-td .up { color: var(--on); font-weight: 700; } td .down { color: var(--off); font-weight: 700; }
-.foot { margin: 0; font-size: 14px; color: var(--muted); max-width: 85ch; }
-@media (prefers-reduced-motion: reduce) { * { transition: none !important; } }
+  .note{font-size:13px;color:var(--muted);margin:22px 0 0;max-width:62em}
+  .foot{margin-top:28px;padding-top:14px;border-top:1px dashed #c9c3b6;font-size:12.5px;color:var(--muted)}
+  .foot p{margin:0 0 8px}
+  .embed{display:flex;gap:8px;align-items:flex-start;flex-wrap:wrap}
+  .embed code{flex:1;min-width:0;font-family:var(--mono);font-size:11.5px;background:#fff;border:1px solid var(--line);padding:5px 8px;overflow-wrap:anywhere}
+  .embed button{font:inherit;font-size:12px;padding:4px 10px;background:#fff;border:1px solid #bdb7aa;border-radius:4px;cursor:pointer}
+  .refs{margin:4px 0 10px;padding-left:18px}
 </style>
 </head>
 <body>
+<svg width="0" height="0" style="position:absolute" aria-hidden="true" focusable="false">
+  <defs>
+    <filter id="rough" x="-5%" y="-5%" width="110%" height="110%">
+      <feTurbulence type="fractalNoise" baseFrequency="0.035" numOctaves="2" seed="7"/>
+      <feDisplacementMap in="SourceGraphic" scale="3"/>
+    </filter>
+  </defs>
+</svg>
 
-<main class="wrap">
-  <header>
-    <p class="eyebrow">Intro to Neuroscience · Drugs &amp; the Synapse</p>
-    <h1>Agonists vs. Antagonists</h1>
-    <p class="lead">Neurons talk by releasing chemical messengers called neurotransmitters. Almost every drug that affects your mind works by turning one of their receptors up or down. Here’s how.</p>
-  </header>
+<div class="wrap">
+  <a class="back" href="../">← All NeuroSims</a>
+  <h1>Agonists vs. Antagonists</h1>
+  <p class="intro">Neurons talk by releasing chemical messengers (neurotransmitters) that fit into receptors on the next cell, like a key in a lock. Most drugs that affect the mind change that conversation in one of two ways: they turn the signal <b style="color:var(--on)">up</b>, or they turn it <b style="color:var(--off)">down</b>.</p>
 
-  <section class="sec" aria-labelledby="basics-h">
-    <h2 id="basics-h">The basics</h2>
-    <div class="basics">
-      <div class="bcard" style="--bc: var(--fg)"><h3>Neurotransmitter</h3><p>The messenger. One neuron releases it, it crosses a tiny gap, and it fits into a <b>receptor</b> on the next cell, like a key in a lock.</p></div>
-      <div class="bcard" style="--bc: var(--on)"><h3>Agonist</h3><p>A drug that turns the receptor <b>ON</b>. It copies the messenger, boosts the receptor, or leaves extra messenger in the gap.</p></div>
-      <div class="bcard" style="--bc: var(--off)"><h3>Antagonist</h3><p>A drug that keeps the receptor <b>OFF</b>. It sits in the lock or plugs the channel, without turning anything on.</p></div>
+  <!-- ============ 1. agonist vs antagonist ============ -->
+  <h2>Turn it up, or block it?</h2>
+  <p class="sub">The same synapse three ways. Watch what happens to the signal that reaches the next neuron.</p>
+  <div class="trio" id="trio"></div>
+  <ul class="key">
+    <li><svg width="16" height="16" viewBox="0 0 16 16"><circle cx="8" cy="8" r="6" fill="#1f6fd1" stroke="#4a4440" stroke-width="1.3"/></svg>neurotransmitter (the messenger)</li>
+    <li><svg width="18" height="18" viewBox="0 0 18 18"><path d="M4.5 2.9 L13.5 2.9 L17 9 L13.5 15.1 L4.5 15.1 L1 9 Z" fill="#2f8f46" stroke="#4a4440" stroke-width="1.3"/><path d="M5.5 9 H12.5 M9 5.5 V12.5" stroke="#fff" stroke-width="2"/></svg>agonist drug</li>
+    <li><svg width="18" height="18" viewBox="0 0 18 18"><path d="M4.5 2.9 L13.5 2.9 L17 9 L13.5 15.1 L4.5 15.1 L1 9 Z" fill="#c8423b" stroke="#4a4440" stroke-width="1.3"/><path d="M5.5 9 H12.5" stroke="#fff" stroke-width="2"/></svg>antagonist drug</li>
+  </ul>
+
+  <!-- ============ 2. two kinds of receptor: acetylcholine ============ -->
+  <h2>Two kinds of receptor</h2>
+  <p class="sub">Receptors come in two basic designs. Acetylcholine uses both, which is why the same messenger can make your bicep contract and your heart slow down.</p>
+  <div class="types">
+    <div class="card type">
+      <svg viewBox="0 0 96 80" aria-hidden="true"><g filter="url(#rough)" stroke="#4a4440" stroke-width="2.2"><rect x="22" y="24" width="18" height="44" rx="6" fill="#cfc3b2"/><rect x="56" y="24" width="18" height="44" rx="6" fill="#cfc3b2"/><line x1="4" y1="46" x2="22" y2="46"/><line x1="74" y1="46" x2="92" y2="46"/></g><circle cx="48" cy="12" r="5" fill="#f08c00"/><circle cx="48" cy="36" r="5" fill="#f08c00"/><circle cx="48" cy="60" r="5" fill="#f08c00"/></svg>
+      <div><h3>Ionotropic receptor</h3><p>The receptor <b>is a gate</b>. When the messenger fits, the gate opens and charged particles (ions) rush through.</p><small>Fast: about a thousandth of a second.</small></div>
     </div>
-    <div class="basics two">
-      <div class="bcard" style="--bc: var(--excite)"><h3>Ionotropic receptor</h3><p>The receptor <b>is a gate</b>. When the messenger binds, the gate opens and charged particles (ions) rush through.</p><small>Fast: about a thousandth of a second.</small></div>
-      <div class="bcard" style="--bc: var(--gq)"><h3>Metabotropic receptor</h3><p>The receptor <b>is a doorbell</b>. When the messenger binds, it sends a signal inside the cell (a G protein) that sets off a chain reaction.</p><small>Slower, about a second, but the effect lasts longer.</small></div>
+    <div class="card type">
+      <svg viewBox="0 0 96 80" aria-hidden="true"><g filter="url(#rough)" stroke="#4a4440" stroke-width="2.2"><rect x="10" y="16" width="30" height="40" rx="7" fill="#cfc3b2"/><line x1="2" y1="36" x2="94" y2="36"/><rect x="64" y="20" width="12" height="32" rx="5" fill="#cfc3b2"/></g><circle cx="32" cy="66" r="7" fill="#3d6fa8"/><path d="M42 66 C52 66 58 62 64 56" fill="none" stroke="#4a4440" stroke-width="1.8" stroke-dasharray="3 3"/><path d="M60 53 L65 55 L63 60" fill="none" stroke="#4a4440" stroke-width="1.8"/></svg>
+      <div><h3>Metabotropic receptor</h3><p>The receptor <b>is a doorbell</b>. When the messenger fits, it sends a helper (a G protein) inside the cell to start a chain reaction.</p><small>Slower, about a second, but it lasts longer.</small></div>
     </div>
-  </section>
+  </div>
+  <div class="duo">
+    <div class="card">
+      <h3>Bicep <span class="tag">nicotinic receptor · ionotropic</span></h3>
+      <div id="armSvg"></div>
+      <p class="status" id="armStatus"></p>
+      <p class="cap">Acetylcholine opens a gate on the muscle. Sodium rushes in and the muscle contracts in about a thousandth of a second.</p>
+      <button class="check red" id="curare" type="button" aria-pressed="false"><span class="box"></span>Add curare (an antagonist)</button>
+    </div>
+    <div class="card">
+      <h3>Heart <span class="tag">muscarinic receptor · metabotropic</span></h3>
+      <div id="heartSvg"></div>
+      <p class="status" id="heartStatus"></p>
+      <p class="cap">Acetylcholine rings a doorbell. A G protein travels inside the cell and opens a separate potassium channel, so the heart slows down over a second or two.</p>
+      <button class="check red" id="atropine" type="button" aria-pressed="false"><span class="box"></span>Add atropine (an antagonist)</button>
+    </div>
+  </div>
+  <div class="achctl">
+    <button class="btn go" id="achGo" type="button" style="--c:#8a4fc4">Release acetylcholine</button>
+    <button class="check" id="achAuto" type="button" aria-pressed="true"><span class="box"></span>repeat every 4 seconds</button>
+  </div>
 
-  <section class="sec" aria-labelledby="ach-h">
-    <h2 id="ach-h">One messenger, two receptor types: acetylcholine</h2>
-    <p>The same neurotransmitter, acetylcholine, makes your bicep <b>contract</b> and makes your heart <b>slow down</b>. The difference is the receptor: the bicep uses an ionotropic receptor and the heart uses a metabotropic one. Release acetylcholine onto both and compare how fast each one responds.</p>
-    <div class="achgrid">
-      <div class="achcard">
-        <div class="achhead"><h3>Bicep muscle</h3><span class="tag iono">Nicotinic receptor · Ionotropic</span></div>
-        <div class="achcv" id="armWrap"><canvas id="armCv" role="img" aria-label="Arm with bicep that contracts when acetylcholine opens ionotropic nicotinic receptors"></canvas></div>
-        <p class="status" id="armStatus"></p>
-        <dl class="facts"><div><dt>How fast</dt><dd>~1 millisecond</dd></div><div><dt>How long</dt><dd>A split second</dd></div></dl>
-        <div class="achctl"><button class="tog blk" id="curare" type="button" aria-pressed="false"><span>Add curare (antagonist)</span><span class="sw"></span></button></div>
+  <!-- ============ 3. drug lab ============ -->
+  <h2>Try a drug</h2>
+  <p class="sub">Pick a neurotransmitter, then a drug. Green drugs are agonists, red drugs are antagonists. Press <b>Space</b> to make the neuron fire.</p>
+  <div class="tabs" role="group" aria-label="Choose a neurotransmitter" id="tabs"></div>
+  <div class="stage">
+    <div>
+      <div class="labsvg"><svg id="lab" viewBox="0 0 1000 560" role="img" aria-label="Animated synapse showing neurotransmitter and drug molecules at the receptors"><g id="labStatic"></g><g id="labDyn"></g></svg></div>
+      <div class="meter" id="labMeter"><span>Signal to the next neuron</span><span class="bar"><span class="fill"></span><span class="norm" title="normal"></span></span><span class="word"></span></div>
+      <div class="labctl">
+        <button class="btn go" id="fire" type="button">Fire the neuron</button>
+        <button class="check" id="auto" type="button" aria-pressed="true"><span class="box"></span>fire every few seconds</button>
+        <button class="check" id="drugOn" type="button" aria-pressed="false"><span class="box"></span>drug in the synapse</button>
       </div>
-      <div class="achcard">
-        <div class="achhead"><h3>Heart</h3><span class="tag metabo">Muscarinic receptor · Metabotropic</span></div>
-        <div class="achcv" id="heartWrap"><canvas id="heartCv" role="img" aria-label="Beating heart that slows down when acetylcholine activates metabotropic muscarinic receptors"></canvas></div>
-        <p class="status" id="heartStatus"></p>
-        <dl class="facts"><div><dt>How fast</dt><dd>~1 second</dd></div><div><dt>How long</dt><dd>Several seconds</dd></div></dl>
-        <div class="achctl"><button class="tog blk" id="atropine" type="button" aria-pressed="false"><span>Add atropine (antagonist)</span><span class="sw"></span></button></div>
-      </div>
     </div>
-    <div class="achctl" style="--c: var(--ach)">
-      <button class="release" id="achGo" type="button">Release acetylcholine</button>
-      <button class="tog" id="achAuto" type="button" aria-pressed="true" style="flex: 0 1 240px"><span>Repeat every 4 s</span><span class="sw"></span></button>
-    </div>
-  </section>
+    <div class="panel" id="panel" aria-live="polite"></div>
+  </div>
 
-  <section class="sec" aria-labelledby="lab-h">
-    <h2 id="lab-h">Try the drugs</h2>
-    <p>Pick a neurotransmitter, then add a drug. Green drugs are agonists (turn the receptor on), red drugs are antagonists (keep it off). Press <kbd>Space</kbd> to fire the neuron.</p>
-    <nav class="nttabs" id="nttabs" aria-label="Neurotransmitter"></nav>
-    <div class="lab">
-      <div class="viz">
-        <div class="scene" id="scene"><canvas id="sc" role="img" aria-label="Animated synapse showing neurotransmitter and drug molecules acting on receptors"></canvas></div>
-        <ul class="legend" id="legend"></ul>
-        <div class="chart" id="trWrap"><canvas id="tr" role="img" aria-label="How strongly the receptors are signaling over time"></canvas></div>
-      </div>
-      <aside class="panel" id="panel">
-        <div>
-          <h2>Receptor</h2>
-          <div class="recgrid" id="recgrid"></div>
-          <p class="recnote" id="recnote"></p>
-        </div>
-        <div>
-          <h2>Drug</h2>
-          <div class="druggroups" id="druggroups"></div>
-        </div>
-        <button class="release" id="release" type="button">Fire the neuron</button>
-        <div class="toggles">
-          <button class="tog drugtog" id="drug" type="button" aria-pressed="false"><span>Drug in synapse: <b id="drugLabel"></b></span><span class="sw"></span></button>
-          <button class="tog" id="auto" type="button" aria-pressed="true"><span>Fire every 3.5 s</span><span class="sw"></span></button>
-        </div>
-        <div class="info" id="info"></div>
-      </aside>
-    </div>
-  </section>
+  <!-- ============ 4. cheat sheet ============ -->
+  <h2>Cheat sheet</h2>
+  <div class="tablewrap"><table>
+    <thead><tr><th>Neurotransmitter</th><th>Main job</th><th>Receptor</th><th>Turn it up (agonists)</th><th>Turn it down (antagonists)</th></tr></thead>
+    <tbody id="cheat"></tbody>
+  </table></div>
 
-  <section class="sec" aria-labelledby="ref-h">
-    <h2 id="ref-h">Cheat sheet</h2>
-    <div class="tablewrap"><table>
-      <thead><tr><th>Neurotransmitter</th><th>Main job</th><th>Receptor</th><th>Turn it ON (agonists)</th><th>Turn it OFF (antagonists)</th></tr></thead>
-      <tbody id="refbody"></tbody>
-    </table></div>
-    <p class="foot">A simplified teaching model with motion slowed down a lot. Real drugs usually act on several receptors at once; for example, alcohol both boosts GABA and dampens glutamate. Cocaine, meth, MDMA, Adderall and Prozac act on the recycling pumps (transporters) rather than on the receptor itself, so they count as <i>indirect</i> agonists. For learning only, not medical advice.</p>
-  </section>
-</main>
+  <p class="note">Simplified sketch, not to scale, with everything slowed way down. Real drugs usually act on several receptors at once (alcohol both boosts GABA and dampens glutamate). Cocaine, meth, MDMA, Adderall and Prozac work on the recycling pumps rather than the receptor itself, so they count as <i>indirect</i> agonists. For learning only, not medical advice.</p>
+
+  <footer class="foot">
+    <p class="embed"><span>Embed:</span>
+      <code id="embedCode">&lt;iframe src="https://nelurad.github.io/neurosims/receptor-pharmacology/" width="100%" height="2900" style="border:0" title="Agonists vs. Antagonists"&gt;&lt;/iframe&gt;</code>
+      <button id="copyBtn">Copy</button></p>
+    <p style="margin-bottom:2px">References</p>
+    <ul class="refs">
+      <li>Purves, D., et al. <i>Neuroscience</i>. Sinauer / Oxford University Press.</li>
+      <li>Meyer, J. S., &amp; Quenzer, L. F. <i>Psychopharmacology: Drugs, the Brain, and Behavior</i>. Sinauer / Oxford University Press.</li>
+    </ul>
+    <p>Part of <a href="../">NeuroSims</a>, made by <a href="https://nelurad.github.io/">Nelu Radpour</a> (Florida State University) with help from Claude. Content licensed CC BY 4.0; code licensed MIT. Free to use and adapt with credit.</p>
+  </footer>
+</div>
 
 <script>
-(() => {
-  // ---------- how each kind of drug works ----------
-  const CLS = {
-    agonist:    { group: 'up',   how: 'Copies the neurotransmitter', site: 'ortho', eff: 1 },
-    pam:        { group: 'up',   how: 'Boosts the receptor', site: 'allo' },
-    reuptake:   { group: 'up',   how: 'Blocks recycling', site: 'pump' },
-    releaser:   { group: 'up',   how: 'Pushes out extra', site: 'pump' },
-    antagonist: { group: 'down', how: 'Blocks the receptor', site: 'ortho', eff: 0 },
-    blocker:    { group: 'down', how: 'Plugs the channel', site: 'pore' },
-    nam:        { group: 'down', how: 'Makes it harder to open', site: 'allo' }
-  };
-  const groupColor = g => g === 'up' ? 'on' : 'off';
+(function(){
+'use strict';
+const $=id=>document.getElementById(id);
+const RM=matchMedia('(prefers-reduced-motion: reduce)').matches;
+const INK='#4a4440', MUTED='#8a8578', PAPER='#fffdf8', SEND='#efe3d2', RECV='#f7efe4', PROT='#cfc3b2';
+const ON='#2f8f46', OFF='#c8423b', SKIN='#f1d6c0', MUSCLE='#e7866a', HEART='#e4572e', ACH='#8a4fc4', GPROT='#3d6fa8';
+const ION={na:'#f08c00', ca:'#2a9d55', cl:'#1a9a8f', k:'#c9a400'}, MSG='#f0a020';
+const clamp=(v,a,b)=>Math.min(b,Math.max(a,v)), rnd=(a,b)=>a+Math.random()*(b-a), f1=v=>v.toFixed(1);
+const ease=k=>k<0?0:k>1?1:k*k*(3-2*k);
+const hexPath=(x,y,r)=>{ let d=''; for(let i=0;i<6;i++){ const a=i/6*6.283; d+=(i?'L':'M')+f1(x+Math.cos(a)*r)+' '+f1(y+Math.sin(a)*r); } return d+'Z'; };
+function drugSvg(x,y,r,up){ // hexagon with + (agonist) or − (antagonist)
+  const s=r*0.45;
+  return `<path d="${hexPath(x,y,r)}" fill="${up?ON:OFF}" stroke="${INK}" stroke-width="1.4"/><path d="M${f1(x-s)} ${f1(y)}H${f1(x+s)}${up?`M${f1(x)} ${f1(y-s)}V${f1(y+s)}`:''}" stroke="#fff" stroke-width="2.2" stroke-linecap="round"/>`;
+}
+const dot=(x,y,r,fill,op=1)=>`<circle cx="${f1(x)}" cy="${f1(y)}" r="${r}" fill="${fill}" stroke="${INK}" stroke-width="1.2" opacity="${op.toFixed(2)}"/>`;
+const cup=(x,y,col)=>`<path d="M${x-9} ${y} A9 9 0 0 0 ${x+9} ${y}" fill="none" stroke="${col}" stroke-width="2.6" stroke-linecap="round"/>`;
 
-  // ---------- neurotransmitters, receptors, drugs ----------
-  const NTS = [
-    { id: 'glu', name: 'Glutamate', job: 'The brain’s main “go” signal',
-      recs: [
-        { name: 'NMDA receptor', kind: 'iono', ion: 'ca', excit: true,
-          note: 'An ionotropic receptor: a gate that lets sodium and calcium in. It excites the neuron and is essential for forming memories.',
-          drugs: [
-            { name: 'Ketamine', cls: 'blocker', koff: 0.25, alias: '“Special K”', text: 'Plugs the NMDA channel from the inside, so glutamate’s “go” signal can’t get through. Used in medicine as an anesthetic and a fast-acting depression treatment.', feel: 'A detached, dreamlike, out-of-body feeling (dissociation). At high doses, the “K-hole.”' },
-            { name: 'PCP', cls: 'blocker', koff: 0.04, alias: '“Angel dust”', text: 'Plugs the same channel as ketamine but stays stuck much longer. Watch how slowly it leaves.', feel: 'Dissociation, numbness, agitation. Effects can last many hours.' },
-            { name: 'Alcohol', cls: 'nam', koff: 0.5, alias: 'Beer, wine, liquor', text: 'Makes NMDA receptors harder to open, turning down the brain’s main “go” signal. Alcohol also boosts GABA (see the GABA tab).', feel: 'Fuzzy thinking and memory blackouts. The brain needs NMDA receptors to save new memories.' },
-            { name: 'DXM', cls: 'blocker', koff: 0.5, alias: 'Cough syrup', text: 'Dextromethorphan is the cough suppressant in many syrups. At very high doses it blocks NMDA like ketamine does (“robotripping”).', feel: 'Dissociation and confusion at high doses.' }
-          ] }
-      ] },
-    { id: 'gaba', name: 'GABA', job: 'The brain’s main “stop” signal',
-      recs: [
-        { name: 'GABA-A receptor', kind: 'iono', ion: 'cl', excit: false,
-          note: 'An ionotropic receptor: a gate that lets chloride in. That calms the neuron down. Many sedatives work by boosting it.',
-          drugs: [
-            { name: 'Alcohol', cls: 'pam', koff: 0.5, alias: 'Beer, wine, liquor', text: 'Helps GABA hold the chloride gate open, boosting the brain’s calming signal.', feel: 'Relaxation, lowered inhibitions, slurred speech, sleepiness.' },
-            { name: 'Xanax', cls: 'pam', koff: 0.4, alias: 'Alprazolam, a benzodiazepine (“benzo”)', text: 'Attaches to its own spot on the receptor and makes GABA work better, but only when GABA is around.', feel: 'Calm and drowsy, with less anxiety. Mixing benzos with alcohol or opioids can stop breathing.' },
-            { name: 'Flumazenil', cls: 'antagonist', koff: 0.4, alias: 'Emergency-room antidote', text: 'Blocks the benzodiazepine spot on GABA-A receptors (drawn here, simply, as blocking the receptor). Doctors use it to reverse a benzo overdose.', feel: 'Wakes up someone who is over-sedated by benzos.' }
-          ] },
-        { name: 'GABA-B receptor', kind: 'metabo', g: 'Gi', excit: false,
-          note: 'A metabotropic receptor: it sends a G protein inside to open potassium channels. That calms the neuron slowly but for a long time.',
-          drugs: [
-            { name: 'GHB', cls: 'agonist', koff: 1, alias: '“G,” “liquid ecstasy”', text: 'Turns on GABA-B receptors directly. Also a prescription drug for narcolepsy.', feel: 'Euphoria and relaxation, then sudden deep sleep. The gap between a “high” dose and an overdose is tiny.' },
-            { name: 'Baclofen', cls: 'agonist', koff: 1.2, alias: 'Muscle relaxant', text: 'A prescription drug that turns on GABA-B receptors in the spinal cord.', feel: 'Relaxes stiff, spastic muscles (for example in multiple sclerosis).' }
-          ] }
-      ] },
-    { id: 'ach', name: 'Acetylcholine', job: 'Muscles, memory & “rest and digest”',
-      recs: [
-        { name: 'Nicotinic receptor', kind: 'iono', ion: 'na', excit: true,
-          note: 'An ionotropic receptor: a gate that lets sodium in. Found on muscles (it makes them contract) and in the brain’s reward system.',
-          drugs: [
-            { name: 'Nicotine', cls: 'agonist', koff: 1.5, alias: 'Cigarettes, vapes', text: 'Fits the acetylcholine lock and opens the gate. In the brain’s reward system this releases dopamine, which is why nicotine is so addictive.', feel: 'Alertness, a small buzz, relaxation. Very habit-forming.' },
-            { name: 'Curare', cls: 'antagonist', koff: 0.3, alias: 'Arrow-tip poison', text: 'A plant poison once used on South American hunting arrows. It sits in the acetylcholine lock on muscles without opening it.', feel: 'Muscles can’t contract, causing paralysis. Modern versions relax muscles during surgery.' }
-          ] },
-        { name: 'Muscarinic receptor', kind: 'metabo', g: 'Gi', excit: false,
-          note: 'A metabotropic receptor: it sends a G protein signal inside the cell. In the heart this slows the heartbeat.',
-          drugs: [
-            { name: 'Muscarine', cls: 'agonist', koff: 1.2, alias: 'Mushroom poison', text: 'A toxin in some wild mushrooms that turns on muscarinic receptors.', feel: 'Sweating, drooling, tears, a slow heartbeat.' },
-            { name: 'Atropine', cls: 'antagonist', koff: 0.3, alias: 'From deadly nightshade', text: 'Comes from the belladonna plant. It blocks muscarinic receptors.', feel: 'Dry mouth, big pupils, a racing heart. Doctors use it to speed up a dangerously slow heart.' },
-            { name: 'Scopolamine', cls: 'antagonist', koff: 0.3, alias: 'Motion-sickness patch', text: 'A close relative of atropine that gets into the brain more easily.', feel: 'Prevents seasickness. At high doses it causes confusion and memory loss.' }
-          ] }
-      ] },
-    { id: 'da', name: 'Dopamine', job: 'Reward, motivation & movement', pump: true,
-      recs: [
-        { name: 'Dopamine receptor', kind: 'metabo', g: 'Gs', excit: true,
-          note: 'A metabotropic receptor: it sends a G protein signal inside the cell. All dopamine receptors are metabotropic. The recycling pumps at the top pull dopamine back in.',
-          drugs: [
-            { name: 'Cocaine', cls: 'reuptake', koff: 0.6, alias: '“Coke,” “blow”', text: 'Jams the dopamine recycling pumps, so dopamine piles up in the gap and keeps hitting the receptors.', feel: 'An intense, short burst of euphoria and energy, followed by a crash.' },
-            { name: 'Meth', cls: 'releaser', koff: 0.3, alias: 'Methamphetamine, “crystal”', text: 'Gets inside the neuron and runs the recycling pumps backwards, pushing dopamine out even when the neuron isn’t firing.', feel: 'Long-lasting euphoria and energy, no appetite. Highly addictive and damaging to neurons.' },
-            { name: 'Haloperidol', cls: 'antagonist', koff: 0.3, alias: 'Antipsychotic medicine', text: 'Blocks dopamine receptors. Too much dopamine signaling is linked to psychosis.', feel: 'Reduces hallucinations. Side effects can include stiffness and tremor.' }
-          ] }
-      ] },
-    { id: 'sht', name: 'Serotonin', job: 'Mood, sleep & perception', pump: true,
-      recs: [
-        { name: '5-HT2A receptor', kind: 'metabo', g: 'Gq', excit: true,
-          note: 'A metabotropic serotonin receptor found in the outer layer of the brain (the cortex). Psychedelics act here. The recycling pumps at the top pull serotonin back in.',
-          drugs: [
-            { name: 'LSD', cls: 'agonist', koff: 0.03, alias: '“Acid”', text: 'Fits the serotonin receptor and gets trapped there: the receptor closes a lid over it. Watch it stay stuck.', feel: 'Hallucinations and altered perception for 8–12 hours.' },
-            { name: 'Psilocybin', cls: 'agonist', koff: 1, alias: '“Magic mushrooms”', text: 'The body turns psilocybin into psilocin, which turns on this serotonin receptor.', feel: 'Visual changes and an altered sense of time and self for 4–6 hours. Being studied as a depression treatment.' },
-            { name: 'MDMA', cls: 'releaser', koff: 0.3, alias: '“Ecstasy,” “Molly”', text: 'Runs the serotonin recycling pumps backwards, flooding the gap with serotonin.', feel: 'Euphoria and emotional closeness. Afterward serotonin is used up, which can leave people low for days.' },
-            { name: 'Prozac', cls: 'reuptake', koff: 0.4, alias: 'Fluoxetine, an SSRI antidepressant', text: 'Blocks serotonin recycling so serotonin lingers in the gap. It’s much gentler than MDMA and doesn’t force serotonin out.', feel: 'Mood improves gradually over several weeks.' },
-            { name: 'Seroquel', cls: 'antagonist', koff: 0.4, alias: 'Quetiapine, an antipsychotic', text: 'Blocks this serotonin receptor (and dopamine receptors).', feel: 'Calming and sleepy. Used for psychosis and bipolar disorder.' }
-          ] }
-      ] },
-    { id: 'ne', name: 'Norepinephrine', job: 'Alertness & “fight or flight”', pump: true,
-      recs: [
-        { name: 'Beta receptor', kind: 'metabo', g: 'Gs', excit: true,
-          note: 'A metabotropic receptor on the heart and many other cells. It speeds up the heartbeat during “fight or flight.” The recycling pumps at the top pull norepinephrine back in.',
-          drugs: [
-            { name: 'Adderall', cls: 'releaser', koff: 0.3, alias: 'Amphetamine, ADHD medicine', text: 'Runs the norepinephrine (and dopamine) recycling pumps backwards, pushing out extra.', feel: 'Focus and alertness, a faster heartbeat, less appetite.' },
-            { name: 'EpiPen', cls: 'agonist', koff: 1.2, alias: 'Injected adrenaline (epinephrine)', text: 'Adrenaline is norepinephrine’s close cousin. It turns on beta receptors directly.', feel: 'A racing heart and wide-open airways. It stops a severe allergic reaction.' },
-            { name: 'Propranolol', cls: 'antagonist', koff: 0.4, alias: 'A “beta blocker”', text: 'Blocks beta receptors, so adrenaline and norepinephrine can’t speed up the heart.', feel: 'Calms a pounding heart and shaky hands. Popular for stage fright.' }
-          ] }
-      ] }
-  ];
-
-  // ---------- geometry & helpers ----------
-  const SW = 1000, SH = 560, PRE_Y = 165, POST_Y = 320, MOL_YMAX = POST_Y - 34;
-  const RX = [250, 420, 590, 760], PUMP_X = [200, 800];
-  const VES_HOME = [[360, 82], [440, 112], [520, 72], [600, 112], [680, 82]];
-  const TRACE_WIN = 12, DRUG_N = 14;
-  const clamp = (v, a, b) => Math.min(b, Math.max(a, v));
-  const rnd = (a, b) => a + Math.random() * (b - a);
-  const expo = k => -Math.log(1 - Math.random()) / k;
-  const near = (m, p, d) => Math.hypot(m.x - p[0], m.y - p[1]) < d;
-  const typeWord = r => r.kind === 'iono' ? 'Ionotropic' : 'Metabotropic';
-
-  let tok = {};
-  function readTokens() {
-    const cs = getComputedStyle(document.documentElement);
-    ['bg', 'panel', 'fg', 'muted', 'line', 'soft', 'pre', 'post', 'cleft', 'membrane', 'protein', 'receptor', 'excite', 'inhibit', 'gq',
-     'na', 'k', 'ca', 'cl', 'msg', 'glu', 'gaba', 'ach', 'da', 'sht', 'ne', 'on', 'off', 'muscle', 'heart', 'display', 'body', 'mono']
-      .forEach(n => { tok[n] = cs.getPropertyValue('--' + n).trim(); });
-  }
-  readTokens();
-  const onTheme = () => { readTokens(); render(); };
-  matchMedia('(prefers-color-scheme: dark)').addEventListener('change', onTheme);
-  new MutationObserver(onTheme).observe(document.documentElement, { attributes: true, attributeFilter: ['data-theme'] });
-  function lum(hex) { const n = parseInt(hex.replace('#', ''), 16); return (0.299 * (n >> 16 & 255) + 0.587 * (n >> 8 & 255) + 0.114 * (n & 255)) / 255; }
-
-  // ---------- lab state ----------
-  const reduced = matchMedia('(prefers-reduced-motion: reduce)').matches;
-  let ntI = 0, recI = 0, drugI = 0, drugOn = false, auto = !reduced;
-  let T = 0, lastAP = -9, nextAuto = 0.8, resp = 0;
-  let mols, ves, recs, pumps, ions, msgs, trace, marks, events;
-  const nt = () => NTS[ntI], rec = () => nt().recs[recI], drug = () => rec().drugs[drugI];
-  const cls = d => CLS[d.cls];
-
-  function sites(r) {
-    return rec().kind === 'iono'
-      ? { ortho: [r.x - 13, POST_Y - 44], allo: [r.x + 34, POST_Y - 26], pore: [r.x, POST_Y - 40] }
-      : { ortho: [r.x, POST_Y - 44], allo: [r.x + 34, POST_Y - 26], pore: null };
-  }
-
-  function reset() {
-    mols = []; ions = []; msgs = []; trace = []; marks = []; events = []; resp = 0;
-    ves = VES_HOME.map(([x, y]) => ({ hx: x, hy: y, x, y, st: 'idle', t: 0, grow: 1 }));
-    recs = RX.map(x => ({ x, ortho: null, allo: null, pore: null, o: 0, act: 0, alpha: 0 }));
-    pumps = PUMP_X.map(x => ({ x, drug: null, leak: 0 }));
-    nextAuto = T + 0.6;
-  }
-  function clearDrugs() {
-    for (const r of recs) { if (r.ortho && r.ortho.kind === 'drug') r.ortho = null; r.allo = null; r.pore = null; }
-    for (const p of pumps) p.drug = null;
-    mols = mols.filter(m => m.kind !== 'drug');
-  }
-  function washout() { for (const m of mols) if (m.kind === 'drug' && m.st === 'free') { m.st = 'leaving'; m.t = T; } }
-  function release() {
-    lastAP = T; marks.push(T);
-    ves.filter(v => v.st === 'idle').slice(0, 2).forEach((v, i) => {
-      v.st = 'wait'; v.t = T + 0.1 + i * 0.05; v.tx = clamp(v.hx + rnd(-20, 20), 340, 660); v.spawned = false;
+/* =============== 1. hero: normal / agonist / antagonist =============== */
+const MSGR='#1f6fd1';
+const TRIO=[
+  {id:'normal', title:'Normal', cap:'The messenger fits the receptor and switches it on. A normal signal goes to the next neuron.', eg:'', mc:'#4a4440'},
+  {id:'ago', title:'With an agonist', cap:'An agonist <b style="color:var(--on)">turns the signal up</b>. It switches on receptors by itself, boosts them, or leaves extra messenger around.', eg:'Examples: nicotine, Xanax, LSD, cocaine', mc:ON},
+  {id:'anta', title:'With an antagonist', cap:'An antagonist <b style="color:var(--off)">blocks the signal</b>. It sits in the lock without turning it on, so the messenger can’t get in.', eg:'Examples: ketamine, curare, haloperidol', mc:OFF}
+];
+const HX=[80,150,220], HCUP=180;
+function buildTrio(){
+  $('trio').innerHTML=TRIO.map(p=>`<div class="card">
+    <h3 style="color:${p.id==='normal'?'var(--ink)':p.mc}">${p.title}</h3>
+    <svg viewBox="0 0 300 300" role="img" aria-label="${p.title}: synapse animation">
+      <g filter="url(#rough)" stroke="${INK}" stroke-width="2.4">
+        <path d="M30 -5 L270 -5 L270 52 C270 76 252 86 224 86 L76 86 C48 86 30 76 30 52 Z" fill="${SEND}"/>
+        <path d="M18 310 L18 214 C18 202 28 196 42 196 L258 196 C272 196 282 202 282 214 L282 310 Z" fill="${RECV}"/>
+        <circle cx="110" cy="44" r="15" fill="${PAPER}"/><circle cx="190" cy="48" r="15" fill="${PAPER}"/>
+      </g>
+      <text x="150" y="20" text-anchor="middle" font-size="15" fill="${MUTED}">sending neuron</text>
+      <text x="150" y="290" text-anchor="middle" font-size="15" fill="${MUTED}">receiving neuron</text>
+      <text x="24" y="146" font-size="13" fill="${MUTED}">gap</text>
+      <g id="hero-${p.id}"></g>
+    </svg>
+    <div class="meter" style="--mc:${p.mc}"><span>Signal</span><span class="bar"><span class="fill" id="hm-${p.id}"></span><span class="norm" style="left:50%"></span></span><span class="word" id="hw-${p.id}" style="color:${p.mc}">${p.id==='normal'?'normal':p.id==='ago'?'stronger':'blocked'}</span></div>
+    <p class="cap">${p.cap}</p>${p.eg?`<p class="eg">${p.eg}</p>`:''}</div>`).join('');
+}
+const heroLvl={normal:0,ago:0,anta:0};
+function drawTrio(t,dt){
+  const s=RM?1.6:(t%4), bound=s>1.0&&s<2.7;
+  for(const p of TRIO){
+    let h='';
+    const on=[false,false,false];
+    if(p.id!=='anta'&&bound){ on[0]=true; on[1]=true; }
+    if(p.id==='ago') on[2]=true;
+    h+=`<g filter="url(#rough)">`;
+    HX.forEach((x,i)=>{
+      const lit=on[i], strong=p.id==='ago';
+      h+=`<rect x="${x-14}" y="${HCUP+6}" width="28" height="42" rx="7" fill="${lit?(strong?'#9fd3a8':'#a9c7ee'):PROT}" stroke="${INK}" stroke-width="2.2"/>`;
+      if(lit) for(let k=-1;k<=1;k++) h+=`<path d="M${x+k*9} ${HCUP+54} l${k*5} 12" stroke="${strong?ON:MSGR}" stroke-width="2.4" stroke-linecap="round"/>`;
     });
-  }
-  function spawnDrug() {
-    const left = Math.random() < 0.5;
-    mols.push({ kind: 'drug', x: left ? 34 : 966, y: rnd(PRE_Y + 20, MOL_YMAX - 6), vx: left ? rnd(120, 220) : -rnd(120, 220), vy: rnd(-40, 40), st: 'free', t: T, rot: rnd(0, 6.28) });
-  }
-  function spawnNT(x, y, vy) { mols.push({ kind: 'nt', x, y, vx: rnd(-170, 170), vy, st: 'free', t: T, born: T }); }
-
-  function bind(m, r, site, until) {
-    const s = sites(r);
-    r[site] = m; m.st = 'bound'; m.r = r; m.site = site; m.until = until;
-    if (site === 'pore') { m.x = r.x; m.y = POST_Y - 4; } else { m.x = s[site][0]; m.y = s[site][1]; }
-  }
-  function unbind(m) {
-    if (m.site === 'pump') m.p.drug = null; else m.r[m.site] = null;
-    m.r = null; m.p = null;
-    m.st = (m.kind === 'drug' && !drugOn) ? 'leaving' : 'free';
-    m.t = T; m.nb = T + 0.3;
-    if (m.site === 'pump') { m.y = PRE_Y + 26; m.vy = 120; } else { m.y = POST_Y - 54; m.vy = -160; }
-    m.vx = rnd(-120, 120);
-    if (m.kind === 'nt' && T - m.born > 0.7 && Math.random() < 0.4) m.st = 'cleared';
-  }
-  function tryBind(m) {
-    if (m.nb && T < m.nb) return;
-    const D = drug(), C = cls(D), pam = D.cls === 'pam';
-    if (m.kind === 'drug' && C.site === 'pump') {
-      for (const p of pumps) if (!p.drug && near(m, [p.x, PRE_Y + 14], 20) && Math.random() < 0.35) {
-        p.drug = m; m.st = 'bound'; m.p = p; m.site = 'pump'; m.until = T + expo(D.koff); m.x = p.x; m.y = PRE_Y + 14; return;
-      }
-      return;
-    }
-    for (const r of recs) {
-      const s = sites(r);
-      if (m.kind === 'nt') {
-        if (!r.ortho && near(m, s.ortho, 18) && Math.random() < 0.5) { bind(m, r, 'ortho', T + rnd(0.18, 0.35) * (r.allo && pam ? 2.2 : 1)); return; }
-      } else if (C.site === 'ortho') {
-        if (!r.ortho && near(m, s.ortho, 16) && Math.random() < 0.35) { bind(m, r, 'ortho', T + expo(D.koff)); return; }
-      } else if (C.site === 'allo') {
-        if (!r.allo && near(m, s.allo, 16) && Math.random() < 0.35) { bind(m, r, 'allo', T + expo(D.koff)); return; }
-      } else if (C.site === 'pore' && s.pore) {
-        if (!r.pore && r.o > 0.3 && near(m, s.pore, 24) && Math.random() < 0.5) { bind(m, r, 'pore', T + expo(D.koff)); return; }
-      }
-    }
-  }
-
-  // ---------- lab simulation ----------
-  function step(dt) {
-    T += dt;
-    const R = rec(), D = drug(), N = nt();
-    if (auto && T >= nextAuto) { release(); nextAuto = T + 3.5; }
-
-    for (const v of ves) {
-      if (v.st === 'wait' && T >= v.t) v.st = 'dock';
-      if (v.st === 'dock') {
-        const dx = v.tx - v.x, dy = (PRE_Y - 24) - v.y, dd = Math.hypot(dx, dy);
-        if (dd < 3) { v.st = 'fuse'; v.t = T; } else { const s = Math.min(dd, 420 * dt); v.x += dx / dd * s; v.y += dy / dd * s; }
-      } else if (v.st === 'fuse') {
-        if (!v.spawned) { v.spawned = true; for (let i = 0; i < 12; i++) spawnNT(v.x + rnd(-12, 12), PRE_Y + 10, rnd(140, 240)); }
-        if (T - v.t > 0.2) { v.st = 'refill'; v.t = T + 1.5; }
-      } else if (v.st === 'refill' && T >= v.t) { v.st = 'idle'; v.x = v.hx; v.y = v.hy; v.grow = 0; }
-      else if (v.st === 'idle') v.grow = Math.min(1, v.grow + dt * 3);
-    }
-
-    // releasers run the pumps backwards
-    for (const p of pumps) if (p.drug && D.cls === 'releaser') {
-      p.leak += 4 * dt;
-      while (p.leak >= 1) { p.leak -= 1; spawnNT(p.x + rnd(-6, 6), PRE_Y + 20, rnd(80, 160)); }
-    }
-
-    if (drugOn) {
-      let free = 0; for (const m of mols) if (m.kind === 'drug' && m.st === 'free') free++;
-      if (free < DRUG_N && Math.random() < 12 * dt) spawnDrug();
-    }
-
-    const damp = Math.pow(0.2, dt), pumpDrug = cls(D).site === 'pump';
-    for (const m of mols) {
-      if (m.st === 'free' || m.st === 'leaving') {
-        m.vx = (m.vx + (Math.random() - 0.5) * 1200 * dt) * damp;
-        m.vy = (m.vy + (Math.random() - 0.5) * 1200 * dt) * damp;
-        if (m.st === 'leaving') m.vx += (m.x < 500 ? -260 : 260) * dt;
-        else if (m.kind === 'drug') m.vy += (pumpDrug ? -90 : 90) * dt;
-        else {
-          // a working recycling pump pulls the transmitter back; a jammed one doesn't
-          const p = N.pump && T - m.born >= 0.7 ? pumps[m.x < 500 ? 0 : 1] : null;
-          if (p && !p.drug) { m.vy -= 230 * dt; m.vx += Math.sign(p.x - m.x) * 220 * dt; }
-          else m.vy += 150 * dt;
-        }
-        m.x += m.vx * dt; m.y += m.vy * dt;
-        if (m.kind === 'drug') m.rot += dt * 1.5;
-        if (m.y < PRE_Y + 8) { m.y = PRE_Y + 8; m.vy = Math.abs(m.vy); }
-        if (m.y > MOL_YMAX) { m.y = MOL_YMAX; m.vy = -Math.abs(m.vy); }
-        if (m.st === 'leaving') { if (T - m.t > 1.6 || m.x < 0 || m.x > SW) m.st = 'gone'; continue; }
-        if (m.x < 30) { m.x = 30; m.vx = Math.abs(m.vx); }
-        if (m.x > 970) { m.x = 970; m.vx = -Math.abs(m.vx); }
-        if (m.kind === 'nt') {
-          if (N.pump) {
-            const p = pumps.find(p => near(m, [p.x, PRE_Y + 14], 26));
-            if (p && !p.drug && T - m.born > 0.4 && Math.random() < 0.6) { m.st = 'reuptake'; m.t = T; m.x = p.x; continue; }
-            if (T - m.born > 1.2 && Math.random() < 0.12 * dt) { m.st = 'cleared'; m.t = T; continue; }
-          } else if (T - m.born > 0.7 && Math.random() < 1.3 * dt) { m.st = 'cleared'; m.t = T; continue; }
-        }
-        tryBind(m);
-      } else if (m.st === 'bound' && T >= m.until) unbind(m);
-      else if (m.st === 'reuptake') m.y -= 90 * dt;
-    }
-    mols = mols.filter(m => m.st !== 'gone' && !((m.st === 'cleared' || m.st === 'reuptake') && T - m.t > 0.35));
-
-    let sum = 0;
-    const tau = R.kind === 'iono' ? 0.04 : 0.2;
-    for (const r of recs) {
-      let a = 0;
-      if (r.ortho) a = r.ortho.kind === 'nt' ? 1 : cls(D).eff;
-      if (r.allo) { if (D.cls === 'pam') { if (a > 0) a *= 1.7; } else if (D.cls === 'nam') a *= 0.15; }
-      r.o += (a - r.o) * Math.min(1, dt / tau);
-      r.act = r.pore ? 0 : r.o;
-      sum += r.act;
-      if (R.kind === 'iono') {
-        if (r.act > 0.12 && Math.random() < 34 * Math.min(r.act, 1.4) * dt) {
-          const pw = 3 + 7 * clamp(r.o, 0, 1.3);
-          const c = R.ion === 'cl' ? 'cl' : (R.ion === 'ca' && Math.random() < 0.45 ? 'ca' : 'na');
-          ions.push({ x: r.x + rnd(-pw + 1, pw - 1), y: POST_Y - 44, vy: rnd(150, 200), c });
-        }
+    h+=`</g>`;
+    HX.forEach((x,i)=>{ const occupied=p.id==='anta'||(p.id==='ago'&&i===2)||(i<2&&bound); if(!occupied) h+=cup(x,HCUP,MSGR); });
+    for(let i=0;i<2;i++){
+      const x=HX[i]+(i?6:-6)*(1-ease(s));
+      if(p.id==='anta'){
+        if(s<1.0) h+=dot(x,92+ease(s/0.9)*(HCUP-14-92),7,MSGR);
+        else if(s<1.8){ const k=(s-1.0)/0.8; h+=dot(HX[i]+(i?14:-14)*k,HCUP-14-40*k,7,MSGR,1-k); }
       } else {
-        r.alpha += ((r.o > 0.15 ? 1 : 0) - r.alpha) * Math.min(1, dt / 0.25);
-        if (Math.random() < Math.max(0.3, 1.2 + 16 * r.o) * dt) msgs.push({ x: r.x + 72, y: POST_Y + 40, vx: rnd(-50, 50), vy: rnd(30, 80), t: T });
+        if(s<1.0) h+=dot(x,92+ease(s)*(HCUP-92),7,MSGR);
+        else if(s<2.7) h+=dot(HX[i],HCUP,7,MSGR);
+        else if(s<3.4){ const k=(s-2.7)/0.7; h+=dot(HX[i]+(i?10:-10)*k,HCUP-30*k,7,MSGR,1-k); }
       }
     }
-    const drive = sum / recs.length * (R.kind === 'iono' ? 1.3 : 2.2);
-    const [tRise, tDecay] = R.kind === 'iono' ? [0.05, 0.25] : [0.45, 1.6];
-    resp += (drive - resp) * Math.min(1, dt / (drive > resp ? tRise : tDecay));
-
-    for (const i of ions) i.y += i.vy * dt;
-    ions = ions.filter(i => i.y < POST_Y + 110);
-    for (const g of msgs) {
-      g.vx = (g.vx + (Math.random() - 0.5) * 500 * dt) * damp; g.vy = (g.vy + (Math.random() - 0.5) * 500 * dt) * damp;
-      g.x += g.vx * dt; g.y = clamp(g.y + g.vy * dt, POST_Y + 20, SH - 40);
-    }
-    msgs = msgs.filter(g => T - g.t < 1.8);
-
-    trace.push({ t: T, r: resp });
-    while (trace.length && trace[0].t < T - TRACE_WIN) trace.shift();
-    while (marks.length && marks[0] < T - TRACE_WIN) marks.shift();
-    while (events.length && events[0].t < T - TRACE_WIN) events.shift();
+    if(p.id==='ago'){ h+=drugSvg(HX[2],HCUP,10,true); h+=drugSvg(246+6*Math.sin(t*1.3),130+8*Math.cos(t*1.1),9,true); }
+    if(p.id==='anta'){ HX.forEach(x=>h+=drugSvg(x,HCUP,10,false)); h+=drugSvg(60+6*Math.sin(t*1.2),126+8*Math.cos(t),9,false); }
+    if(p.id==='anta'&&s>0.9&&s<1.7) h+=`<text x="150" y="146" text-anchor="middle" font-size="17" fill="${OFF}">blocked!</text>`;
+    $('hero-'+p.id).innerHTML=h;
+    const target=p.id==='normal'?(bound?0.5:0):p.id==='ago'?(bound?1:0.42):0;
+    heroLvl[p.id]+=(target-heroLvl[p.id])*Math.min(1,dt/0.25);
+    $('hm-'+p.id).style.width=(heroLvl[p.id]*100).toFixed(1)+'%';
   }
+}
 
-  // ---------- lab rendering ----------
-  const scene = document.getElementById('scene'), sc = document.getElementById('sc'), ctx = sc.getContext('2d');
-  const trWrap = document.getElementById('trWrap'), tr = document.getElementById('tr'), tctx = tr.getContext('2d');
-  const armWrap = document.getElementById('armWrap'), armCv = document.getElementById('armCv'), actx = armCv.getContext('2d');
-  const heartWrap = document.getElementById('heartWrap'), heartCv = document.getElementById('heartCv'), hctx = heartCv.getContext('2d');
-  let dpr = 1, cw = 0, tw = 0, th = 0, aw = 0, hw = 0;
-  function resize() {
-    dpr = window.devicePixelRatio || 1;
-    cw = scene.clientWidth; sc.width = Math.round(cw * dpr); sc.height = Math.round(scene.clientHeight * dpr);
-    tw = trWrap.clientWidth; th = trWrap.clientHeight; tr.width = Math.round(tw * dpr); tr.height = Math.round(th * dpr);
-    aw = armWrap.clientWidth; armCv.width = Math.round(aw * dpr); armCv.height = Math.round(armWrap.clientHeight * dpr);
-    hw = heartWrap.clientWidth; heartCv.width = Math.round(hw * dpr); heartCv.height = Math.round(heartWrap.clientHeight * dpr);
+/* =============== 2. acetylcholine: bicep vs heart =============== */
+const ach={ arm:{c:0,open:0,until:-9,dots:[],ions:[],blockFx:-9}, heart:{g:0,until:-9,bpm:72,phase:0,dots:[],ions:[],blockFx:-9},
+  curare:false, atropine:false, auto:!RM, next:1.2, T:0 };
+function inset(){
+  return `<g filter="url(#rough)" stroke="${INK}" stroke-width="2.2">
+      <rect x="14" y="196" width="372" height="172" rx="14" fill="${PAPER}" stroke-dasharray="7 5"/>
+      <path d="M15 300 L385 300 L385 352 Q385 367 370 367 L30 367 Q15 367 15 352 Z" fill="${RECV}" stroke="none"/>
+      <line x1="15" y1="300" x2="385" y2="300"/>
+      <path d="M128 197 L272 197 L272 222 Q272 238 256 238 L144 238 Q128 238 128 222 Z" fill="${SEND}"/>
+    </g>
+    <text x="26" y="220" font-size="14" fill="${MUTED}">zoomed in</text>
+    <text x="200" y="219" text-anchor="middle" font-size="13" fill="${MUTED}">nerve ending</text>`;
+}
+function buildAch(){
+  $('armSvg').innerHTML=`<svg viewBox="0 0 400 380" role="img" aria-label="Arm whose bicep contracts when acetylcholine opens its ionotropic receptors">
+    <path d="M150 76 C150 120 150 160 150 196" fill="none" stroke="${MUTED}" stroke-width="1.5" stroke-dasharray="3 5"/>
+    <g filter="url(#rough)" stroke="${INK}" stroke-width="2.4" stroke-linejoin="round">
+      <path d="M22 30 C40 60 44 110 40 175" fill="none"/>
+      <g id="fore"><path d="M236 98 L360 100 C376 101 376 125 360 126 L236 128 Z" fill="${SKIN}"/><circle cx="372" cy="113" r="17" fill="${SKIN}"/></g>
+      <path d="M42 80 C110 70 200 84 244 94 C262 100 262 126 244 130 C200 138 110 134 42 130 Z" fill="${SKIN}"/>
+      <ellipse id="bicep" cx="150" cy="88" rx="66" ry="12" fill="${MUSCLE}"/>
+    </g>
+    <path d="M8 14 C60 20 110 40 148 70" fill="none" stroke="${ACH}" stroke-width="2.6" stroke-linecap="round"/>
+    <circle cx="149" cy="72" r="4.5" fill="${ACH}"/>
+    <text x="40" y="46" font-size="15" fill="${ACH}" transform="rotate(18 40 46)">motor nerve</text>
+    <text id="bicepLbl" x="150" y="93" text-anchor="middle" font-size="15" fill="#fff">bicep</text>
+    ${inset()}
+    <g id="armDyn"></g>
+    <text x="246" y="292" font-size="13" fill="${MUTED}">gate</text>
+    <text x="214" y="356" font-size="13" fill="${ION.na}">sodium rushes in</text>
+  </svg>`;
+  $('heartSvg').innerHTML=`<svg viewBox="0 0 400 380" role="img" aria-label="Beating heart that slows when acetylcholine activates its metabotropic receptors">
+    <path d="M120 100 C125 140 140 170 150 196" fill="none" stroke="${MUTED}" stroke-width="1.5" stroke-dasharray="3 5"/>
+    <g id="heartBody"><g filter="url(#rough)" stroke="${INK}" stroke-width="2.4" stroke-linejoin="round">
+      <path d="M140 170 C100 140 72 112 76 82 C80 56 104 46 124 56 C132 60 138 66 140 72 C142 66 150 58 160 54 C182 46 206 60 204 86 C202 116 176 142 140 170 Z" fill="${HEART}"/>
+      <path d="M100 80 C104 70 112 66 118 66" fill="none" stroke="#fff" stroke-width="3" opacity=".6"/>
+    </g></g>
+    <path d="M8 14 C40 18 80 40 112 64" fill="none" stroke="${ACH}" stroke-width="2.6" stroke-linecap="round"/>
+    <circle cx="113" cy="66" r="4.5" fill="${ACH}"/>
+    <text x="20" y="44" font-size="15" fill="${ACH}" transform="rotate(26 20 44)">vagus nerve</text>
+    <text id="bpm" x="300" y="104" text-anchor="middle" font-size="58" fill="${INK}">72</text>
+    <text x="300" y="132" text-anchor="middle" font-size="15" fill="${MUTED}">beats per minute</text>
+    ${inset()}
+    <g id="heartDyn"></g>
+    <text x="110" y="362" text-anchor="middle" font-size="13" fill="${GPROT}">G protein</text>
+    <text x="300" y="362" text-anchor="middle" font-size="13" fill="${INK}">potassium channel</text>
+  </svg>`;
+}
+function achRelease(){
+  for(let i=0;i<6;i++){ ach.arm.dots.push({x:200+rnd(-26,26),y:244,t:ach.T+i*0.03,vy:rnd(150,210)}); ach.heart.dots.push({x:150+rnd(-26,26),y:244,t:ach.T+i*0.03,vy:rnd(150,210)}); }
+}
+function achStep(dt){
+  ach.T+=dt; const t=ach.T, A=ach.arm, H=ach.heart;
+  if(ach.auto&&t>=ach.next){ achRelease(); ach.next=t+4; }
+  for(const [S,siteX,blocked,hit] of [[A,193,()=>ach.curare,()=>{A.until=t+0.18;}],[H,140,()=>ach.atropine,()=>{H.until=t+1.2;}]]){
+    for(const d of S.dots){ if(t<d.t||d.done) continue; d.y+=d.vy*dt; d.x+=(siteX-d.x)*Math.min(1,dt*4);
+      if(d.y>=268){ d.done=true; if(blocked()) S.blockFx=t; else hit(); } }
+    S.dots=S.dots.filter(d=>!d.done);
   }
-  [scene, trWrap, armWrap, heartWrap].forEach(el => new ResizeObserver(resize).observe(el));
+  A.open+=((t<A.until?1:0)-A.open)*Math.min(1,dt/0.03);
+  A.c+=(A.open-A.c)*Math.min(1,dt/(A.open>A.c?0.05:0.22));
+  if(A.open>0.3&&Math.random()<40*dt) A.ions.push({x:200+rnd(-4,4),y:286,vy:rnd(150,200)});
+  A.ions.forEach(i=>i.y+=i.vy*dt); A.ions=A.ions.filter(i=>i.y<340);
+  const bound=t<H.until;
+  H.g+=((bound?1:0)-H.g)*Math.min(1,dt/(bound?0.5:2.2));
+  H.bpm+=(((ach.atropine?95:72)-26*H.g)-H.bpm)*Math.min(1,dt/0.7);
+  H.phase+=H.bpm/60*dt;
+  if(H.g>0.25&&Math.random()<26*H.g*dt) H.ions.push({x:262+rnd(-3,3),y:330,vy:-rnd(90,140)});
+  H.ions.forEach(i=>i.y+=i.vy*dt); H.ions=H.ions.filter(i=>i.y>252);
+}
+function drawAch(){
+  const A=ach.arm, H=ach.heart, t=ach.T;
+  $('fore').setAttribute('transform',`rotate(${f1(62+(-52-62)*A.c)} 240 113)`);
+  $('bicep').setAttribute('ry',f1(12+14*A.c)); $('bicep').setAttribute('cy',f1(88-8*A.c));
+  $('bicepLbl').setAttribute('y',f1(93-8*A.c));
+  let h='';
+  const pw=3+8*A.open, af=A.open>0.3?'#a9c7ee':PROT;
+  h+=`<g filter="url(#rough)" stroke="${INK}" stroke-width="2.2"><rect x="${f1(200-pw-14)}" y="280" width="14" height="42" rx="5" fill="${af}"/><rect x="${f1(200+pw)}" y="280" width="14" height="42" rx="5" fill="${af}"/></g>`;
+  h+=ach.curare?drugSvg(193,272,10,false):cup(193,272,ACH);
+  A.dots.forEach(d=>{ if(t>=d.t) h+=dot(d.x,d.y,6,ACH); });
+  A.ions.forEach(i=>h+=`<circle cx="${f1(i.x)}" cy="${f1(i.y)}" r="4" fill="${ION.na}"/>`);
+  if(t-A.blockFx<1.2) h+=`<text x="236" y="262" font-size="17" fill="${OFF}" opacity="${(1-(t-A.blockFx)/1.2).toFixed(2)}">blocked!</text>`;
+  $('armDyn').innerHTML=h;
+  const beat=Math.exp(-(H.phase%1)*9), k=1+0.07*beat;
+  $('heartBody').setAttribute('transform',`translate(140 100) scale(${k.toFixed(3)}) translate(-140 -100)`);
+  const bpmTxt=String(Math.round(H.bpm)); if($('bpm').textContent!==bpmTxt) $('bpm').textContent=bpmTxt;
+  h=`<g filter="url(#rough)" stroke="${INK}" stroke-width="2.2"><rect x="120" y="280" width="40" height="42" rx="8" fill="${H.g>0.3?'#a9c7ee':PROT}"/>`;
+  const kw=2+6*H.g;
+  h+=`<rect x="${f1(262-kw-12)}" y="282" width="12" height="38" rx="5" fill="${PROT}"/><rect x="${f1(262+kw)}" y="282" width="12" height="38" rx="5" fill="${PROT}"/></g>`;
+  for(let i=0;i<5;i++) h+=`<line x1="${126+i*7}" y1="286" x2="${126+i*7}" y2="316" stroke="${INK}" stroke-width="1.2" opacity=".35"/>`;
+  h+=ach.atropine?drugSvg(140,272,10,false):cup(140,272,ACH);
+  h+=`<circle cx="${f1(140+(236-140)*H.g)}" cy="338" r="9" fill="${GPROT}" stroke="${INK}" stroke-width="1.4"/>`;
+  H.dots.forEach(d=>{ if(t>=d.t) h+=dot(d.x,d.y,6,ACH); });
+  H.ions.forEach(i=>h+=`<circle cx="${f1(i.x)}" cy="${f1(i.y)}" r="4" fill="${ION.k}"/>`);
+  if(t-H.blockFx<1.2) h+=`<text x="176" y="262" font-size="17" fill="${OFF}" opacity="${(1-(t-H.blockFx)/1.2).toFixed(2)}">blocked!</text>`;
+  $('heartDyn').innerHTML=h;
+  const as=ach.curare?'paralyzed: curare blocks the gate':A.c>0.4?'contracting!':'relaxed';
+  const bpm=Math.round(H.bpm);
+  const hs=ach.atropine?`racing: atropine took the brake off (${bpm}/min)`:H.g>0.15?`slowing down… ${bpm} beats/min`:`resting: ${bpm} beats/min`;
+  if($('armStatus').textContent!==as) $('armStatus').textContent=as;
+  if($('heartStatus').textContent!==hs) $('heartStatus').textContent=hs;
+}
 
-  function rrect(c, x, y, w, h, r) { c.beginPath(); c.roundRect(x, y, w, h, r); }
-  function hex(c, x, y, r, rot = 0) { c.beginPath(); for (let i = 0; i < 6; i++) { const a = i / 6 * 6.283 + rot; i ? c.lineTo(x + Math.cos(a) * r, y + Math.sin(a) * r) : c.moveTo(x + Math.cos(a) * r, y + Math.sin(a) * r); } c.closePath(); }
-  function label(c, text, x, y, size, color, align = 'left', weight = 400) {
-    c.font = `${weight} ${size}px ${tok.body}`; c.fillStyle = color; c.textAlign = align; c.textBaseline = 'middle'; c.fillText(text, x, y);
+/* =============== 3. drug lab =============== */
+const CLS={
+  agonist:{group:'up',how:'copies the messenger',site:'ortho',eff:1},
+  pam:{group:'up',how:'boosts the receptor',site:'allo'},
+  reuptake:{group:'up',how:'blocks recycling',site:'pump'},
+  releaser:{group:'up',how:'pushes out extra',site:'pump'},
+  antagonist:{group:'down',how:'blocks the receptor',site:'ortho',eff:0},
+  blocker:{group:'down',how:'plugs the channel',site:'pore'},
+  nam:{group:'down',how:'makes it hard to open',site:'allo'}
+};
+const NTS=[
+  {id:'glu',name:'Glutamate',color:'#d9822b',job:'the brain’s main “go” signal',
+   recs:[{name:'NMDA receptor',kind:'iono',ion:'ca',note:'Ionotropic: a gate that lets sodium and calcium in. Excites the neuron and helps form memories.',
+     drugs:[
+      {name:'Ketamine',cls:'blocker',koff:0.25,aka:'“Special K”; also an anesthetic',text:'Plugs the NMDA gate from the inside, so glutamate’s “go” signal can’t get through.',feel:'A dreamlike, detached, out-of-body feeling.'},
+      {name:'PCP',cls:'blocker',koff:0.04,aka:'“Angel dust”',text:'Plugs the same gate as ketamine but stays stuck much longer. Watch how slowly it leaves.',feel:'Numbness, confusion and agitation that can last for hours.'},
+      {name:'Alcohol',cls:'nam',koff:0.5,aka:'beer, wine, liquor',text:'Makes NMDA receptors harder to open. (Alcohol also boosts GABA; see the GABA tab.)',feel:'Fuzzy thinking and blackouts. The brain needs NMDA receptors to save new memories.'},
+      {name:'DXM',cls:'blocker',koff:0.5,aka:'cough syrup ingredient',text:'At very high doses, the cough suppressant dextromethorphan plugs NMDA gates like ketamine.',feel:'Confusion and a detached feeling (“robotripping”).'}]}]},
+  {id:'gaba',name:'GABA',color:'#1a9a8f',job:'the brain’s main “stop” signal',
+   recs:[{name:'GABA-A receptor',kind:'iono',ion:'cl',note:'Ionotropic: a gate that lets chloride in, which calms the neuron. Most sedatives boost it.',
+     drugs:[
+      {name:'Alcohol',cls:'pam',koff:0.5,aka:'beer, wine, liquor',text:'Helps GABA hold the gate open, so the calming signal gets stronger.',feel:'Relaxed, less inhibited, sleepy, slurred speech.'},
+      {name:'Xanax',cls:'pam',koff:0.4,aka:'a benzodiazepine (“benzo”)',text:'Clips onto its own spot on the receptor and makes GABA work better, but only when GABA is there.',feel:'Calm and drowsy. Mixed with alcohol or opioids it can stop breathing.'},
+      {name:'Flumazenil',cls:'antagonist',koff:0.4,aka:'hospital antidote',text:'Blocks the spot where benzos attach (drawn simply here as blocking the receptor). Used to reverse a benzo overdose.',feel:'Wakes up someone who is over-sedated.'}]},
+     {name:'GABA-B receptor',kind:'metabo',note:'Metabotropic: a doorbell. Its G protein opens potassium channels, calming the neuron slowly and for a long time.',
+     drugs:[
+      {name:'GHB',cls:'agonist',koff:1,aka:'“G”, “liquid ecstasy”; also a narcolepsy drug',text:'Switches GABA-B receptors on directly.',feel:'Euphoria, then sudden deep sleep. A “high” dose and an overdose are very close.'},
+      {name:'Baclofen',cls:'agonist',koff:1.2,aka:'muscle relaxant',text:'A prescription drug that switches on GABA-B receptors in the spinal cord.',feel:'Relaxes stiff muscles, for example in multiple sclerosis.'}]}]},
+  {id:'ach',name:'Acetylcholine',color:'#8a4fc4',job:'muscles, memory, “rest and digest”',
+   recs:[{name:'Nicotinic receptor',kind:'iono',ion:'na',note:'Ionotropic: a gate that lets sodium in. On muscles it makes them contract; in the brain it’s part of the reward system.',
+     drugs:[
+      {name:'Nicotine',cls:'agonist',koff:1.5,aka:'cigarettes, vapes',text:'Fits the acetylcholine lock and opens the gate. In the reward system that releases dopamine, which is why it’s so addictive.',feel:'Alert, a small buzz, relaxed. Very habit-forming.'},
+      {name:'Curare',cls:'antagonist',koff:0.3,aka:'arrow-tip poison',text:'A plant poison used on hunting arrows. It sits in the acetylcholine lock on muscles without opening it.',feel:'Muscles can’t contract, causing paralysis. Modern versions relax muscles during surgery.'}]},
+     {name:'Muscarinic receptor',kind:'metabo',note:'Metabotropic: a doorbell. In the heart its G protein slows the heartbeat.',
+     drugs:[
+      {name:'Muscarine',cls:'agonist',koff:1.2,aka:'mushroom poison',text:'A toxin from some wild mushrooms that switches muscarinic receptors on.',feel:'Sweating, drooling, tears, a slow heartbeat.'},
+      {name:'Atropine',cls:'antagonist',koff:0.3,aka:'from deadly nightshade',text:'Blocks muscarinic receptors. Doctors use it to speed up a dangerously slow heart.',feel:'Dry mouth, big pupils, racing heart.'},
+      {name:'Scopolamine',cls:'antagonist',koff:0.3,aka:'motion-sickness patch',text:'A cousin of atropine that reaches the brain more easily.',feel:'Prevents seasickness. Big doses cause confusion and memory loss.'}]}]},
+  {id:'da',name:'Dopamine',color:'#e4572e',job:'reward, motivation, movement',pump:true,
+   recs:[{name:'Dopamine receptor',kind:'metabo',note:'Metabotropic: a doorbell. Every dopamine receptor works this way. The recycling pumps at the top pull dopamine back in.',
+     drugs:[
+      {name:'Cocaine',cls:'reuptake',koff:0.6,aka:'“coke”, “blow”',text:'Jams the recycling pumps, so dopamine piles up in the gap and keeps hitting the receptors.',feel:'A short, intense rush of euphoria and energy, then a crash.'},
+      {name:'Meth',cls:'releaser',koff:0.3,aka:'methamphetamine, “crystal”',text:'Runs the recycling pumps backwards, pushing dopamine out even when the neuron isn’t firing.',feel:'Long-lasting euphoria and energy. Very addictive and harmful to neurons.'},
+      {name:'Haloperidol',cls:'antagonist',koff:0.3,aka:'antipsychotic medicine',text:'Blocks dopamine receptors. Too much dopamine signaling is linked to psychosis.',feel:'Fewer hallucinations; can cause stiffness and tremor.'}]}]},
+  {id:'sht',name:'Serotonin',color:'#1f6fd1',job:'mood, sleep, perception',pump:true,
+   recs:[{name:'5-HT2A receptor',kind:'metabo',note:'Metabotropic: a doorbell in the brain’s outer layer (cortex). Psychedelics act here. The recycling pumps pull serotonin back in.',
+     drugs:[
+      {name:'LSD',cls:'agonist',koff:0.03,aka:'“acid”',text:'Switches the receptor on and gets trapped there: the receptor closes a lid over it. Watch it stay stuck.',feel:'Hallucinations and altered perception for 8–12 hours.'},
+      {name:'Psilocybin',cls:'agonist',koff:1,aka:'“magic mushrooms”',text:'The body turns it into psilocin, which switches this receptor on.',feel:'Visual changes and an altered sense of time for 4–6 hours.'},
+      {name:'MDMA',cls:'releaser',koff:0.3,aka:'“ecstasy”, “Molly”',text:'Runs the serotonin recycling pumps backwards, flooding the gap with serotonin.',feel:'Euphoria and closeness. Afterward serotonin runs low, which can leave people down for days.'},
+      {name:'Prozac',cls:'reuptake',koff:0.4,aka:'an SSRI antidepressant',text:'Blocks serotonin recycling so serotonin lingers longer. Much gentler than MDMA.',feel:'Mood lifts gradually over weeks.'},
+      {name:'Seroquel',cls:'antagonist',koff:0.4,aka:'an antipsychotic',text:'Blocks this serotonin receptor (and dopamine receptors too).',feel:'Calming and sleepy.'}]}]},
+  {id:'ne',name:'Norepinephrine',color:'#2a9d55',job:'alertness, “fight or flight”',pump:true,
+   recs:[{name:'Beta receptor',kind:'metabo',note:'Metabotropic: a doorbell on the heart and many other cells. Speeds up the heart in “fight or flight.” The recycling pumps pull norepinephrine back in.',
+     drugs:[
+      {name:'Adderall',cls:'releaser',koff:0.3,aka:'amphetamine, ADHD medicine',text:'Runs the norepinephrine (and dopamine) recycling pumps backwards, pushing out extra.',feel:'Focus, alertness, faster heartbeat, less appetite.'},
+      {name:'EpiPen',cls:'agonist',koff:1.2,aka:'injected adrenaline',text:'Adrenaline is norepinephrine’s close cousin and switches beta receptors on directly.',feel:'Racing heart, open airways. Stops a severe allergic reaction.'},
+      {name:'Propranolol',cls:'antagonist',koff:0.4,aka:'a “beta blocker”',text:'Blocks beta receptors so adrenaline can’t speed up the heart.',feel:'Calms a pounding heart and shaky hands. Popular for stage fright.'}]}]}
+];
+
+const SW=1000, SH=560, PRE_Y=165, POST_Y=320, MOL_YMAX=POST_Y-34;
+const RX=[250,420,590,760], PUMP_X=[200,800];
+const VES_HOME=[[360,82],[440,112],[520,72],[600,112],[680,82]];
+const near=(m,p,d)=>Math.hypot(m.x-p[0],m.y-p[1])<d;
+const expo=k=>-Math.log(1-Math.random())/k;
+let ntI=0, recI=0, drugI=0, drugOn=false, auto=!RM;
+let T=0, lastAP=-9, nextAuto=0.8, resp=0;
+let mols, ves, recs, pumps, ions, msgs;
+const nt=()=>NTS[ntI], rec=()=>nt().recs[recI], drug=()=>rec().drugs[drugI], cls=d=>CLS[d.cls];
+
+function sites(r){ return rec().kind==='iono' ? {ortho:[r.x-13,POST_Y-44],allo:[r.x+34,POST_Y-26],pore:[r.x,POST_Y-40]} : {ortho:[r.x,POST_Y-44],allo:[r.x+34,POST_Y-26],pore:null}; }
+function reset(){
+  mols=[]; ions=[]; msgs=[]; resp=0;
+  ves=VES_HOME.map(([x,y])=>({hx:x,hy:y,x,y,st:'idle',t:0,grow:1}));
+  recs=RX.map(x=>({x,ortho:null,allo:null,pore:null,o:0,act:0,alpha:0}));
+  pumps=PUMP_X.map(x=>({x,drug:null,leak:0}));
+  nextAuto=T+0.6;
+}
+function clearDrugs(){ for(const r of recs){ if(r.ortho&&r.ortho.kind==='drug') r.ortho=null; r.allo=null; r.pore=null; } for(const p of pumps) p.drug=null; mols=mols.filter(m=>m.kind!=='drug'); }
+function washout(){ for(const m of mols) if(m.kind==='drug'&&m.st==='free'){ m.st='leaving'; m.t=T; } }
+function fire(){ lastAP=T; ves.filter(v=>v.st==='idle').slice(0,2).forEach((v,i)=>{ v.st='wait'; v.t=T+0.1+i*0.05; v.tx=clamp(v.hx+rnd(-20,20),340,660); v.spawned=false; }); }
+function spawnDrug(){ const left=Math.random()<0.5; mols.push({kind:'drug',x:left?34:966,y:rnd(PRE_Y+20,MOL_YMAX-6),vx:left?rnd(120,220):-rnd(120,220),vy:rnd(-40,40),st:'free',t:T}); }
+function spawnNT(x,y,vy){ mols.push({kind:'nt',x,y,vx:rnd(-170,170),vy,st:'free',t:T,born:T}); }
+function bind(m,r,site,until){ const s=sites(r); r[site]=m; m.st='bound'; m.r=r; m.site=site; m.until=until; if(site==='pore'){ m.x=r.x; m.y=POST_Y-4; } else { m.x=s[site][0]; m.y=s[site][1]; } }
+function unbind(m){
+  if(m.site==='pump') m.p.drug=null; else m.r[m.site]=null;
+  m.r=null; m.p=null; m.st=(m.kind==='drug'&&!drugOn)?'leaving':'free'; m.t=T; m.nb=T+0.3;
+  if(m.site==='pump'){ m.y=PRE_Y+26; m.vy=120; } else { m.y=POST_Y-54; m.vy=-160; }
+  m.vx=rnd(-120,120);
+  if(m.kind==='nt'&&T-m.born>0.7&&Math.random()<0.4) m.st='cleared';
+}
+function tryBind(m){
+  if(m.nb&&T<m.nb) return;
+  const D=drug(), C=cls(D), pam=D.cls==='pam';
+  if(m.kind==='drug'&&C.site==='pump'){
+    for(const p of pumps) if(!p.drug&&near(m,[p.x,PRE_Y+14],20)&&Math.random()<0.35){ p.drug=m; m.st='bound'; m.p=p; m.site='pump'; m.until=T+expo(D.koff); m.x=p.x; m.y=PRE_Y+14; return; }
+    return;
   }
-  const gColor = g => g === 'Gs' ? tok.excite : g === 'Gi' ? tok.inhibit : tok.gq;
-  const drugColor = () => tok[groupColor(cls(drug()).group)];
-  function drawHex(c, x, y, r, rot) { hex(c, x, y, r, rot); c.fillStyle = drugColor(); c.fill(); c.strokeStyle = tok.fg; c.lineWidth = 1.6; c.stroke(); }
-
-  function drawScene() {
-    const s = cw / SW, c = ctx, R = rec(), D = drug(), N = nt(), ntc = tok[N.id];
-    c.setTransform(dpr * s, 0, 0, dpr * s, 0, 0);
-    c.fillStyle = tok.cleft; c.fillRect(0, 0, SW, SH);
-    const small = Math.max(14, 12 / s);
-
-    rrect(c, 40, POST_Y, 920, 320, 70); c.fillStyle = tok.post; c.fill();
-    c.strokeStyle = tok.membrane; c.lineWidth = 9; c.stroke(); c.strokeStyle = tok.post; c.lineWidth = 2; c.stroke();
-    rrect(c, 140, -60, 720, PRE_Y + 60, 80); c.fillStyle = tok.pre; c.fill();
-    const ap = (T - lastAP) / 0.32;
-    if (ap >= 0 && ap < 1) {
-      c.save(); c.clip();
-      const y = -40 + ap * (PRE_Y + 40), g = c.createLinearGradient(0, y - 50, 0, y + 20);
-      g.addColorStop(0, 'transparent'); g.addColorStop(0.75, tok.excite); g.addColorStop(1, 'transparent');
-      c.globalAlpha = 0.28; c.fillStyle = g; c.fillRect(140, y - 50, 720, 70); c.restore(); c.globalAlpha = 1;
-      rrect(c, 140, -60, 720, PRE_Y + 60, 80);
-    }
-    c.strokeStyle = tok.membrane; c.lineWidth = 9; c.stroke(); c.strokeStyle = tok.pre; c.lineWidth = 2; c.stroke();
-
-    label(c, 'Sending neuron', 170, 26, small, tok.muted);
-    label(c, 'Gap (synapse)', 46, PRE_Y + 22, small, tok.muted);
-    label(c, `Receiving neuron · ${R.name} (${typeWord(R).toLowerCase()})`, 80, SH - 26, small, tok.muted);
-
-    const bound = recs.some(r => (r.ortho && r.ortho.kind === 'drug') || r.allo || r.pore) || pumps.some(p => p.drug);
-    if (drugOn || bound || mols.some(m => m.st === 'leaving')) {
-      const txt = drugOn ? `${D.name} in the synapse` : `${D.name} washing out`;
-      c.font = `700 ${small}px ${tok.body}`;
-      const w = c.measureText(txt).width;
-      drawHex(c, 836 - w - 14, 26, 7, 0);
-      label(c, txt, 836, 26, small, tok.fg, 'right', 700);
-    }
-
-    for (const v of ves) {
-      if (v.st === 'refill') continue;
-      let r = 22 * (v.st === 'idle' ? v.grow : 1);
-      if (v.st === 'fuse') r *= 1 - clamp((T - v.t) / 0.2, 0, 1) * 0.8;
-      c.beginPath(); c.arc(v.x, v.y, r, 0, 6.283); c.fillStyle = tok.cleft; c.fill();
-      c.strokeStyle = tok.membrane; c.lineWidth = 3; c.stroke();
-      if (v.st !== 'fuse') for (let i = 0; i < 5; i++) {
-        const a = i / 5 * 6.283 + v.hx; c.beginPath(); c.arc(v.x + Math.cos(a) * r * 0.45, v.y + Math.sin(a) * r * 0.45, r * 0.18, 0, 6.283); c.fillStyle = ntc; c.fill();
+  for(const r of recs){
+    const s=sites(r);
+    if(m.kind==='nt'){ if(!r.ortho&&near(m,s.ortho,18)&&Math.random()<0.5){ bind(m,r,'ortho',T+rnd(0.18,0.35)*(r.allo&&pam?2.2:1)); return; } }
+    else if(C.site==='ortho'){ if(!r.ortho&&near(m,s.ortho,16)&&Math.random()<0.35){ bind(m,r,'ortho',T+expo(D.koff)); return; } }
+    else if(C.site==='allo'){ if(!r.allo&&near(m,s.allo,16)&&Math.random()<0.35){ bind(m,r,'allo',T+expo(D.koff)); return; } }
+    else if(C.site==='pore'&&s.pore){ if(!r.pore&&r.o>0.3&&near(m,s.pore,24)&&Math.random()<0.5){ bind(m,r,'pore',T+expo(D.koff)); return; } }
+  }
+}
+function step(dt){
+  T+=dt;
+  const R=rec(), D=drug(), N=nt();
+  if(auto&&T>=nextAuto){ fire(); nextAuto=T+3.5; }
+  for(const v of ves){
+    if(v.st==='wait'&&T>=v.t) v.st='dock';
+    if(v.st==='dock'){ const dx=v.tx-v.x, dy=(PRE_Y-24)-v.y, dd=Math.hypot(dx,dy); if(dd<3){ v.st='fuse'; v.t=T; } else { const s=Math.min(dd,420*dt); v.x+=dx/dd*s; v.y+=dy/dd*s; } }
+    else if(v.st==='fuse'){ if(!v.spawned){ v.spawned=true; for(let i=0;i<12;i++) spawnNT(v.x+rnd(-12,12),PRE_Y+10,rnd(140,240)); } if(T-v.t>0.2){ v.st='refill'; v.t=T+1.5; } }
+    else if(v.st==='refill'&&T>=v.t){ v.st='idle'; v.x=v.hx; v.y=v.hy; v.grow=0; }
+    else if(v.st==='idle') v.grow=Math.min(1,v.grow+dt*3);
+  }
+  for(const p of pumps) if(p.drug&&D.cls==='releaser'){ p.leak+=4*dt; while(p.leak>=1){ p.leak-=1; spawnNT(p.x+rnd(-6,6),PRE_Y+20,rnd(80,160)); } }
+  if(drugOn){ let free=0; for(const m of mols) if(m.kind==='drug'&&m.st==='free') free++; if(free<14&&Math.random()<12*dt) spawnDrug(); }
+  const damp=Math.pow(0.2,dt), pumpDrug=cls(D).site==='pump';
+  for(const m of mols){
+    if(m.st==='free'||m.st==='leaving'){
+      m.vx=(m.vx+(Math.random()-0.5)*1200*dt)*damp; m.vy=(m.vy+(Math.random()-0.5)*1200*dt)*damp;
+      if(m.st==='leaving') m.vx+=(m.x<500?-260:260)*dt;
+      else if(m.kind==='drug') m.vy+=(pumpDrug?-90:90)*dt;
+      else {
+        // a working recycling pump pulls the transmitter back; a jammed one doesn't
+        const p=N.pump&&T-m.born>=0.7?pumps[m.x<500?0:1]:null;
+        if(p&&!p.drug){ m.vy-=230*dt; m.vx+=Math.sign(p.x-m.x)*220*dt; } else m.vy+=150*dt;
       }
-    }
-
-    // recycling pumps (monoamines only)
-    if (N.pump) {
-      for (const p of pumps) {
-        rrect(c, p.x - 16, PRE_Y - 18, 32, 36, 7); c.fillStyle = tok.protein; c.fill();
-        c.fillStyle = tok.pre; c.fillRect(p.x - 4, PRE_Y - 10, 8, 26);
-        if (p.drug) drawHex(c, p.x, PRE_Y + 14, 8.5, p.drug.rot);
-        label(c, 'Recycling pump', p.x, PRE_Y - 32, Math.max(12, 11 / s), tok.muted, 'center', 700);
+      m.x+=m.vx*dt; m.y+=m.vy*dt;
+      if(m.y<PRE_Y+8){ m.y=PRE_Y+8; m.vy=Math.abs(m.vy); }
+      if(m.y>MOL_YMAX){ m.y=MOL_YMAX; m.vy=-Math.abs(m.vy); }
+      if(m.st==='leaving'){ if(T-m.t>1.6||m.x<0||m.x>SW) m.st='gone'; continue; }
+      if(m.x<30){ m.x=30; m.vx=Math.abs(m.vx); } if(m.x>970){ m.x=970; m.vx=-Math.abs(m.vx); }
+      if(m.kind==='nt'){
+        if(N.pump){ const p=pumps.find(p=>near(m,[p.x,PRE_Y+14],26)); if(p&&!p.drug&&T-m.born>0.4&&Math.random()<0.6){ m.st='reuptake'; m.t=T; m.x=p.x; continue; } if(T-m.born>1.2&&Math.random()<0.12*dt){ m.st='cleared'; m.t=T; continue; } }
+        else if(T-m.born>0.7&&Math.random()<1.3*dt){ m.st='cleared'; m.t=T; continue; }
       }
-    }
+      tryBind(m);
+    } else if(m.st==='bound'&&T>=m.until) unbind(m);
+    else if(m.st==='reuptake') m.y-=90*dt;
+  }
+  mols=mols.filter(m=>m.st!=='gone'&&!((m.st==='cleared'||m.st==='reuptake')&&T-m.t>0.35));
+  let sum=0; const tau=R.kind==='iono'?0.04:0.2;
+  for(const r of recs){
+    let a=0; if(r.ortho) a=r.ortho.kind==='nt'?1:cls(D).eff;
+    if(r.allo){ if(D.cls==='pam'){ if(a>0) a*=1.7; } else if(D.cls==='nam') a*=0.15; }
+    r.o+=(a-r.o)*Math.min(1,dt/tau); r.act=r.pore?0:r.o; sum+=r.act;
+    if(R.kind==='iono'){ if(r.act>0.12&&Math.random()<30*Math.min(r.act,1.4)*dt){ const pw=3+7*clamp(r.o,0,1.3); ions.push({x:r.x+rnd(-pw+1,pw-1),y:POST_Y-40,vy:rnd(150,200),c:R.ion==='cl'?'cl':(R.ion==='ca'&&Math.random()<0.45?'ca':'na')}); } }
+    else { r.alpha+=((r.o>0.15?1:0)-r.alpha)*Math.min(1,dt/0.25); if(Math.random()<Math.max(0.3,1.2+14*r.o)*dt) msgs.push({x:r.x+72,y:POST_Y+40,vx:rnd(-50,50),vy:rnd(30,80),t:T}); }
+  }
+  const drive=sum/recs.length*(R.kind==='iono'?1.3:2.2);
+  const [tr,td]=R.kind==='iono'?[0.05,0.25]:[0.45,1.6];
+  resp+=(drive-resp)*Math.min(1,dt/(drive>resp?tr:td));
+  for(const i of ions) i.y+=i.vy*dt; ions=ions.filter(i=>i.y<POST_Y+110);
+  for(const g of msgs){ g.vx=(g.vx+(Math.random()-0.5)*500*dt)*damp; g.vy=(g.vy+(Math.random()-0.5)*500*dt)*damp; g.x+=g.vx*dt; g.y=clamp(g.y+g.vy*dt,POST_Y+20,SH-40); }
+  msgs=msgs.filter(g=>T-g.t<1.8);
+}
 
-    if (R.kind === 'metabo') {
-      for (const g of msgs) {
-        c.globalAlpha = clamp(1 - (T - g.t) / 1.8, 0, 1); c.fillStyle = tok.msg;
-        c.beginPath(); c.moveTo(g.x, g.y - 5); c.lineTo(g.x + 5, g.y); c.lineTo(g.x, g.y + 5); c.lineTo(g.x - 5, g.y); c.fill();
-      }
-      c.globalAlpha = 1;
-    }
-
-    for (const r of recs) {
-      const st = sites(r), on = clamp(r.o, 0, 1.4);
-      if (on > 0.05) {
-        const g = c.createRadialGradient(r.x, POST_Y - 4, 4, r.x, POST_Y - 4, 70);
-        g.addColorStop(0, ntc); g.addColorStop(1, 'transparent');
-        c.globalAlpha = 0.28 * Math.min(on, 1.2); c.fillStyle = g; c.fillRect(r.x - 70, POST_Y - 74, 140, 140); c.globalAlpha = 1;
-      }
-      if (R.kind === 'iono') {
-        const pw = 3 + 7 * clamp(r.o, 0, 1.3);
-        c.fillStyle = tok.receptor;
-        rrect(c, r.x - pw - 18, POST_Y - 36, 18, 72, 6); c.fill();
-        rrect(c, r.x + pw, POST_Y - 36, 18, 72, 6); c.fill();
-        if (r.pore) drawHex(c, r.x, POST_Y - 4, 7, T);
-      } else {
-        rrect(c, r.x - 24, POST_Y - 36, 48, 70, 10); c.fillStyle = tok.receptor; c.fill();
-        c.strokeStyle = tok.cleft; c.globalAlpha = 0.35; c.lineWidth = 2;
-        for (let i = 0; i < 7; i++) { const x = r.x - 18 + i * 6; c.beginPath(); c.moveTo(x, POST_Y - 30); c.lineTo(x, POST_Y + 28); c.stroke(); }
-        c.globalAlpha = 1;
-        const ex = r.x + 72;
-        rrect(c, ex - 14, POST_Y - 24, 28, 58, 8); c.fillStyle = tok.protein; c.globalAlpha = 0.85; c.fill(); c.globalAlpha = 1;
-        c.fillStyle = tok.protein;
-        c.beginPath(); c.arc(r.x + 8, POST_Y + 52, 10, 0, 6.283); c.fill();
-        c.beginPath(); c.arc(r.x + 21, POST_Y + 45, 6, 0, 6.283); c.fill();
-        const ax = r.x - 10 + (ex - 2 - (r.x - 10)) * r.alpha, ay = POST_Y + 50 - 8 * r.alpha;
-        c.beginPath(); c.arc(ax, ay, 11, 0, 6.283); c.fillStyle = gColor(R.g); c.fill();
-        if (r === recs[0]) label(c, 'G protein', r.x - 10, POST_Y + 78, Math.max(12, 11 / s), gColor(R.g), 'center', 700);
-      }
-      if (!r.ortho) { c.strokeStyle = ntc; c.lineWidth = 2.5; c.beginPath(); c.arc(st.ortho[0], st.ortho[1], 8, 0.1, Math.PI - 0.1); c.stroke(); }
-      if (cls(D).site === 'allo' && drugOn && !r.allo) {
-        c.strokeStyle = drugColor(); c.lineWidth = 2; c.setLineDash([3, 3]);
-        c.beginPath(); c.arc(st.allo[0], st.allo[1], 8, 0, 6.283); c.stroke(); c.setLineDash([]);
-      }
-    }
-
-    for (const i of ions) {
-      c.globalAlpha = 1 - clamp((i.y - POST_Y) / 110, 0, 1); c.fillStyle = tok[i.c];
-      c.beginPath(); c.arc(i.x, i.y, 4, 0, 6.283); c.fill();
-    }
-    c.globalAlpha = 1;
-
-    for (const m of mols) {
-      if (m.kind === 'drug') {
-        if (m.st === 'bound' && (m.site === 'pore' || m.site === 'pump')) continue;
-        c.globalAlpha = m.st === 'leaving' ? clamp(1 - (T - m.t) / 1.6, 0, 1) : 1;
-        drawHex(c, m.x, m.y, 8.5, m.rot);
-      } else {
-        c.globalAlpha = (m.st === 'cleared' || m.st === 'reuptake') ? clamp(1 - (T - m.t) / 0.35, 0, 1) : 1;
-        c.fillStyle = ntc; c.beginPath(); c.arc(m.x, m.y, 6.5, 0, 6.283); c.fill();
-      }
-      c.globalAlpha = 1;
+const SEND_PATH=`M140 -10 L860 -10 L860 ${PRE_Y-70} Q860 ${PRE_Y} 790 ${PRE_Y} L210 ${PRE_Y} Q140 ${PRE_Y} 140 ${PRE_Y-70} Z`;
+function buildLabStatic(){
+  const N=nt();
+  let h=`<g filter="url(#rough)" stroke="${INK}" stroke-width="2.6">
+    <path d="M40 600 L40 ${POST_Y+60} Q40 ${POST_Y} 100 ${POST_Y} L900 ${POST_Y} Q960 ${POST_Y} 960 ${POST_Y+60} L960 600 Z" fill="${RECV}"/>
+    <path d="${SEND_PATH}" fill="${SEND}"/>`;
+  if(N.pump) for(const x of PUMP_X) h+=`<rect x="${x-17}" y="${PRE_Y-19}" width="34" height="38" rx="9" fill="${PROT}"/><rect x="${x-4}" y="${PRE_Y-11}" width="8" height="28" fill="${SEND}" stroke-width="1.4"/>`;
+  h+=`</g>
+    <text x="170" y="34" font-size="22" fill="${MUTED}">sending neuron</text>
+    <text x="50" y="${PRE_Y+34}" font-size="20" fill="${MUTED}">gap</text>
+    <text x="80" y="${SH-24}" font-size="22" fill="${MUTED}">receiving neuron</text>`;
+  if(N.pump) for(const x of PUMP_X) h+=`<text x="${x}" y="${PRE_Y-30}" text-anchor="middle" font-size="17" fill="${MUTED}">recycling pump</text>`;
+  $('labStatic').innerHTML=h;
+}
+function drawLab(){
+  const R=rec(), D=drug(), N=nt(), col=N.color, up=cls(D).group==='up';
+  let h='';
+  const k=(T-lastAP)/0.45;
+  if(k>=0&&k<1) h+=`<path d="${SEND_PATH}" fill="${col}" opacity="${(0.22*(1-k)).toFixed(2)}"/>`;
+  for(const v of ves){
+    if(v.st==='refill') continue;
+    let r=22*(v.st==='idle'?v.grow:1); if(v.st==='fuse') r*=1-clamp((T-v.t)/0.2,0,1)*0.8;
+    h+=`<circle cx="${f1(v.x)}" cy="${f1(v.y)}" r="${f1(r)}" fill="${PAPER}" stroke="${INK}" stroke-width="2"/>`;
+    if(v.st!=='fuse') for(let i=0;i<5;i++){ const a=i/5*6.283+v.hx; h+=`<circle cx="${f1(v.x+Math.cos(a)*r*0.45)}" cy="${f1(v.y+Math.sin(a)*r*0.45)}" r="${f1(r*0.18)}" fill="${col}"/>`; }
+  }
+  if(N.pump) for(const p of pumps) if(p.drug) h+=drugSvg(p.x,PRE_Y+14,10,up);
+  if(R.kind==='metabo') for(const g of msgs) h+=`<path d="M${f1(g.x)} ${f1(g.y-6)}l6 6l-6 6l-6-6z" fill="${MSG}" opacity="${clamp(1-(T-g.t)/1.8,0,1).toFixed(2)}"/>`;
+  for(const r of recs) if(r.o>0.05) h+=`<circle cx="${r.x}" cy="${POST_Y}" r="58" fill="${col}" opacity="${(0.16*Math.min(r.o,1.3)).toFixed(2)}"/>`;
+  h+=`<g filter="url(#rough)" stroke="${INK}" stroke-width="2.2">`;
+  for(const r of recs){
+    const lit=r.act>0.3, fill=lit?col:PROT, op=lit?0.75:1;
+    if(R.kind==='iono'){
+      const pw=3+7*clamp(r.o,0,1.3);
+      h+=`<rect x="${f1(r.x-pw-18)}" y="${POST_Y-36}" width="18" height="72" rx="7" fill="${fill}" fill-opacity="${op}"/><rect x="${f1(r.x+pw)}" y="${POST_Y-36}" width="18" height="72" rx="7" fill="${fill}" fill-opacity="${op}"/>`;
+    } else {
+      h+=`<rect x="${r.x-24}" y="${POST_Y-36}" width="48" height="70" rx="11" fill="${fill}" fill-opacity="${op}"/><rect x="${r.x+58}" y="${POST_Y-24}" width="28" height="56" rx="9" fill="${PROT}"/>`;
     }
   }
-
-  function drawTrace() {
-    const c = tctx, w = tw, h = th, L = 70, Rp = 12, top = 30, bot = 24, hi = 1.6;
-    const px = t => L + (1 - (T - t) / TRACE_WIN) * (w - L - Rp);
-    const py = v => top + (1 - clamp(v, 0, hi) / hi) * (h - top - bot);
-    c.setTransform(dpr, 0, 0, dpr, 0, 0); c.clearRect(0, 0, w, h);
-    c.textBaseline = 'middle';
-    c.font = `700 13px ${tok.body}`; c.fillStyle = tok.fg; c.textAlign = 'left';
-    const R = rec();
-    c.fillText(`Receptor signal${R.excit ? ' (excites the neuron)' : ' (calms the neuron)'}`, 12, 15);
-    c.font = `12px ${tok.body}`; c.fillStyle = tok.muted; c.textAlign = 'right';
-    c.strokeStyle = tok.line; c.lineWidth = 1;
-    c.beginPath(); c.moveTo(L, py(0)); c.lineTo(w - Rp, py(0)); c.stroke();
-    c.fillText('none', L - 8, py(0)); c.fillText('strong', L - 8, py(hi) + 6);
-    c.textAlign = 'right'; c.fillText('now', w - Rp, h - 10);
-    c.textAlign = 'left'; c.fillText('12 seconds ago', L, h - 10);
-    const ntc = tok[nt().id];
-    for (const m of marks) { const x = px(m); c.fillStyle = ntc; c.beginPath(); c.moveTo(x, h - bot + 2); c.lineTo(x - 5, h - bot + 10); c.lineTo(x + 5, h - bot + 10); c.fill(); }
-    for (const e of events) {
-      const x = px(e.t); c.strokeStyle = tok.fg; c.setLineDash([4, 4]); c.beginPath(); c.moveTo(x, top - 4); c.lineTo(x, h - bot); c.stroke(); c.setLineDash([]);
-      c.font = `700 12px ${tok.body}`; c.fillStyle = tok.fg; c.textAlign = 'left'; c.fillText(e.txt, x + 5, top + 4);
+  h+=`</g>`;
+  for(const r of recs){
+    if(R.kind==='metabo'){
+      for(let i=0;i<5;i++) h+=`<line x1="${r.x-14+i*7}" y1="${POST_Y-28}" x2="${r.x-14+i*7}" y2="${POST_Y+26}" stroke="${INK}" stroke-width="1.2" opacity=".35"/>`;
+      h+=`<circle cx="${f1(r.x-8+72*r.alpha)}" cy="${f1(POST_Y+52-6*r.alpha)}" r="12" fill="${GPROT}" stroke="${INK}" stroke-width="1.6"/>`;
     }
-    if (trace.length < 2) return;
-    c.beginPath(); c.moveTo(px(trace[0].t), py(0));
-    for (const p of trace) c.lineTo(px(p.t), py(p.r));
-    c.lineTo(px(trace[trace.length - 1].t), py(0)); c.closePath();
-    c.globalAlpha = 0.22; c.fillStyle = ntc; c.fill(); c.globalAlpha = 1;
-    c.beginPath(); trace.forEach((p, i) => i ? c.lineTo(px(p.t), py(p.r)) : c.moveTo(px(p.t), py(p.r)));
-    c.strokeStyle = tok.fg; c.lineWidth = 2; c.stroke();
+    if(r.pore) h+=drugSvg(r.x,POST_Y-4,8,false);
+    const st=sites(r);
+    if(!r.ortho) h+=cup(st.ortho[0],st.ortho[1],col);
+    if(cls(D).site==='allo'&&drugOn&&!r.allo) h+=`<circle cx="${st.allo[0]}" cy="${st.allo[1]}" r="9" fill="none" stroke="${up?ON:OFF}" stroke-width="2" stroke-dasharray="3 3"/>`;
   }
-
-  // ---------- acetylcholine: bicep vs heart ----------
-  const ach = { arm: { c: 0, open: 0, until: -9, hist: [], dots: [], ions: [], blockFx: -9 },
-                heart: { g: 0, until: -9, bpm: 72, phase: 0, hist: [], dots: [], ions: [], blockFx: -9 },
-                curare: false, atropine: false, auto: !reduced, next: 1.2, T: 0 };
-  const AW = 500, AH = 420, ZY = 196;
-
-  function achRelease() {
-    for (const side of ['arm', 'heart']) {
-      const S = ach[side];
-      for (let i = 0; i < 7; i++) S.dots.push({ x: 250 + rnd(-30, 30) + (side === 'heart' ? -50 : 0), y: ZY + 44, t: ach.T + i * 0.03, vy: rnd(160, 220) });
+  if(R.kind==='metabo') h+=`<text x="${RX[0]-8}" y="${POST_Y+92}" text-anchor="middle" font-size="18" fill="${GPROT}">G protein</text>`;
+  for(const i of ions) h+=`<circle cx="${f1(i.x)}" cy="${f1(i.y)}" r="4.5" fill="${ION[i.c]}" opacity="${(1-clamp((i.y-POST_Y)/110,0,1)).toFixed(2)}"/>`;
+  for(const m of mols){
+    if(m.kind==='drug'){
+      if(m.st==='bound'&&(m.site==='pore'||m.site==='pump')) continue;
+      const a=m.st==='leaving'?clamp(1-(T-m.t)/1.6,0,1):1;
+      h+=`<g opacity="${a.toFixed(2)}">${drugSvg(m.x,m.y,10,up)}</g>`;
+    } else {
+      const a=(m.st==='cleared'||m.st==='reuptake')?clamp(1-(T-m.t)/0.35,0,1):1;
+      h+=dot(m.x,m.y,7,col,a);
     }
   }
-  function achStep(dt) {
-    ach.T += dt;
-    const t = ach.T, A = ach.arm, H = ach.heart;
-    if (ach.auto && t >= ach.next) { achRelease(); ach.next = t + 4; }
-    for (const [S, siteY, blocked, onHit] of [
-      [A, ZY + 70, () => ach.curare, () => { A.until = t + 0.18; }],
-      [H, ZY + 66, () => ach.atropine, () => { H.until = t + 1.2; }]]) {
-      for (const d of S.dots) {
-        if (t < d.t || d.done) continue;
-        d.y += d.vy * dt;
-        if (d.y >= siteY) { d.done = true; if (blocked()) S.blockFx = t; else onHit(); }
-      }
-      S.dots = S.dots.filter(d => !d.done);
-    }
-    A.open += ((t < A.until ? 1 : 0) - A.open) * Math.min(1, dt / 0.03);
-    A.c += (A.open - A.c) * Math.min(1, dt / (A.open > A.c ? 0.05 : 0.22));
-    if (A.open > 0.3 && Math.random() < 40 * dt) A.ions.push({ x: 250 + rnd(-5, 5), y: ZY + 72, vy: rnd(150, 200), c: 'na' });
-    A.ions.forEach(i => i.y += i.vy * dt); A.ions = A.ions.filter(i => i.y < ZY + 118);
+  const boundAny=recs.some(r=>(r.ortho&&r.ortho.kind==='drug')||r.allo||r.pore)||pumps.some(p=>p.drug);
+  $('labDyn').innerHTML=h;
+  // meter: dashed line marks a typical normal peak
+  const normal=R.kind==='iono'?0.35:0.45, M=$('labMeter');
+  M.querySelector('.fill').style.width=(clamp(resp/(normal*2.4),0,1)*100).toFixed(1)+'%';
+  const w=(drugOn||boundAny)?(up?'stronger':'weaker'):'normal', word=M.querySelector('.word');
+  if(word.textContent!==w){ word.textContent=w; const c=w==='stronger'?ON:w==='weaker'?OFF:INK; word.style.color=c; M.style.setProperty('--mc',w==='normal'?col:c); }
+}
 
-    const bound = t < H.until;
-    H.g += ((bound ? 1 : 0) - H.g) * Math.min(1, dt / (bound ? 0.5 : 2.2));
-    const base = ach.atropine ? 95 : 72;
-    H.bpm += ((base - 26 * H.g) - H.bpm) * Math.min(1, dt / 0.7);
-    H.phase += H.bpm / 60 * dt;
-    if (H.g > 0.25 && Math.random() < 30 * H.g * dt) H.ions.push({ x: 300 + rnd(-4, 4), y: ZY + 110, vy: -rnd(100, 150), c: 'k' });
-    H.ions.forEach(i => i.y += i.vy * dt); H.ions = H.ions.filter(i => i.y > ZY + 46);
+function actionText(D){
+  const n=nt().id==='gaba'?'GABA':nt().name.toLowerCase(), Nn=n[0].toUpperCase()+n.slice(1);
+  return {agonist:`Switches the receptor on by itself, even with no ${n} around.`,
+    pam:`Does nothing alone, but makes the receptor respond more strongly when ${n} arrives.`,
+    reuptake:`Jams the recycling pumps, so ${n} stays in the gap longer and keeps hitting receptors.`,
+    releaser:`Runs the recycling pumps backwards, pushing ${n} out even when the neuron isn’t firing.`,
+    antagonist:`Sits in the lock without turning it on, so ${n} can’t get in.`,
+    blocker:`${Nn} still opens the gate, but the drug plugs it so nothing gets through.`,
+    nam:`Makes the receptor harder to open, so ${n} has less effect.`}[D.cls];
+}
+function tabs(){
+  $('tabs').innerHTML=NTS.map((n,i)=>`<button class="tab" data-i="${i}" aria-pressed="false" style="--tc:${n.color}"><span class="dot" style="background:${n.color}"></span>${n.name}</button>`).join('');
+  $('tabs').querySelectorAll('.tab').forEach(b=>b.addEventListener('click',()=>selectNT(+b.dataset.i)));
+}
+function panel(){
+  const N=nt(), R=rec(), D=drug(), C=cls(D), up=C.group==='up', oc=up?ON:OFF;
+  document.querySelectorAll('#tabs .tab').forEach((b,i)=>b.setAttribute('aria-pressed',String(i===ntI)));
+  document.documentElement.style.setProperty('--c',N.color);
+  const kindWord=r=>r.kind==='iono'?'ionotropic':'metabotropic';
+  let h=`<h3>${N.name} <span style="color:var(--muted);font-size:16px">· ${N.job}</span></h3>`;
+  if(N.recs.length>1) h+=`<div class="recs">${N.recs.map((r,i)=>`<button class="opt" data-r="${i}" aria-pressed="${i===recI}" style="--oc:${N.color}">${r.name}<small>${kindWord(r)}</small></button>`).join('')}</div>`;
+  else h+=`<p style="margin:0">${R.name} <span style="color:var(--muted)">(${kindWord(R)})</span></p>`;
+  h+=`<p class="recnote">${R.note}</p><h3>Pick a drug</h3>`;
+  for(const [g,title] of [['up','Agonists: turn it up'],['down','Antagonists: turn it down']]){
+    const items=R.drugs.map((d,i)=>[d,i]).filter(([d])=>cls(d).group===g); if(!items.length) continue;
+    h+=`<p class="grp ${g}">${title}</p><div class="drugs">${items.map(([d,i])=>`<button class="opt" data-d="${i}" aria-pressed="${i===drugI&&drugOn}" style="--oc:${g==='up'?ON:OFF}">${d.name}<small>${cls(d).how}</small></button>`).join('')}</div>`;
+  }
+  h+=`<div class="detail" style="--oc:${oc}"><h4 style="color:${oc}">${D.name}</h4><p class="aka">${D.aka}</p>
+    <span class="badge" style="color:${oc}">${up?'agonist: turns the signal up':'antagonist: turns the signal down'}</span>
+    <p>${D.text}</p><p class="what"><b>What people notice:</b> ${D.feel}</p>
+    <p style="font-size:14px;color:var(--muted)">${actionText(D)}</p></div>`;
+  $('panel').innerHTML=h;
+  $('panel').querySelectorAll('[data-r]').forEach(b=>b.addEventListener('click',()=>selectRec(+b.dataset.r)));
+  $('panel').querySelectorAll('[data-d]').forEach(b=>b.addEventListener('click',()=>selectDrug(+b.dataset.d)));
+  $('drugOn').setAttribute('aria-pressed',String(drugOn));
+  $('auto').setAttribute('aria-pressed',String(auto));
+}
+function selectNT(i){ ntI=i; recI=0; drugI=0; drugOn=false; reset(); buildLabStatic(); panel(); }
+function selectRec(i){ recI=i; drugI=0; drugOn=false; reset(); panel(); }
+function selectDrug(i){ if(i!==drugI){ drugI=i; clearDrugs(); drugOn=true; } else { drugOn=!drugOn; if(!drugOn) washout(); } panel(); }
+function toggleDrug(){ drugOn=!drugOn; if(!drugOn) washout(); panel(); }
+function cheat(){
+  const names=(n,g)=>[...new Set(n.recs.flatMap(r=>r.drugs).filter(d=>cls(d).group===g).map(d=>d.name))].join(', ')||'—';
+  $('cheat').innerHTML=NTS.map(n=>`<tr><td><span class="dot" style="background:${n.color}"></span><b>${n.name}</b></td><td>${n.job}</td>
+    <td>${n.recs.map(r=>`${r.name} <span style="color:var(--muted)">(${r.kind==='iono'?'ionotropic':'metabotropic'})</span>`).join('<br>')}</td>
+    <td class="up">${names(n,'up')}</td><td class="down">${names(n,'down')}</td></tr>`).join('');
+}
 
-    A.hist.push([t, A.c]); H.hist.push([t, H.bpm]);
-    while (A.hist.length && A.hist[0][0] < t - 8) A.hist.shift();
-    while (H.hist.length && H.hist[0][0] < t - 8) H.hist.shift();
-  }
+/* =============== wiring =============== */
+$('fire').addEventListener('click',fire);
+$('auto').addEventListener('click',()=>{ auto=!auto; nextAuto=T+0.5; panel(); });
+$('drugOn').addEventListener('click',toggleDrug);
+$('achGo').addEventListener('click',achRelease);
+$('achAuto').addEventListener('click',()=>{ ach.auto=!ach.auto; ach.next=ach.T+0.5; $('achAuto').setAttribute('aria-pressed',String(ach.auto)); });
+$('curare').addEventListener('click',()=>{ ach.curare=!ach.curare; $('curare').setAttribute('aria-pressed',String(ach.curare)); });
+$('atropine').addEventListener('click',()=>{ ach.atropine=!ach.atropine; $('atropine').setAttribute('aria-pressed',String(ach.atropine)); });
+document.addEventListener('keydown',e=>{ if(e.metaKey||e.ctrlKey||e.altKey) return; if(e.code==='Space'&&!(e.target instanceof HTMLButtonElement)){ e.preventDefault(); fire(); } });
+$('copyBtn').addEventListener('click',()=>{ const t=$('embedCode').textContent; if(navigator.clipboard) navigator.clipboard.writeText(t).then(()=>{ $('copyBtn').textContent='Copied'; setTimeout(()=>$('copyBtn').textContent='Copy',1500); },()=>{}); });
 
-  function zoomFrame(c, title) {
-    rrect(c, 16, ZY - 6, AW - 32, 130, 10); c.fillStyle = tok.soft; c.fill(); c.strokeStyle = tok.line; c.lineWidth = 1.5; c.stroke();
-    label(c, title, 28, ZY + 8, 13, tok.muted, 'left', 700);
-    c.strokeStyle = tok.membrane; c.lineWidth = 6; c.beginPath(); c.moveTo(24, ZY + 92); c.lineTo(AW - 24, ZY + 92); c.stroke();
-  }
-  function stripChart(c, hist, lo, hi, color, title, fmt) {
-    const x0 = 70, x1 = AW - 20, y0 = 346, y1 = 404, t = ach.T;
-    label(c, title, 20, 334, 13, tok.fg, 'left', 700);
-    c.strokeStyle = tok.line; c.lineWidth = 1; c.beginPath(); c.moveTo(x0, y1); c.lineTo(x1, y1); c.stroke();
-    label(c, fmt(hi), x0 - 8, y0, 11, tok.muted, 'right'); label(c, fmt(lo), x0 - 8, y1, 11, tok.muted, 'right');
-    label(c, 'now', x1, 414, 11, tok.muted, 'right'); label(c, '8 s ago', x0, 414, 11, tok.muted, 'left');
-    if (hist.length < 2) return;
-    c.beginPath();
-    hist.forEach(([ht, v], i) => { const x = x0 + (1 - (t - ht) / 8) * (x1 - x0), y = y1 - (clamp(v, lo, hi) - lo) / (hi - lo) * (y1 - y0); i ? c.lineTo(x, y) : c.moveTo(x, y); });
-    c.strokeStyle = color; c.lineWidth = 2.5; c.stroke();
-  }
-  function drawAchDots(c, S) {
-    c.fillStyle = tok.ach;
-    for (const d of S.dots) if (ach.T >= d.t) { c.beginPath(); c.arc(d.x, d.y, 5, 0, 6.283); c.fill(); }
-    for (const i of S.ions) { c.fillStyle = tok[i.c]; c.beginPath(); c.arc(i.x, i.y, 3.6, 0, 6.283); c.fill(); }
-  }
-  function blockedText(c, S, x, y, txt) {
-    const k = (ach.T - S.blockFx) / 1.2; if (k < 0 || k > 1) return;
-    c.globalAlpha = 1 - k; label(c, txt, x, y, 13, tok.off, 'left', 700); c.globalAlpha = 1;
-  }
-  function antagonistHex(c, x, y) { hex(c, x, y, 8, 0); c.fillStyle = tok.off; c.fill(); c.strokeStyle = tok.fg; c.lineWidth = 1.5; c.stroke(); }
+buildTrio(); buildAch(); tabs(); cheat(); reset(); buildLabStatic(); panel();
+$('labMeter').querySelector('.norm').style.left=(100/2.4).toFixed(1)+'%';
+const q=location.search.match(/nt=(\w+)/); if(q){ const i=NTS.findIndex(n=>n.id===q[1]); if(i>=0) selectNT(i); }
 
-  function drawArm() {
-    const c = actx, s = aw / AW, A = ach.arm;
-    c.setTransform(dpr * s, 0, 0, dpr * s, 0, 0); c.fillStyle = tok.cleft; c.fillRect(0, 0, AW, AH);
-    const S0 = [110, 92], E = [290, 104], ang = 1.2 + (-0.95 - 1.2) * A.c, F = [E[0] + Math.cos(ang) * 135, E[1] + Math.sin(ang) * 135];
-    // nerve
-    c.strokeStyle = tok.ach; c.lineWidth = 3; c.beginPath(); c.moveTo(24, 22); c.quadraticCurveTo(120, 30, 196, 72); c.stroke();
-    c.fillStyle = tok.ach; c.beginPath(); c.arc(196, 72, 5, 0, 6.283); c.fill();
-    label(c, 'motor nerve', 28, 40, 13, tok.ach, 'left', 700);
-    // arm
-    c.lineCap = 'round'; c.strokeStyle = tok.protein; c.globalAlpha = 0.5;
-    c.lineWidth = 40; c.beginPath(); c.moveTo(...S0); c.lineTo(...E); c.stroke();
-    c.lineWidth = 32; c.beginPath(); c.moveTo(...E); c.lineTo(...F); c.stroke();
-    c.globalAlpha = 1; c.lineCap = 'butt';
-    c.beginPath(); c.arc(F[0], F[1], 20, 0, 6.283); c.fillStyle = tok.protein; c.fill();
-    // bicep
-    c.beginPath(); c.ellipse(205, 84 - 9 * A.c, 66 - 8 * A.c, 13 + 15 * A.c, 0.06, 0, 6.283);
-    c.fillStyle = tok.muscle; c.globalAlpha = 0.55 + 0.4 * A.c; c.fill(); c.globalAlpha = 1;
-    label(c, 'bicep', 205, 84 - 9 * A.c, 13, '#fff', 'center', 700);
-    if (ach.curare) label(c, 'Paralyzed by curare', 330, 40, 14, tok.off, 'left', 700);
-
-    zoomFrame(c, 'Zoomed in: nerve → muscle');
-    rrect(c, 180, ZY + 22, 140, 30, 10); c.fillStyle = tok.pre; c.fill(); c.strokeStyle = tok.membrane; c.lineWidth = 3; c.stroke();
-    const pw = 3 + 7 * A.open;
-    c.fillStyle = tok.receptor; rrect(c, 250 - pw - 14, ZY + 70, 14, 46, 5); c.fill(); rrect(c, 250 + pw, ZY + 70, 14, 46, 5); c.fill();
-    if (ach.curare) antagonistHex(c, 243, ZY + 66);
-    else { c.strokeStyle = tok.ach; c.lineWidth = 2.5; c.beginPath(); c.arc(243, ZY + 64, 7, 0.1, Math.PI - 0.1); c.stroke(); }
-    drawAchDots(c, A);
-    ['Receptor = a gate.', 'It opens and sodium', 'rushes in →', 'muscle contracts'].forEach((t, i) => label(c, t, 28, ZY + 34 + i * 16, 12, tok.muted, 'left'));
-    blockedText(c, A, 284, ZY + 66, 'Blocked!');
-    stripChart(c, A.hist, 0, 1, tok.muscle, 'Muscle force', v => v ? 'max' : '0');
-  }
-
-  function heartPath(c, x, y, k) {
-    c.beginPath(); c.moveTo(x, y + 30 * k);
-    c.bezierCurveTo(x - 70 * k, y - 15 * k, x - 40 * k, y - 65 * k, x, y - 35 * k);
-    c.bezierCurveTo(x + 40 * k, y - 65 * k, x + 70 * k, y - 15 * k, x, y + 30 * k);
-    c.closePath();
-  }
-  function drawHeart() {
-    const c = hctx, s = hw / AW, H = ach.heart;
-    c.setTransform(dpr * s, 0, 0, dpr * s, 0, 0); c.fillStyle = tok.cleft; c.fillRect(0, 0, AW, AH);
-    const ph = H.phase % 1, beat = Math.exp(-ph * 9);
-    c.strokeStyle = tok.ach; c.lineWidth = 3; c.beginPath(); c.moveTo(24, 22); c.quadraticCurveTo(130, 30, 200, 68); c.stroke();
-    c.fillStyle = tok.ach; c.beginPath(); c.arc(200, 68, 5, 0, 6.283); c.fill();
-    label(c, 'vagus nerve', 28, 40, 13, tok.ach, 'left', 700);
-    heartPath(c, 230, 110, 1.15 + 0.12 * beat); c.fillStyle = tok.heart; c.globalAlpha = 0.75 + 0.25 * beat; c.fill(); c.globalAlpha = 1;
-    c.font = `700 46px ${tok.display}`; c.fillStyle = tok.fg; c.textAlign = 'left'; c.textBaseline = 'alphabetic';
-    c.fillText(String(Math.round(H.bpm)), 340, 112);
-    label(c, 'beats per minute', 342, 132, 13, tok.muted, 'left');
-
-    zoomFrame(c, 'Zoomed in: nerve → heart cell');
-    rrect(c, 130, ZY + 22, 140, 30, 10); c.fillStyle = tok.pre; c.fill(); c.strokeStyle = tok.membrane; c.lineWidth = 3; c.stroke();
-    // metabotropic receptor
-    rrect(c, 180, ZY + 70, 40, 46, 8); c.fillStyle = tok.receptor; c.fill();
-    if (ach.atropine) antagonistHex(c, 200, ZY + 62);
-    else { c.strokeStyle = tok.ach; c.lineWidth = 2.5; c.beginPath(); c.arc(200, ZY + 60, 7, 0.1, Math.PI - 0.1); c.stroke(); }
-    // G protein travels to the potassium channel
-    const gx = 200 + (300 - 18 - 200) * H.g;
-    c.beginPath(); c.arc(gx, ZY + 112, 9, 0, 6.283); c.fillStyle = tok.inhibit; c.fill();
-    label(c, 'G protein', 200, ZY + 128, 11, tok.inhibit, 'center', 700);
-    const pw = 2 + 6 * H.g;
-    c.fillStyle = tok.protein; rrect(c, 300 - pw - 12, ZY + 72, 12, 42, 5); c.fill(); rrect(c, 300 + pw, ZY + 72, 12, 42, 5); c.fill();
-    label(c, 'potassium', 300, ZY + 128, 11, tok.k, 'center', 700);
-    drawAchDots(c, H);
-    ['Receptor = a doorbell.', 'Its G protein opens', 'a potassium channel', '→ heart slows down'].forEach((t, i) => label(c, t, 340, ZY + 34 + i * 16, 12, tok.muted, 'left'));
-    blockedText(c, H, 226, ZY + 64, 'Blocked!');
-    stripChart(c, H.hist, 40, 110, tok.heart, 'Heart rate', v => `${v}`);
-  }
-
-  let achKey = '';
-  function achStatus() {
-    const A = ach.arm, H = ach.heart;
-    const a = ach.curare ? 'Curare blocks the receptor: no contraction (paralysis)' : A.c > 0.4 ? 'Contracting!' : 'Relaxed';
-    const bpm = Math.round(H.bpm);
-    const h = ach.atropine ? `Atropine removes the brake: ${bpm} beats/min` : H.g > 0.15 ? `Slowing down: ${bpm} beats/min` : `Resting: ${bpm} beats/min`;
-    const key = a + h;
-    if (key !== achKey) { achKey = key; document.getElementById('armStatus').textContent = a; document.getElementById('heartStatus').textContent = h; }
-  }
-
-  // ---------- UI ----------
-  const $ = id => document.getElementById(id);
-  const ntName = () => nt().id === 'gaba' ? 'GABA' : nt().name.toLowerCase();
-  function actionText(D) {
-    const n = ntName(), r = rec().name;
-    return {
-      agonist: `Turns on the ${r} by itself, even when no ${n} is around.`,
-      pam: `Does nothing alone, but makes the receptor respond more strongly when ${n} arrives.`,
-      reuptake: `Jams the recycling pumps, so ${n} stays in the gap longer and keeps hitting the receptors.`,
-      releaser: `Runs the recycling pumps backwards, pushing ${n} out even when the neuron isn’t firing.`,
-      antagonist: `Sits in the receptor’s lock without turning it on, so ${n} can’t get in.`,
-      blocker: `${n[0].toUpperCase() + n.slice(1)} still opens the gate, but the drug plugs the channel so nothing gets through.`,
-      nam: `Makes the receptor harder to open, so ${n} has less effect.`
-    }[D.cls];
-  }
-
-  function buildTabs() {
-    $('nttabs').innerHTML = NTS.map((n, i) => `<button type="button" data-i="${i}" style="--c: var(--${n.id})"><span class="nm"><span class="dot"></span>${n.name}</span><small>${n.job}</small></button>`).join('');
-    $('nttabs').querySelectorAll('button').forEach(b => b.addEventListener('click', () => selectNT(+b.dataset.i)));
-  }
-  function buildRecs() {
-    $('recgrid').innerHTML = nt().recs.map((r, i) => `<button type="button" data-i="${i}"><span>${r.name}</span><span class="tag ${r.kind}">${typeWord(r)}</span></button>`).join('');
-    $('recgrid').querySelectorAll('button').forEach(b => b.addEventListener('click', () => selectRec(+b.dataset.i)));
-  }
-  function buildDrugs() {
-    const R = rec();
-    $('druggroups').innerHTML = '';
-    [['up', 'Agonists: turn it ON'], ['down', 'Antagonists: keep it OFF']].forEach(([g, title]) => {
-      const items = R.drugs.map((d, i) => [d, i]).filter(([d]) => cls(d).group === g);
-      if (!items.length) return;
-      const wrap = document.createElement('div');
-      wrap.innerHTML = `<h3 class="${g}">${title}</h3><div class="druglist"></div>`;
-      items.forEach(([d, i]) => {
-        const b = document.createElement('button');
-        b.type = 'button'; b.dataset.i = i; b.style.setProperty('--cc', `var(--${groupColor(g)})`);
-        b.innerHTML = `<span class="l"><span class="hx"></span>${d.name}</span><span class="k">${cls(d).how}</span>`;
-        b.addEventListener('click', () => selectDrug(i));
-        wrap.querySelector('.druglist').appendChild(b);
-      });
-      $('druggroups').appendChild(wrap);
-    });
-  }
-  function buildLegend() {
-    const R = rec(), D = drug(), N = nt();
-    const ion = R.ion === 'cl' ? ['cl', 'Chloride ions flowing in'] : R.ion === 'ca' ? ['na', 'Sodium & calcium ions flowing in'] : ['na', 'Sodium ions flowing in'];
-    $('legend').innerHTML = [
-      `<li style="--c: var(--${N.id})"><i class="lg-nt"></i>${N.name}</li>`,
-      `<li style="--cc: var(--${groupColor(cls(D).group)})"><i class="lg-drug"></i>${D.name}</li>`,
-      R.kind === 'iono' ? `<li style="--ic: var(--${ion[0]})"><i class="lg-ion"></i>${ion[1]}</li>` : `<li><i class="lg-msg"></i>Chemical messengers made inside the cell</li>`
-    ].join('');
-  }
-
-  function render() {
-    const N = nt(), R = rec(), D = drug(), C = cls(D);
-    document.querySelectorAll('#nttabs button').forEach((b, i) => b.setAttribute('aria-pressed', String(i === ntI)));
-    document.querySelectorAll('#recgrid button').forEach((b, i) => b.setAttribute('aria-pressed', String(i === recI)));
-    document.querySelectorAll('.druglist button').forEach(b => b.setAttribute('aria-pressed', String(+b.dataset.i === drugI)));
-    $('lab-h').closest('section').style.setProperty('--c', `var(--${N.id})`);
-    $('panel').style.setProperty('--cc', `var(--${groupColor(C.group)})`);
-    $('release').style.color = lum(tok[N.id]) > 0.5 ? '#15202b' : '#fff';
-    $('achGo').style.color = lum(tok.ach) > 0.5 ? '#15202b' : '#fff';
-    $('recnote').textContent = R.note;
-    $('drugLabel').textContent = D.name;
-    $('drug').setAttribute('aria-pressed', String(drugOn));
-    $('auto').setAttribute('aria-pressed', String(auto));
-    $('curare').setAttribute('aria-pressed', String(ach.curare));
-    $('atropine').setAttribute('aria-pressed', String(ach.atropine));
-    $('achAuto').setAttribute('aria-pressed', String(ach.auto));
-    buildLegend();
-    $('info').innerHTML = `
-      <h3>${D.name}</h3>
-      <div class="pills"><span class="pill ${C.group}">${C.group === 'up' ? 'Agonist: turns it ON' : 'Antagonist: keeps it OFF'}</span><span class="pill">${D.alias}</span></div>
-      <p>${D.text}</p>
-      <dl>
-        <div><dt>At the synapse</dt><dd>${actionText(D)}</dd></div>
-        <div><dt>What people notice</dt><dd>${D.feel}</dd></div>
-      </dl>`;
-  }
-
-  function buildRef() {
-    const names = (n, g) => n.recs.flatMap(r => r.drugs).filter(d => cls(d).group === g).map(d => d.name).filter((v, i, a) => a.indexOf(v) === i).join(', ') || '—';
-    $('refbody').innerHTML = NTS.map(n => `<tr style="--c: var(--${n.id})">
-      <td class="nm"><span></span>${n.name}</td><td>${n.job}</td>
-      <td>${n.recs.map(r => `${r.name} <span style="color: var(--muted)">(${typeWord(r).toLowerCase()})</span>`).join('<br>')}</td>
-      <td><span class="up">${names(n, 'up')}</span></td><td><span class="down">${names(n, 'down')}</span></td></tr>`).join('');
-  }
-
-  function addEvent(txt) { events.push({ t: T, txt }); }
-  function selectNT(i) { ntI = i; recI = 0; drugI = 0; drugOn = false; reset(); buildRecs(); buildDrugs(); render(); }
-  function selectRec(i) { recI = i; drugI = 0; drugOn = false; reset(); buildDrugs(); render(); }
-  function selectDrug(i) {
-    if (i !== drugI) { drugI = i; clearDrugs(); drugOn = true; addEvent(`+ ${drug().name}`); }
-    else if (!drugOn) { drugOn = true; addEvent(`+ ${drug().name}`); }
-    render();
-  }
-  function toggleDrug() { drugOn = !drugOn; addEvent(drugOn ? `+ ${drug().name}` : `${drug().name} removed`); if (!drugOn) washout(); render(); }
-
-  $('release').addEventListener('click', release);
-  $('drug').addEventListener('click', toggleDrug);
-  $('auto').addEventListener('click', () => { auto = !auto; nextAuto = T + 0.5; render(); });
-  $('achGo').addEventListener('click', achRelease);
-  $('achAuto').addEventListener('click', () => { ach.auto = !ach.auto; ach.next = ach.T + 0.5; render(); });
-  $('curare').addEventListener('click', () => { ach.curare = !ach.curare; render(); });
-  $('atropine').addEventListener('click', () => { ach.atropine = !ach.atropine; render(); });
-  document.addEventListener('keydown', e => {
-    if (e.metaKey || e.ctrlKey || e.altKey) return;
-    if (e.code === 'Space' && !(e.target instanceof HTMLButtonElement)) { e.preventDefault(); release(); }
-    else if (e.key === 'd' || e.key === 'D') toggleDrug();
-  });
-
-  buildTabs(); buildRef(); reset(); buildRecs(); buildDrugs(); render(); resize();
-
-  let last = performance.now();
-  function frame(now) {
-    let dt = Math.min(0.05, (now - last) / 1000); last = now;
-    while (dt > 1e-6) { const h = Math.min(1 / 60, dt); step(h); achStep(h); dt -= h; }
-    drawScene(); drawTrace(); drawArm(); drawHeart(); achStatus();
-    requestAnimationFrame(frame);
-  }
+let last=performance.now(), heroT=0;
+function frame(now){
+  let dt=Math.min(0.05,(now-last)/1000); last=now;
+  heroT+=dt; drawTrio(heroT,dt);
+  while(dt>1e-6){ const h=Math.min(1/60,dt); step(h); achStep(h); dt-=h; }
+  drawAch(); drawLab();
   requestAnimationFrame(frame);
+}
+requestAnimationFrame(frame);
 })();
 </script>
 </body>
