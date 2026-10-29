@@ -1,0 +1,798 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>From Light to Sight</title>
+<link rel="icon" href="data:,">
+<meta name="description" content="Follow vision stage by stage: focusing light, phototransduction in rods and cones, center-surround cells in the retina, the optic chiasm, orientation-tuned neurons in V1, the what and where streams, and how the brain fills in what you see.">
+<style>
+  :root{ --bg:#fffdf8; --ink:#2a2a2a; --muted:#6b6f76; --line:#e2ddd2;
+    --hand:"Segoe Print","Ink Free","Noteworthy","Chalkboard SE","Bradley Hand","Comic Sans MS",cursive;
+    --sans:system-ui,-apple-system,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif;
+    --mono:ui-monospace,"SF Mono",Menlo,Consolas,monospace;
+    --v:#8a4fbf; --lf:#2a78c4; --rf:#e4572e; --dor:#2f9e6e; --ven:#8a4fbf; --light:#e8b400; --c:#8a4fbf; }
+  *{box-sizing:border-box}
+  html{-webkit-text-size-adjust:100%;scroll-behavior:smooth}
+  html,body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.5 var(--sans);-webkit-font-smoothing:antialiased}
+  .wrap{margin:0 auto;padding:20px 16px 32px;max-width:1280px}
+  a{color:#3d6fa8}
+  .back{font-size:13.5px;color:var(--muted);text-decoration:none}
+  .back:hover{text-decoration:underline}
+  h1{font-family:Georgia,"Times New Roman",serif;font-weight:normal;font-size:clamp(26px,2.6vw,38px);margin:6px 0 8px;letter-spacing:-.01em}
+  .intro{margin:0 0 10px;max-width:54em;font-size:clamp(15px,1.2vw,17px)}
+  section{margin-top:40px;scroll-margin-top:70px}
+  h2.sec{font-family:var(--hand);font-weight:normal;font-size:clamp(24px,2.4vw,32px);margin:0 0 2px;line-height:1.2}
+  h2.sec .n{display:inline-block;width:1.45em;height:1.45em;line-height:1.45em;text-align:center;border-radius:50%;background:#2a2a2a;color:#fffdf8;font-size:.7em;margin-right:8px;vertical-align:.2em;font-family:var(--sans)}
+  .lede{margin:0 0 12px;max-width:54em;color:#3b3b3b}
+  :focus-visible{outline:2px solid #3d6fa8;outline-offset:2px}
+  svg{display:block;width:100%;height:auto;user-select:none;-webkit-user-select:none}
+  canvas{display:block;width:100%;height:auto;touch-action:none}
+
+  /* pipeline */
+  .pipe{position:sticky;top:0;z-index:5;background:rgba(255,253,248,.95);backdrop-filter:blur(4px);border-bottom:1px solid var(--line);margin:14px -16px 0;padding:8px 16px}
+  .pipe ol{list-style:none;margin:0;padding:0;display:flex;gap:4px;overflow-x:auto;scrollbar-width:none}
+  .pipe li{flex:1 0 auto}
+  .pipe a{display:flex;align-items:center;gap:6px;text-decoration:none;color:var(--muted);font-size:13.5px;padding:4px 10px;border-radius:999px;white-space:nowrap;border:1.5px solid transparent}
+  .pipe a .i{font-size:16px}
+  .pipe a:hover{color:var(--ink);border-color:var(--line)}
+  .pipe a.on{color:#fff;background:var(--v)}
+  .pipe li:not(:last-child) a:after{content:"→";margin-left:6px;color:#c9c3b6}
+  .pipe a.on:after{color:#fff}
+
+  .stage{display:grid;grid-template-columns:minmax(0,1.5fr) minmax(280px,1fr);gap:24px;align-items:start}
+  .panel h3{font-family:var(--hand);font-weight:normal;font-size:clamp(22px,2.1vw,28px);margin:0 0 4px;color:var(--c);line-height:1.2}
+  .panel p{margin:0 0 8px}
+  .ctrl{display:flex;flex-wrap:wrap;gap:8px 12px;align-items:center;margin:8px 0;font-size:14px;color:var(--muted)}
+  .ctrl input[type=range]{flex:1;min-width:140px;accent-color:var(--c)}
+  .ctrl b{color:var(--ink)}
+  .tab{font:inherit;font-family:var(--hand);font-size:clamp(15px,1.4vw,18px);background:transparent;border:0;border-bottom:3px solid transparent;padding:3px 9px 1px;cursor:pointer;color:var(--muted)}
+  .tab[aria-pressed="true"]{color:var(--ink);border-bottom-color:var(--c)}
+  .tab:hover{color:var(--ink)}
+  .tog{font:inherit;font-size:13.5px;background:#fff;border:1.5px solid var(--line);border-radius:999px;padding:3px 12px;cursor:pointer;color:var(--muted)}
+  .tog[aria-pressed="true"]{color:var(--ink);border-color:var(--c);box-shadow:inset 0 0 0 1px var(--c)}
+  .btn{font:inherit;font-size:14.5px;background:#fff;border:1.5px solid #bdb7aa;border-radius:8px;padding:5px 14px;cursor:pointer;color:var(--ink)}
+  .btn:hover{border-color:var(--c);color:var(--c)}
+  .btn.primary{background:var(--c);border-color:var(--c);color:#fff}
+  .fact{background:#fff;border-left:3px solid var(--c);padding:6px 10px;font-size:14.5px;margin:10px 0 0}
+  .box{background:#fff;border:1.5px solid var(--line);border-radius:12px;padding:12px 14px}
+  .sub{font-size:13px;color:var(--muted);text-transform:uppercase;letter-spacing:.06em;font-weight:600;margin:0 0 4px}
+
+  .insets{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:10px}
+  .inset{background:#fff;border:1.5px solid var(--line);border-radius:10px;padding:8px;text-align:center;font-size:13px;color:var(--muted)}
+  .inset .pic{font-size:64px;line-height:1.25;height:86px;display:flex;align-items:center;justify-content:center;transition:filter .2s}
+
+  .steps{list-style:none;margin:8px 0;padding:0;counter-reset:st}
+  .steps li{counter-increment:st;position:relative;padding:5px 8px 5px 34px;border-radius:8px;font-size:14px;color:var(--muted);transition:background .3s,color .3s}
+  .steps li:before{content:counter(st);position:absolute;left:6px;top:6px;width:20px;height:20px;border-radius:50%;background:#e9e4d8;color:#6b6f76;font-size:12px;text-align:center;line-height:20px;font-weight:700}
+  .steps li.on{background:#fff;color:var(--ink);box-shadow:inset 3px 0 0 var(--c)}
+  .steps li.on:before{background:var(--c);color:#fff}
+  .meters{display:grid;grid-template-columns:auto 1fr 4.2em;gap:4px 8px;font-size:13.5px;align-items:center;margin:8px 0}
+  .meters .m{height:8px;border-radius:4px;background:#eee8dc;overflow:hidden}
+  .meters .m i{display:block;height:100%;background:var(--c);transition:width .25s}
+  .meters span:last-child, .meters .val{text-align:right;font-variant-numeric:tabular-nums;color:var(--ink)}
+
+  .rate{font-size:28px;font-weight:700;font-variant-numeric:tabular-nums;line-height:1}
+  .rate small{font-size:14px;color:var(--muted);font-weight:400}
+
+  .fields{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin:8px 0}
+  .fields .f{text-align:center;font-size:13px;color:var(--muted)}
+  .verdict{font-family:var(--hand);font-size:22px;color:var(--c);margin:6px 0 2px;line-height:1.2}
+  .cut{cursor:pointer}
+  .cut circle{transition:r .15s}
+  .cut:hover circle.ring{stroke-width:3}
+  .flow{stroke-dasharray:3 9;animation:flow 1.2s linear infinite}
+  @keyframes flow{to{stroke-dashoffset:-24}}
+  .tiles{display:grid;grid-template-columns:repeat(6,1fr);gap:6px;margin:8px 0}
+  .tiles div{aspect-ratio:1;border-radius:8px;border:1.5px solid var(--line);display:flex;align-items:center;justify-content:center;transition:background .15s}
+  .tiles i{display:block;width:70%;height:4px;border-radius:2px;background:#555}
+  .area{cursor:pointer}
+  .area .hit{transition:fill-opacity .2s}
+  .area:hover .hit,.area.on .hit{fill-opacity:.7}
+  .area:focus{outline:none} .area:focus-visible .hit{stroke-width:3}
+  .lbl{font-family:var(--hand);font-size:15px;fill:#3b3b3b;pointer-events:none}
+  .lbl.sm{font-size:12.5px}
+  .chips{display:flex;flex-wrap:wrap;gap:6px;margin:8px 0}
+  .chip{font:inherit;font-size:14px;background:#fff;border:1.5px solid var(--line);border-radius:999px;padding:3px 11px;cursor:pointer;color:var(--ink)}
+  .chip:hover{border-color:#bdb7aa}
+  .chip[aria-pressed="true"]{border-color:var(--k,var(--c));box-shadow:inset 0 0 0 1.5px var(--k,var(--c));color:var(--k,var(--c))}
+
+  .cards{display:grid;grid-template-columns:repeat(auto-fill,minmax(270px,1fr));gap:14px;margin-top:12px}
+  .card{background:#fff;border:1.5px solid var(--line);border-radius:10px;padding:12px 14px;font-size:14.5px}
+  .card h4{font-family:var(--hand);font-weight:normal;font-size:20px;margin:0 0 4px}
+  .card p{margin:0 0 6px}
+  .demo{border:1px dashed #d8d1c2;border-radius:8px;background:#fffefb;margin:6px 0}
+
+  .note{font-size:13px;color:var(--muted);margin:14px 0 0;max-width:62em}
+  .foot{margin-top:36px;padding-top:14px;border-top:1px dashed #c9c3b6;font-size:12.5px;color:var(--muted)}
+  .foot p{margin:0 0 8px}
+  .embed{display:flex;gap:8px;align-items:flex-start;flex-wrap:wrap}
+  .embed code{flex:1;min-width:0;font-family:var(--mono);font-size:11.5px;background:#fff;border:1px solid var(--line);padding:5px 8px;overflow-wrap:anywhere}
+  .embed button{font:inherit;font-size:12px;padding:4px 10px;background:#fff;border:1px solid #bdb7aa;border-radius:4px;cursor:pointer}
+  .refs{margin:4px 0 10px;padding-left:18px}
+  @media (max-width:860px){ .stage{grid-template-columns:minmax(0,1fr)} .tiles{grid-template-columns:repeat(6,1fr)} }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <a class="back" href="../">← All NeuroSims</a>
+  <h1>From Light to Sight</h1>
+  <p class="intro">Seeing feels instant, but it’s a relay with many stages. Light gets focused, turned into electrical signals, compared and sharpened in the retina, split and crossed on its way into the brain, broken into lines and edges, and finally rebuilt into objects you can name and reach for. Work through each stage below.</p>
+
+  <nav class="pipe" aria-label="Stages of vision"><ol>
+    <li><a href="#optics" data-s="optics"><span class="i">👁️</span>Focusing</a></li>
+    <li><a href="#trans" data-s="trans"><span class="i">⚡</span>Transduction</a></li>
+    <li><a href="#retina" data-s="retina"><span class="i">◎</span>Retina</a></li>
+    <li><a href="#chiasm" data-s="chiasm"><span class="i">✖️</span>Chiasm &amp; LGN</a></li>
+    <li><a href="#v1" data-s="v1"><span class="i">📏</span>V1</a></li>
+    <li><a href="#streams" data-s="streams"><span class="i">🔀</span>What &amp; where</a></li>
+    <li><a href="#fill" data-s="fill"><span class="i">🧩</span>Filling in</a></li>
+  </ol></nav>
+
+  <!-- 1 OPTICS -->
+  <section id="optics">
+    <h2 class="sec"><span class="n">1</span>Focusing light on the retina</h2>
+    <p class="lede">Light bounces off an object and enters your eye. The <b>cornea</b> does most of the bending, and the <b>lens</b> fine-tunes the focus by changing shape. Move the tree closer and watch what the lens does. Notice that the image on your retina is <b>upside-down</b>.</p>
+    <div class="stage">
+      <div><svg id="eye" viewBox="20 20 760 330" aria-label="Side view of an eye focusing light from a tree onto the retina"></svg></div>
+      <div class="panel">
+        <div class="ctrl"><span>Far</span><input type="range" id="dist" min="0" max="1" step="0.001" value="0.15" aria-label="Distance to the tree"><span>Near</span></div>
+        <div class="ctrl"><b id="distTxt">6 m away</b></div>
+        <div class="ctrl" role="group" aria-label="Lens">
+          <button class="tab" id="lensYoung" aria-pressed="true">Flexible lens (young eye)</button>
+          <button class="tab" id="lensOld" aria-pressed="false">Stiff lens (age 60)</button>
+        </div>
+        <div class="insets">
+          <div class="inset">On your retina<div class="pic" id="picRet" style="transform:rotate(180deg)">🌳</div></div>
+          <div class="inset">What you see<div class="pic" id="picSee">🌳</div></div>
+        </div>
+        <p class="fact" id="optFact"></p>
+      </div>
+    </div>
+  </section>
+
+  <!-- 2 TRANSDUCTION -->
+  <section id="trans">
+    <h2 class="sec"><span class="n">2</span>Transduction: light turns a photoreceptor <i>off</i></h2>
+    <p class="lede">Photoreceptors at the back of the retina convert light into an electrical signal. The surprise: in the dark they are <b>depolarized</b> and constantly releasing glutamate (the “dark current”). Light <b>hyperpolarizes</b> them and <b>reduces</b> glutamate release. Turn up the light and follow the cascade.</p>
+    <div class="stage">
+      <div><canvas id="rod" width="640" height="520" aria-label="Animated photoreceptor showing photons, sodium ions and glutamate"></canvas></div>
+      <div class="panel">
+        <div class="ctrl" role="group" aria-label="Cell type">
+          <button class="tab" id="cRod" aria-pressed="true">Rod (dim light)</button>
+          <button class="tab" id="cCone" aria-pressed="false">Cone (bright light, color)</button>
+        </div>
+        <div class="ctrl"><span>🌑</span><input type="range" id="lux" min="0" max="1" step="0.001" value="0" aria-label="Light level"><span>☀️</span></div>
+        <div class="ctrl"><b id="luxTxt">Darkness</b></div>
+        <div class="meters">
+          <span>cGMP</span><div class="m"><i id="mG"></i></div><span id="vG"></span>
+          <span>Na⁺ channels open</span><div class="m"><i id="mNa"></i></div><span id="vNa"></span>
+          <span>Membrane potential</span><div class="m"><i id="mV" style="background:#2a78c4"></i></div><span id="vV"></span>
+          <span>Glutamate release</span><div class="m"><i id="mGlu" style="background:#2f9e6e"></i></div><span id="vGlu"></span>
+        </div>
+        <ol class="steps" id="cascade">
+          <li><b>Photon absorbed</b> by a photopigment (rhodopsin in rods). Its retinal flips from 11-<i>cis</i> to all-<i>trans</i>.</li>
+          <li><b>Transducin</b>, a G protein, is switched on.</li>
+          <li>Transducin activates <b>PDE</b>, an enzyme that breaks down <b>cGMP</b>.</li>
+          <li>Less cGMP, so <b>cGMP-gated Na⁺ channels close</b>. The dark current stops.</li>
+          <li>The cell <b>hyperpolarizes</b> (about −40 → −70 mV).</li>
+          <li><b>Less glutamate</b> is released onto bipolar cells. That drop <i>is</i> the message “light!”</li>
+        </ol>
+      </div>
+    </div>
+  </section>
+
+  <!-- 3 RETINA -->
+  <section id="retina">
+    <h2 class="sec"><span class="n">3</span>The retina compares: center vs. surround</h2>
+    <p class="lede">Signals flow from photoreceptors to <b>bipolar cells</b> to <b>retinal ganglion cells</b>, whose axons form the optic nerve. Each ganglion cell watches a small patch of the world, its <b>receptive field</b>, split into a center and a surround that work against each other. Drag the light around and listen to the cell fire.</p>
+    <div class="stage">
+      <div><canvas id="rf" width="560" height="420" aria-label="Receptive field: drag the stimulus"></canvas></div>
+      <div class="panel">
+        <div class="ctrl" role="group" aria-label="Cell type">
+          <button class="tab" id="onC" aria-pressed="true">ON-center cell</button>
+          <button class="tab" id="offC" aria-pressed="false">OFF-center cell</button>
+        </div>
+        <div class="chips" role="group" aria-label="Stimulus" id="stimChips">
+          <button class="chip" data-st="spot" aria-pressed="true">● Spot of light</button>
+          <button class="chip" data-st="ring" aria-pressed="false">◯ Ring</button>
+          <button class="chip" data-st="edge" aria-pressed="false">◐ Edge</button>
+          <button class="chip" data-st="full" aria-pressed="false">■ Whole field</button>
+          <button class="chip" data-st="none" aria-pressed="false">Lights off</button>
+        </div>
+        <div class="ctrl" id="sizeRow"><span>Size</span><input type="range" id="spotR" min="8" max="170" value="34" aria-label="Spot size"></div>
+        <div class="box">
+          <div class="sub">Ganglion cell firing</div>
+          <div class="rate"><span id="rfRate">0</span> <small>spikes/s</small></div>
+          <canvas id="rfSpk" width="600" height="90" aria-hidden="true"></canvas>
+          <div class="ctrl" style="margin:6px 0 0"><button class="tog" id="snd1" aria-pressed="false">🔊 Hear the spikes</button></div>
+        </div>
+        <p class="fact" id="rfFact"></p>
+      </div>
+    </div>
+  </section>
+
+  <!-- 4 CHIASM -->
+  <section id="chiasm">
+    <h2 class="sec"><span class="n">4</span>Crossing over: eye to thalamus to cortex</h2>
+    <p class="lede">Each eye sees both halves of the world. At the <b>optic chiasm</b>, fibers from the inner (nasal) half of each retina cross, so everything in your <b style="color:var(--lf)">left visual field</b> ends up in the <b>right</b> side of the brain, and vice versa. Fibers then synapse in the <b>lateral geniculate nucleus (LGN)</b> of the thalamus before reaching primary visual cortex. <b>Tap a ✂️ to cut the pathway</b> there and see what the person loses.</p>
+    <div class="stage">
+      <div><svg id="chi" viewBox="150 0 500 640" aria-label="Top-down view of the visual pathway"></svg></div>
+      <div class="panel">
+        <div class="sub">What each eye sees</div>
+        <div class="fields">
+          <div class="f"><svg id="fL" viewBox="0 0 120 120"></svg>Left eye</div>
+          <div class="f"><svg id="fR" viewBox="0 0 120 120"></svg>Right eye</div>
+        </div>
+        <div class="verdict" id="verdict">Healthy pathway</div>
+        <p id="verdictTxt">Each eye sees the whole visual field.</p>
+        <div class="ctrl"><button class="btn" id="heal">Heal</button></div>
+        <p class="fact"><b>The LGN</b> keeps the two eyes separate: it has 6 layers, each getting input from just one eye. Its cells have center–surround receptive fields, just like ganglion cells. The eyes’ signals first combine in V1.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- 5 V1 -->
+  <section id="v1">
+    <h2 class="sec"><span class="n">5</span>Primary visual cortex: neurons that love lines</h2>
+    <p class="lede">In V1, a neuron combines a row of LGN cells, so instead of a spot it responds best to a <b>bar at one particular angle</b>. David Hubel and Torsten Wiesel discovered this in 1959 (Nobel Prize, 1981). You’re recording from a mystery V1 neuron. <b>Drag to rotate the bar</b> and find its favorite angle.</p>
+    <div class="stage">
+      <div><canvas id="ori" width="560" height="420" aria-label="Rotate a bar in a V1 neuron's receptive field"></canvas></div>
+      <div class="panel">
+        <div class="ctrl"><span>Angle</span><input type="range" id="ang" min="0" max="179" value="90" aria-label="Bar angle"><b id="angTxt">90°</b></div>
+        <div class="box">
+          <div class="sub">V1 neuron firing</div>
+          <div class="rate"><span id="oriRate">0</span> <small>spikes/s</small></div>
+          <canvas id="oriSpk" width="600" height="90" aria-hidden="true"></canvas>
+          <div class="ctrl" style="margin:6px 0 0"><button class="tog" id="snd2" aria-pressed="false">🔊 Hear the spikes</button></div>
+        </div>
+        <div class="sub" style="margin-top:10px">Your tuning curve</div>
+        <svg id="tune" viewBox="0 0 320 150" aria-label="Firing rate at each angle you have tried"></svg>
+        <div class="ctrl"><button class="btn" id="reveal">Reveal its favorite</button><button class="btn" id="newN">Record a new neuron</button></div>
+        <p class="fact" id="oriFact">Neighboring columns of V1 prefer neighboring angles. Together, every patch of the visual field gets detectors for every orientation:</p>
+        <div class="tiles" id="tiles"></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 6 STREAMS -->
+  <section id="streams">
+    <h2 class="sec"><span class="n">6</span>Higher-order vision: the “what” and “where” streams</h2>
+    <p class="lede">From V1, visual information splits into two big streams. The <b style="color:var(--ven)">ventral stream</b> runs down into the temporal lobe and figures out <b>what</b> you’re looking at: color, shape, faces. The <b style="color:var(--dor)">dorsal stream</b> runs up into the parietal lobe and works out <b>where</b> things are and <b>how</b> to reach for them, including motion. Tap an area to see what the world looks like when it’s damaged.</p>
+    <div class="stage">
+      <div><svg id="brain" viewBox="110 40 640 450" aria-label="Side view of the brain showing the visual streams"></svg></div>
+      <div class="panel">
+        <div class="chips" id="areaChips" role="group" aria-label="Brain area"></div>
+        <h3 id="arName">Healthy brain</h3>
+        <p id="arDoes"></p>
+        <canvas id="scene" width="600" height="340" aria-label="A scene as seen with the selected brain area damaged"></canvas>
+        <p class="fact" id="arCase"></p>
+      </div>
+    </div>
+  </section>
+
+  <!-- 7 FILLING IN -->
+  <section id="fill">
+    <h2 class="sec"><span class="n">7</span>Putting it together: your brain fills in</h2>
+    <p class="lede">What you see is the brain’s best guess, built from the signals and from what it expects. Higher areas send feedback all the way down: the LGN gets more input from cortex than from the retina. Try these.</p>
+    <div class="cards">
+      <div class="card"><h4>🕳️ Find your blind spot</h4>
+        <p>Where the optic nerve leaves the eye there are no photoreceptors. Close your <b>left</b> eye, stare at the <b>✚</b> with your right eye, and slowly move toward or away from the screen. At about 30–50 cm the dot vanishes, and your brain fills the gap with the background.</p>
+        <svg class="demo" viewBox="0 0 300 80"><text x="50" y="52" font-size="30" text-anchor="middle">✚</text><circle id="bsDot" cx="230" cy="42" r="12" fill="#e4572e"/></svg>
+        <div class="ctrl"><button class="tog" id="bsLine" aria-pressed="false">Add a line through it</button></div>
+      </div>
+      <div class="card"><h4>🔺 A triangle that isn’t there</h4>
+        <p>No edges are drawn, yet you see a bright white triangle on top. Neurons in V2 respond to these “illusory contours” as if the edges were real.</p>
+        <svg class="demo" id="kan" viewBox="0 0 300 200"></svg>
+        <div class="ctrl"><button class="tog" id="kanBtn" aria-pressed="false">Turn the pacmen</button></div>
+      </div>
+      <div class="card"><h4>🔤 Context decides</h4>
+        <p>The middle symbol in the row and in the column is the <b>exact same shape</b>. Your brain reads it as a letter or a number depending on its neighbors: top-down expectation shaping perception.</p>
+        <svg class="demo" viewBox="0 0 300 200" id="ctx"></svg>
+      </div>
+    </div>
+    <p class="note">Vision recap: optics (cornea, lens) → phototransduction (rods, cones) → retinal circuit (bipolar, ganglion cells) → optic nerve, chiasm, tract → LGN of the thalamus → optic radiations → V1 (occipital lobe) → ventral “what” stream (V4, fusiform face area, inferotemporal cortex) and dorsal “where/how” stream (MT/V5, posterior parietal cortex).</p>
+  </section>
+
+  <footer class="foot">
+    <p class="embed"><span>Embed:</span>
+      <code id="embedCode">&lt;iframe src="https://nelurad.github.io/neurosims/vision/" width="100%" height="4400" style="border:0" title="From Light to Sight"&gt;&lt;/iframe&gt;</code>
+      <button id="copyBtn">Copy</button></p>
+    <p style="margin-bottom:2px">References</p>
+    <ul class="refs">
+      <li>Hubel, D. H., &amp; Wiesel, T. N. (1959). Receptive fields of single neurones in the cat’s striate cortex. <i>Journal of Physiology</i>, 148, 574–591.</li>
+      <li>Kuffler, S. W. (1953). Discharge patterns and functional organization of mammalian retina. <i>Journal of Neurophysiology</i>, 16, 37–68.</li>
+      <li>Ungerleider, L. G., &amp; Mishkin, M. (1982). Two cortical visual systems. In <i>Analysis of Visual Behavior</i>. MIT Press.</li>
+      <li>Goodale, M. A., &amp; Milner, A. D. (1992). Separate visual pathways for perception and action. <i>Trends in Neurosciences</i>, 15, 20–25.</li>
+      <li>Zihl, J., von Cramon, D., &amp; Mai, N. (1983). Selective disturbance of movement vision after bilateral brain damage. <i>Brain</i>, 106, 313–340.</li>
+      <li>Kanwisher, N., McDermott, J., &amp; Chun, M. M. (1997). The fusiform face area. <i>Journal of Neuroscience</i>, 17, 4302–4311.</li>
+      <li>von der Heydt, R., Peterhans, E., &amp; Baumgartner, G. (1984). Illusory contours and cortical neuron responses. <i>Science</i>, 224, 1260–1262.</li>
+      <li>Purves, D., et al. <i>Neuroscience</i>. Sinauer / Oxford University Press.</li>
+    </ul>
+    <p>Part of <a href="../">NeuroSims</a>, made by Nelu Radpour (Florida State University). Content licensed CC BY 4.0; code licensed MIT. Free to use and adapt with credit.</p>
+  </footer>
+</div>
+
+<script>
+(function(){
+const $=id=>document.getElementById(id);
+const NS='http://www.w3.org/2000/svg';
+function el(tag,attrs,parent){ const e=document.createElementNS(NS,tag); for(const k in attrs) e.setAttribute(k,attrs[k]); if(parent) parent.appendChild(e); return e; }
+const clamp=(x,a,b)=>Math.max(a,Math.min(b,x));
+function pressGroup(btns,on){ btns.forEach(b=>b.setAttribute('aria-pressed',b===on)); }
+function fitCanvas(cv){ const W=cv.width,H=cv.height,d=Math.min(2,window.devicePixelRatio||1); cv.width=W*d; cv.height=H*d; const ctx=cv.getContext('2d'); ctx.setTransform(d,0,0,d,0,0); cv._w=W; cv._h=H; return ctx; }
+function canvasPt(cv,ev){ const r=cv.getBoundingClientRect(); return [(ev.clientX-r.left)/r.width*cv._w,(ev.clientY-r.top)/r.height*cv._h]; }
+
+/* ---------- spike raster + optional clicks ---------- */
+let AC=null;
+function tick(){ if(!AC) return; const t=AC.currentTime, o=AC.createOscillator(), g=AC.createGain(); o.type='square'; o.frequency.value=1400; g.gain.setValueAtTime(.12,t); g.gain.exponentialRampToValueAtTime(.001,t+.012); o.connect(g).connect(AC.destination); o.start(t); o.stop(t+.015); }
+function Spiker(cv,btn,color){
+  const ctx=fitCanvas(cv); let spikes=[], sound=false; this.rate=0;
+  btn.addEventListener('click',()=>{ sound=!sound; btn.setAttribute('aria-pressed',sound); if(sound&&!AC){ try{ AC=new (window.AudioContext||window.webkitAudioContext)(); }catch(e){} } if(AC&&AC.state==='suspended') AC.resume(); });
+  this.step=(dt,now)=>{
+    let n=0; const lam=this.rate*dt; let p=Math.random(), L=Math.exp(-lam), prod=p; while(prod>L && n<6){ n++; prod*=Math.random(); }
+    for(let i=0;i<n;i++){ spikes.push(now-Math.random()*dt*1000); if(sound && cv.getBoundingClientRect().bottom>0) tick(); }
+    spikes=spikes.filter(t=>now-t<2500);
+    const W=cv._w,H=cv._h; ctx.clearRect(0,0,W,H); ctx.fillStyle='#faf7f0'; ctx.fillRect(0,0,W,H);
+    ctx.strokeStyle='#e5dfd2'; ctx.beginPath(); ctx.moveTo(0,H-14); ctx.lineTo(W,H-14); ctx.stroke();
+    ctx.strokeStyle=color; ctx.lineWidth=2;
+    spikes.forEach(t=>{ const x=W-(now-t)/2500*W; ctx.beginPath(); ctx.moveTo(x,H-14); ctx.lineTo(x,12); ctx.stroke(); });
+    ctx.fillStyle='#9a948a'; ctx.font='11px system-ui'; ctx.fillText('last 2.5 s',6,H-2); ctx.textAlign='right'; ctx.fillText('now',W-4,H-2); ctx.textAlign='left';
+  };
+}
+
+/* ---------- pipeline highlight ---------- */
+const pipeLinks=[...document.querySelectorAll('.pipe a')];
+const io=new IntersectionObserver(es=>{ es.forEach(e=>{ if(e.isIntersecting){ pipeLinks.forEach(a=>a.classList.toggle('on',a.dataset.s===e.target.id)); } }); },{rootMargin:'-40% 0px -55% 0px'});
+pipeLinks.forEach(a=>io.observe($(a.dataset.s)));
+
+/* =========================================================
+   1. OPTICS
+   ========================================================= */
+const eye=$('eye');
+(function(){
+  const g=eye; const AX=185, CX=530, RAD=150, LX=414, RET=672;
+  el('defs',{},g).innerHTML='<radialGradient id="gEye" cx="45%" cy="45%" r="60%"><stop offset="0" stop-color="#fff"/><stop offset="1" stop-color="#f3eee4"/></radialGradient><radialGradient id="gLens" cx="40%" cy="40%" r="70%"><stop offset="0" stop-color="#fffdf0"/><stop offset="1" stop-color="#e8dcb5"/></radialGradient>';
+  // optic nerve
+  el('path',{d:`M${RET-6},${AX+34} C${RET+30},${AX+44} ${RET+60},${AX+70} ${RET+96},${AX+92} L${RET+84},${AX+116} C${RET+50},${AX+92} ${RET+20},${AX+70} ${RET-12},${AX+62} Z`,fill:'#f1dcc8',stroke:'#c49a8a','stroke-width':1.5},g);
+  el('circle',{cx:CX,cy:AX,r:RAD,fill:'url(#gEye)',stroke:'#b9ae9b','stroke-width':3},g);
+  // retina
+  el('path',{d:`M${CX+RAD*Math.cos(-1.05)-3},${AX+RAD*Math.sin(-1.05)+3} A${RAD-4},${RAD-4} 0 0 1 ${CX+RAD*Math.cos(1.05)-3},${AX+RAD*Math.sin(1.05)-3}`,fill:'none',stroke:'#d9705a','stroke-width':6,'stroke-linecap':'round'},g);
+  // cornea
+  el('path',{d:`M${CX-RAD*0.86},${AX-76} C${CX-RAD*1.2},${AX-50} ${CX-RAD*1.2},${AX+50} ${CX-RAD*0.86},${AX+76}`,fill:'#e9f4fb',stroke:'#8fb6cf','stroke-width':3,'fill-opacity':.8},g);
+  // iris
+  el('path',{d:`M${LX-12},${AX-78} L${LX-12},${AX-26}`,stroke:'#6b8f5e','stroke-width':7,'stroke-linecap':'round'},g);
+  el('path',{d:`M${LX-12},${AX+26} L${LX-12},${AX+78}`,stroke:'#6b8f5e','stroke-width':7,'stroke-linecap':'round'},g);
+  const lens=el('ellipse',{cx:LX,cy:AX,rx:12,ry:44,fill:'url(#gLens)',stroke:'#c7b57a','stroke-width':2},g);
+  el('line',{x1:40,y1:AX,x2:RET,y2:AX,stroke:'#d8d1c2','stroke-dasharray':'3 5'},g);
+  const rays=el('g',{},g);
+  const tree=el('g',{},g);
+  el('rect',{x:-5,y:-46,width:10,height:46,fill:'#8b5a2b',rx:2},tree);
+  el('circle',{cx:0,cy:-74,r:34,fill:'#3f9a4a'},tree); el('circle',{cx:-16,cy:-60,r:20,fill:'#4fae58'},tree); el('circle',{cx:16,cy:-62,r:20,fill:'#3a8a43'},tree);
+  const img=el('g',{},g);
+  const imgTree=el('g',{},img);
+  el('rect',{x:-1.2,y:0,width:2.4,height:15,fill:'#8b5a2b'},imgTree); el('circle',{cx:0,cy:25,r:8,fill:'#3f9a4a'},imgTree); el('circle',{cx:-4,cy:21,r:5,fill:'#4fae58'},imgTree);
+  const ghost=el('circle',{r:4,fill:'none',stroke:'#e8b400','stroke-width':2,'stroke-dasharray':'2 2'},g);
+  const L=[['Cornea',CX-RAD*1.12,AX-92],['Iris',LX-12,AX-92],['Lens',LX+18,AX+66],['Retina',RET+6,AX-110],['Fovea',RET+12,AX+4],['Optic nerve',RET+4,AX+142],['Blind spot',RET-34,AX+104]];
+  L.forEach(([t,x,y])=>{ const e=el('text',{x,y,class:'lbl sm','text-anchor':x>RET?'start':'middle'},g); e.textContent=t; });
+
+  let old=false;
+  function update(){
+    const s=+$('dist').value;            // 0 far .. 1 near
+    const D=10*Math.pow(0.025,s);         // 10 m .. 0.25 m
+    $('distTxt').textContent=D>=1?D.toFixed(D>=3?0:1)+' m away':Math.round(D*100)+' cm away';
+    const ox=60+260*s, TH=104*(0.75+0.25*s);
+    tree.setAttribute('transform',`translate(${ox},${AX}) scale(${TH/108})`);
+    const Do=D*1000, f0=17;                           // mm; relaxed eye focuses at infinity
+    const need=1/(1/f0-1/Do);                         // where a relaxed lens focuses
+    const reach=old?0.03:1;                            // how much the lens can bulge
+    const ach=Math.min(1,reach);
+    // accommodation: young eye brings focus fully onto retina; old eye barely changes
+    const di=f0+(need-f0)*(1-ach);
+    const ratio=Math.min(1.3,1+(di/f0-1)*7);          // exaggerate the defocus so it is visible
+    lens.setAttribute('rx',12+18*s*ach);
+    $('lensYoung').setAttribute('aria-pressed',!old); $('lensOld').setAttribute('aria-pressed',old);
+    const tip=[ox,AX-TH], ix=LX+(RET-LX)*ratio;
+    const imgH=12+48*s;                               // image height on the retina grows as the tree gets closer
+    const iy=AX+imgH*(ix-LX)/(RET-LX);
+    rays.innerHTML='';
+    const ys=[-38,0,38]; let hits=[];
+    ys.forEach(dy=>{ const P=[LX,AX+dy];
+      el('line',{x1:tip[0],y1:tip[1],x2:P[0],y2:P[1],stroke:'#e8b400','stroke-width':2,'stroke-opacity':.85},rays);
+      const t=(RET-6-P[0])/(ix-P[0]); const hx=P[0]+(ix-P[0])*Math.min(1,t), hy=P[1]+(iy-P[1])*Math.min(1,t);
+      el('line',{x1:P[0],y1:P[1],x2:hx,y2:hy,stroke:'#e8b400','stroke-width':2,'stroke-opacity':.85},rays);
+      if(ix>RET) el('line',{x1:hx,y1:hy,x2:ix,y2:iy,stroke:'#e8b400','stroke-width':1.5,'stroke-dasharray':'3 4','stroke-opacity':.6},rays);
+      hits.push(hy);
+    });
+    const blur=Math.max(...hits)-Math.min(...hits);
+    ghost.setAttribute('cx',ix); ghost.setAttribute('cy',iy); ghost.style.display=blur>3?'':'none';
+    imgTree.setAttribute('transform',`translate(${RET-9},${AX}) scale(${imgH/33})`);
+    imgTree.style.filter=blur>3?`blur(${Math.min(4,blur/6)}px)`:'none';
+    const bpx=Math.min(10,blur/3.2);
+    $('picRet').style.filter=$('picSee').style.filter=bpx>0.8?`blur(${bpx}px)`:'none';
+    let fact;
+    if(old && s>0.35) fact='<b>Blurry!</b> A stiff lens can’t bulge enough, so light from nearby objects comes into focus <i>behind</i> the retina (dashed circle). This is <b>presbyopia</b>, why many people need reading glasses after about 45.';
+    else if(!old && s>0.35) fact='<b>Accommodation:</b> muscles around the lens relax their pull, the lens gets rounder and bends light more, so the close tree stays sharp.';
+    else fact='Far away, the lens can stay flat. The tree’s image lands upside-down and left-right reversed on the retina. Your brain never “flips it back”: it simply learns to read the map that way.';
+    $('optFact').innerHTML=fact;
+  }
+  $('dist').addEventListener('input',update);
+  $('lensYoung').addEventListener('click',()=>{ old=false; update(); });
+  $('lensOld').addEventListener('click',()=>{ old=true; update(); });
+  update();
+})();
+
+/* =========================================================
+   2. TRANSDUCTION
+   ========================================================= */
+const rodS=(function(){
+  const cv=$('rod'), ctx=fitCanvas(cv), W=cv._w, H=cv._h;
+  let cone=false, lux=0, R=0, Rs=0, photons=[], ions=[], glu=[], trace=[];
+  const OS={x:250,y:40,w:110,h:170};
+  function level(v){ return v<=0.001?0:Math.pow(10,-3+8*v); } // 0.001 .. 100000 lux
+  function txt(l){ if(l===0) return 'Darkness'; if(l<0.05) return 'Starlight'; if(l<1) return 'Moonlight'; if(l<50) return 'Dim room'; if(l<1500) return 'Bright room'; return 'Sunlight'; }
+  function set(){ lux=level(+$('lux').value); const sig=cone?400:0.05; R=lux/(lux+sig); $('luxTxt').textContent=txt(lux)+(lux>0?` (${lux<1?lux.toFixed(lux<0.01?3:2):Math.round(lux).toLocaleString()} lux)`:'');
+    pressGroup([$('cRod'),$('cCone')],cone?$('cCone'):$('cRod')); }
+  $('lux').addEventListener('input',set);
+  $('cRod').addEventListener('click',()=>{ cone=false; set(); });
+  $('cCone').addEventListener('click',()=>{ cone=true; set(); });
+  set();
+  const steps=[...document.querySelectorAll('#cascade li')];
+  function drawCell(){
+    ctx.clearRect(0,0,W,H);
+    // outer segment
+    ctx.save();
+    ctx.fillStyle='#f6e0ec'; ctx.strokeStyle='#b77f9e'; ctx.lineWidth=2;
+    if(cone){ ctx.beginPath(); ctx.moveTo(OS.x+10,OS.y+OS.h); ctx.lineTo(OS.x+OS.w/2,OS.y+30); ctx.lineTo(OS.x+OS.w-10,OS.y+OS.h); ctx.closePath(); ctx.fill(); ctx.stroke(); }
+    else { ctx.beginPath(); ctx.roundRect(OS.x,OS.y,OS.w,OS.h,18); ctx.fill(); ctx.stroke(); }
+    ctx.strokeStyle='#d6a6c0'; ctx.lineWidth=1.5;
+    for(let y=OS.y+14;y<OS.y+OS.h-6;y+=9){ let x0=OS.x+8,x1=OS.x+OS.w-8; if(cone){ const k=(y-OS.y-30)/(OS.h-30); if(k<0.05) continue; x0=OS.x+OS.w/2-(OS.w/2-12)*k; x1=OS.x+OS.w/2+(OS.w/2-12)*k; } ctx.beginPath(); ctx.moveTo(x0,y); ctx.lineTo(x1,y); ctx.stroke(); }
+    // inner segment, body, axon, terminal
+    ctx.fillStyle='#fbe9dc'; ctx.strokeStyle='#c49a8a'; ctx.lineWidth=2;
+    ctx.beginPath(); ctx.roundRect(OS.x+14,OS.y+OS.h+8,OS.w-28,90,14); ctx.fill(); ctx.stroke();
+    ctx.beginPath(); ctx.ellipse(OS.x+OS.w/2,OS.y+OS.h+140,40,32,0,0,7); ctx.fill(); ctx.stroke();
+    ctx.fillStyle='#e9c8b5'; ctx.beginPath(); ctx.ellipse(OS.x+OS.w/2,OS.y+OS.h+140,22,17,0,0,7); ctx.fill();
+    ctx.fillStyle='#fbe9dc'; ctx.fillRect(OS.x+OS.w/2-6,OS.y+OS.h+170,12,60); ctx.strokeRect(OS.x+OS.w/2-6,OS.y+OS.h+170,12,60);
+    ctx.beginPath(); ctx.ellipse(OS.x+OS.w/2,OS.y+OS.h+244,36,20,0,0,7); ctx.fill(); ctx.stroke();
+    // bipolar dendrite
+    ctx.fillStyle='#e3eef9'; ctx.strokeStyle='#7fa6cc';
+    ctx.beginPath(); ctx.moveTo(OS.x+OS.w/2-40,H-10); ctx.quadraticCurveTo(OS.x+OS.w/2,OS.y+OS.h+262,OS.x+OS.w/2+40,H-10); ctx.closePath(); ctx.fill(); ctx.stroke();
+    ctx.restore();
+    // labels
+    ctx.font='15px '+getComputedStyle(document.body).getPropertyValue('--hand'); ctx.fillStyle='#3b3b3b';
+    const lab=[[cone?'Cone outer segment':'Rod outer segment','(stacked discs full of '+(cone?'opsin':'rhodopsin')+')',OS.x+OS.w+16,OS.y+70],['Inner segment','',OS.x+OS.w+16,OS.y+OS.h+50],['Cell body','',OS.x+OS.w+16,OS.y+OS.h+144],['Synaptic terminal','',OS.x+OS.w+16,OS.y+OS.h+246],['Bipolar cell','',OS.x+OS.w+16,H-14]];
+    lab.forEach(([a,b,x,y])=>{ ctx.fillText(a,x,y); if(b){ ctx.font='12px system-ui'; ctx.fillStyle='#6b6f76'; ctx.fillText(b,x,y+16); ctx.font='15px '+getComputedStyle(document.body).getPropertyValue('--hand'); ctx.fillStyle='#3b3b3b'; } });
+    ctx.fillStyle='#6b6f76'; ctx.font='12px system-ui'; ctx.fillText('light →',OS.x-70,24);
+  }
+  let vNow=-40;
+  return function(dt,now){
+    Rs+= (R-Rs)*Math.min(1,dt*3);
+    const open=1-0.96*Rs, V=-40-30*Rs; vNow=V;
+    const gluRate=clamp((V+72)/32,0,1);
+    // photons
+    const pr=lux<=0?0:Math.min(40,4+Math.log10(lux+1)*7);
+    if(Math.random()<pr*dt) photons.push({x:OS.x+10+Math.random()*(OS.w-20),y:-6,vy:260+Math.random()*80,ty:OS.y+20+Math.random()*(OS.h-30)});
+    if(Math.random()<open*18*dt) ions.push({side:Math.random()<.5?-1:1,y:OS.y+20+Math.random()*(OS.h-40),t:0});
+    if(Math.random()<gluRate*22*dt) glu.push({x:OS.x+OS.w/2+(Math.random()-.5)*44,y:OS.y+OS.h+262,vy:30+Math.random()*30,t:0});
+    drawCell();
+    // ion channels
+    for(let k=0;k<5;k++){ const y=OS.y+30+k*30; [OS.x,OS.x+OS.w].forEach(x=>{ ctx.fillStyle=open>0.5?'#2f9e6e':'#b0aaa0'; ctx.fillRect(x-4,y-6,8,12); }); }
+    photons=photons.filter(p=>{ p.y+=p.vy*dt; if(p.y>=p.ty){ ctx.fillStyle='rgba(232,180,0,.5)'; ctx.beginPath(); ctx.arc(p.x,p.ty,9,0,7); ctx.fill(); return false; } ctx.fillStyle='#e8b400'; ctx.beginPath(); ctx.arc(p.x,p.y,4,0,7); ctx.fill(); ctx.strokeStyle='rgba(232,180,0,.4)'; ctx.beginPath(); ctx.moveTo(p.x,p.y-14); ctx.lineTo(p.x,p.y); ctx.stroke(); return true; });
+    ions=ions.filter(n=>{ n.t+=dt; const k=n.t/1.2; if(k>1) return false; const x0=n.side<0?OS.x-50:OS.x+OS.w+50, x1=OS.x+OS.w/2+n.side*20; const x=x0+(x1-x0)*k; ctx.globalAlpha=1-k*.7; ctx.fillStyle='#e4572e'; ctx.beginPath(); ctx.arc(x,n.y,5,0,7); ctx.fill(); ctx.fillStyle='#fff'; ctx.font='bold 8px system-ui'; ctx.fillText('+',x-2.4,n.y+3); ctx.globalAlpha=1; return true; });
+    glu=glu.filter(q=>{ q.t+=dt; q.y+=q.vy*dt; if(q.t>1.1) return false; ctx.globalAlpha=1-q.t/1.1; ctx.fillStyle='#2f9e6e'; ctx.beginPath(); ctx.arc(q.x,q.y,3.5,0,7); ctx.fill(); ctx.globalAlpha=1; return true; });
+    ctx.fillStyle='#6b6f76'; ctx.font='12px system-ui';
+    ctx.fillStyle='#e4572e'; ctx.fillText('● Na⁺ flowing in',22,OS.y+OS.h-10); ctx.fillStyle='#2f9e6e'; ctx.fillText('● glutamate',22,H-40); ctx.fillStyle='#b08a00'; ctx.fillText('● photon',22,OS.y+12);
+    // voltage trace
+    trace.push([now,V]); trace=trace.filter(p=>now-p[0]<6000);
+    const gx=22,gy=OS.y+OS.h+50,gw=200,gh=110;
+    ctx.fillStyle='#faf7f0'; ctx.fillRect(gx,gy,gw,gh); ctx.strokeStyle='#e5dfd2'; ctx.strokeRect(gx,gy,gw,gh);
+    const yv=v=>gy+8+(v+40)/-34*(gh-20);
+    ctx.fillStyle='#9a948a'; ctx.font='11px system-ui'; ctx.fillText('−40 mV',gx+4,yv(-40)+12); ctx.fillText('−70 mV',gx+4,yv(-70)-4);
+    ctx.strokeStyle='#2a78c4'; ctx.lineWidth=2; ctx.beginPath(); trace.forEach((p,i)=>{ const x=gx+gw-(now-p[0])/6000*gw; i?ctx.lineTo(x,yv(p[1])):ctx.moveTo(x,yv(p[1])); }); ctx.stroke(); ctx.lineWidth=1;
+    ctx.fillStyle='#6b6f76'; ctx.fillText('membrane potential, last 6 s',gx,gy-6);
+    // meters
+    const set=(id,v,t)=>{ $('m'+id).style.width=(v*100)+'%'; $('v'+id).textContent=t; };
+    set('G',open,Math.round(open*100)+'%'); set('Na',open,Math.round(open*100)+'%'); set('V',(V+75)/40,Math.round(V)+' mV'); set('Glu',gluRate,Math.round(gluRate*100)+'%');
+    const lit=Rs>0.03; steps.forEach((li,i)=>li.classList.toggle('on',lit && Rs>0.03+i*0.02));
+  };
+})();
+
+/* =========================================================
+   3. RECEPTIVE FIELD
+   ========================================================= */
+const rfS=(function(){
+  const cv=$('rf'), ctx=fitCanvas(cv), W=cv._w, H=cv._h, C=[W/2,H/2], rc=44, rs=110;
+  let on=true, st='spot', pos=[C[0],C[1]], drag=false, rate=0;
+  const sp=new Spiker($('rfSpk'),$('snd1'),'#8a4fbf');
+  const SC=[],SS=[];
+  for(let i=0;i<1400;i++){ const a=Math.random()*6.283, r=Math.sqrt(Math.random())*rs, p=[C[0]+r*Math.cos(a),C[1]+r*Math.sin(a)]; (r<rc?SC:SS).push(p); }
+  function lit(x,y){ const R=+$('spotR').value;
+    if(st==='none') return 0; if(st==='full') return 1;
+    if(st==='spot') return Math.hypot(x-pos[0],y-pos[1])<R?1:0;
+    if(st==='ring'){ const d=Math.hypot(x-pos[0],y-pos[1]); return d>R && d<R+60?1:0; }
+    if(st==='edge') return x>pos[0]?1:0; }
+  function compute(){ let c=0,s=0; SC.forEach(p=>c+=lit(p[0],p[1])); SS.forEach(p=>s+=lit(p[0],p[1])); c/=SC.length; s/=SS.length;
+    const d=on?(c-s):(s-c); rate=Math.max(0,Math.round(14+120*d)); return [c,s]; }
+  function draw(){
+    const [c,s]=compute();
+    ctx.fillStyle='#3a3a40'; ctx.fillRect(0,0,W,H);
+    ctx.fillStyle='#fff6c8'; const R=+$('spotR').value;
+    if(st==='full') ctx.fillRect(0,0,W,H);
+    if(st==='spot'){ ctx.beginPath(); ctx.arc(pos[0],pos[1],R,0,7); ctx.fill(); }
+    if(st==='ring'){ ctx.beginPath(); ctx.arc(pos[0],pos[1],R+60,0,7); ctx.arc(pos[0],pos[1],R,0,7,true); ctx.fill('evenodd'); }
+    if(st==='edge') ctx.fillRect(pos[0],0,W-pos[0],H);
+    // RF outline
+    ctx.setLineDash([6,5]); ctx.lineWidth=2;
+    ctx.strokeStyle=on?'#4fbf7a':'#e4572e'; ctx.beginPath(); ctx.arc(C[0],C[1],rc,0,7); ctx.stroke();
+    ctx.strokeStyle=on?'#e4572e':'#4fbf7a'; ctx.beginPath(); ctx.arc(C[0],C[1],rs,0,7); ctx.stroke(); ctx.setLineDash([]);
+    ctx.font='bold 22px system-ui'; ctx.textAlign='center'; ctx.textBaseline='middle';
+    ctx.fillStyle=on?'#4fbf7a':'#e4572e'; ctx.fillText(on?'+':'−',C[0],C[1]);
+    ctx.fillStyle=on?'#e4572e':'#4fbf7a'; [[0,-1],[1,0],[0,1],[-1,0]].forEach(([dx,dy])=>ctx.fillText(on?'−':'+',C[0]+dx*(rc+rs)/2,C[1]+dy*(rc+rs)/2));
+    ctx.textAlign='left'; ctx.textBaseline='alphabetic';
+    ctx.fillStyle='rgba(255,255,255,.75)'; ctx.font='12px system-ui';
+    ctx.fillText('center lit: '+Math.round(c*100)+'%   surround lit: '+Math.round(s*100)+'%',12,H-12);
+    ctx.fillText(st==='none'||st==='full'?'':'drag to move the stimulus',W-150,H-12);
+    $('rfRate').textContent=rate; sp.rate=rate;
+    let f;
+    if(st==='full') f='Light everywhere, and the cell barely changes! Center and surround cancel out. Ganglion cells report <b>contrast</b>, not overall brightness.';
+    else if(st==='none') f='In the dark the cell still fires a little: this is its <b>baseline</b> rate. Changes up or down from baseline carry the signal.';
+    else if(on && c>0.7 && s<0.2) f='<b>Jackpot:</b> light filling the center but not the surround makes an ON-center cell fire like crazy.';
+    else if(!on && s>0.6 && c<0.2) f='<b>Jackpot:</b> an OFF-center cell fires most for a dark center with a lit surround.';
+    else if(st==='spot' && R>rs-6 && Math.hypot(pos[0]-C[0],pos[1]-C[1])<20) f='The spot now covers the surround too, and the surround cancels the center. Bigger is not better: this cell prefers a spot exactly the size of its center.';
+    else if(st==='edge') f='Slide the edge across the field. The cell responds most when the edge falls just past the center, so the retina already emphasizes <b>edges</b>. Neighbors inhibiting each other like this is called <b>lateral inhibition</b>.';
+    else if((on && s>c+0.15)||(!on && c>s+0.15)) f='Light in the '+(on?'surround':'center')+' <b>inhibits</b> this cell: it drops below its baseline firing.';
+    else f='Move the light into the center, then into the surround, and compare. Try changing the size.';
+    $('rfFact').innerHTML=f;
+  }
+  cv.addEventListener('pointerdown',e=>{ drag=true; cv.setPointerCapture(e.pointerId); pos=canvasPt(cv,e); draw(); });
+  cv.addEventListener('pointermove',e=>{ if(drag){ pos=canvasPt(cv,e); draw(); } });
+  cv.addEventListener('pointerup',()=>drag=false);
+  $('spotR').addEventListener('input',draw);
+  $('onC').addEventListener('click',()=>{ on=true; pressGroup([$('onC'),$('offC')],$('onC')); draw(); });
+  $('offC').addEventListener('click',()=>{ on=false; pressGroup([$('onC'),$('offC')],$('offC')); draw(); });
+  const chips=[...document.querySelectorAll('#stimChips .chip')];
+  chips.forEach(b=>b.addEventListener('click',()=>{ st=b.dataset.st; pressGroup(chips,b); $('sizeRow').style.visibility=st==='spot'||st==='ring'?'':'hidden'; if(st==='edge') pos=[C[0]+20,C[1]]; else if(st==='ring'){ pos=[C[0],C[1]]; $('spotR').value=44; } draw(); }));
+  draw();
+  return (dt,now)=>sp.step(dt,now);
+})();
+
+/* =========================================================
+   4. CHIASM + LESIONS
+   ========================================================= */
+(function(){
+  const s=$('chi');
+  el('defs',{},s).innerHTML='<radialGradient id="gTop" cx="50%" cy="45%" r="60%"><stop offset="0" stop-color="#fbe6dd"/><stop offset="1" stop-color="#ecc5b6"/></radialGradient>';
+  // visual field
+  el('rect',{x:170,y:10,width:230,height:60,rx:10,fill:'#2a78c4','fill-opacity':.18,stroke:'#2a78c4'},s);
+  el('rect',{x:400,y:10,width:230,height:60,rx:10,fill:'#e4572e','fill-opacity':.18,stroke:'#e4572e'},s);
+  const t1=el('text',{x:285,y:46,class:'lbl','text-anchor':'middle',fill:'#2a78c4'},s); t1.textContent='Left visual field';
+  const t2=el('text',{x:515,y:46,class:'lbl','text-anchor':'middle'},s); t2.textContent='Right visual field';
+  // brain outline (top-down)
+  el('path',{d:'M400,230 C300,228 190,280 182,400 C176,520 260,628 400,632 C540,628 624,520 618,400 C610,280 500,228 400,230 Z',fill:'url(#gTop)',stroke:'#b98c80','stroke-width':2},s);
+  el('path',{d:'M400,236 L400,630',stroke:'#c9988a','stroke-width':1.5},s);
+  // eyes
+  const EYES={L:[330,160],R:[470,160]};
+  Object.values(EYES).forEach(([x,y])=>{ el('circle',{cx:x,cy:y,r:38,fill:'#fff',stroke:'#b9ae9b','stroke-width':2.5},s); el('path',{d:`M${x-30},${y+20} A38,38 0 0 0 ${x+30},${y+20}`,fill:'none',stroke:'#d9705a','stroke-width':5},s); el('ellipse',{cx:x,cy:y-36,rx:12,ry:4,fill:'#6b8f5e'},s); });
+  // light rays from each field through the pupil to the opposite side of retina
+  [['L',-1],['R',1]].forEach(([k])=>{ const [x,y]=EYES[k];
+    el('path',{d:`M${x-70},72 L${x},${y-38} L${x+24},${y+30}`,fill:'none',stroke:'#2a78c4','stroke-width':2,'stroke-opacity':.7},s);
+    el('path',{d:`M${x+70},72 L${x},${y-38} L${x-24},${y+30}`,fill:'none',stroke:'#e4572e','stroke-width':2,'stroke-opacity':.7},s); });
+  const LGN={L:[318,392],R:[482,392]}, V1={L:[350,600],R:[450,600]};
+  el('ellipse',{cx:LGN.L[0],cy:LGN.L[1],rx:22,ry:15,fill:'#d9c3a0',stroke:'#8c6d3f'},s);
+  el('ellipse',{cx:LGN.R[0],cy:LGN.R[1],rx:22,ry:15,fill:'#d9c3a0',stroke:'#8c6d3f'},s);
+  el('path',{d:'M260,590 C300,612 360,618 396,612 L396,560 C350,566 300,560 268,548 Z',fill:'#8a4fbf','fill-opacity':.18,stroke:'#8a4fbf','stroke-dasharray':'4 3'},s);
+  el('path',{d:'M540,590 C500,612 440,618 404,612 L404,560 C450,566 500,560 532,548 Z',fill:'#8a4fbf','fill-opacity':.18,stroke:'#8a4fbf','stroke-dasharray':'4 3'},s);
+  // fibers
+  const F={
+    Lt:{eye:'L',half:'right',col:'#e4572e',segs:['nL','tL','rL'],P:[[306,186],[350,262],[384,290],[352,340],[LGN.L[0],LGN.L[1]],[262,470],[300,580]]},
+    Ln:{eye:'L',half:'left',col:'#2a78c4',segs:['nL','ch','tR','rR'],P:[[354,186],[372,256],[400,290],[448,340],[LGN.R[0],LGN.R[1]],[538,470],[500,580]]},
+    Rt:{eye:'R',half:'left',col:'#2a78c4',segs:['nR','tR','rR'],P:[[494,186],[450,262],[416,290],[448,340],[LGN.R[0]+3,LGN.R[1]+4],[530,474],[494,584]]},
+    Rn:{eye:'R',half:'right',col:'#e4572e',segs:['nR','ch','tL','rL'],P:[[446,186],[428,256],[400,290],[352,340],[LGN.L[0]-3,LGN.L[1]+4],[270,474],[306,584]]}
+  };
+  function smooth(P){ let d=`M${P[0][0]},${P[0][1]}`; for(let i=1;i<P.length-1;i++){ const m=[(P[i][0]+P[i+1][0])/2,(P[i][1]+P[i+1][1])/2]; d+=` Q${P[i][0]},${P[i][1]} ${m[0]},${m[1]}`; } const L=P[P.length-1]; return d+` L${L[0]},${L[1]}`; }
+  const fg=el('g',{},s);
+  Object.values(F).forEach(f=>{ f.base=el('path',{d:smooth(f.P),fill:'none',stroke:f.col,'stroke-width':5,'stroke-opacity':.35,'stroke-linecap':'round'},fg); f.fl=el('path',{d:smooth(f.P),fill:'none',stroke:f.col,'stroke-width':3,class:'flow','stroke-linecap':'round'},fg); });
+  const lab=[['Optic nerve',240,250],['Optic chiasm',420,308,'start'],['Optic tract',236,352],['LGN (thalamus)',196,398],['Optic radiation',612,530,'end'],['V1',400,590,'middle'],['Occipital lobe',400,628,'middle']];
+  lab.forEach(([t,x,y,a])=>{ const e=el('text',{x,y,class:'lbl'+(t==='Occipital lobe'?' sm':''),'text-anchor':a||'start'},s); e.textContent=t; });
+  const CUTS={nL:{p:[361,246],n:'left optic nerve'},nR:{p:[439,246],n:'right optic nerve'},ch:{p:[400,290],n:'optic chiasm'},tL:{p:[352,340],n:'left optic tract'},tR:{p:[448,340],n:'right optic tract'},rL:{p:[262,470],n:'left optic radiation'},rR:{p:[538,470],n:'right optic radiation'}};
+  let cut=null;
+  Object.entries(CUTS).forEach(([k,c])=>{ const g=el('g',{class:'cut',tabindex:0,role:'button','aria-label':'Cut the '+c.n},s);
+    el('circle',{class:'ring',cx:c.p[0],cy:c.p[1],r:14,fill:'#fff','fill-opacity':.85,stroke:'#555','stroke-width':1.5},g);
+    const t=el('text',{x:c.p[0],y:c.p[1]+6,'text-anchor':'middle','font-size':16},g); t.textContent='✂️';
+    c.g=g; g.addEventListener('click',()=>setCut(cut===k?null:k)); g.addEventListener('keydown',e=>{ if(e.key==='Enter'||e.key===' '){ e.preventDefault(); setCut(cut===k?null:k); } }); });
+  function field(svgEl,lostL,lostR){
+    svgEl.innerHTML='';
+    el('path',{d:'M60,8 A52,52 0 0 0 60,112 Z',fill:lostL?'#2c2c2c':'#2a78c4','fill-opacity':lostL?1:.55},svgEl);
+    el('path',{d:'M60,8 A52,52 0 0 1 60,112 Z',fill:lostR?'#2c2c2c':'#e4572e','fill-opacity':lostR?1:.55},svgEl);
+    el('circle',{cx:60,cy:60,r:52,fill:'none',stroke:'#888','stroke-width':1.5},svgEl);
+    el('circle',{cx:60,cy:60,r:3,fill:'#fff'},svgEl);
+  }
+  function setCut(k){
+    cut=k;
+    Object.entries(CUTS).forEach(([kk,c])=>{ c.g.querySelector('circle').setAttribute('fill',kk===k?'#fde2dc':'#fff'); c.g.querySelector('circle').setAttribute('stroke',kk===k?'#d33':'#555'); });
+    const dead=f=>k&&f.segs.includes(k);
+    Object.values(F).forEach(f=>{ const d=dead(f); f.base.setAttribute('stroke',d?'#aaa':f.col); f.fl.style.display=d?'none':''; });
+    const lost={L:{left:false,right:false},R:{left:false,right:false}};
+    Object.values(F).forEach(f=>{ if(dead(f)) lost[f.eye][f.half]=true; });
+    field($('fL'),lost.L.left,lost.L.right); field($('fR'),lost.R.left,lost.R.right);
+    let v,t;
+    const key=[lost.L.left,lost.L.right,lost.R.left,lost.R.right].map(Number).join('');
+    if(!k){ v='Healthy pathway'; t='Each eye sees the whole visual field. Notice that the left field (blue) always ends up on the right side of the brain.'; }
+    else if(key==='1100'){ v='Blind in the left eye'; t='Cutting an optic nerve, before the chiasm, takes out everything from that one eye. The other eye still covers both halves of the world.'; }
+    else if(key==='0011'){ v='Blind in the right eye'; t='Cutting an optic nerve, before the chiasm, takes out everything from that one eye. The other eye still covers both halves of the world.'; }
+    else if(key==='1001'){ v='Bitemporal hemianopia'; t='Only the <b>crossing</b> fibers were cut, and those carry each eye’s outer (temporal) view. The person loses both outer edges of their vision, like wearing horse blinders. A classic cause is a <b>pituitary tumor</b> pressing up on the chiasm.'; }
+    else if(key==='1010'){ v='Left homonymous hemianopia'; t='Past the chiasm, the right '+(k==='tR'?'optic tract':'optic radiation')+' carries the <b>left visual field from both eyes</b>. Lose it and the whole left half of the world disappears, in both eyes. This is common after a stroke.'; }
+    else if(key==='0101'){ v='Right homonymous hemianopia'; t='Past the chiasm, the left '+(k==='tL'?'optic tract':'optic radiation')+' carries the <b>right visual field from both eyes</b>. Lose it and the whole right half of the world disappears, in both eyes. This is common after a stroke.'; }
+    $('verdict').textContent=v; $('verdictTxt').innerHTML=t;
+  }
+  $('heal').addEventListener('click',()=>setCut(null));
+  setCut(null);
+})();
+
+/* =========================================================
+   5. V1 ORIENTATION
+   ========================================================= */
+const oriS=(function(){
+  const cv=$('ori'), ctx=fitCanvas(cv), W=cv._w, H=cv._h, C=[W/2,H/2];
+  const sp=new Spiker($('oriSpk'),$('snd2'),'#8a4fbf');
+  let pref=0, ang=90, samples={}, revealed=false, drag=false;
+  const dAng=(a,b)=>{ let d=Math.abs(a-b)%180; return d>90?180-d:d; };
+  const resp=a=>Math.round(3+85*Math.exp(-Math.pow(dAng(a,pref),2)/(2*17*17)));
+  function newNeuron(){ let p; do{ p=Math.floor(Math.random()*12)*15; }while(p===pref); pref=p; samples={}; revealed=false; ang=90; $('ang').value=90; $('reveal').disabled=false; render(); }
+  const tune=$('tune');
+  function plot(){
+    tune.innerHTML=''; const x=a=>30+a/180*280, y=r=>130-r/90*115;
+    el('line',{x1:30,y1:130,x2:310,y2:130,stroke:'#bdb7aa'},tune); el('line',{x1:30,y1:10,x2:30,y2:130,stroke:'#bdb7aa'},tune);
+    [0,45,90,135,180].forEach(a=>{ const t=el('text',{x:x(a),y:145,'font-size':10,'text-anchor':'middle',fill:'#6b6f76'},tune); t.textContent=a+'°'; });
+    const t=el('text',{x:12,y:70,'font-size':10,fill:'#6b6f76',transform:'rotate(-90 12 70)','text-anchor':'middle'},tune); t.textContent='spikes/s';
+    if(revealed){ let d=''; for(let a=0;a<=180;a+=2) d+=(a?'L':'M')+x(a)+','+y(resp(a)); el('path',{d,fill:'none',stroke:'#8a4fbf','stroke-width':2,'stroke-opacity':.5},tune); }
+    Object.entries(samples).forEach(([a,r])=>el('circle',{cx:x(+a),cy:y(r),r:4,fill:'#8a4fbf'},tune));
+    el('line',{x1:x(ang),y1:10,x2:x(ang),y2:130,stroke:'#e8b400','stroke-width':1.5,'stroke-dasharray':'3 3'},tune);
+  }
+  const tiles=$('tiles'); const TA=[0,30,60,90,120,150];
+  TA.forEach(a=>{ const d=document.createElement('div'); d.innerHTML=`<i style="transform:rotate(${-a}deg)"></i>`; d.title=a+'°'; tiles.appendChild(d); });
+  function render(){
+    ang=+$('ang').value; $('angTxt').textContent=ang+'°';
+    const r=resp(ang); sp.rate=r; $('oriRate').textContent=r;
+    samples[Math.round(ang/15)*15%180]=resp(Math.round(ang/15)*15%180);
+    ctx.fillStyle='#3a3a40'; ctx.fillRect(0,0,W,H);
+    ctx.setLineDash([6,5]); ctx.strokeStyle='rgba(255,255,255,.5)'; ctx.lineWidth=2; ctx.beginPath(); ctx.ellipse(C[0],C[1],120,120,0,0,7); ctx.stroke(); ctx.setLineDash([]);
+    ctx.save(); ctx.translate(C[0],C[1]); ctx.rotate(-ang*Math.PI/180); ctx.fillStyle='#fff6c8'; ctx.fillRect(-110,-11,220,22); ctx.restore();
+    if(revealed){ ctx.save(); ctx.translate(C[0],C[1]); ctx.rotate(-pref*Math.PI/180); ctx.strokeStyle='#e8b400'; ctx.setLineDash([4,4]); ctx.strokeRect(-110,-11,220,22); ctx.restore(); ctx.setLineDash([]); }
+    ctx.fillStyle='rgba(255,255,255,.75)'; ctx.font='12px system-ui'; ctx.fillText('drag around the circle to rotate the bar',12,H-12);
+    ctx.fillText('receptive field',C[0]-40,C[1]-128);
+    [...tiles.children].forEach((d,i)=>{ const k=Math.exp(-Math.pow(dAng(ang,TA[i]),2)/(2*17*17)); d.style.background=`rgba(138,79,191,${(k*0.85).toFixed(2)})`; d.firstChild.style.background=k>0.5?'#fff':'#555'; });
+    plot();
+    const best=Object.entries(samples).sort((a,b)=>b[1]-a[1])[0];
+    $('oriFact').innerHTML= revealed ? `This neuron’s favorite angle is <b>${pref}°</b>. Off by more than about 30° and it barely fires. Neighboring columns of V1 prefer neighboring angles, so every patch of the visual field has detectors for every orientation:` :
+      (Object.keys(samples).length<4 ? 'Try several angles. Each one you test adds a point to your tuning curve. Every patch of V1 has columns for every orientation:' : `So far the best angle you’ve found is <b>${best[0]}°</b> (${best[1]} spikes/s). Neighboring columns of V1 prefer neighboring angles:`);
+  }
+  function fromPointer(e){ const [x,y]=canvasPt(cv,e); let a=Math.round(-Math.atan2(y-C[1],x-C[0])*180/Math.PI); a=((a%180)+180)%180; $('ang').value=a; render(); }
+  cv.addEventListener('pointerdown',e=>{ drag=true; cv.setPointerCapture(e.pointerId); fromPointer(e); });
+  cv.addEventListener('pointermove',e=>{ if(drag) fromPointer(e); });
+  cv.addEventListener('pointerup',()=>drag=false);
+  $('ang').addEventListener('input',render);
+  $('reveal').addEventListener('click',()=>{ revealed=true; $('reveal').disabled=true; render(); });
+  $('newN').addEventListener('click',newNeuron);
+  pref=[30,60,120,150][Math.random()*4|0]; render(); samples={}; plot();
+  return (dt,now)=>sp.step(dt,now);
+})();
+
+/* =========================================================
+   6. STREAMS
+   ========================================================= */
+const sceneS=(function(){
+  const s=$('brain');
+  el('defs',{},s).innerHTML='<radialGradient id="gB" cx="40%" cy="35%" r="75%"><stop offset="0" stop-color="#fbe6dd"/><stop offset=".7" stop-color="#f1cbbd"/><stop offset="1" stop-color="#e3b2a2"/></radialGradient><marker id="arD" viewBox="0 0 10 10" refX="6" refY="5" markerUnits="userSpaceOnUse" markerWidth="24" markerHeight="24" orient="auto"><path d="M0,0 L10,5 L0,10 Z" fill="#2f9e6e"/></marker><marker id="arV" viewBox="0 0 10 10" refX="6" refY="5" markerUnits="userSpaceOnUse" markerWidth="24" markerHeight="24" orient="auto"><path d="M0,0 L10,5 L0,10 Z" fill="#8a4fbf"/></marker>';
+  el('path',{d:'M500,392 C512,364 580,352 640,366 C684,378 698,418 676,446 C650,474 580,480 540,466 C510,456 496,424 500,392 Z',fill:'#e9bfb0',stroke:'#b98c80','stroke-width':1.6},s);
+  el('path',{d:'M462,300 C470,300 496,300 504,306 C506,350 500,380 496,400 C494,430 492,456 490,482 L468,482 C464,462 454,442 450,420 C444,396 452,350 462,300 Z',fill:'#ecd0c3',stroke:'#c49a8a','stroke-width':1.5},s);
+  el('path',{d:'M150,300 C122,206 186,100 322,78 C462,56 626,100 672,214 C700,290 676,366 612,384 C566,396 524,382 494,374 C474,414 424,446 362,444 C300,442 254,412 238,372 C200,368 160,346 150,300 Z',fill:'url(#gB)',stroke:'#b98c80','stroke-width':2},s);
+  ['M425,72 C412,126 402,160 396,196 C388,240 366,270 340,302','M246,334 C300,322 380,306 474,300','M290,372 C340,362 400,360 470,346','M520,130 C560,170 600,200 640,214','M560,300 C590,320 620,330 660,330'].forEach((d,i)=>el('path',{d,fill:'none',stroke:i<2?'#b07f71':'#cf9f90','stroke-width':i<2?2.4:1.4,'stroke-linecap':'round'},s));
+  el('path',{d:'M640,250 C620,200 590,160 540,140',fill:'none',stroke:'#2f9e6e','stroke-width':10,'stroke-opacity':.55,'marker-end':'url(#arD)','stroke-linecap':'round'},s);
+  el('path',{d:'M640,300 C610,360 540,390 440,400',fill:'none',stroke:'#8a4fbf','stroke-width':10,'stroke-opacity':.5,'marker-end':'url(#arV)','stroke-linecap':'round'},s);
+  const t1=el('text',{x:520,y:112,class:'lbl','text-anchor':'middle',fill:'#2f9e6e'},s); t1.textContent='Dorsal stream: WHERE / HOW';
+  const t2=el('text',{x:330,y:470,class:'lbl','text-anchor':'middle'},s); t2.textContent='Ventral stream: WHAT';
+  const A=[
+    {id:'none',name:'Healthy brain',col:'#6b6f76',does:'All areas working. The ventral stream recognizes the face, the fruit and its colors. The dorsal stream tracks the moving ball and where everything sits.',cs:'Tap a colored area on the brain, or a button above, to damage it.'},
+    {id:'v1',name:'V1 (right side)',col:'#c0392b',shape:['ellipse',{cx:658,cy:272,rx:20,ry:46}],lx:690,ly:200,does:'<b>Primary visual cortex</b>, the first cortical stop. Every later area depends on it. Damage to the right V1 erases the left half of the visual field.',cs:'Some people with V1 damage show <b>blindsight</b>: they insist they see nothing on the blind side, yet point to objects there far better than chance, using pathways that bypass V1.'},
+    {id:'v4',name:'V4 (color)',col:'#c98a10',shape:['ellipse',{cx:576,cy:356,rx:28,ry:15}],lx:600,ly:420,does:'<b>V4</b>, on the underside of the occipital lobe, is key for <b>color</b>. Damage causes <b>cerebral achromatopsia</b>: the world turns shades of gray even though the cones in the eye work fine.',cs:'Oliver Sacks described a painter who lost color vision after a car accident. Even his memories and dreams turned gray.'},
+    {id:'ffa',name:'Fusiform face area',col:'#8a4fbf',shape:['ellipse',{cx:450,cy:400,rx:34,ry:14}],lx:430,ly:432,does:'The <b>fusiform face area</b> in the ventral temporal lobe responds strongly to faces. Damage causes <b>prosopagnosia</b> (face blindness): faces look like a jumble of features and even family members are unrecognizable.',cs:'People with prosopagnosia often recognize friends by their voice, walk, hairstyle or clothes instead.'},
+    {id:'mt',name:'MT / V5 (motion)',col:'#2a78c4',shape:['ellipse',{cx:596,cy:310,rx:22,ry:18}],lx:560,ly:316,does:'<b>MT</b> (also called V5) computes <b>motion</b>. Damage causes <b>akinetopsia</b>: the world is seen as a series of still snapshots instead of smooth movement.',cs:'Patient L.M. (Zihl, 1983) couldn’t pour tea: the liquid looked frozen, like a glacier, and suddenly the cup overflowed. Cars seemed far away, then suddenly right next to her.'},
+    {id:'ppc',name:'Posterior parietal (right)',col:'#2f9e6e',shape:['ellipse',{cx:548,cy:160,rx:42,ry:26}],lx:548,ly:166,does:'The <b>posterior parietal cortex</b> maps <b>where</b> things are and guides reaching. Damage to the right side often causes <b>hemispatial neglect</b>: the left side of space is ignored, even though the eyes see it.',cs:'Patients with neglect may eat only the right half of their plate, or shave only the right side of their face, and not notice that anything is missing.'}
+  ];
+  const chips=$('areaChips'); let cur='none';
+  A.forEach(a=>{
+    const b=document.createElement('button'); b.className='chip'; b.textContent=a.id==='none'?'Healthy':a.name.replace(/ \(.*\)/,''); b.style.setProperty('--k',a.col); b.addEventListener('click',()=>pick(a.id)); a.chip=b; chips.appendChild(b);
+    if(a.shape){ const g=el('g',{class:'area',tabindex:0,role:'button','aria-label':a.name},s); el(a.shape[0],Object.assign({class:'hit',fill:a.col,'fill-opacity':.35,stroke:a.col,'stroke-width':1.6},a.shape[1]),g);
+      g.addEventListener('click',()=>pick(a.id)); g.addEventListener('keydown',e=>{ if(e.key==='Enter'||e.key===' '){ e.preventDefault(); pick(a.id); } }); a.g=g; }
+  });
+  [['V1',682,240],['V4',612,384],['FFA',450,404],['MT',596,315],['PPC',548,165]].forEach(([t,x,y])=>{ const e=el('text',{x,y,'text-anchor':'middle','font-size':12,'font-weight':700,fill:'#333','pointer-events':'none'},s); e.textContent=t; });
+  function pick(id){ cur=id; const a=A.find(x=>x.id===id); A.forEach(x=>{ x.chip.setAttribute('aria-pressed',x.id===id); if(x.g) x.g.classList.toggle('on',x.id===id); });
+    document.querySelector('#streams').style.setProperty('--c',a.col);
+    $('arName').textContent=a.id==='none'?'Healthy brain':'Damage to '+a.name; $('arDoes').innerHTML=a.does; $('arCase').innerHTML=a.cs;
+    $('scene').style.filter=id==='v4'?'grayscale(1)':'none'; }
+  pick('none');
+  // scene
+  const cv=$('scene'), ctx=fitCanvas(cv), W=cv._w, H=cv._h;
+  const off=document.createElement('canvas'); off.width=40; off.height=48; const octx=off.getContext('2d');
+  function face(c,x,y,sc){ c.save(); c.translate(x,y); c.scale(sc,sc);
+    c.fillStyle='#4a2f1d'; c.beginPath(); c.ellipse(0,-12,46,50,0,Math.PI,0); c.fill();
+    c.fillStyle='#e8b896'; c.beginPath(); c.ellipse(0,4,38,48,0,0,7); c.fill();
+    c.fillStyle='#4a2f1d'; c.beginPath(); c.ellipse(0,-34,40,18,0,Math.PI,0); c.fill();
+    c.fillStyle='#fff'; [-15,15].forEach(dx=>{ c.beginPath(); c.ellipse(dx,-2,8,5,0,0,7); c.fill(); }); c.fillStyle='#2b4f7a'; [-15,15].forEach(dx=>{ c.beginPath(); c.arc(dx,-2,3.5,0,7); c.fill(); });
+    c.strokeStyle='#4a2f1d'; c.lineWidth=2.5; [-15,15].forEach(dx=>{ c.beginPath(); c.moveTo(dx-9,-14); c.quadraticCurveTo(dx,-19,dx+9,-14); c.stroke(); });
+    c.strokeStyle='#c08b6a'; c.beginPath(); c.moveTo(0,0); c.lineTo(-4,16); c.lineTo(3,17); c.stroke();
+    c.strokeStyle='#b0464a'; c.lineWidth=3; c.beginPath(); c.moveTo(-13,28); c.quadraticCurveTo(0,37,13,28); c.stroke();
+    c.fillStyle='#2f6fb0'; c.beginPath(); c.moveTo(-50,62); c.quadraticCurveTo(0,40,50,62); c.lineTo(56,90); c.lineTo(-56,90); c.fill(); c.restore(); }
+  let last=0, frozen=null, frozenAt=0;
+  return function(dt,now){
+    if(cv.getBoundingClientRect().bottom<0) return;
+    const T=now/1000; let bx=W*0.5+W*0.4*Math.sin(T*0.9), by=H*0.58-Math.abs(Math.sin(T*2.6))*110;
+    if(cur==='mt'){ if(!frozen||now-frozenAt>900){ frozen=[bx,by]; frozenAt=now; } [bx,by]=frozen; }
+    ctx.clearRect(0,0,W,H);
+    const sky=ctx.createLinearGradient(0,0,0,H); sky.addColorStop(0,'#bfe3f7'); sky.addColorStop(1,'#eaf6fb'); ctx.fillStyle=sky; ctx.fillRect(0,0,W,H);
+    ctx.fillStyle='#7cc36e'; ctx.fillRect(0,H*0.72,W,H*0.28);
+    ctx.fillStyle='#a5683c'; ctx.fillRect(W*0.52,H*0.62,W*0.42,14); ctx.fillRect(W*0.55,H*0.62,10,H*0.3); ctx.fillRect(W*0.9,H*0.62,10,H*0.3);
+    // fruit bowl
+    ctx.fillStyle='#d9342b'; ctx.beginPath(); ctx.arc(W*0.62,H*0.57,20,0,7); ctx.fill();
+    ctx.fillStyle='#3d8b3d'; ctx.beginPath(); ctx.ellipse(W*0.63,H*0.5,7,4,0.6,0,7); ctx.fill();
+    ctx.fillStyle='#f2c81b'; ctx.beginPath(); ctx.ellipse(W*0.71,H*0.585,26,10,-0.25,0,7); ctx.fill();
+    ctx.fillStyle='#7b3fa0'; [[0.8,0.56],[0.82,0.585],[0.78,0.585],[0.8,0.61]].forEach(([x,y])=>{ ctx.beginPath(); ctx.arc(W*x,H*y,8,0,7); ctx.fill(); });
+    ctx.fillStyle='#ff8c1a'; ctx.beginPath(); ctx.arc(W*0.88,H*0.575,17,0,7); ctx.fill();
+    // flower
+    ctx.fillStyle='#3d8b3d'; ctx.fillRect(W*0.08,H*0.45,4,H*0.28);
+    ctx.fillStyle='#e94f9a'; for(let k=0;k<6;k++){ ctx.beginPath(); ctx.arc(W*0.08+2+14*Math.cos(k),H*0.42+14*Math.sin(k),9,0,7); ctx.fill(); } ctx.fillStyle='#f2c81b'; ctx.beginPath(); ctx.arc(W*0.08+2,H*0.42,7,0,7); ctx.fill();
+    // face
+    if(cur==='ffa'){ octx.clearRect(0,0,40,48); face(octx,20,20,0.2); ctx.imageSmoothingEnabled=true; ctx.save(); ctx.filter='blur(2px)'; ctx.drawImage(off,W*0.27-100,H*0.42-100,200,240); ctx.restore();
+      ctx.save(); ctx.translate(W*0.27,H*0.42); ctx.fillStyle='#e8b896'; ctx.beginPath(); ctx.ellipse(0,4,38,48,0,0,7); ctx.fill();
+      // scrambled features
+      ctx.fillStyle='#2b4f7a'; ctx.beginPath(); ctx.arc(-6,-18,3.5,0,7); ctx.arc(20,10,3.5,0,7); ctx.fill(); ctx.strokeStyle='#b0464a'; ctx.lineWidth=3; ctx.beginPath(); ctx.moveTo(-22,0); ctx.quadraticCurveTo(-14,8,-6,0); ctx.stroke(); ctx.strokeStyle='#c08b6a'; ctx.beginPath(); ctx.moveTo(6,24); ctx.lineTo(14,30); ctx.stroke(); ctx.restore();
+      ctx.save(); ctx.globalAlpha=.55; ctx.fillStyle='#e8b896'; ctx.filter='blur(6px)'; ctx.beginPath(); ctx.ellipse(W*0.27,H*0.43,36,44,0,0,7); ctx.fill(); ctx.restore(); }
+    else face(ctx,W*0.27,H*0.42,1);
+    // ball (with ghost trail)
+    ctx.fillStyle='#fff'; ctx.strokeStyle='#222'; ctx.lineWidth=2; ctx.beginPath(); ctx.arc(bx,by,16,0,7); ctx.fill(); ctx.stroke();
+    ctx.fillStyle='#222'; ctx.beginPath(); ctx.arc(bx,by,6,0,7); ctx.fill();
+    if(cur==='v1'){ ctx.fillStyle='#111'; ctx.fillRect(0,0,W/2,H); ctx.fillStyle='#888'; ctx.font='13px system-ui'; ctx.fillText('(nothing: the left half of space is not seen)',14,H-14); }
+    if(cur==='ppc'){ const g=ctx.createLinearGradient(0,0,W*0.55,0); g.addColorStop(0,'rgba(255,253,248,1)'); g.addColorStop(0.75,'rgba(255,253,248,.92)'); g.addColorStop(1,'rgba(255,253,248,0)'); ctx.fillStyle=g; ctx.fillRect(0,0,W*0.55,H); ctx.fillStyle='#9a948a'; ctx.font='13px system-ui'; ctx.fillText('the left side simply doesn’t register',14,H-14); }
+    if(cur==='mt'){ ctx.fillStyle='rgba(0,0,0,.55)'; ctx.font='13px system-ui'; ctx.fillText('the ball jumps from snapshot to snapshot',W-270,22); }
+  };
+})();
+
+/* =========================================================
+   7. FILLING IN
+   ========================================================= */
+$('bsLine').addEventListener('click',function(){ const on=this.getAttribute('aria-pressed')!=='true'; this.setAttribute('aria-pressed',on); const s=this.closest('.card').querySelector('svg'); let l=s.querySelector('#bsL'); if(on&&!l){ l=el('line',{id:'bsL',x1:10,y1:42,x2:290,y2:42,stroke:'#2a78c4','stroke-width':4},s); s.insertBefore(l,s.firstChild); } if(!on&&l) l.remove(); });
+(function(){
+  const s=$('kan'); const P=[[150,36],[72,166],[228,166]];
+  let turned=false;
+  function draw(){ s.innerHTML='';
+    P.forEach(([x,y],i)=>{       let a0=Math.atan2(P[(i+1)%3][1]-y,P[(i+1)%3][0]-x), a1=Math.atan2(P[(i+2)%3][1]-y,P[(i+2)%3][0]-x);
+      if(turned){ a0+=Math.PI; a1+=Math.PI; }
+      const r=31, x0=x+(r+1)*Math.cos(a0), y0=y+(r+1)*Math.sin(a0), x1=x+(r+1)*Math.cos(a1), y1=y+(r+1)*Math.sin(a1);
+      el('circle',{cx:x,cy:y,r,fill:'#2a2a2a'},s);
+      let df=a1-a0; while(df>Math.PI) df-=2*Math.PI; while(df<=-Math.PI) df+=2*Math.PI;
+      el('path',{d:`M${x},${y} L${x0},${y0} A${r+1},${r+1} 0 0 ${df>0?1:0} ${x1},${y1} Z`,fill:'#fffefb'},s);
+    });
+  }
+  draw();
+  $('kanBtn').addEventListener('click',function(){ turned=!turned; this.setAttribute('aria-pressed',turned); draw(); });
+})();
+(function(){
+  const s=$('ctx'); const F='font-size="38" font-family="Georgia,serif" text-anchor="middle" fill="#2a2a2a"';
+  s.innerHTML=`<text x="75" y="113" ${F}>A</text><text x="225" y="113" ${F}>C</text>
+    <text x="150" y="48" ${F}>12</text><text x="150" y="178" ${F}>14</text>
+    <path transform="translate(152,113)" d="M-13,-27 L-13,0 M-8,-27 C9,-27 9,-14 -5,-14 C11,-14 11,0 -8,0" fill="none" stroke="#2a2a2a" stroke-width="3.6" stroke-linecap="round" stroke-linejoin="round"/>`;
+})();
+
+/* ---------- main loop ---------- */
+let prev=performance.now();
+function loop(now){ const dt=Math.min(0.05,(now-prev)/1000); prev=now;
+  rodS(dt,now); rfS(dt,now); oriS(dt,now); sceneS(dt,now);
+  requestAnimationFrame(loop); }
+requestAnimationFrame(loop);
+
+$('copyBtn').addEventListener('click',()=>{ const t=$('embedCode').textContent; if(navigator.clipboard) navigator.clipboard.writeText(t).then(()=>{ $('copyBtn').textContent='Copied'; setTimeout(()=>$('copyBtn').textContent='Copy',1500); },()=>{}); });
+})();
+</script>
+</body>
+</html>

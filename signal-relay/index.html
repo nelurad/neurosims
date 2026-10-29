@@ -1,0 +1,459 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Signal Relay</title>
+<link rel="icon" href="data:,">
+<meta name="description" content="A game about how each sense travels to the brain: route touch, pain, sight, sound, taste and smell through the thalamus to the right cortex, and spot the exceptions (smell skips the thalamus, reflexes act in the spinal cord).">
+<style>
+  :root{ --bg:#fffdf8; --ink:#2a2a2a; --muted:#6b6f76; --line:#e2ddd2;
+    --hand:"Segoe Print","Ink Free","Noteworthy","Chalkboard SE","Bradley Hand","Comic Sans MS",cursive;
+    --sans:system-ui,-apple-system,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif;
+    --mono:ui-monospace,"SF Mono",Menlo,Consolas,monospace;
+    --touch:#2a78c4; --pain:#e4572e; --vision:#8a4fbf; --hearing:#2f9e6e; --taste:#c98a10; --smell:#d4508a; --thal:#8c6d3f;
+    --c:#2a78c4; }
+  *{box-sizing:border-box}
+  html{-webkit-text-size-adjust:100%}
+  html,body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.5 var(--sans);-webkit-font-smoothing:antialiased}
+  .wrap{margin:0 auto;padding:20px 16px 32px;max-width:1280px}
+  a{color:#3d6fa8}
+  .back{font-size:13.5px;color:var(--muted);text-decoration:none}
+  .back:hover{text-decoration:underline}
+  h1{font-family:Georgia,"Times New Roman",serif;font-weight:normal;font-size:clamp(26px,2.6vw,38px);margin:6px 0 8px;letter-spacing:-.01em}
+  .intro{margin:0 0 10px;max-width:54em;font-size:clamp(15px,1.2vw,17px)}
+  section{margin-top:34px}
+  h2.sec{font-family:var(--hand);font-weight:normal;font-size:clamp(24px,2.4vw,32px);margin:0 0 2px;line-height:1.2}
+  h2.sec .n{display:inline-block;width:1.45em;height:1.45em;line-height:1.45em;text-align:center;border-radius:50%;background:#2a2a2a;color:#fffdf8;font-size:.7em;margin-right:8px;vertical-align:.2em;font-family:var(--sans)}
+  .lede{margin:0 0 12px;max-width:54em;color:#3b3b3b}
+  :focus-visible{outline:2px solid #3d6fa8;outline-offset:2px}
+
+  .bar{display:flex;flex-wrap:wrap;gap:8px 14px;align-items:center;margin:0 0 10px}
+  .tab{font:inherit;font-family:var(--hand);font-size:clamp(16px,1.5vw,19px);background:transparent;border:0;border-bottom:3px solid transparent;padding:4px 10px 2px;cursor:pointer;color:var(--muted)}
+  .tab[aria-pressed="true"]{color:var(--ink);border-bottom-color:currentColor}
+  .tab:hover{color:var(--ink)}
+  .tog{font:inherit;font-size:13.5px;background:#fff;border:1.5px solid var(--line);border-radius:999px;padding:3px 12px;cursor:pointer;color:var(--muted)}
+  .tog[aria-pressed="true"]{color:var(--ink);border-color:#bdb7aa}
+  .score{margin-left:auto;display:flex;gap:16px;font-size:14px;color:var(--muted)}
+  .score b{color:var(--ink);font-size:18px;font-variant-numeric:tabular-nums}
+
+  .stage{display:grid;grid-template-columns:minmax(0,1.6fr) minmax(290px,1fr);gap:24px;align-items:start}
+  svg{display:block;width:100%;height:auto;user-select:none;-webkit-user-select:none}
+  .rg{cursor:pointer}
+  .rg .hit{transition:fill-opacity .2s,stroke-width .2s}
+  .rg:hover .hit,.rg:focus-visible .hit{fill-opacity:.55}
+  .rg.stroke:hover .hit,.rg.stroke:focus-visible .hit{stroke-opacity:.8}
+  .rg.good .hit{fill-opacity:.75}
+  .rg.stroke.good .hit{stroke-opacity:.9}
+  .rg:focus{outline:none}
+  .rg.nope{animation:nope .45s ease-in-out}
+  .rg.nope .hit{fill:#d33 !important;stroke:#d33 !important}
+  @keyframes nope{0%,100%{transform:translateX(0)}20%{transform:translateX(-6px)}40%{transform:translateX(6px)}60%{transform:translateX(-4px)}80%{transform:translateX(3px)}}
+  .lbl{font-family:var(--hand);font-size:15px;fill:#3b3b3b;pointer-events:none}
+  .lbl.sm{font-size:12.5px}
+  .nolabels .lbl,.nolabels .lead{display:none}
+  .lead{stroke:#9a948a;stroke-width:1;fill:none;pointer-events:none}
+  .yank{animation:yank .7s ease-out}
+  @keyframes yank{0%{transform:translate(0,0)}35%{transform:translate(48px,10px) rotate(14deg)}100%{transform:translate(0,0)}}
+  .glow{animation:glow 1s ease-in-out 2}
+  @keyframes glow{50%{fill-opacity:.95;stroke-opacity:1}}
+
+  .card{background:#fff;border:1.5px solid var(--line);border-radius:12px;padding:14px 16px}
+  .stim{display:flex;gap:14px;align-items:center}
+  .stim .e{font-size:54px;line-height:1}
+  .stim .t{font-size:18px;font-weight:600;line-height:1.3}
+  .stim .k{font-size:13px;color:var(--muted);text-transform:uppercase;letter-spacing:.06em;font-weight:600}
+  .ask{font-family:var(--hand);font-size:21px;margin:12px 0 6px;color:var(--c)}
+  .route{display:flex;flex-wrap:wrap;gap:6px;align-items:center;margin:6px 0 4px;font-size:14px}
+  .route .st{border:1.5px dashed #c9c3b6;border-radius:999px;padding:2px 10px;color:var(--muted);min-width:2.4em;text-align:center}
+  .route .st.done{border-style:solid;border-color:var(--k);color:var(--k);background:#fff;font-weight:600}
+  .route .st.now{border-color:var(--c);color:var(--c)}
+  .route .ar{color:#bdb7aa}
+  .fb{margin:10px 0 0;padding:8px 12px;border-radius:8px;font-size:15px;min-height:3.2em;background:#f6f2e8}
+  .fb.ok{background:#eaf5ee;border-left:4px solid var(--hearing)}
+  .fb.no{background:#fbecea;border-left:4px solid #d33}
+  .fb.hint{background:#fdf5e2;border-left:4px solid var(--taste)}
+  .fb.win{background:#eef3fb;border-left:4px solid var(--c)}
+  .btn{font:inherit;font-size:15px;background:#fff;border:1.5px solid #bdb7aa;border-radius:8px;padding:6px 16px;cursor:pointer;color:var(--ink)}
+  .btn:hover{border-color:var(--c);color:var(--c)}
+  .btn.primary{background:var(--c);border-color:var(--c);color:#fff}
+  .btn.primary:hover{filter:brightness(1.08);color:#fff}
+  .btns{display:flex;gap:8px;margin-top:12px;flex-wrap:wrap}
+  .pips{display:flex;gap:4px;margin-top:12px}
+  .pips i{flex:1;height:6px;border-radius:3px;background:#e9e4d8}
+  .pips i.p{background:var(--hearing)} .pips i.h{background:var(--taste)} .pips i.x{background:#d77}
+  .pips i.cur{background:#bdb7aa}
+
+  .end h3{font-family:var(--hand);font-weight:normal;font-size:28px;margin:0 0 4px}
+  .end .big{font-size:40px;font-weight:700;font-variant-numeric:tabular-nums;line-height:1.1}
+  .end table{border-collapse:collapse;width:100%;font-size:14px;margin:10px 0}
+  .end td{padding:3px 4px;border-bottom:1px solid #efe9dd}
+  .end td:last-child{text-align:right;font-variant-numeric:tabular-nums}
+
+  .sheet{border-collapse:collapse;width:100%;font-size:14.5px;background:#fff;border:1.5px solid var(--line);border-radius:10px;overflow:hidden}
+  .sheet th,.sheet td{text-align:left;padding:7px 10px;border-bottom:1px solid #efe9dd;vertical-align:top}
+  .sheet th{background:#f6f2e8;font-weight:600;font-size:13.5px}
+  .sheet tr.odd td{background:#fdf0f5}
+  .sheet .sw{display:inline-block;width:10px;height:10px;border-radius:50%;margin-right:6px;vertical-align:0}
+  .tblwrap{overflow-x:auto}
+  .cards{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:14px;margin-top:14px}
+  .cards .card h4{font-family:var(--hand);font-weight:normal;font-size:20px;margin:0 0 4px}
+  .cards .card p{margin:0;font-size:14.5px}
+
+  .note{font-size:13px;color:var(--muted);margin:14px 0 0;max-width:62em}
+  .foot{margin-top:36px;padding-top:14px;border-top:1px dashed #c9c3b6;font-size:12.5px;color:var(--muted)}
+  .foot p{margin:0 0 8px}
+  .embed{display:flex;gap:8px;align-items:flex-start;flex-wrap:wrap}
+  .embed code{flex:1;min-width:0;font-family:var(--mono);font-size:11.5px;background:#fff;border:1px solid var(--line);padding:5px 8px;overflow-wrap:anywhere}
+  .embed button{font:inherit;font-size:12px;padding:4px 10px;background:#fff;border:1px solid #bdb7aa;border-radius:4px;cursor:pointer}
+  .refs{margin:4px 0 10px;padding-left:18px}
+  @media (max-width:860px){ .stage{grid-template-columns:minmax(0,1fr)} .score{margin-left:0} }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <a class="back" href="../">← All NeuroSims</a>
+  <h1>Signal Relay</h1>
+  <p class="intro">Something touches your hand. You hear a song. You smell coffee. Each of those signals has to travel from a sense organ to the right part of the brain, and almost all of them make the same stop on the way: the <b style="color:var(--thal)">thalamus</b>, the brain’s relay station. Almost all. Your job is to route each signal, and catch the exceptions.</p>
+
+  <section id="game" style="margin-top:20px">
+    <h2 class="sec"><span class="n">1</span>Route the signal</h2>
+    <p class="lede">Read what just happened, then tap the brain areas <b>in the order the signal reaches them</b>. Get it right on the first try for full points. Watch out: one sense skips the thalamus entirely, and some signals trigger a reflex before your brain even knows.</p>
+    <div class="bar">
+      <div role="group" aria-label="Difficulty">
+        <button class="tab" id="mEasy" aria-pressed="true">Easy: thalamus</button>
+        <button class="tab" id="mHard" aria-pressed="false">Hard: name the nucleus</button>
+      </div>
+      <button class="tog" id="lblBtn" aria-pressed="true">Labels on</button>
+      <div class="score"><span>Round <b id="rnd">1</b>/10</span><span>Score <b id="pts">0</b></span><span>Streak <b id="stk">0</b></span></div>
+    </div>
+    <div class="stage">
+      <div><svg id="map" viewBox="40 40 730 590" aria-label="Side view of the brain with clickable areas"></svg></div>
+      <div class="card" id="panel" aria-live="polite"></div>
+    </div>
+    <p class="note">The brain is drawn as if you could see through it: the dashed areas (thalamus, insula, olfactory cortex) sit deep inside. Tongue, face and ear signals enter through the brainstem; eye signals travel along the optic nerve.</p>
+  </section>
+
+  <section id="sheet">
+    <h2 class="sec"><span class="n">2</span>Cheat sheet: every sense’s route</h2>
+    <p class="lede">The pattern to remember: <b>sense organ → thalamus → primary cortex</b>. Each sense has its own relay nucleus in the thalamus. Smell is the one that breaks the rule.</p>
+    <div class="tblwrap"><table class="sheet">
+      <thead><tr><th>Sense</th><th>Receptors in…</th><th>First relay in the brain</th><th>Arrives at</th><th>Memory trick</th></tr></thead>
+      <tbody>
+        <tr><td><span class="sw" style="background:var(--touch)"></span>Touch (body)</td><td>Skin</td><td>Thalamus: <b>VPL</b></td><td>Primary somatosensory cortex (postcentral gyrus)</td><td>VP<b>L</b> = <b>L</b>imbs</td></tr>
+        <tr><td><span class="sw" style="background:var(--pain)"></span>Pain &amp; heat</td><td>Skin (nociceptors)</td><td>Spinal cord reflex first, then thalamus: <b>VPL</b></td><td>Somatosensory cortex (also insula and cingulate)</td><td>Pull away first, feel it second</td></tr>
+        <tr><td><span class="sw" style="background:var(--touch)"></span>Touch (face)</td><td>Skin of the face</td><td>Thalamus: <b>VPM</b></td><td>Face area of somatosensory cortex</td><td>VP<b>M</b> = <b>M</b>outh &amp; face</td></tr>
+        <tr><td><span class="sw" style="background:var(--vision)"></span>Vision</td><td>Retina</td><td>Thalamus: <b>LGN</b> (lateral geniculate)</td><td>Primary visual cortex (occipital lobe)</td><td><b>L</b>GN = <b>L</b>ight</td></tr>
+        <tr><td><span class="sw" style="background:var(--hearing)"></span>Hearing</td><td>Cochlea</td><td>Thalamus: <b>MGN</b> (medial geniculate)</td><td>Primary auditory cortex (temporal lobe)</td><td><b>M</b>GN = <b>M</b>usic</td></tr>
+        <tr><td><span class="sw" style="background:var(--taste)"></span>Taste</td><td>Taste buds</td><td>Thalamus: <b>VPM</b></td><td>Gustatory cortex (insula)</td><td>VP<b>M</b> = <b>M</b>outh</td></tr>
+        <tr class="odd"><td><span class="sw" style="background:var(--smell)"></span><b>Smell</b></td><td>Nose (olfactory epithelium)</td><td><b>Olfactory bulb</b>: no thalamus!</td><td>Olfactory (piriform) cortex</td><td>Smell is the rebel</td></tr>
+      </tbody>
+    </table></div>
+    <div class="cards">
+      <div class="card"><h4>🏢 Why a relay station?</h4><p>The thalamus isn’t just a hallway. It filters and boosts signals depending on what you’re paying attention to, and it gates sensory input during sleep. That’s one reason you can sleep through a quiet room but wake to your name.</p></div>
+      <div class="card"><h4>👃 Why does smell skip it?</h4><p>Smell is the oldest sense in evolution. Its receptors send axons straight to the olfactory bulb, which feeds olfactory cortex right next to the amygdala and hippocampus. That direct line to emotion and memory is why a smell can bring back a memory instantly. (Smell does reach the thalamus later, on its way to the orbitofrontal cortex, but not first.)</p></div>
+      <div class="card"><h4>🔥 Why reflexes come first</h4><p>When you touch something hot, pain fibers connect to interneurons in the spinal cord, which fire the motor neurons that pull your hand away. That loop never waits for the brain, so you move before you feel it. The pain signal keeps climbing to the thalamus and cortex, which is when you think “ouch.”</p></div>
+      <div class="card"><h4>↔️ Everything crosses</h4><p>The thalamus and cortex on the <b>left</b> side of your brain handle the <b>right</b> side of your body, and vice versa. Smell is the exception here too: each nostril mostly reports to the same side.</p></div>
+    </div>
+  </section>
+
+  <footer class="foot">
+    <p class="embed"><span>Embed:</span>
+      <code id="embedCode">&lt;iframe src="https://nelurad.github.io/neurosims/signal-relay/" width="100%" height="1500" style="border:0" title="Signal Relay"&gt;&lt;/iframe&gt;</code>
+      <button id="copyBtn">Copy</button></p>
+    <p style="margin-bottom:2px">References</p>
+    <ul class="refs">
+      <li>Sherman, S. M., &amp; Guillery, R. W. (2006). <i>Exploring the Thalamus and Its Role in Cortical Function</i> (2nd ed.). MIT Press.</li>
+      <li>Shepherd, G. M. (2005). Perception without a thalamus: How does olfaction do it? <i>Neuron</i>, 46(2), 166–168.</li>
+      <li>Kandel, E. R., et al. <i>Principles of Neural Science</i>. McGraw-Hill.</li>
+      <li>Purves, D., et al. <i>Neuroscience</i>. Sinauer / Oxford University Press.</li>
+    </ul>
+    <p>Part of <a href="../">NeuroSims</a>, made by Nelu Radpour (Florida State University). Content licensed CC BY 4.0; code licensed MIT. Free to use and adapt with credit.</p>
+  </footer>
+</div>
+
+<script>
+(function(){
+const $=id=>document.getElementById(id);
+const NS='http://www.w3.org/2000/svg';
+function el(tag,attrs,parent){ const e=document.createElementNS(NS,tag); for(const k in attrs) e.setAttribute(k,attrs[k]); if(parent) parent.appendChild(e); return e; }
+const COL={touch:'#2a78c4',pain:'#e4572e',vision:'#8a4fbf',hearing:'#2f9e6e',taste:'#c98a10',smell:'#d4508a',thal:'#8c6d3f',cord:'#7a6f86'};
+
+/* ---------- brain areas ---------- */
+const S1PT={hand:[428,176],arm:[438,140],foot:[452,96],face:[400,246],leg:[446,112]};
+const R={
+  cord:{name:'Spinal cord',col:COL.cord,pt:[478,548],short:'Spinal cord'},
+  thal:{name:'Thalamus',col:COL.thal,pt:[470,228],short:'Thalamus'},
+  vpl:{name:'Thalamus: VPL',col:COL.thal,pt:[468,240],short:'VPL',fam:'thal',does:'touch and pain from the body'},
+  vpm:{name:'Thalamus: VPM',col:COL.thal,pt:[438,238],short:'VPM',fam:'thal',does:'touch from the face, and taste'},
+  mgn:{name:'Thalamus: MGN',col:COL.thal,pt:[496,244],short:'MGN',fam:'thal',does:'hearing'},
+  lgn:{name:'Thalamus: LGN',col:COL.thal,pt:[503,214],short:'LGN',fam:'thal',does:'vision'},
+  s1:{name:'Somatosensory cortex',col:COL.touch,short:'Somatosensory cx',does:'touch, pain and body position'},
+  a1:{name:'Auditory cortex',col:COL.hearing,pt:[404,340],short:'Auditory cx',does:'hearing'},
+  v1:{name:'Visual cortex',col:COL.vision,pt:[658,270],short:'Visual cx',does:'vision'},
+  gust:{name:'Gustatory cortex (insula)',col:COL.taste,pt:[330,307],short:'Gustatory cx',does:'taste'},
+  ob:{name:'Olfactory bulb',col:COL.smell,pt:[202,380],short:'Olfactory bulb',does:'the first stop for smell'},
+  pir:{name:'Olfactory cortex',col:COL.smell,pt:[284,378],short:'Olfactory cx',does:'smell'}
+};
+const fam=id=>R[id].fam||id;
+
+/* entry points: where each kind of signal comes in, and the waypoints up to the top of the brainstem */
+const ENTRY={
+  hand:{e:'🖐️',at:[585,560],via:[[560,560],[480,552]]},
+  foot:{e:'🦶',at:[585,612],via:[[560,606],[476,598],[478,560]]},
+  arm:{e:'💪',at:[585,520],via:[[560,520],[482,520]]},
+  face:{e:'😊',at:[300,488],via:[[330,470],[456,440]]},
+  tongue:{e:'👅',at:[338,548],via:[[380,520],[462,455]]},
+  ear:{e:'👂',at:[402,494],via:[[428,470],[460,436]]},
+  eye:{e:'👁️',at:[118,346],via:[[170,370],[292,396]]},
+  nose:{e:'👃',at:[140,410],via:[[165,398]]}
+};
+const STEM_UP=[[476,440],[484,330]];
+
+/* ---------- scenarios ---------- */
+const SC=[
+  {e:'🐱',t:'A cat brushes its fur against your hand.',sense:'touch',in:'hand',s1:'hand',route:['vpl','s1'],feel:'Soft fur on your hand.'},
+  {e:'🔥',t:'Your fingertip touches a candle flame!',sense:'pain',in:'hand',s1:'hand',route:['cord','vpl','s1'],limb:'hand',feel:'OUCH, hot! (Your hand was already gone.)'},
+  {e:'🌵',t:'You step barefoot on a cactus spine.',sense:'pain',in:'foot',s1:'foot',route:['cord','vpl','s1'],limb:'foot',feel:'Sharp pain in your foot.'},
+  {e:'🐝',t:'A bee stings your arm.',sense:'pain',in:'arm',s1:'arm',route:['cord','vpl','s1'],limb:'arm',feel:'A burning sting on your arm.'},
+  {e:'🍳',t:'You grab the handle of a sizzling-hot pan.',sense:'pain',in:'hand',s1:'hand',route:['cord','vpl','s1'],limb:'hand',feel:'Burning heat in your palm.'},
+  {e:'🪶',t:'A feather tickles the sole of your foot.',sense:'touch',in:'foot',s1:'foot',route:['vpl','s1'],feel:'A tickle on your foot.'},
+  {e:'🧊',t:'Someone presses an ice cube to your cheek.',sense:'touch',in:'face',s1:'face',route:['vpm','s1'],feel:'Cold on your cheek.'},
+  {e:'👋',t:'A friend waves at you from across the room.',sense:'vision',in:'eye',route:['lgn','v1'],feel:'You see your friend waving.'},
+  {e:'🌈',t:'A rainbow appears after the rain.',sense:'vision',in:'eye',route:['lgn','v1'],feel:'Red, orange, yellow… you see it.'},
+  {e:'⏰',t:'Your alarm clock goes off.',sense:'hearing',in:'ear',route:['mgn','a1'],feel:'BEEP BEEP BEEP.'},
+  {e:'🎸',t:'Your favorite song comes on.',sense:'hearing',in:'ear',route:['mgn','a1'],feel:'You hear the opening chord.'},
+  {e:'🍋',t:'You bite into a lemon wedge.',sense:'taste',in:'tongue',route:['vpm','gust'],feel:'SOUR!'},
+  {e:'🍫',t:'Chocolate melts on your tongue.',sense:'taste',in:'tongue',route:['vpm','gust'],feel:'Sweet.'},
+  {e:'☕',t:'Someone brews fresh coffee in the next room.',sense:'smell',in:'nose',route:['ob','pir'],feel:'You smell coffee.'},
+  {e:'🌹',t:'You lean in and sniff a rose.',sense:'smell',in:'nose',route:['ob','pir'],feel:'Sweet, flowery smell.'},
+  {e:'🍞',t:'You smell smoke. The toast is burning!',sense:'smell',in:'nose',route:['ob','pir'],feel:'Burnt toast!'}
+];
+const SENSE_NAME={touch:'touch',pain:'pain',vision:'sight',hearing:'sound',taste:'taste',smell:'smell'};
+const SENSE_K={touch:'Touch',pain:'Pain',vision:'Vision',hearing:'Hearing',taste:'Taste',smell:'Smell'};
+const CORTEX_FOR={touch:'s1',pain:'s1',vision:'v1',hearing:'a1',taste:'gust',smell:'pir'};
+const NUC_FOR={touch:null,pain:'vpl',vision:'lgn',hearing:'mgn',taste:'vpm'};
+
+/* ---------- draw the map ---------- */
+const svg=$('map');
+const defs=el('defs',{},svg);
+defs.innerHTML='<radialGradient id="gCer" cx="40%" cy="35%" r="75%"><stop offset="0" stop-color="#fbe6dd"/><stop offset=".7" stop-color="#f1cbbd"/><stop offset="1" stop-color="#e3b2a2"/></radialGradient>'+
+  '<radialGradient id="gCb" cx="45%" cy="35%" r="70%"><stop offset="0" stop-color="#f3d3c6"/><stop offset="1" stop-color="#d9a796"/></radialGradient>'+
+  '<filter id="soft" x="-20%" y="-20%" width="140%" height="140%"><feGaussianBlur stdDeviation="2.5"/></filter>';
+const gBase=el('g',{},svg);
+// brainstem + cord (drawn behind cerebrum)
+el('path',{d:'M462,300 C470,300 496,300 504,306 C506,350 500,380 496,400 C494,430 492,456 490,482 L468,482 C464,462 454,442 450,420 C444,396 452,350 462,300 Z',fill:'#ecd0c3',stroke:'#c49a8a','stroke-width':1.5},gBase);
+// cerebellum
+el('path',{d:'M500,392 C512,364 580,352 640,366 C684,378 698,418 676,446 C650,474 580,480 540,466 C510,456 496,424 500,392 Z',fill:'url(#gCb)',stroke:'#b98c80','stroke-width':1.6},gBase);
+for(let k=0;k<6;k++){ const y=380+k*14; el('path',{d:`M${510+k*3},${y+2} C${560},${y-8+k} ${630},${y-6+k} ${684-k*5},${y+6}`,fill:'none',stroke:'#c9988a','stroke-width':1},gBase); }
+// cerebrum
+const CER='M150,300 C122,206 186,100 322,78 C462,56 626,100 672,214 C700,290 676,366 612,384 C566,396 524,382 494,374 C474,414 424,446 362,444 C300,442 254,412 238,372 C200,368 160,346 150,300 Z';
+el('path',{d:CER,fill:'url(#gCer)',stroke:'#b98c80','stroke-width':2,'fill-opacity':.94},gBase);
+// gentle gyri lines
+const SUL=['M425,72 C412,126 402,160 396,196 C388,240 366,270 340,302', // central
+  'M246,334 C300,322 380,306 474,300', // lateral
+  'M390,70 C380,120 370,150 362,190 C356,220 340,250 320,276',
+  'M470,72 C458,120 448,160 444,200 C440,232 436,262 430,290',
+  'M210,150 C260,140 300,140 350,150','M182,220 C230,210 280,212 330,222','M290,372 C340,362 400,360 470,346',
+  'M300,410 C350,402 410,398 456,388','M520,130 C560,170 600,200 640,214','M520,220 C560,240 600,250 640,290'];
+SUL.forEach((d,i)=>el('path',{d,fill:'none',stroke:i<2?'#b07f71':'#cf9f90','stroke-width':i<2?2.4:1.4,'stroke-linecap':'round'},gBase));
+el('text',{x:322,y:60,class:'lbl sm','text-anchor':'middle'},gBase).textContent='front';
+el('text',{x:662,y:120,class:'lbl sm','text-anchor':'middle'},gBase).textContent='back';
+
+const gTrace=el('g',{},svg);
+const gReg=el('g',{},svg);
+const gEntry=el('g',{},svg);
+const gLbl=el('g',{},svg);
+const gPulse=el('g',{},svg);
+const REG={};
+function region(id,shape,attrs,stroke){
+  const g=el('g',{class:'rg'+(stroke?' stroke':''),tabindex:0,role:'button','aria-label':R[id].name,'data-id':id},gReg);
+  const a=Object.assign({class:'hit'},attrs);
+  if(stroke){ Object.assign(a,{fill:'none',stroke:R[id].col,'stroke-opacity':.38,'stroke-linecap':'round'}); }
+  else Object.assign(a,{fill:R[id].col,'fill-opacity':.28,stroke:R[id].col,'stroke-width':1.6});
+  el(shape,a,g);
+  g.addEventListener('click',()=>pick(id));
+  g.addEventListener('keydown',ev=>{ if(ev.key==='Enter'||ev.key===' '){ ev.preventDefault(); pick(id); } });
+  REG[id]=g; return g;
+}
+region('s1','path',{d:'M450,82 C437,130 427,166 421,202 C414,240 398,266 376,290','stroke-width':20},true);
+region('v1','ellipse',{cx:656,cy:272,rx:22,ry:52});
+region('a1','ellipse',{cx:404,cy:340,rx:36,ry:13,transform:'rotate(-6 404 340)'});
+region('gust','ellipse',{cx:330,cy:306,rx:34,ry:15,'stroke-dasharray':'5 4',transform:'rotate(-8 330 306)'});
+region('pir','ellipse',{cx:284,cy:378,rx:20,ry:13,'stroke-dasharray':'5 4'});
+region('ob','path',{d:'M172,378 C172,370 228,366 236,374 C240,382 176,388 172,378 Z'});
+el('path',{d:'M236,374 C250,374 262,376 268,378',stroke:COL.smell,'stroke-width':3,fill:'none','stroke-opacity':.5},gReg);
+region('cord','path',{d:'M480,484 L474,616','stroke-width':22},true);
+const thalEasy=region('thal','ellipse',{cx:470,cy:230,rx:54,ry:32,'stroke-dasharray':'6 4'});
+const nucs=['vpm','vpl','mgn','lgn'].map(id=>{ const [x,y]=R[id].pt; const g=region(id,'circle',{cx:x,cy:y,r:id==='lgn'||id==='mgn'?13:15}); const t=el('text',{x,y:y+4,'text-anchor':'middle','font-size':10.5,'font-weight':700,fill:'#5a4424','pointer-events':'none'},g); t.textContent=R[id].short; return g; });
+const thalShell=el('ellipse',{cx:470,cy:230,rx:54,ry:32,fill:COL.thal,'fill-opacity':.1,stroke:COL.thal,'stroke-width':1.4,'stroke-dasharray':'6 4','pointer-events':'none'},gReg);
+gReg.insertBefore(thalShell,nucs[0]);
+
+// entry emoji
+Object.entries(ENTRY).forEach(([k,v])=>{ const t=el('text',{x:v.at[0],y:v.at[1]+9,'font-size':26,'text-anchor':'middle',id:'en-'+k},gEntry); t.textContent=v.e; t.style.transformBox='fill-box'; t.style.transformOrigin='center'; });
+// faint nerves from entries
+[['hand'],['foot'],['arm'],['face'],['tongue'],['ear'],['eye'],['nose']].forEach(([k])=>{ const v=ENTRY[k]; el('path',{d:smooth([v.at].concat(v.via)),fill:'none',stroke:'#c9c3b6','stroke-width':1.5,'stroke-dasharray':'2 4'},gTrace); });
+
+// labels
+function label(x,y,txt,lx,ly,cls){ if(lx!=null) el('path',{class:'lead',d:`M${lx},${ly} L${x},${y}`},gLbl); const t=el('text',{x,y,class:'lbl'+(cls?' '+cls:''),'text-anchor':x<lx?'end':'start'},gLbl); t.textContent=txt; return t; }
+label(468,70,'Somatosensory cortex',440,100);
+label(700,196,'Visual cortex',668,232);
+label(560,322,'Auditory cortex',432,336);
+label(214,284,'Gustatory cortex',306,302);
+label(214,300,'(insula, deep)',306,304,'sm');
+label(150,456,'Olfactory bulb',186,384);
+label(214,500,'Olfactory cortex',280,391);
+label(554,182,'Thalamus (deep)',516,214);
+label(500,604,'Spinal cord',480,596);
+label(520,500,'brainstem',488,470,'sm');
+
+/* ---------- path helpers ---------- */
+function smooth(P){ if(P.length<2) return ''; let d=`M${P[0][0]},${P[0][1]}`; for(let i=1;i<P.length;i++){ const p0=P[i-1],p1=P[i]; if(i===P.length-1){ d+=` L${p1[0]},${p1[1]}`; break; } const m=[(p1[0]+P[i+1][0])/2,(p1[1]+P[i+1][1])/2]; d+=` Q${p1[0]},${p1[1]} ${m[0]},${m[1]}`; } return d; }
+function pulse(P,color,dur,done){
+  const d=smooth(P);
+  const trail=el('path',{d,fill:'none',stroke:color,'stroke-width':4,'stroke-linecap':'round','stroke-opacity':.85},gTrace);
+  const L=trail.getTotalLength(); trail.style.strokeDasharray=L; trail.style.strokeDashoffset=L;
+  const dot=el('circle',{r:7,fill:color,stroke:'#fff','stroke-width':2},gPulse);
+  const t0=performance.now();
+  (function step(now){ const k=Math.min(1,(now-t0)/dur), e=k<.5?2*k*k:1-Math.pow(-2*k+2,2)/2;
+    const p=trail.getPointAtLength(e*L); dot.setAttribute('cx',p.x); dot.setAttribute('cy',p.y); trail.style.strokeDashoffset=L*(1-e);
+    if(k<1) requestAnimationFrame(step); else { dot.remove(); done&&done(); } })(t0);
+}
+function targetPt(id,sc){ if(id==='s1') return S1PT[sc.s1]; if(id==='thal') return R[sc.route.find(r=>fam(r)==='thal')].pt; return R[id].pt; }
+
+/* ---------- game state ---------- */
+let hard=false, deck=[], ri=0, step=0, miss=0, stepMiss=0, score=0, streak=0, best=0, busy=false, last=null, results=[];
+try{ best=+localStorage.getItem('signalRelayBest')||0; }catch(e){}
+function shuffle(a){ for(let i=a.length-1;i>0;i--){ const j=Math.random()*(i+1)|0; [a[i],a[j]]=[a[j],a[i]]; } return a; }
+function newDeck(){
+  const by=s=>shuffle(SC.filter(x=>x.sense===s));
+  const pain=by('pain'), smell=by('smell');
+  const picked=[pain[0],pain[1],smell[0],smell[1]];
+  const rest=shuffle(SC.filter(x=>!picked.includes(x)));
+  ['touch','vision','hearing','taste'].forEach(s=>{ const i=rest.findIndex(x=>x.sense===s); if(i>=0) picked.push(rest.splice(i,1)[0]); });
+  while(picked.length<10) picked.push(rest.shift());
+  deck=shuffle(picked);
+}
+function expected(){ return deck[ri].route[step]; }
+function matches(id,exp){ return hard ? id===exp : fam(id)===fam(exp); }
+function setMode(h){
+  hard=h; $('mEasy').setAttribute('aria-pressed',!h); $('mHard').setAttribute('aria-pressed',h);
+  thalEasy.style.display=h?'none':''; nucs.forEach(g=>{ g.style.display=h?'':'none'; }); thalShell.style.display=h?'':'none';
+}
+function clearMap(){ gTrace.querySelectorAll('path:not([stroke-dasharray="2 4"])').forEach(p=>p.remove()); Object.values(REG).forEach(g=>g.classList.remove('good','glow')); }
+
+function stopLabel(id){ if(!hard && fam(id)==='thal') return 'Thalamus'; return R[id].short; }
+function renderPanel(fb){
+  const sc=deck[ri]; document.documentElement.style.setProperty('--c',COL[sc.sense]);
+  $('rnd').textContent=ri+1; $('pts').textContent=score; $('stk').textContent=streak;
+  let route='<span class="st done" style="--k:#8a837a">'+ENTRY[sc.in].e+' '+(sc.in==='eye'?'retina':sc.in==='ear'?'cochlea':sc.in==='nose'?'nose':sc.in==='tongue'?'taste buds':'skin')+'</span>';
+  sc.route.forEach((id,i)=>{ route+='<span class="ar">→</span>'; route+= i<step ? `<span class="st done" style="--k:${R[id].col}">${stopLabel(id)}</span>` : `<span class="st${i===step?' now':''}">?</span>`; });
+  const done=step>=sc.route.length;
+  const ask= done ? '' : step===0 ? (sc.route[0]==='cord' ? 'What happens first?' : 'Where does the signal go first?') : (sc.route[step-1]==='cord' ? 'Now you need to <i>feel</i> it. Where next?' : 'Where does it go next?');
+  const pips=deck.map((_,i)=>`<i class="${i<results.length?(results[i].miss===0?'p':results[i].miss<=2?'h':'x'):i===ri?'cur':''}"></i>`).join('');
+  $('panel').innerHTML=`<div class="stim"><div class="e">${sc.e}</div><div><div class="k" style="color:${COL[sc.sense]}">${SENSE_K[sc.sense]}</div><div class="t">${sc.t}</div></div></div>
+    ${ask?`<div class="ask">${ask}</div>`:''}<div class="route">${route}</div>
+    <div class="fb ${fb?fb.c:''}" id="fb">${fb?fb.h:'Tap a brain area on the map.'}</div>
+    ${done?`<div class="btns"><button class="btn primary" id="nextBtn">${ri<deck.length-1?'Next signal →':'See my score'}</button></div>`:''}
+    <div class="pips">${pips}</div>`;
+  if(done){ const b=$('nextBtn'); b.addEventListener('click',next); setTimeout(()=>b.focus(),50); }
+}
+
+function goodNote(id,sc){
+  const limb=sc.limb==='foot'?'leg':sc.limb||'hand';
+  switch(fam(id)){
+    case 'cord': return `<b>Spinal reflex!</b> Pain fibers connect to interneurons right in the spinal cord, which fire the motor neurons that yank your ${limb} away. This happens before the signal even reaches your brain.`;
+    case 'thal': return hard ? `<b>${R[id].name}.</b> This nucleus relays ${R[id].does}. Every sense except smell checks in at the thalamus before cortex.` : `<b>Thalamus</b>, the relay station. Every sense except smell stops here before it reaches cortex.${sc.sense!=='pain'&&sc.sense!=='touch'?'':''}`;
+    case 's1': return `<b>Somatosensory cortex</b> (just behind the central sulcus). Now you feel it: <i>${sc.feel}</i>`;
+    case 'v1': return `<b>Visual cortex</b> at the very back of your brain. Now you see it: <i>${sc.feel}</i>`;
+    case 'a1': return `<b>Auditory cortex</b> in the temporal lobe. Now you hear it: <i>${sc.feel}</i>`;
+    case 'gust': return `<b>Gustatory cortex</b> in the insula, tucked inside the lateral fold. Now you taste it: <i>${sc.feel}</i>`;
+    case 'ob': return `<b>Olfactory bulb!</b> Smell receptors in your nose send their axons straight here. No thalamus first: smell is the one sense that skips it.`;
+    case 'pir': return `<b>Olfactory cortex.</b> Now you smell it: <i>${sc.feel}</i> It sits right beside the amygdala and hippocampus, which is why smells trigger memories and feelings so fast.`;
+  }
+}
+function badNote(id,sc){
+  const exp=expected(), s=sc.sense, f=fam(id), fe=fam(exp), nm=SENSE_NAME[s];
+  if(f===fe && hard){ return {c:'no',h:`Right idea, wrong nucleus. <b>${R[id].short}</b> relays ${R[id].does}. Hint: <b>L</b>GN = <b>L</b>ight, <b>M</b>GN = <b>M</b>usic, VP<b>L</b> = <b>L</b>imbs, VP<b>M</b> = <b>M</b>outh &amp; face.`}; }
+  if(s==='smell' && f==='thal') return {c:'no',h:`Gotcha! Smell is the rebel: it’s the <b>one sense that skips the thalamus</b>. Odor signals go from your nose straight into the brain.`};
+  if(s==='smell' && id==='pir' && exp==='ob') return {c:'hint',h:`Close! That’s where smell ends up, but first the odor signal lands somewhere just above your nose.`};
+  if(exp==='cord') return {c:'no',h:`Too slow! Something that could burn or hurt you triggers a <b>reflex</b> first. Where can your body react without waiting for the brain?`};
+  if(f==='cord'){
+    if(s==='touch') return {c:'hint',soft:1,h:`Good thinking, the touch signal does ride up the spinal cord. But a gentle touch doesn’t need a reflex, so nothing gets decided there. Where’s its first stop in the brain?`};
+    if(s==='pain') return {c:'no',h:`The reflex already happened! Now the pain signal has to climb up to the brain so you can feel it.`};
+    return {c:'no',h:`${s==='vision'?'Your eyes':s==='hearing'?'Your ears':'Your tongue'} connect to the brain directly through cranial nerves, not through the spinal cord.`};
+  }
+  if(f==='ob'||f==='pir') return {c:'no',h:`That’s the smell pathway. This signal is ${nm}.`};
+  if(fe==='thal') return {c:'no',h:`Not yet! ${nm[0].toUpperCase()+nm.slice(1)} has to check in at the brain’s relay station before it reaches cortex.`};
+  if(f==='thal') return {c:'no',h:`It’s already been through the thalamus. Now where does ${nm} get processed?`};
+  return {c:'no',h:`Right relay, wrong destination. The <b>${R[id].name}</b> handles ${R[id].does}. Where is ${nm} processed?`};
+}
+
+function pick(id){
+  if(busy||ri>=deck.length) return;
+  const sc=deck[ri]; if(step>=sc.route.length) return;
+  const exp=expected();
+  if(matches(id,exp)){
+    busy=true;
+    const target=targetPt(exp,sc);
+    let P;
+    if(step===0){ const en=ENTRY[sc.in]; P=[en.at].concat(en.via); if(exp==='cord') P=[en.at].concat(en.via.slice(0,-1),[R.cord.pt]); else if(fam(exp)==='thal') P=P.concat(STEM_UP); }
+    else { P=[last]; if(sc.route[step-1]==='cord') P=P.concat(STEM_UP); }
+    P.push(target);
+    const gain= stepMiss===0?10:stepMiss===1?5:2;
+    score+=gain; const note=goodNote(exp,sc);
+    REG[hard?exp:(fam(exp)==='thal'?'thal':exp)].classList.add('good');
+    pulse(P,COL[sc.sense],step===0?1100:800,()=>{
+      last=target; busy=false;
+      if(exp==='cord'){ // reflex: motor signal back out to the limb
+        busy=true; const en=ENTRY[sc.in];
+        pulse([R.cord.pt,[en.via[en.via.length-1][0]+4,en.via[en.via.length-1][1]+8],[en.at[0]-20,en.at[1]+6]],'#e4572e',500,()=>{ busy=false; const t=$('en-'+sc.in); t.classList.remove('yank'); void t.getBBox(); t.classList.add('yank'); });
+      }
+      const g=REG[fam(exp)==='thal'&&!hard?'thal':exp]; g.classList.remove('glow'); void g.getBBox(); g.classList.add('glow');
+    });
+    step++; stepMiss=0;
+    const done=step>=sc.route.length;
+    if(done){ results.push({sc,miss}); if(miss===0) streak++; else streak=0; }
+    let h=`<span style="color:var(--hearing);font-weight:700">+${gain}</span> ${note}`;
+    if(done){ const w=sc.sense==='smell'?' Notice: no thalamus on this route!':sc.route[0]==='cord'?' Notice: your body moved before your brain felt it.':''; h+=`<br><b>${miss===0?'Perfect route!':'Route complete.'}</b>${w}`; }
+    renderPanel({c:done?'win':'ok',h});
+  } else {
+    const b=badNote(id,sc);
+    if(!b.soft){ miss++; stepMiss++; streak=0; }
+    const g=REG[id]; g.classList.remove('nope'); void g.getBBox(); g.classList.add('nope');
+    renderPanel(b);
+  }
+}
+function next(){
+  ri++;
+  if(ri>=deck.length){ showEnd(); return; }
+  step=0; miss=0; stepMiss=0; last=null; clearMap(); renderPanel();
+}
+function showEnd(){
+  clearMap(); document.documentElement.style.setProperty('--c',COL.touch);
+  const max=deck.reduce((a,s)=>a+s.route.length*10,0);
+  if(score>best){ best=score; try{ localStorage.setItem('signalRelayBest',best); }catch(e){} }
+  const by={}; results.forEach(r=>{ const k=r.sc.sense; by[k]=by[k]||{n:0,p:0}; by[k].n++; if(r.miss===0) by[k].p++; });
+  const rows=Object.keys(SENSE_K).filter(k=>by[k]).map(k=>`<tr><td><span style="color:${COL[k]}">●</span> ${SENSE_K[k]}</td><td>${by[k].p}/${by[k].n} perfect</td></tr>`).join('');
+  const smellMiss=results.some(r=>r.sc.sense==='smell'&&r.miss>0), reflexMiss=results.some(r=>r.sc.route[0]==='cord'&&r.miss>0);
+  let tip= smellMiss&&reflexMiss ? 'Review the two exceptions: smell skips the thalamus, and painful signals trigger a spinal reflex first.' : smellMiss ? 'Remember: smell is the one sense that skips the thalamus.' : reflexMiss ? 'Remember: something that can hurt you triggers a spinal reflex before the brain feels it.' : 'You know the rule and both exceptions.';
+  if(!hard) tip+=' Ready for <b>Hard mode</b>? You’ll have to name the thalamic nucleus.';
+  $('pts').textContent=score; $('stk').textContent=streak;
+  $('panel').innerHTML=`<div class="end"><h3>Relay complete!</h3><div class="big">${score}<span style="font-size:18px;color:var(--muted);font-weight:400"> / ${max}</span></div>
+    <div style="color:var(--muted);font-size:14px">Best on this device: ${best}${hard?' (hard mode)':''}</div>
+    <table>${rows}</table><div class="fb win">${tip}</div>
+    <div class="btns"><button class="btn primary" id="againBtn">Play again</button>${!hard?'<button class="btn" id="hardBtn">Try hard mode</button>':''}</div></div>`;
+  $('againBtn').addEventListener('click',start);
+  if($('hardBtn')) $('hardBtn').addEventListener('click',()=>{ setMode(true); start(); });
+}
+function start(){ newDeck(); ri=0; step=0; miss=0; stepMiss=0; score=0; streak=0; last=null; results=[]; clearMap(); renderPanel(); }
+
+$('mEasy').addEventListener('click',()=>{ if(hard){ setMode(false); start(); } });
+$('mHard').addEventListener('click',()=>{ if(!hard){ setMode(true); start(); } });
+$('lblBtn').addEventListener('click',function(){ const on=this.getAttribute('aria-pressed')!=='true'; this.setAttribute('aria-pressed',on); this.textContent=on?'Labels on':'Labels off'; svg.classList.toggle('nolabels',!on); });
+$('copyBtn').addEventListener('click',()=>{ const t=$('embedCode').textContent; if(navigator.clipboard) navigator.clipboard.writeText(t).then(()=>{ $('copyBtn').textContent='Copied'; setTimeout(()=>$('copyBtn').textContent='Copy',1500); },()=>{}); });
+setMode(false); start();
+})();
+</script>
+</body>
+</html>
