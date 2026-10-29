@@ -563,14 +563,14 @@ function renderLat(){
   const NZ=new Float32Array(N);
   for(let py=0;py<H;py++) for(let px=0;px<W;px++){ const i=py*W+px; if(aCer[i]<=0) continue;
     const x=60+px/s, y=8+py/s, wx=x+16*nw(x/150,y/150), wy=y+16*nw(x/150+37,y/150+71);
-    NZ[i]=nz(wx/146,wy/98)+0.12*nz(wx/60+9,wy/46+3); }
+    NZ[i]=nz(wx/178,wy/122)+0.1*nz(wx/70+9,wy/54+3); }
   const allM=new Uint8Array(N);
   for(let i=0;i<N-W-1;i++){ if(majM[i]||minM[i]){ allM[i]=1; continue; }
     if(aCer[i]>0.5 && zone[i]<0.4 && (NZ[i]*NZ[i+1]<0 || NZ[i]*NZ[i+W]<0)) allM[i]=1; }
   const dAll=edt(allM,W,H);
   // gyral crowns: rounded profile from the distance to the nearest sulcus, blurred so ridges don't crease
   const GY=new Float32Array(N);
-  for(let i=0;i<N;i++){ if(aCer[i]<=0) continue; const R=lerp(19,25,zone[i]), tg=clamp((dAll[i]/s-1.6)/R,0,1); GY[i]=Math.sqrt(1-(1-tg)*(1-tg)); }
+  for(let i=0;i<N;i++){ if(aCer[i]<=0) continue; const R=lerp(22,25,zone[i]), tg=clamp((dAll[i]/s-1.2)/R,0,1); GY[i]=Math.sqrt(1-(1-tg)*(1-tg)); }
   (function blur(a,r,pass){ const t=new Float32Array(N);
     for(let p=0;p<pass;p++){
       for(let y=0;y<H;y++){ let acc=0; const o=y*W; for(let x=-r;x<W;x++){ if(x+r<W) acc+=a[o+x+r]; if(x-r-1>=0) acc-=a[o+x-r-1]; if(x>=0) t[o+x]=acc/(2*r+1); } }
@@ -587,15 +587,15 @@ function renderLat(){
       const deep=shape(dMaj[i]/s/10,2);
       Hh[i]=22+72*dome+(17*gy+2.2*lump)*Math.min(1,de/5);
       AO[i]=(0.5+0.5*Math.pow(gy,0.7))*(0.72+0.28*deep);
-      ALB[i*3]=220*tone; ALB[i*3+1]=150*tone; ALB[i*3+2]=126*tone;
+      ALB[i*3]=232*tone; ALB[i*3+1]=148*tone; ALB[i*3+2]=140*tone;
     } else if(aCb[i]>=aSt[i]){
       REG[i]=2; const de=eCb[i]/s, t=Math.min(1,de/70), dome=Math.sqrt(1-(1-t)*(1-t)), hf=shape(dFol[i]/s/3.2,2);
       Hh[i]=46*dome+4.5*hf*Math.min(1,de/3); AO[i]=(0.66+0.34*hf)*(0.35+0.65*Math.min(1,oCer[i]/s/16));
-      ALB[i*3]=184*tone; ALB[i*3+1]=110*tone; ALB[i*3+2]=96*tone;
+      ALB[i*3]=206*tone; ALB[i*3+1]=122*tone; ALB[i*3+2]=116*tone;
     } else {
       REG[i]=3; const de=eSt[i]/s, t=Math.min(1,de/26), dome=Math.sqrt(1-(1-t)*(1-t)), hs=0.4+0.6*shape(dMin[i]/s/3,2);
       Hh[i]=34*dome+3*hs; AO[i]=(0.6+0.4*hs)*(0.35+0.65*Math.min(1,oCer[i]/s/18))*(0.45+0.55*Math.min(1,oCb[i]/s/14));
-      ALB[i*3]=190*tone; ALB[i*3+1]=118*tone; ALB[i*3+2]=102*tone;
+      ALB[i*3]=214*tone; ALB[i*3+1]=140*tone; ALB[i*3+2]=128*tone;
     }
   }
   let Lx=-0.42,Ly=-0.62,Lz=0.66; const Ln=Math.hypot(Lx,Ly,Lz); Lx/=Ln; Ly/=Ln; Lz/=Ln;
@@ -607,8 +607,8 @@ function renderLat(){
     if(!REG[i]) continue;
     const gx=(Hh[i+1]-Hh[i-1])*s/2, gy=(Hh[i+W]-Hh[i-W])*s/2, l=Math.hypot(gx,gy,1), nx=-gx/l, ny=-gy/l, nzv=1/l;
     const dif=Math.max(0,nx*Lx+ny*Ly+nzv*Lz), nh=Math.max(0,nx*hx+ny*hy+nzv*hz);
-    LIGHT[i]=(0.36+0.72*dif)*AO[i];
-    SPEC[i]=(0.38*Math.pow(nh,34)+0.1*Math.pow(nh,6))*(0.4+0.6*AO[i]);
+    LIGHT[i]=(0.5+0.58*dif)*(0.3+0.7*AO[i]);
+    SPEC[i]=(0.2*Math.pow(nh,22)+0.07*Math.pow(nh,5))*(0.4+0.6*AO[i]);
   }
   const cv=$('latCanvas'); cv.width=W; cv.height=H;
   LR={W,H,N,LIGHT,SPEC,ALB,REG,A,SH,SID,tint,ctx:cv.getContext('2d'),img:new ImageData(W,H)};
@@ -626,13 +626,13 @@ function composeLat(){
   for(let i=0;i<N;i++){
     const a=A[i], j=i*4;
     if(!REG[i]){ d[j]=90; d[j+1]=58; d[j+2]=48; d[j+3]=SH[i]*255; continue; }
-    let r=ALB[i*3], g=ALB[i*3+1], b=ALB[i*3+2];
+    let r=ALB[i*3], g=ALB[i*3+1], b=ALB[i*3+2], tw=0;
     if(REG[i]===1){
       for(const sys of ['move','touch']){ const m=tint[sys][i]; if(m<=0) continue;
         const q=SID[i]?seg[SID[i]-1]:null, use=q&&q.sys===sys?q:null, w=(use?use.w:baseW[sys])*m, cc=use?use.c:BASE[sys];
-        r=lerp(r,cc[0],w); g=lerp(g,cc[1],w); b=lerp(b,cc[2],w); }
+        r=lerp(r,cc[0],w); g=lerp(g,cc[1],w); b=lerp(b,cc[2],w); tw=Math.max(tw,w); }
     }
-    const L=LIGHT[i], S=SPEC[i]*255;
+    const L=lerp(LIGHT[i],0.6+0.46*LIGHT[i],tw*0.85), S=SPEC[i]*255*(1-0.35*tw);
     r=r*L+S; g=g*L+S; b=b*L+S;
     const sa=SH[i]*(1-a), fa=a+sa;
     d[j]=Math.min(255,(r*a+90*sa)/fa); d[j+1]=Math.min(255,(g*a+58*sa)/fa); d[j+2]=Math.min(255,(b*a+48*sa)/fa); d[j+3]=fa*255;

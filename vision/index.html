@@ -86,9 +86,16 @@
   .tiles{display:grid;grid-template-columns:repeat(6,1fr);gap:6px;margin:8px 0}
   .tiles div{aspect-ratio:1;border-radius:8px;border:1.5px solid var(--line);display:flex;align-items:center;justify-content:center;transition:background .15s}
   .tiles i{display:block;width:70%;height:4px;border-radius:2px;background:#555}
+  .latbox{position:relative}
+  .latbox canvas{position:absolute;inset:0;width:100%;height:100%;display:block}
+  .latbox svg{position:relative}
+  .lbl.halo{paint-order:stroke;stroke:rgba(255,240,234,.9);stroke-width:5;stroke-linejoin:round}
+  .lbl.big{font-size:24px}
+  .lbl.lobe{font-size:17px;fill:#6b5049}
+  .tag{font:700 16px var(--sans);fill:#fff;paint-order:stroke;stroke:rgba(0,0,0,.45);stroke-width:3;pointer-events:none}
   .area{cursor:pointer}
   .area .hit{transition:fill-opacity .2s}
-  .area:hover .hit,.area.on .hit{fill-opacity:.7}
+  .area:hover .hit,.area.on .hit{stroke-opacity:.9}
   .area:focus{outline:none} .area:focus-visible .hit{stroke-width:3}
   .lbl{font-family:var(--hand);font-size:15px;fill:#3b3b3b;pointer-events:none}
   .lbl.sm{font-size:12.5px}
@@ -217,7 +224,7 @@
     <h2 class="sec"><span class="n">4</span>Crossing over: eye to thalamus to cortex</h2>
     <p class="lede">Each eye sees both halves of the world. At the <b>optic chiasm</b>, fibers from the inner (nasal) half of each retina cross, so everything in your <b style="color:var(--lf)">left visual field</b> ends up in the <b>right</b> side of the brain, and vice versa. Fibers then synapse in the <b>lateral geniculate nucleus (LGN)</b> of the thalamus before reaching primary visual cortex. <b>Tap a ✂️ to cut the pathway</b> there and see what the person loses.</p>
     <div class="stage">
-      <div><svg id="chi" viewBox="150 0 500 640" aria-label="Top-down view of the visual pathway"></svg></div>
+      <div class="latbox"><canvas id="chiCv" aria-hidden="true"></canvas><svg id="chi" viewBox="150 0 500 640" aria-label="Top-down view of the visual pathway"></svg></div>
       <div class="panel">
         <div class="sub">What each eye sees</div>
         <div class="fields">
@@ -260,7 +267,7 @@
     <h2 class="sec"><span class="n">6</span>Higher-order vision: the “what” and “where” streams</h2>
     <p class="lede">From V1, visual information splits into two big streams. The <b style="color:var(--ven)">ventral stream</b> runs down into the temporal lobe and figures out <b>what</b> you’re looking at: color, shape, faces. The <b style="color:var(--dor)">dorsal stream</b> runs up into the parietal lobe and works out <b>where</b> things are and <b>how</b> to reach for them, including motion. Tap an area to see what the world looks like when it’s damaged.</p>
     <div class="stage">
-      <div><svg id="brain" viewBox="110 40 640 450" aria-label="Side view of the brain showing the visual streams"></svg></div>
+      <div class="latbox"><canvas id="brainCv" aria-hidden="true"></canvas><svg id="brain" viewBox="70 40 900 640" aria-label="Side view of the brain showing the visual streams"></svg></div>
       <div class="panel">
         <div class="chips" id="areaChips" role="group" aria-label="Brain area"></div>
         <h3 id="arName">Healthy brain</h3>
@@ -313,6 +320,183 @@
   </footer>
 </div>
 
+<script>
+/* =====================================================================
+   Realistic brain surface: height map -> lit, glossy render on a canvas,
+   with colored swatches painted onto the cortex
+   ===================================================================== */
+const B3=(function(){
+const clamp=(x,a,b)=>Math.max(a,Math.min(b,x)), lerp=(a,b,t)=>a+(b-a)*t;
+function rng(seed){ return function(){ seed|=0; seed=seed+0x6D2B79F5|0; let t=Math.imul(seed^seed>>>15,1|seed); t=t+Math.imul(t^t>>>7,61|t)^t; return ((t^t>>>14)>>>0)/4294967296; }; }
+function crPoints(P,per,closed){
+  const out=[], n=P.length, get=i=>closed?P[(i+n)%n]:P[clamp(i,0,n-1)], segs=closed?n:n-1;
+  for(let i=0;i<segs;i++){ const p0=get(i-1),p1=get(i),p2=get(i+1),p3=get(i+2);
+    for(let j=0;j<per;j++){ const t=j/per,t2=t*t,t3=t2*t, f=(a,b,c,d)=>0.5*(2*b+(-a+c)*t+(2*a-5*b+4*c-d)*t2+(-a+3*b-3*c+d)*t3);
+      out.push([f(p0[0],p1[0],p2[0],p3[0]),f(p0[1],p1[1],p2[1],p3[1])]); } }
+  if(!closed) out.push(P[n-1].slice());
+  return out;
+}
+function normals(pts){ const N=pts.length,out=[];
+  for(let i=0;i<N;i++){ const a=pts[Math.max(0,i-1)], b=pts[Math.min(N-1,i+1)];
+    let tx=b[0]-a[0], ty=b[1]-a[1]; const L=Math.hypot(tx,ty)||1; out.push([-ty/L,tx/L]); }
+  return out; }
+const f1=v=>Math.round(v*10)/10;
+function pathD(pts,closed){ let d='M'+f1(pts[0][0])+' '+f1(pts[0][1]); for(let i=1;i<pts.length;i++) d+=' L'+f1(pts[i][0])+' '+f1(pts[i][1]); return closed?d+' Z':d; }
+// a smooth curve through P, shifted sideways by `off` (positive = left of the direction of travel)
+function offset(P,off,t0,t1){ const Q=crPoints(P,10,false), Nn=normals(Q), i0=Math.round((t0||0)*(Q.length-1)), i1=Math.round((t1==null?1:t1)*(Q.length-1)), out=[];
+  for(let i=i0;i<=i1;i++) out.push([Q[i][0]+Nn[i][0]*off,Q[i][1]+Nn[i][1]*off]); return out; }
+function band(P,a,b,t0,t1){ return pathD(offset(P,a,t0,t1).concat(offset(P,b,t0,t1).reverse()),true); }
+// organic blob outline (for painted swatches, never a perfect circle)
+function blob(cx,cy,rx,ry,seed,rot){ const R=rng(seed||1), k=[R()*6.28,R()*6.28,R()*6.28], a=[0.07+R()*0.05,0.05+R()*0.04,0.03+R()*0.03], c=Math.cos(rot||0), s=Math.sin(rot||0), P=[];
+  for(let i=0;i<18;i++){ const t=i/18*Math.PI*2, r=1+a[0]*Math.sin(2*t+k[0])+a[1]*Math.sin(3*t+k[1])+a[2]*Math.sin(5*t+k[2]), x=Math.cos(t)*rx*r, y=Math.sin(t)*ry*r; P.push([cx+x*c-y*s,cy+x*s+y*c]); }
+  return pathD(crPoints(P,6,true),true); }
+function makeNoise(seed){ const R=rng(seed), p=new Uint8Array(256); for(let i=0;i<256;i++) p[i]=i;
+  for(let i=255;i>0;i--){ const j=Math.floor(R()*(i+1)), t=p[i]; p[i]=p[j]; p[j]=t; }
+  const P=new Uint8Array(512); for(let i=0;i<512;i++) P[i]=p[i&255];
+  const GX=[1,-1,1,-1,1,-1,0,0], GY=[1,1,-1,-1,0,0,1,-1], F2=0.5*(Math.sqrt(3)-1), G2=(3-Math.sqrt(3))/6;
+  return function(x,y){ const s=(x+y)*F2, i=Math.floor(x+s), j=Math.floor(y+s), t=(i+j)*G2, x0=x-(i-t), y0=y-(j-t);
+    const i1=x0>y0?1:0, j1=1-i1, x1=x0-i1+G2, y1=y0-j1+G2, x2=x0-1+2*G2, y2=y0-1+2*G2, ii=i&255, jj=j&255; let n=0, q, g;
+    q=0.5-x0*x0-y0*y0; if(q>0){ g=P[ii+P[jj]]&7; q*=q; n+=q*q*(GX[g]*x0+GY[g]*y0); }
+    q=0.5-x1*x1-y1*y1; if(q>0){ g=P[ii+i1+P[jj+j1]]&7; q*=q; n+=q*q*(GX[g]*x1+GY[g]*y1); }
+    q=0.5-x2*x2-y2*y2; if(q>0){ g=P[ii+1+P[jj+1]]&7; q*=q; n+=q*q*(GX[g]*x2+GY[g]*y2); }
+    return 70*n; }; }
+// exact Euclidean distance transform (Felzenszwalb & Huttenlocher); sites where mask=1
+function edt(mask,W,H){
+  const INF=1e20, M=Math.max(W,H), f=new Float64Array(M), d=new Float64Array(M), z=new Float64Array(M+1), v=new Int32Array(M), g=new Float64Array(W*H);
+  for(let i=0;i<W*H;i++) g[i]=mask[i]?0:INF;
+  function dt(n){ let k=0; v[0]=0; z[0]=-INF; z[1]=INF;
+    for(let q=1;q<n;q++){ let s=((f[q]+q*q)-(f[v[k]]+v[k]*v[k]))/(2*q-2*v[k]);
+      while(s<=z[k]){ k--; s=((f[q]+q*q)-(f[v[k]]+v[k]*v[k]))/(2*q-2*v[k]); }
+      k++; v[k]=q; z[k]=s; z[k+1]=INF; }
+    k=0; for(let q=0;q<n;q++){ while(z[k+1]<q) k++; d[q]=(q-v[k])*(q-v[k])+f[v[k]]; } }
+  for(let x=0;x<W;x++){ for(let y=0;y<H;y++) f[y]=g[y*W+x]; dt(H); for(let y=0;y<H;y++) g[y*W+x]=d[y]; }
+  const out=new Float32Array(W*H);
+  for(let y=0;y<H;y++){ for(let x=0;x<W;x++) f[x]=g[y*W+x]; dt(W); for(let x=0;x<W;x++) out[y*W+x]=Math.sqrt(d[x]); }
+  return out;
+}
+/* cfg: {vb:[x0,y0,w,h], s, cer, cb, stem, major:[d], majorW:[w], minor:[d], folia:[d], band:d, dome, shadow:[cx,cy,rx,ry], swatches:[{d}]} */
+function render(cv,cfg){
+  const [X0,Y0,VW,VH]=cfg.vb, s=cfg.s||1.2, W=Math.round(VW*s), H=Math.round(VH*s), N=W*H, Z=new Float32Array(N);
+  const oc=document.createElement('canvas'); oc.width=W; oc.height=H; const c=oc.getContext('2d',{willReadFrequently:true});
+  const raster=(draw,blur)=>{ c.setTransform(1,0,0,1,0,0); c.clearRect(0,0,W,H); c.filter=blur?'blur('+(blur*s)+'px)':'none';
+    c.setTransform(s,0,0,s,-X0*s,-Y0*s); draw(c); c.filter='none'; return c.getImageData(0,0,W,H).data; };
+  const alpha=d=>{ const a=new Float32Array(N); for(let i=0;i<N;i++) a[i]=d[i*4+3]/255; return a; };
+  const site=(a,th)=>{ const m=new Uint8Array(N); for(let i=0;i<N;i++) m[i]=a[i]>th?1:0; return m; };
+  const outside=a=>{ const m=new Uint8Array(N); for(let i=0;i<N;i++) m[i]=a[i]<0.5?1:0; return m; };
+  const fillP=d=>cc=>{ cc.fillStyle='#000'; cc.fill(new Path2D(d)); };
+  const strokes=(list,wf)=>cc=>{ cc.strokeStyle='#000'; cc.lineCap='round'; cc.lineJoin='round'; list.forEach((d,i)=>{ cc.lineWidth=wf(i); cc.stroke(new Path2D(d)); }); };
+  const aCer=alpha(raster(fillP(cfg.cer))), aCb=cfg.cb?alpha(raster(fillP(cfg.cb))):Z, aSt=cfg.stem?alpha(raster(fillP(cfg.stem))):Z;
+  const majM=site(alpha(raster(strokes(cfg.major||[],i=>(cfg.majorW&&cfg.majorW[i])||1.4))),0.3);
+  const minM=site(alpha(raster(strokes(cfg.minor||[],()=>1))),0.3);
+  const dMaj=edt(majM,W,H), dMin=edt(minM,W,H);
+  const dFol=cfg.cb?edt(site(alpha(raster(cc=>{ cc.save(); cc.clip(new Path2D(cfg.cb)); strokes(cfg.folia||[],()=>0.8)(cc); cc.restore(); })),0.3),W,H):Z;
+  const eCer=edt(outside(aCer),W,H), eCb=cfg.cb?edt(outside(aCb),W,H):Z, eSt=cfg.stem?edt(outside(aSt),W,H):Z, oCer=edt(site(aCer,0.5),W,H), oCb=cfg.cb?edt(site(aCb,0.5),W,H):Z;
+  const zone=cfg.band?alpha(raster(fillP(cfg.band))):Z;
+  // swatches: id map (slightly dilated) + feathered coverage
+  const SW=cfg.swatches||[];
+  const sidD=raster(cc=>SW.forEach((q,k)=>{ const col='rgb('+(k+1)+',0,0)'; cc.fillStyle=col; cc.strokeStyle=col; cc.lineWidth=5; const p=new Path2D(q.d); cc.fill(p); cc.stroke(p); }));
+  const SID=new Uint8Array(N); for(let i=0;i<N;i++) SID[i]=sidD[i*4+3]>200?sidD[i*4]:0;
+  const FE=alpha(raster(cc=>SW.forEach(q=>fillP(q.d)(cc)),2.4));
+  const nz=makeNoise(7), nw=makeNoise(19), nb=makeNoise(31);
+  const shape=(t,p)=>1-Math.pow(1-Math.min(1,t),p);
+  // random sulci = zero-crossings of a warped noise field, joined with the named sulci; gyri bulge between them
+  const NZ=new Float32Array(N);
+  for(let py=0;py<H;py++) for(let px=0;px<W;px++){ const i=py*W+px; if(aCer[i]<=0) continue;
+    const x=X0+px/s, y=Y0+py/s, wx=x+16*nw(x/150,y/150), wy=y+16*nw(x/150+37,y/150+71);
+    NZ[i]=nz(wx/178,wy/122)+0.1*nz(wx/70+9,wy/54+3); }
+  const allM=new Uint8Array(N);
+  for(let i=0;i<N-W-1;i++){ if(majM[i]||minM[i]){ allM[i]=1; continue; }
+    if(aCer[i]>0.5 && zone[i]<0.4 && (NZ[i]*NZ[i+1]<0 || NZ[i]*NZ[i+W]<0)) allM[i]=1; }
+  const dAll=edt(allM,W,H);
+  const GY=new Float32Array(N);
+  for(let i=0;i<N;i++){ if(aCer[i]<=0) continue; const R=lerp(22,25,zone[i]), tg=clamp((dAll[i]/s-1.2)/R,0,1); GY[i]=Math.sqrt(1-(1-tg)*(1-tg)); }
+  (function blur(a,r,pass){ const t=new Float32Array(N);
+    for(let p=0;p<pass;p++){
+      for(let y=0;y<H;y++){ let acc=0; const o=y*W; for(let x=-r;x<W;x++){ if(x+r<W) acc+=a[o+x+r]; if(x-r-1>=0) acc-=a[o+x-r-1]; if(x>=0) t[o+x]=acc/(2*r+1); } }
+      for(let x=0;x<W;x++){ let acc=0; for(let y=-r;y<H;y++){ if(y+r<H) acc+=t[(y+r)*W+x]; if(y-r-1>=0) acc-=t[(y-r-1)*W+x]; if(y>=0) a[y*W+x]=acc/(2*r+1); } } }
+  })(GY,Math.round(2.6*s),2);
+  const Hh=new Float32Array(N), AO=new Float32Array(N), ALB=new Float32Array(N*3), REG=new Uint8Array(N), A=new Float32Array(N), TN=new Float32Array(N), domeR=cfg.dome||125;
+  for(let py=0;py<H;py++) for(let px=0;px<W;px++){
+    const i=py*W+px, a=Math.max(aCer[i],aCb[i],aSt[i]); A[i]=a; if(a<=0) continue;
+    const x=X0+px/s, y=Y0+py/s, tone=1+0.07*nb(x/160,y/160); TN[i]=0.93+0.07*nb(x/22+5,y/22+5);
+    if(aCer[i]>=0.5 || (aCer[i]>0 && aCer[i]>=aCb[i] && aCer[i]>=aSt[i])){
+      REG[i]=1; const de=eCer[i]/s, t=Math.min(1,de/domeR), dome=Math.sqrt(1-(1-t)*(1-t));
+      const zz=zone[i], gy=GY[i], lump=(0.5+0.5*nb(x/34,y/34))*(0.4+0.6*zz), deep=shape(dMaj[i]/s/10,2);
+      Hh[i]=22+72*dome+(17*gy+2.2*lump)*Math.min(1,de/5);
+      AO[i]=(0.5+0.5*Math.pow(gy,0.7))*(0.72+0.28*deep);
+      ALB[i*3]=232*tone; ALB[i*3+1]=148*tone; ALB[i*3+2]=140*tone;
+    } else if(aCb[i]>=aSt[i]){
+      REG[i]=2; const de=eCb[i]/s, t=Math.min(1,de/70), dome=Math.sqrt(1-(1-t)*(1-t)), hf=shape(dFol[i]/s/3.2,2);
+      Hh[i]=46*dome+4.5*hf*Math.min(1,de/3); AO[i]=(0.66+0.34*hf)*(0.35+0.65*Math.min(1,oCer[i]/s/16));
+      ALB[i*3]=206*tone; ALB[i*3+1]=122*tone; ALB[i*3+2]=116*tone;
+    } else {
+      REG[i]=3; const de=eSt[i]/s, t=Math.min(1,de/26), dome=Math.sqrt(1-(1-t)*(1-t)), hs=0.4+0.6*shape(dMin[i]/s/3,2);
+      Hh[i]=34*dome+3*hs; AO[i]=(0.6+0.4*hs)*(0.35+0.65*Math.min(1,oCer[i]/s/18))*(cfg.cb?(0.45+0.55*Math.min(1,oCb[i]/s/14)):1);
+      ALB[i*3]=214*tone; ALB[i*3+1]=140*tone; ALB[i*3+2]=128*tone;
+    }
+  }
+  let Lx=-0.42,Ly=-0.62,Lz=0.66; const Ln=Math.hypot(Lx,Ly,Lz); Lx/=Ln; Ly/=Ln; Lz/=Ln;
+  let hx=Lx,hy=Ly,hz=Lz+1; const hn=Math.hypot(hx,hy,hz); hx/=hn; hy/=hn; hz/=hn;
+  const LIGHT=new Float32Array(N), SPEC=new Float32Array(N), SH=new Float32Array(N), sh=cfg.shadow;
+  for(let py=1;py<H-1;py++) for(let px=1;px<W-1;px++){
+    const i=py*W+px; const x=X0+px/s, y=Y0+py/s;
+    if(sh){ const dx=(x-sh[0])/sh[2], dy=(y-sh[1])/sh[3]; SH[i]=0.26*Math.exp(-2.4*dx*dx-1.8*dy*dy); }
+    if(!REG[i]) continue;
+    const gx=(Hh[i+1]-Hh[i-1])*s/2, gy=(Hh[i+W]-Hh[i-W])*s/2, l=Math.hypot(gx,gy,1), nx=-gx/l, ny=-gy/l, nzv=1/l;
+    const dif=Math.max(0,nx*Lx+ny*Ly+nzv*Lz), nh=Math.max(0,nx*hx+ny*hy+nzv*hz);
+    LIGHT[i]=(0.5+0.58*dif)*(0.3+0.7*AO[i]);
+    SPEC[i]=(0.2*Math.pow(nh,22)+0.07*Math.pow(nh,5))*(0.4+0.6*AO[i]);
+  }
+  cv.width=W; cv.height=H;
+  const ctx=cv.getContext('2d'), img=new ImageData(W,H), d=img.data;
+  // st[k] = {w (0..1), c:[r,g,b]} for swatch k
+  return function paint(st){
+    for(let i=0;i<N;i++){
+      const a=A[i], j=i*4;
+      if(!REG[i]){ d[j]=90; d[j+1]=58; d[j+2]=48; d[j+3]=SH[i]*255; continue; }
+      let r=ALB[i*3], g=ALB[i*3+1], b=ALB[i*3+2];
+      const k=SID[i]; let L=LIGHT[i], S=SPEC[i]*255;
+      if(k){ const q=st[k-1]; if(q&&q.w>0){ const w=q.w*FE[i], t=TN[i]; r=lerp(r,q.c[0]*t,w); g=lerp(g,q.c[1]*t,w); b=lerp(b,q.c[2]*t,w); L=lerp(L,0.6+0.46*L,w*0.85); S*=1-0.35*w; } }
+      r=r*L+S; g=g*L+S; b=b*L+S;
+      const sa=SH[i]*(1-a), fa=a+sa;
+      d[j]=Math.min(255,(r*a+90*sa)/fa); d[j+1]=Math.min(255,(g*a+58*sa)/fa); d[j+2]=Math.min(255,(b*a+48*sa)/fa); d[j+3]=fa*255;
+    }
+    ctx.putImageData(img,0,0);
+  };
+}
+/* the standard left-hemisphere side view (front at left), shared by the sims in this unit */
+const LAT={
+  cer:'M118 352 C102 286 128 220 184 168 C244 114 334 82 432 72 C522 64 612 70 692 96 C782 126 852 184 890 262 C914 312 916 362 898 400 C882 430 852 442 818 446 C792 470 752 494 706 508 C640 528 560 538 492 530 C440 524 404 508 386 484 C372 466 368 446 378 430 C366 424 350 420 330 422 C280 426 220 420 176 404 C140 392 124 376 118 352 Z',
+  cb:'M690 482 C736 452 818 442 870 452 C918 462 940 502 926 544 C908 592 838 614 774 606 C728 600 700 574 694 542 C691 520 690 500 690 482 Z',
+  stem:'M598 500 C588 520 582 548 588 574 C594 596 604 610 608 630 C612 652 612 672 614 696 L664 696 C664 672 668 642 676 612 C684 578 692 540 690 500 Z',
+  CS:[[606,62],[597,98],[585,126],[578,148],[592,166],[584,190],[562,206],[546,232],[530,268],[512,306],[496,340],[484,368]],
+  CSs:[[606,62],[594,104],[580,146],[566,188],[548,228],[530,268],[512,306],[496,340],[484,368]],
+  major:['M386 424 C440 412 500 398 560 386 C612 374 652 362 688 338 C698 330 704 318 702 304',
+    'M396 466 C470 450 552 444 620 430 C668 420 708 402 738 372 C752 358 762 342 772 326',
+    'M430 506 C506 498 590 490 654 478 C700 470 734 458 764 442',
+    'M512 132 C468 136 420 130 372 138 C322 146 282 162 244 188',
+    'M462 256 C424 254 388 262 350 266 C302 272 262 284 222 304',
+    'M648 214 C694 222 736 234 776 252 C810 268 842 294 864 324'],
+  minor:['M440 410 C436 392 440 378 448 364','M468 403 C478 386 474 370 484 356',
+    'M426 184 C400 190 380 204 350 204','M330 222 C300 218 280 232 250 238','M396 214 C380 230 360 232 340 246',
+    'M300 108 C292 128 302 140 292 162','M210 228 C186 250 196 270 172 292','M160 320 C182 330 204 320 226 342',
+    'M262 362 C292 350 322 368 352 356','M420 330 C400 342 380 330 356 342','M204 384 C234 376 262 392 292 386',
+    'M712 304 C732 292 744 270 736 248','M704 132 C724 152 716 172 734 192','M782 170 C802 190 792 212 812 222',
+    'M826 386 C852 374 872 364 892 352','M858 292 C870 318 880 340 878 370','M802 308 C820 330 816 350 836 362',
+    'M760 300 C776 318 790 316 798 332','M740 420 C760 410 780 418 800 410'],
+  stemLines:['M592 548 C600 540 640 538 684 548','M606 626 C620 620 650 620 668 626']
+};
+LAT.folia=[]; for(let i=0;i<19;i++){ const y=452+i*8.6, b=i*0.9; LAT.folia.push('M680 '+(y+18)+' C730 '+(y-6+b)+' 830 '+(y-12+b)+' 940 '+(y+14-b*.6)); }
+function latCfg(extra){
+  const cs=pathD(crPoints(LAT.CS,8,false));
+  const major=LAT.major.concat([cs, pathD(offset(LAT.CSs,56,0,0.43)), pathD(offset(LAT.CSs,56,0.5,0.95)), pathD(offset(LAT.CSs,-48,0,0.88))]);
+  const majorW=major.map((_,i)=>i===0?6:i===LAT.major.length?2.4:1.4);
+  return Object.assign({cer:LAT.cer,cb:LAT.cb,stem:LAT.stem,major,majorW,minor:LAT.minor.concat(LAT.stemLines),folia:LAT.folia,
+    band:band(LAT.CSs,55,-47),shadow:[540,652,330,30]},extra||{});
+}
+return {render,latCfg,LAT,blob,band,offset,pathD,crPoints};
+})();
+</script>
 <script>
 (function(){
 const $=id=>document.getElementById(id);
@@ -561,15 +745,15 @@ const rfS=(function(){
    ========================================================= */
 (function(){
   const s=$('chi');
-  el('defs',{},s).innerHTML='<radialGradient id="gTop" cx="50%" cy="45%" r="60%"><stop offset="0" stop-color="#fbe6dd"/><stop offset="1" stop-color="#ecc5b6"/></radialGradient>';
   // visual field
   el('rect',{x:170,y:10,width:230,height:60,rx:10,fill:'#2a78c4','fill-opacity':.18,stroke:'#2a78c4'},s);
   el('rect',{x:400,y:10,width:230,height:60,rx:10,fill:'#e4572e','fill-opacity':.18,stroke:'#e4572e'},s);
   const t1=el('text',{x:285,y:46,class:'lbl','text-anchor':'middle',fill:'#2a78c4'},s); t1.textContent='Left visual field';
   const t2=el('text',{x:515,y:46,class:'lbl','text-anchor':'middle'},s); t2.textContent='Right visual field';
   // brain outline (top-down)
-  el('path',{d:'M400,230 C300,228 190,280 182,400 C176,520 260,628 400,632 C540,628 624,520 618,400 C610,280 500,228 400,230 Z',fill:'url(#gTop)',stroke:'#b98c80','stroke-width':2},s);
-  el('path',{d:'M400,236 L400,630',stroke:'#c9988a','stroke-width':1.5},s);
+  const TOP='M400,230 C300,228 190,280 182,400 C176,520 260,628 400,632 C540,628 624,520 618,400 C610,280 500,228 400,230 Z', V1L='M262,586 C300,610 360,618 396,612 L396,556 C350,562 300,556 270,544 Z', V1R='M538,586 C500,610 440,618 404,612 L404,556 C450,562 500,556 530,544 Z';
+  const ph=el('path',{d:TOP,fill:'#e2ad9b'},s);
+  setTimeout(()=>{ const p=B3.render($('chiCv'),{vb:[150,0,500,640],s:1.4,cer:TOP,major:['M400,226 L400,636'],majorW:[7],dome:90,swatches:[{d:V1L},{d:V1R}]}); ph.style.display='none'; p([{w:.85,c:[160,100,214]},{w:.85,c:[160,100,214]}]); },140);
   // eyes
   const EYES={L:[330,160],R:[470,160]};
   Object.values(EYES).forEach(([x,y])=>{ el('circle',{cx:x,cy:y,r:38,fill:'#fff',stroke:'#b9ae9b','stroke-width':2.5},s); el('path',{d:`M${x-30},${y+20} A38,38 0 0 0 ${x+30},${y+20}`,fill:'none',stroke:'#d9705a','stroke-width':5},s); el('ellipse',{cx:x,cy:y-36,rx:12,ry:4,fill:'#6b8f5e'},s); });
@@ -578,10 +762,7 @@ const rfS=(function(){
     el('path',{d:`M${x-70},72 L${x},${y-38} L${x+24},${y+30}`,fill:'none',stroke:'#2a78c4','stroke-width':2,'stroke-opacity':.7},s);
     el('path',{d:`M${x+70},72 L${x},${y-38} L${x-24},${y+30}`,fill:'none',stroke:'#e4572e','stroke-width':2,'stroke-opacity':.7},s); });
   const LGN={L:[318,392],R:[482,392]}, V1={L:[350,600],R:[450,600]};
-  el('ellipse',{cx:LGN.L[0],cy:LGN.L[1],rx:22,ry:15,fill:'#d9c3a0',stroke:'#8c6d3f'},s);
-  el('ellipse',{cx:LGN.R[0],cy:LGN.R[1],rx:22,ry:15,fill:'#d9c3a0',stroke:'#8c6d3f'},s);
-  el('path',{d:'M260,590 C300,612 360,618 396,612 L396,560 C350,566 300,560 268,548 Z',fill:'#8a4fbf','fill-opacity':.18,stroke:'#8a4fbf','stroke-dasharray':'4 3'},s);
-  el('path',{d:'M540,590 C500,612 440,618 404,612 L404,560 C450,566 500,560 532,548 Z',fill:'#8a4fbf','fill-opacity':.18,stroke:'#8a4fbf','stroke-dasharray':'4 3'},s);
+  [LGN.L,LGN.R].forEach(([x,y],k)=>{ const d=B3.blob(x,y,24,16,40+k,0); el('path',{d,fill:'none',stroke:'#fff','stroke-width':4,'stroke-opacity':.6},s); el('path',{d,fill:'#c9a46a','fill-opacity':.75,stroke:'#6e5328','stroke-width':1.6,'stroke-dasharray':'5 3'},s); });
   // fibers
   const F={
     Lt:{eye:'L',half:'right',col:'#e4572e',segs:['nL','tL','rL'],P:[[306,186],[350,262],[384,290],[352,340],[LGN.L[0],LGN.L[1]],[262,470],[300,580]]},
@@ -591,9 +772,9 @@ const rfS=(function(){
   };
   function smooth(P){ let d=`M${P[0][0]},${P[0][1]}`; for(let i=1;i<P.length-1;i++){ const m=[(P[i][0]+P[i+1][0])/2,(P[i][1]+P[i+1][1])/2]; d+=` Q${P[i][0]},${P[i][1]} ${m[0]},${m[1]}`; } const L=P[P.length-1]; return d+` L${L[0]},${L[1]}`; }
   const fg=el('g',{},s);
-  Object.values(F).forEach(f=>{ f.base=el('path',{d:smooth(f.P),fill:'none',stroke:f.col,'stroke-width':5,'stroke-opacity':.35,'stroke-linecap':'round'},fg); f.fl=el('path',{d:smooth(f.P),fill:'none',stroke:f.col,'stroke-width':3,class:'flow','stroke-linecap':'round'},fg); });
+  Object.values(F).forEach(f=>{ el('path',{d:smooth(f.P),fill:'none',stroke:'#fff','stroke-width':9,'stroke-opacity':.75,'stroke-linecap':'round'},fg); f.base=el('path',{d:smooth(f.P),fill:'none',stroke:f.col,'stroke-width':6,'stroke-opacity':.55,'stroke-linecap':'round'},fg); f.fl=el('path',{d:smooth(f.P),fill:'none',stroke:f.col,'stroke-width':3,class:'flow','stroke-linecap':'round'},fg); });
   const lab=[['Optic nerve',240,250],['Optic chiasm',420,308,'start'],['Optic tract',236,352],['LGN (thalamus)',196,398],['Optic radiation',612,530,'end'],['V1',400,590,'middle'],['Occipital lobe',400,628,'middle']];
-  lab.forEach(([t,x,y,a])=>{ const e=el('text',{x,y,class:'lbl'+(t==='Occipital lobe'?' sm':''),'text-anchor':a||'start'},s); e.textContent=t; });
+  lab.forEach(([t,x,y,a])=>{ const e=el('text',{x,y,class:'lbl halo'+(t==='Occipital lobe'?' sm':''),'text-anchor':a||'start'},s); e.textContent=t; });
   const CUTS={nL:{p:[361,246],n:'left optic nerve'},nR:{p:[439,246],n:'right optic nerve'},ch:{p:[400,290],n:'optic chiasm'},tL:{p:[352,340],n:'left optic tract'},tR:{p:[448,340],n:'right optic tract'},rL:{p:[262,470],n:'left optic radiation'},rR:{p:[538,470],n:'right optic radiation'}};
   let cut=null;
   Object.entries(CUTS).forEach(([k,c])=>{ const g=el('g',{class:'cut',tabindex:0,role:'button','aria-label':'Cut the '+c.n},s);
@@ -683,31 +864,40 @@ const oriS=(function(){
    ========================================================= */
 const sceneS=(function(){
   const s=$('brain');
-  el('defs',{},s).innerHTML='<radialGradient id="gB" cx="40%" cy="35%" r="75%"><stop offset="0" stop-color="#fbe6dd"/><stop offset=".7" stop-color="#f1cbbd"/><stop offset="1" stop-color="#e3b2a2"/></radialGradient><marker id="arD" viewBox="0 0 10 10" refX="6" refY="5" markerUnits="userSpaceOnUse" markerWidth="24" markerHeight="24" orient="auto"><path d="M0,0 L10,5 L0,10 Z" fill="#2f9e6e"/></marker><marker id="arV" viewBox="0 0 10 10" refX="6" refY="5" markerUnits="userSpaceOnUse" markerWidth="24" markerHeight="24" orient="auto"><path d="M0,0 L10,5 L0,10 Z" fill="#8a4fbf"/></marker>';
-  el('path',{d:'M500,392 C512,364 580,352 640,366 C684,378 698,418 676,446 C650,474 580,480 540,466 C510,456 496,424 500,392 Z',fill:'#e9bfb0',stroke:'#b98c80','stroke-width':1.6},s);
-  el('path',{d:'M462,300 C470,300 496,300 504,306 C506,350 500,380 496,400 C494,430 492,456 490,482 L468,482 C464,462 454,442 450,420 C444,396 452,350 462,300 Z',fill:'#ecd0c3',stroke:'#c49a8a','stroke-width':1.5},s);
-  el('path',{d:'M150,300 C122,206 186,100 322,78 C462,56 626,100 672,214 C700,290 676,366 612,384 C566,396 524,382 494,374 C474,414 424,446 362,444 C300,442 254,412 238,372 C200,368 160,346 150,300 Z',fill:'url(#gB)',stroke:'#b98c80','stroke-width':2},s);
-  ['M425,72 C412,126 402,160 396,196 C388,240 366,270 340,302','M246,334 C300,322 380,306 474,300','M290,372 C340,362 400,360 470,346','M520,130 C560,170 600,200 640,214','M560,300 C590,320 620,330 660,330'].forEach((d,i)=>el('path',{d,fill:'none',stroke:i<2?'#b07f71':'#cf9f90','stroke-width':i<2?2.4:1.4,'stroke-linecap':'round'},s));
-  el('path',{d:'M640,250 C620,200 590,160 540,140',fill:'none',stroke:'#2f9e6e','stroke-width':10,'stroke-opacity':.55,'marker-end':'url(#arD)','stroke-linecap':'round'},s);
-  el('path',{d:'M640,300 C610,360 540,390 440,400',fill:'none',stroke:'#8a4fbf','stroke-width':10,'stroke-opacity':.5,'marker-end':'url(#arV)','stroke-linecap':'round'},s);
-  const t1=el('text',{x:520,y:112,class:'lbl','text-anchor':'middle',fill:'#2f9e6e'},s); t1.textContent='Dorsal stream: WHERE / HOW';
-  const t2=el('text',{x:330,y:470,class:'lbl','text-anchor':'middle'},s); t2.textContent='Ventral stream: WHAT';
+  el('defs',{},s).innerHTML='<marker id="arD" viewBox="0 0 10 10" refX="5" refY="5" markerUnits="userSpaceOnUse" markerWidth="34" markerHeight="34" orient="auto"><path d="M0,0 L10,5 L0,10 Z" fill="#2f9e6e" stroke="#fff" stroke-width="1"/></marker><marker id="arV" viewBox="0 0 10 10" refX="5" refY="5" markerUnits="userSpaceOnUse" markerWidth="34" markerHeight="34" orient="auto"><path d="M0,0 L10,5 L0,10 Z" fill="#8a4fbf" stroke="#fff" stroke-width="1"/></marker>'+
+    '<pattern id="hatch" width="9" height="9" patternUnits="userSpaceOnUse" patternTransform="rotate(45)"><rect width="3.2" height="9" fill="rgba(45,20,20,.6)"/></pattern>';
+  const ph=el('path',{d:B3.LAT.cer,fill:'#e2ad9b'},s);
   const A=[
     {id:'none',name:'Healthy brain',col:'#6b6f76',does:'All areas working. The ventral stream recognizes the face, the fruit and its colors. The dorsal stream tracks the moving ball and where everything sits.',cs:'Tap a colored area on the brain, or a button above, to damage it.'},
-    {id:'v1',name:'V1 (right side)',col:'#c0392b',shape:['ellipse',{cx:658,cy:272,rx:20,ry:46}],lx:690,ly:200,does:'<b>Primary visual cortex</b>, the first cortical stop. Every later area depends on it. Damage to the right V1 erases the left half of the visual field.',cs:'Some people with V1 damage show <b>blindsight</b>: they insist they see nothing on the blind side, yet point to objects there far better than chance, using pathways that bypass V1.'},
-    {id:'v4',name:'V4 (color)',col:'#c98a10',shape:['ellipse',{cx:576,cy:356,rx:28,ry:15}],lx:600,ly:420,does:'<b>V4</b>, on the underside of the occipital lobe, is key for <b>color</b>. Damage causes <b>cerebral achromatopsia</b>: the world turns shades of gray even though the cones in the eye work fine.',cs:'Oliver Sacks described a painter who lost color vision after a car accident. Even his memories and dreams turned gray.'},
-    {id:'ffa',name:'Fusiform face area',col:'#8a4fbf',shape:['ellipse',{cx:450,cy:400,rx:34,ry:14}],lx:430,ly:432,does:'The <b>fusiform face area</b> in the ventral temporal lobe responds strongly to faces. Damage causes <b>prosopagnosia</b> (face blindness): faces look like a jumble of features and even family members are unrecognizable.',cs:'People with prosopagnosia often recognize friends by their voice, walk, hairstyle or clothes instead.'},
-    {id:'mt',name:'MT / V5 (motion)',col:'#2a78c4',shape:['ellipse',{cx:596,cy:310,rx:22,ry:18}],lx:560,ly:316,does:'<b>MT</b> (also called V5) computes <b>motion</b>. Damage causes <b>akinetopsia</b>: the world is seen as a series of still snapshots instead of smooth movement.',cs:'Patient L.M. (Zihl, 1983) couldn’t pour tea: the liquid looked frozen, like a glacier, and suddenly the cup overflowed. Cars seemed far away, then suddenly right next to her.'},
-    {id:'ppc',name:'Posterior parietal (right)',col:'#2f9e6e',shape:['ellipse',{cx:548,cy:160,rx:42,ry:26}],lx:548,ly:166,does:'The <b>posterior parietal cortex</b> maps <b>where</b> things are and guides reaching. Damage to the right side often causes <b>hemispatial neglect</b>: the left side of space is ignored, even though the eyes see it.',cs:'Patients with neglect may eat only the right half of their plate, or shave only the right side of their face, and not notice that anything is missing.'}
+    {id:'v1',name:'V1 (right side)',col:'#c0392b',d:B3.blob(868,346,30,66,5,0.12),lab:[868,350],does:'<b>Primary visual cortex</b>, the first cortical stop. Every later area depends on it. Damage to the right V1 erases the left half of the visual field.',cs:'Some people with V1 damage show <b>blindsight</b>: they insist they see nothing on the blind side, yet point to objects there far better than chance, using pathways that bypass V1.'},
+    {id:'v4',name:'V4 (color)',col:'#e0a21a',d:B3.blob(786,450,42,15,21,-0.32),lab:[786,455],does:'<b>V4</b>, on the underside of the occipital lobe, is key for <b>color</b>. Damage causes <b>cerebral achromatopsia</b>: the world turns shades of gray even though the cones in the eye work fine.',cs:'Oliver Sacks described a painter who lost color vision after a car accident. Even his memories and dreams turned gray.'},
+    {id:'ffa',name:'Fusiform face area',col:'#8a4fbf',d:B3.blob(628,502,58,15,22,-0.14),lab:[628,507],does:'The <b>fusiform face area</b> in the ventral temporal lobe responds strongly to faces. Damage causes <b>prosopagnosia</b> (face blindness): faces look like a jumble of features and even family members are unrecognizable.',cs:'People with prosopagnosia often recognize friends by their voice, walk, hairstyle or clothes instead.'},
+    {id:'mt',name:'MT / V5 (motion)',col:'#2a78c4',d:B3.blob(792,376,28,24,23,0),lab:[792,381],does:'<b>MT</b> (also called V5) computes <b>motion</b>. Damage causes <b>akinetopsia</b>: the world is seen as a series of still snapshots instead of smooth movement.',cs:'Patient L.M. (Zihl, 1983) couldn’t pour tea: the liquid looked frozen, like a glacier, and suddenly the cup overflowed. Cars seemed far away, then suddenly right next to her.'},
+    {id:'ppc',name:'Posterior parietal (right)',col:'#2f9e6e',d:B3.blob(752,234,70,36,24,0.38),lab:[752,240],does:'The <b>posterior parietal cortex</b> maps <b>where</b> things are and guides reaching. Damage to the right side often causes <b>hemispatial neglect</b>: the left side of space is ignored, even though the eyes see it.',cs:'Patients with neglect may eat only the right half of their plate, or shave only the right side of their face, and not notice that anything is missing.'}
   ];
-  const chips=$('areaChips'); let cur='none';
+  const SWA=A.filter(a=>a.d);
+  const hex=h=>[1,3,5].map(i=>parseInt(h.slice(i,i+2),16));
+  let paintFn=null, hovA=null, cur='none';
+  function repaint(){ if(!paintFn) return; paintFn(SWA.map(q=>{ const on=cur===q.id, hv=hovA===q.id, k=on?.28:hv?.22:.1; return {w:on||hv?.95:.82,c:hex(q.col).map(v=>v+(255-v)*k)}; })); }
+  setTimeout(()=>{ paintFn=B3.render($('brainCv'),B3.latCfg({vb:[70,40,900,640],s:1.15,swatches:SWA.map(q=>({d:q.d}))})); ph.style.display='none'; repaint(); },80);
+  const arr=(d,c,m)=>{ el('path',{d,fill:'none',stroke:'#fff','stroke-width':19,'stroke-linecap':'round','stroke-opacity':.9},s); el('path',{d,fill:'none',stroke:c,'stroke-width':13,'stroke-linecap':'round','marker-end':'url(#'+m+')'},s); };
+  arr('M850,290 C846,236 822,196 772,180 C730,168 690,170 646,178','#2f9e6e','arD');
+  arr('M854,410 C836,456 802,474 760,477 C700,482 620,476 536,480','#8a4fbf','arV');
+  const gH=el('g',{},s);
+  const chips=$('areaChips');
   A.forEach(a=>{
     const b=document.createElement('button'); b.className='chip'; b.textContent=a.id==='none'?'Healthy':a.name.replace(/ \(.*\)/,''); b.style.setProperty('--k',a.col); b.addEventListener('click',()=>pick(a.id)); a.chip=b; chips.appendChild(b);
-    if(a.shape){ const g=el('g',{class:'area',tabindex:0,role:'button','aria-label':a.name},s); el(a.shape[0],Object.assign({class:'hit',fill:a.col,'fill-opacity':.35,stroke:a.col,'stroke-width':1.6},a.shape[1]),g);
+    if(a.d){ const g=el('g',{class:'area',tabindex:0,role:'button','aria-label':a.name},gH);
+      el('path',{class:'hit',d:a.d,fill:'#000','fill-opacity':0,stroke:'#fff','stroke-width':2,'stroke-opacity':0},g);
+      a.hatch=el('path',{d:a.d,fill:'url(#hatch)',stroke:'#5a1e1e','stroke-width':2,'stroke-dasharray':'5 4',display:'none','pointer-events':'none'},g);
+      g.addEventListener('mouseenter',()=>{ hovA=a.id; repaint(); }); g.addEventListener('mouseleave',()=>{ hovA=null; repaint(); });
       g.addEventListener('click',()=>pick(a.id)); g.addEventListener('keydown',e=>{ if(e.key==='Enter'||e.key===' '){ e.preventDefault(); pick(a.id); } }); a.g=g; }
   });
-  [['V1',682,240],['V4',612,384],['FFA',450,404],['MT',596,315],['PPC',548,165]].forEach(([t,x,y])=>{ const e=el('text',{x,y,'text-anchor':'middle','font-size':12,'font-weight':700,fill:'#333','pointer-events':'none'},s); e.textContent=t; });
-  function pick(id){ cur=id; const a=A.find(x=>x.id===id); A.forEach(x=>{ x.chip.setAttribute('aria-pressed',x.id===id); if(x.g) x.g.classList.toggle('on',x.id===id); });
+  SWA.forEach(a=>{ const t=el('text',{x:a.lab[0],y:a.lab[1],'text-anchor':'middle',class:'tag'},s); t.textContent=a.id.toUpperCase(); });
+  const t1=el('text',{x:680,y:140,class:'lbl big halo','text-anchor':'middle',fill:'#1f7a52'},s); t1.textContent='Dorsal stream: WHERE / HOW';
+  const t2=el('text',{x:520,y:580,class:'lbl big halo','text-anchor':'middle',fill:'#6b3aa0'},s); t2.textContent='Ventral stream: WHAT';
+  [['Frontal lobe',270,270],['Temporal lobe',450,452],['Occipital',892,250]].forEach(([t,x,y])=>{ const e=el('text',{x,y,class:'lbl halo lobe','text-anchor':'middle'},s); e.textContent=t; });
+  function pick(id){ cur=id; const a=A.find(x=>x.id===id); A.forEach(x=>{ x.chip.setAttribute('aria-pressed',x.id===id); if(x.g){ x.g.classList.toggle('on',x.id===id); x.hatch.setAttribute('display',x.id===id?'':'none'); } }); repaint();
     document.querySelector('#streams').style.setProperty('--c',a.col);
     $('arName').textContent=a.id==='none'?'Healthy brain':'Damage to '+a.name; $('arDoes').innerHTML=a.does; $('arCase').innerHTML=a.cs;
     $('scene').style.filter=id==='v4'?'grayscale(1)':'none'; }
