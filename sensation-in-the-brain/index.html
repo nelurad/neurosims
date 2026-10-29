@@ -1,0 +1,972 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Sensation in the Brain</title>
+<link rel="icon" href="data:,">
+<meta name="description" content="The touch strip and movement strip on either side of the central sulcus, the homunculus, and the path a touch on your hand takes to reach its own patch of cortex.">
+<style>
+  :root{ --bg:#fffdf8; --ink:#2a2a2a; --muted:#6b6f76; --line:#e2ddd2;
+    --hand:"Segoe Print","Ink Free","Noteworthy","Chalkboard SE","Bradley Hand","Comic Sans MS",cursive;
+    --sans:system-ui,-apple-system,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif;
+    --mono:ui-monospace,"SF Mono",Menlo,Consolas,monospace;
+    --s:#2a78c4; --m:#e4572e; --c:#2a78c4; }
+  *{box-sizing:border-box}
+  html{-webkit-text-size-adjust:100%}
+  html,body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.5 var(--sans);-webkit-font-smoothing:antialiased}
+  .wrap{margin:0 auto;padding:20px 16px 32px;max-width:1280px}
+  a{color:#3d6fa8}
+  .back{font-size:13.5px;color:var(--muted);text-decoration:none}
+  .back:hover{text-decoration:underline}
+  h1{font-family:Georgia,"Times New Roman",serif;font-weight:normal;font-size:clamp(26px,2.6vw,38px);margin:6px 0 8px;letter-spacing:-.01em}
+  .intro{margin:0 0 10px;max-width:52em;font-size:clamp(15px,1.2vw,17px)}
+  section{margin-top:34px}
+  h2.sec{font-family:var(--hand);font-weight:normal;font-size:clamp(24px,2.4vw,32px);margin:0 0 2px;line-height:1.2}
+  h2.sec .n{display:inline-block;width:1.45em;height:1.45em;line-height:1.45em;text-align:center;border-radius:50%;background:#2a2a2a;color:#fffdf8;font-size:.7em;margin-right:8px;vertical-align:.2em;font-family:var(--sans)}
+  .lede{margin:0 0 12px;max-width:52em;color:#3b3b3b}
+  .s{color:var(--s)} .m{color:var(--m)}
+
+  .tabs{display:flex;flex-wrap:wrap;gap:8px;margin:0 0 8px;align-items:center}
+  .tab{font:inherit;font-family:var(--hand);font-size:clamp(16px,1.5vw,20px);background:transparent;border:0;border-bottom:3px solid transparent;
+    padding:4px 10px 2px;cursor:pointer;color:var(--muted)}
+  .tab .dot{display:inline-block;width:11px;height:11px;border-radius:50%;margin-right:7px;vertical-align:1px}
+  .tab[aria-pressed="true"]{color:var(--ink);border-bottom-color:currentColor}
+  .tab:hover{color:var(--ink)}
+  .tog{font:inherit;font-size:13.5px;background:#fff;border:1.5px solid var(--line);border-radius:999px;padding:3px 12px;cursor:pointer;color:var(--muted);margin-left:auto}
+  .tog[aria-pressed="true"]{color:var(--ink);border-color:#bdb7aa}
+  :focus-visible{outline:2px solid #3d6fa8;outline-offset:2px}
+
+  .stage{display:grid;grid-template-columns:minmax(0,1.75fr) minmax(280px,1fr);gap:24px;align-items:start}
+  svg{display:block;width:100%;height:auto;user-select:none;-webkit-user-select:none}
+  .tip{font-size:14.5px;color:var(--muted);min-height:2.6em;margin:4px 0 0}
+  .tip b{color:var(--ink)}
+
+  .chips{display:flex;flex-wrap:wrap;gap:6px;margin:6px 0 0}
+  .chip{font:inherit;font-size:14px;background:#fff;border:1.5px solid var(--line);border-radius:999px;padding:3px 11px;cursor:pointer;color:var(--ink)}
+  .chip:hover{border-color:#bdb7aa}
+  .chip[aria-pressed="true"]{border-color:var(--c);box-shadow:inset 0 0 0 1.5px var(--c);color:var(--c)}
+  .chip .e{margin-right:4px}
+
+  .panel h3{font-family:var(--hand);font-weight:normal;font-size:clamp(24px,2.3vw,30px);margin:0;color:var(--c);line-height:1.2}
+  .panel .sub{font-size:14px;color:var(--muted);margin:0 0 8px}
+  .panel p{margin:0 0 8px}
+  .bodywrap{position:relative;max-width:300px;margin:0 auto}
+  .bubble{position:relative;background:#fff;border:1.5px solid var(--line);border-radius:14px;padding:8px 12px;font-size:15px;margin:0 0 10px;min-height:2.8em}
+  .bubble:after{content:"";position:absolute;left:50%;bottom:-9px;width:14px;height:14px;background:#fff;border-right:1.5px solid var(--line);border-bottom:1.5px solid var(--line);transform:translateX(-50%) rotate(45deg)}
+  .bubble i{color:var(--muted)}
+  .stats{display:grid;grid-template-columns:auto 1fr;gap:2px 10px;font-size:14.5px;margin:8px 0}
+  .stats dt{color:var(--muted)} .stats dd{margin:0;font-weight:600}
+  .fact{background:#fff;border-left:3px solid var(--c);padding:6px 10px;font-size:14.5px}
+
+  .pt{transform-box:fill-box;transform-origin:50% 0%}
+  .pt[data-fx="sq"]{transform-origin:50% 50%}
+  .twitch .pt.hi[data-fx="rot"]{animation:rot .26s ease-in-out 5}
+  .twitch .pt.hi[data-fx="sq"]{animation:sq .26s ease-in-out 5}
+  .tingle .pt.hi{animation:glow .55s ease-in-out 5}
+  @keyframes rot{0%,100%{transform:rotate(0)}30%{transform:rotate(-9deg)}70%{transform:rotate(7deg)}}
+  @keyframes sq{0%,100%{transform:scale(1)}50%{transform:scale(1.18)}}
+  @keyframes glow{0%,100%{filter:drop-shadow(0 0 0 rgba(42,120,196,0))}50%{filter:drop-shadow(0 0 7px rgba(42,120,196,1))}}
+  .zap{transform-box:fill-box;transform-origin:center;animation:zap .9s ease-out 3 both}
+  @keyframes zap{from{transform:scale(.5);opacity:1}to{transform:scale(5);opacity:0}}
+  .seg{cursor:pointer}
+  .flash{animation:flash .5s ease-in-out 4}
+  @keyframes flash{50%{opacity:.25}}
+
+  .morphrow{display:flex;align-items:center;gap:10px;font-size:14px;color:var(--muted);margin:4px 0 0}
+  .morphrow input{flex:1;accent-color:var(--c)}
+  .btn{font:inherit;font-size:14.5px;background:#fff;border:1.5px solid #bdb7aa;border-radius:8px;padding:5px 14px;cursor:pointer;color:var(--ink)}
+  .btn:hover{border-color:var(--c);color:var(--c)}
+  .btn.primary{background:var(--c);border-color:var(--c);color:#fff}
+  .btn.primary:hover{filter:brightness(1.08);color:#fff}
+
+  .bars{margin-top:14px;font-size:13.5px}
+  .bars .legend{display:flex;gap:14px;color:var(--muted);margin:0 0 6px;flex-wrap:wrap}
+  .bars .legend span:before{content:"";display:inline-block;width:12px;height:8px;border-radius:2px;margin-right:5px;background:var(--k)}
+  .row{display:grid;grid-template-columns:9.5em minmax(0,1fr) 3.6em;gap:8px;align-items:center;padding:2px 4px;border-radius:6px;cursor:pointer}
+  .row:hover,.row.on{background:#f4efe4}
+  .row .nm{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .row .bb{display:grid;gap:2px}
+  .row .b{height:7px;border-radius:3px;min-width:2px;transition:width .5s}
+  .row .x{text-align:right;color:var(--muted);font-variant-numeric:tabular-nums}
+
+  .steps{list-style:none;margin:10px 0;padding:0;counter-reset:st}
+  .steps li{counter-increment:st;position:relative;padding:6px 8px 6px 34px;border-radius:8px;font-size:14.5px;color:var(--muted);transition:background .3s,color .3s}
+  .steps li:before{content:counter(st);position:absolute;left:6px;top:7px;width:20px;height:20px;border-radius:50%;background:#e9e4d8;color:#6b6f76;font-size:12px;text-align:center;line-height:20px;font-weight:700}
+  .steps li.now{background:#fff;color:var(--ink);box-shadow:inset 3px 0 0 var(--c)}
+  .steps li.now:before,.steps li.done:before{background:var(--c);color:#fff}
+  .steps li.done{color:#3b3b3b}
+  .steps b{color:var(--ink)}
+
+  .cards{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:14px;margin-top:10px}
+  .card{background:#fff;border:1.5px solid var(--line);border-radius:10px;padding:12px 14px;font-size:14.5px}
+  .card h4{font-family:var(--hand);font-weight:normal;font-size:20px;margin:0 0 4px}
+  .card p{margin:0}
+
+  .note{font-size:13px;color:var(--muted);margin:14px 0 0;max-width:62em}
+  .foot{margin-top:36px;padding-top:14px;border-top:1px dashed #c9c3b6;font-size:12.5px;color:var(--muted)}
+  .foot p{margin:0 0 8px}
+  .embed{display:flex;gap:8px;align-items:flex-start;flex-wrap:wrap}
+  .embed code{flex:1;min-width:0;font-family:var(--mono);font-size:11.5px;background:#fff;border:1px solid var(--line);padding:5px 8px;overflow-wrap:anywhere}
+  .embed button{font:inherit;font-size:12px;padding:4px 10px;background:#fff;border:1px solid #bdb7aa;border-radius:4px;cursor:pointer}
+  .refs{margin:4px 0 10px;padding-left:18px}
+
+  @media (max-width:860px){ .stage{grid-template-columns:minmax(0,1fr)} .tog{margin-left:0} }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <a class="back" href="../">← All NeuroSims</a>
+  <h1>Sensation in the Brain</h1>
+  <p class="intro">Every part of your body has its own patch of brain. Two strips of cortex run over the top of your head like a headband, one on each side of a deep groove called the <b>central sulcus</b>. The strip in front controls <b class="m">movement</b>. The strip behind it feels <b class="s">touch</b>. Your body is laid out along each strip in order, but the space isn’t shared fairly: your hands, lips and tongue get far more brain than your back.</p>
+
+  <!-- ============ 1. THE BRAIN ============ -->
+  <section id="s1">
+    <h2 class="sec"><span class="n">1</span>Find the strips</h2>
+    <p class="lede">This is the left side of a brain. Tap anywhere on a colored strip to stimulate it with an electrode, the way neurosurgeon Wilder Penfield did with awake patients. Watch which body part responds.</p>
+    <div class="tabs" role="group" aria-label="Choose a strip" id="tabs1">
+      <button class="tab" data-sys="touch"><span class="dot" style="background:var(--s)"></span>Touch strip (S1)</button>
+      <button class="tab" data-sys="move"><span class="dot" style="background:var(--m)"></span>Movement strip (M1)</button>
+      <button class="tog" id="lblTog" aria-pressed="true">Labels</button>
+    </div>
+    <div class="stage">
+      <div>
+        <svg id="lat" viewBox="60 8 900 690" role="img" aria-labelledby="latTitle">
+          <title id="latTitle">Side view of the left hemisphere with the movement strip in front of the central sulcus and the touch strip behind it</title>
+          <defs>
+            <filter id="relief" x="-3%" y="-3%" width="106%" height="106%" color-interpolation-filters="sRGB">
+              <feGaussianBlur in="SourceGraphic" stdDeviation="2.8" result="b"/>
+              <feColorMatrix in="b" type="luminanceToAlpha" result="h"/>
+              <feDiffuseLighting in="h" surfaceScale="8" diffuseConstant="1.18" lighting-color="#ffffff" result="d"><feDistantLight azimuth="228" elevation="44"/></feDiffuseLighting>
+              <feSpecularLighting in="h" surfaceScale="8" specularConstant=".55" specularExponent="18" lighting-color="#fff6f0" result="sp"><feDistantLight azimuth="228" elevation="56"/></feSpecularLighting>
+              <feComposite in="sp" in2="SourceAlpha" operator="in" result="sp2"/>
+              <feFlood flood-color="#e6ad9e" result="c"/>
+              <feBlend in="d" in2="c" mode="multiply" result="t"/>
+              <feGaussianBlur in="SourceGraphic" stdDeviation="5.5" result="b2"/>
+              <feComponentTransfer in="b2" result="ao"><feFuncR type="linear" slope=".55" intercept=".45"/><feFuncG type="linear" slope=".6" intercept=".4"/><feFuncB type="linear" slope=".6" intercept=".4"/></feComponentTransfer>
+              <feBlend in="t" in2="ao" mode="multiply" result="t2"/>
+              <feComposite in="t2" in2="sp2" operator="arithmetic" k2="1" k3=".5" result="t3"/>
+              <feComposite in="t3" in2="SourceAlpha" operator="in"/>
+            </filter>
+            <filter id="relief2" x="-3%" y="-3%" width="106%" height="106%" color-interpolation-filters="sRGB">
+              <feGaussianBlur in="SourceGraphic" stdDeviation="1.6" result="b"/>
+              <feColorMatrix in="b" type="luminanceToAlpha" result="h"/>
+              <feDiffuseLighting in="h" surfaceScale="5" diffuseConstant="1.15" lighting-color="#ffffff" result="d"><feDistantLight azimuth="228" elevation="44"/></feDiffuseLighting>
+              <feFlood flood-color="#d99d8f" result="c"/>
+              <feBlend in="d" in2="c" mode="multiply" result="t"/>
+              <feGaussianBlur in="SourceGraphic" stdDeviation="3" result="b2"/>
+              <feComponentTransfer in="b2" result="ao"><feFuncR type="linear" slope=".5" intercept=".5"/><feFuncG type="linear" slope=".55" intercept=".45"/><feFuncB type="linear" slope=".55" intercept=".45"/></feComponentTransfer>
+              <feBlend in="t" in2="ao" mode="multiply" result="t2"/>
+              <feComposite in="t2" in2="SourceAlpha" operator="in"/>
+            </filter>
+            <filter id="shadow" x="-20%" y="-20%" width="140%" height="140%"><feGaussianBlur stdDeviation="14"/></filter>
+            <radialGradient id="vign" cx="38%" cy="32%" r="75%">
+              <stop offset="0" stop-color="#ffffff"/><stop offset=".62" stop-color="#f3e4df"/><stop offset="1" stop-color="#b98c84"/>
+            </radialGradient>
+            <clipPath id="cerClip"><path id="cerClipPath"/></clipPath>
+            <clipPath id="cbClip"><path id="cbClipPath"/></clipPath>
+          </defs>
+          <g id="latBack"></g>
+          <g id="latCer"></g>
+          <g id="latStrips" clip-path="url(#cerClip)"></g>
+          <g id="latLabels"></g>
+          <g id="latProbe"></g>
+        </svg>
+        <p class="tip" id="tip1" aria-live="polite">Tap the <b class="m">front strip</b> or the <b class="s">back strip</b>, or pick a body part below.</p>
+        <div class="chips" id="chips1" role="group" aria-label="Stimulate a body part"></div>
+      </div>
+      <div class="panel" id="panel1" aria-live="polite">
+        <div class="bubble" id="bubble1"><i>Waiting for the electrode…</i></div>
+        <div class="bodywrap"><svg id="body1" viewBox="-150 -26 300 446" role="img" aria-label="Body showing which part responds"></svg></div>
+        <div id="info1"></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ 2. THE SLICE ============ -->
+  <section id="s2">
+    <h2 class="sec"><span class="n">2</span>Slice through the strip: meet the homunculus</h2>
+    <p class="lede">Now cut the brain from ear to ear, straight down through one strip, and look at the cut face. The body map starts with the feet on the inner wall between the two halves of the brain, comes over the top, and ends with the tongue and throat down by the lateral fissure. Each picture is sized by how much strip it gets.</p>
+    <div class="tabs" role="group" aria-label="Choose a strip" id="tabs2">
+      <button class="tab" data-sys="touch"><span class="dot" style="background:var(--s)"></span>Touch strip (S1)</button>
+      <button class="tab" data-sys="move"><span class="dot" style="background:var(--m)"></span>Movement strip (M1)</button>
+    </div>
+    <div class="stage">
+      <div>
+        <svg id="slice" viewBox="0 0 720 560" role="img" aria-labelledby="sliceTitle">
+          <title id="sliceTitle">Slice through the left hemisphere showing the body map along the strip</title>
+          <defs><mask id="gm2" maskUnits="userSpaceOnUse" x="0" y="0" width="720" height="560"></mask></defs>
+          <g id="sliceBrain"></g>
+          <g id="sliceWash" mask="url(#gm2)"></g>
+          <g id="sliceBand"></g>
+          <g id="sliceLbl"></g>
+        </svg>
+        <div class="tabs" style="margin-top:6px" role="group" aria-label="How to share out the strip">
+          <button class="btn primary" id="fairBtn">What if the brain shared space by skin area?</button>
+        </div>
+        <p class="tip" id="tip2" aria-live="polite"></p>
+      </div>
+      <div class="panel">
+        <div class="bodywrap"><svg id="body2" viewBox="-150 -26 300 446" role="img" aria-label="Body drawn with each part sized by its share of the strip"></svg></div>
+        <div class="morphrow"><span>Your body</span><input type="range" id="morph" min="0" max="100" value="0" aria-label="Morph from a normal body to the homunculus"><span>As your brain sees it</span></div>
+        <div style="text-align:center;margin-top:8px"><button class="btn" id="morphBtn">▶ Morph into the homunculus</button></div>
+        <div class="bars" id="bars"></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ 3. THE PATHWAY ============ -->
+  <section id="s3">
+    <h2 class="sec"><span class="n">3</span>Follow the signal</h2>
+    <p class="lede">Why does touching your hand light up the hand patch? Because the nerve fibers from your hand are wired to that exact spot. Pick a body part and send a signal. Notice that the left brain feels and moves the <b>right</b> side of the body.</p>
+    <div class="tabs" role="group" aria-label="Touch or move" id="tabs3">
+      <button class="tab" data-sys="touch"><span class="dot" style="background:var(--s)"></span>Touch it (signal goes up)</button>
+      <button class="tab" data-sys="move"><span class="dot" style="background:var(--m)"></span>Move it (signal goes down)</button>
+    </div>
+    <div class="stage">
+      <div>
+        <svg id="path3" viewBox="40 20 920 790" role="img" aria-labelledby="p3Title">
+          <title id="p3Title">Front view of the brain, brainstem and spinal cord with the nerve pathway for the chosen body part</title>
+          <defs>
+            <mask id="gm3" maskUnits="userSpaceOnUse" x="0" y="0" width="1000" height="820"></mask>
+            <filter id="glow3" x="-50%" y="-50%" width="200%" height="200%"><feGaussianBlur stdDeviation="4" result="g"/><feMerge><feMergeNode in="g"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
+          </defs>
+          <g id="p3Anat"></g>
+          <g id="p3Wash" mask="url(#gm3)"></g>
+          <g id="p3Routes"></g>
+          <g id="p3Lit" filter="url(#glow3)"></g>
+          <g id="p3Marks"></g>
+          <g id="p3Parts"></g>
+        </svg>
+        <div class="chips" id="chips3" role="group" aria-label="Choose a body part"></div>
+      </div>
+      <div class="panel" id="panel3">
+        <h3 id="p3Head"></h3>
+        <p class="sub" id="p3Sub"></p>
+        <button class="btn primary" id="sendBtn">▶ Send the signal</button>
+        <ol class="steps" id="steps3"></ol>
+      </div>
+    </div>
+    <p class="note">The brain in this picture is a simplified front-on slice. In a real brain the touch strip and movement strip sit side by side (front to back), so one flat slice can’t show both. The picture shows whichever strip you picked. The spinal cord is drawn much shorter than it really is.</p>
+  </section>
+
+  <section id="s4">
+    <h2 class="sec"><span class="n">4</span>So is the homunculus real?</h2>
+    <p class="lede">Yes, in the sense that matters: each body part really does have its own patch of cortex, laid out in order, and the patches really are different sizes. But the map is alive and a little messy.</p>
+    <div class="cards">
+      <div class="card"><h4>Penfield’s electrode</h4><p>In the 1930s to 1950s, Wilder Penfield mapped these strips in awake patients during epilepsy surgery. The brain has no pain receptors, so it doesn’t hurt. A tiny current on the back strip made patients feel tingling in one body part. On the front strip, a body part twitched. He drew the results as the “homunculus” (Latin for “little man”).</p></div>
+      <div class="card"><h4>Practice grows the map</h4><p>Violinists press the strings with their left-hand fingers all day. Brain scans show the left-hand finger area in their touch strip is larger than in non-musicians, especially if they started young. Reading Braille enlarges the reading finger’s area too.</p></div>
+      <div class="card"><h4>Phantom touch</h4><p>After someone loses a hand, the hand area doesn’t go quiet. Its neighbor on the strip, the face area, can spread into it. Touching the cheek can then feel like touching the missing hand.</p></div>
+      <div class="card"><h4>The borders are fuzzy</h4><p>Neighboring body parts overlap on the strip, finger areas share territory, and every person’s map is a bit different. A 2023 study found that the movement strip also has patches between the foot, hand and mouth areas that help plan whole-body actions. These patches break up the classic map.</p></div>
+    </div>
+    <p class="note">The sizes here are approximate. The share of the strip comes from Penfield’s maps. The share of skin uses the “rule of nines” that doctors use to estimate burn area, and two-point thresholds come from Weinstein (1968). Inside the mouth and the gut have almost no skin, so they get no skin bar. Penfield placed the genitals below the foot on the inner wall, but some newer brain scans put them nearer the hip.</p>
+  </section>
+
+  <footer class="foot">
+    <p class="embed"><span>Embed:</span>
+      <code id="embedCode">&lt;iframe src="https://nelurad.github.io/neurosims/sensation-in-the-brain/" width="100%" height="2600" style="border:0" title="Sensation in the Brain"&gt;&lt;/iframe&gt;</code>
+      <button id="copyBtn">Copy</button></p>
+    <p style="margin-bottom:2px">References</p>
+    <ul class="refs">
+      <li>Penfield, W., &amp; Boldrey, E. (1937). Somatic motor and sensory representation in the cerebral cortex of man as studied by electrical stimulation. <i>Brain</i>, 60(4), 389–443.</li>
+      <li>Penfield, W., &amp; Rasmussen, T. (1950). <i>The Cerebral Cortex of Man</i>. Macmillan.</li>
+      <li>Weinstein, S. (1968). Intensive and extensive aspects of tactile sensitivity as a function of body part, sex, and laterality. In D. R. Kenshalo (Ed.), <i>The Skin Senses</i>. Thomas.</li>
+      <li>Johansson, R. S., &amp; Vallbo, Å. B. (1979). Tactile sensibility in the human hand. <i>Journal of Physiology</i>, 286, 283–300.</li>
+      <li>Elbert, T., et al. (1995). Increased cortical representation of the fingers of the left hand in string players. <i>Science</i>, 270, 305–307.</li>
+      <li>Ramachandran, V. S., et al. (1992). Perceptual correlates of massive cortical reorganization. <i>Science</i>, 258, 1159–1160.</li>
+      <li>Gordon, E. M., et al. (2023). A somato-cognitive action network alternates with effector regions in motor cortex. <i>Nature</i>, 617, 351–359.</li>
+      <li>Purves, D., et al. <i>Neuroscience</i>. Sinauer / Oxford University Press.</li>
+    </ul>
+    <p>Part of <a href="../">NeuroSims</a>, made by Nelu Radpour (Florida State University). Content licensed CC BY 4.0; code licensed MIT. Free to use and adapt with credit.</p>
+  </footer>
+</div>
+
+<script>
+(function(){
+'use strict';
+const $=id=>document.getElementById(id);
+const NS='http://www.w3.org/2000/svg';
+const HAND=getComputedStyle(document.documentElement).getPropertyValue('--hand');
+const C_S='#2a78c4', C_M='#e4572e';
+const mq=matchMedia('(prefers-reduced-motion: reduce)'); let RM=mq.matches;
+mq.addEventListener && mq.addEventListener('change',e=>{ RM=e.matches; });
+function el(tag,attrs,parent){ const e=document.createElementNS(NS,tag); for(const k in attrs) e.setAttribute(k,attrs[k]); if(parent) parent.appendChild(e); return e; }
+function txt(parent,x,y,s,attrs){ const t=el('text',Object.assign({x,y,'font-family':HAND,'font-size':15,fill:'#4a4440','paint-order':'stroke',stroke:'#fffdf8','stroke-width':4,'stroke-linejoin':'round'},attrs||{}),parent); t.textContent=s; return t; }
+function tint(hex,a){ const n=parseInt(hex.slice(1),16), r=n>>16, g=(n>>8)&255, b=n&255; const m=v=>Math.round(255-(255-v)*a); return 'rgb('+m(r)+','+m(g)+','+m(b)+')'; }
+function shade(hex,k){ const n=parseInt(hex.slice(1),16), r=n>>16, g=(n>>8)&255, b=n&255; const m=v=>Math.round(v*(k||0.78)); return 'rgb('+m(r)+','+m(g)+','+m(b)+')'; }
+const clamp=(v,a,b)=>Math.max(a,Math.min(b,v));
+const lerp=(a,b,t)=>a+(b-a)*t;
+const ease=t=>t<.5?2*t*t:1-Math.pow(-2*t+2,2)/2;
+const colOf=sys=>sys==='move'?C_M:C_S;
+function rng(seed){ return function(){ seed|=0; seed=seed+0x6D2B79F5|0; let t=Math.imul(seed^seed>>>15,1|seed); t=t+Math.imul(t^t>>>7,61|t)^t; return ((t^t>>>14)>>>0)/4294967296; }; }
+
+/* ---------- geometry helpers ---------- */
+function crPoints(P,per,closed){
+  const out=[], n=P.length, get=i=>closed?P[(i+n)%n]:P[clamp(i,0,n-1)], segs=closed?n:n-1;
+  for(let i=0;i<segs;i++){ const p0=get(i-1),p1=get(i),p2=get(i+1),p3=get(i+2);
+    for(let j=0;j<per;j++){ const t=j/per,t2=t*t,t3=t2*t, f=(a,b,c,d)=>0.5*(2*b+(-a+c)*t+(2*a-5*b+4*c-d)*t2+(-a+3*b-3*c+d)*t3);
+      out.push([f(p0[0],p1[0],p2[0],p3[0]),f(p0[1],p1[1],p2[1],p3[1])]); } }
+  if(!closed) out.push(P[n-1].slice());
+  return out;
+}
+function arcLen(pts,closed){ let L=0; for(let i=1;i<pts.length;i++) L+=Math.hypot(pts[i][0]-pts[i-1][0],pts[i][1]-pts[i-1][1]); if(closed) L+=Math.hypot(pts[0][0]-pts[pts.length-1][0],pts[0][1]-pts[pts.length-1][1]); return L; }
+function resample(pts,N,closed){
+  const ps=closed?pts.concat([pts[0]]):pts, L=[0];
+  for(let i=1;i<ps.length;i++) L.push(L[i-1]+Math.hypot(ps[i][0]-ps[i-1][0],ps[i][1]-ps[i-1][1]));
+  const tot=L[L.length-1], out=[]; let k=0;
+  for(let i=0;i<N;i++){ const s=closed?tot*i/N:tot*i/(N-1);
+    while(k<L.length-2 && L[k+1]<s) k++;
+    const u=(s-L[k])/((L[k+1]-L[k])||1);
+    out.push([ps[k][0]+(ps[k+1][0]-ps[k][0])*u, ps[k][1]+(ps[k+1][1]-ps[k][1])*u]); }
+  out.total=tot; return out;
+}
+function normals(pts,closed,flip){ const N=pts.length,out=[];
+  for(let i=0;i<N;i++){ const a=pts[closed?(i-1+N)%N:Math.max(0,i-1)], b=pts[closed?(i+1)%N:Math.min(N-1,i+1)];
+    let tx=b[0]-a[0], ty=b[1]-a[1]; const L=Math.hypot(tx,ty)||1; tx/=L; ty/=L; out.push(flip?[ty,-tx]:[-ty,tx]); }
+  return out; }
+const f1=v=>Math.round(v*10)/10;
+function pathD(pts,closed){ let d='M'+f1(pts[0][0])+' '+f1(pts[0][1]); for(let i=1;i<pts.length;i++) d+=' L'+f1(pts[i][0])+' '+f1(pts[i][1]); return closed?d+' Z':d; }
+function smoothD(P,closed){ return pathD(crPoints(P,8,closed),closed); }
+function nearest(pts,p){ let bi=0,bd=1e9; pts.forEach((q,i)=>{ const d=(q[0]-p[0])**2+(q[1]-p[1])**2; if(d<bd){bd=d;bi=i;} }); return bi; }
+const add=(p,v,k)=>[p[0]+v[0]*k,p[1]+v[1]*k];
+
+/* ---------- body map data ---------- */
+const TOUCH=[
+ {id:'genitals',name:'Genitals',w:2,skin:1,med:1,tp:null,
+  say:'“A feeling down below, on the right side.”',
+  f:'Penfield found this area at the very bottom of the inner wall, next to the foot. Some newer brain scans place it nearer the hip instead.'},
+ {id:'foot',name:'Toes & foot',e:'🦶',w:7,skin:7,med:1,tp:'sole ≈ 22 mm, big toe ≈ 10 mm',
+  say:'“My right foot is tingling, right in the toes.”',
+  f:'The foot is mapped on the inner wall of the hemisphere, hidden in the deep groove between the left and right halves of the brain.'},
+ {id:'leg',name:'Leg & hip',e:'🦵',w:8,skin:29,tp:'calf ≈ 47 mm',
+  say:'“Something is touching my right leg.”',
+  f:'Your legs are about a third of your skin but get a thin slice of strip, right at the top of the head where the strip turns down the inner wall.'},
+ {id:'trunk',name:'Trunk & neck',w:7,skin:38,tp:'back ≈ 42 mm',
+  say:'“A tingle down the right side of my chest.”',
+  f:'Your trunk is the biggest stretch of skin you have, but its map is tiny. Two pencil tips 3 cm apart on your back usually feel like one.'},
+ {id:'arm',name:'Shoulder & arm',e:'💪',w:12,skin:13,tp:'forearm ≈ 38 mm',
+  say:'“Pins and needles in my right arm.”',
+  f:'Shoulder, elbow, forearm and wrist line up in that order along the strip, just like down your arm.'},
+ {id:'hand',name:'Hand & fingers',e:'✋',w:22,skin:5,tp:'fingertip ≈ 2–3 mm',
+  say:'“Tingling in my right hand. Mostly the thumb!”',
+  f:'Each fingertip has about 240 touch-sensing nerve fibers per square centimeter, about four times as many as the palm. More fibers coming in need more cortex to handle them.'},
+ {id:'eye',name:'Eye & nose',e:'👁️',w:5,skin:0.5,tp:'nose ≈ 8 mm',
+  say:'“A strange feeling around my right eye.”',
+  f:'The surface of the eye is one of the most sensitive spots on the body, which is why one eyelash in your eye feels enormous.'},
+ {id:'face',name:'Face',e:'🙂',w:7,skin:6,tp:'cheek ≈ 7 mm',
+  say:'“My right cheek feels numb and buzzy.”',
+  f:'The face sits right next to the hand on the strip. That’s why, after losing a hand, touching the face can feel like touching the missing hand.'},
+ {id:'lips',name:'Lips',e:'👄',w:10,skin:0.3,tp:'upper lip ≈ 5 mm',
+  say:'“My lips are tingling, on the right.”',
+  f:'Your lips are a tiny patch of skin with a huge patch of brain. Babies explore new objects with their mouths for exactly this reason.'},
+ {id:'teeth',name:'Teeth, gums & jaw',e:'🦷',w:5,skin:0,tp:null,
+  say:'“A weird feeling in my teeth and gums.”',
+  f:'Sensors around each tooth root let you feel a single sesame seed between your teeth.'},
+ {id:'tongue',name:'Tongue & throat',e:'👅',w:9,skin:0,tp:'tongue tip ≈ 1 mm',
+  say:'“My tongue feels like it’s buzzing.”',
+  f:'The tip of your tongue is the most finely mapped surface you have. It can find a hair in your food that your fingertip would miss.'},
+ {id:'gut',name:'Gut (inner organs)',w:3,skin:0,tp:null,
+  say:'“A funny feeling in my stomach.”',
+  f:'Inner organs get only a small patch at the bottom of the strip. That’s part of why a stomach ache is vague and hard to point to.'}
+];
+const MOVE=[
+ {id:'foot',name:'Toes & ankle',e:'🦶',w:6,med:1, say:'<i>(The right foot curls its toes.)</i>',
+  f:'Walking is mostly run by circuits in the spinal cord and brainstem. The cortex steps in for precise moves, like placing your foot on a narrow step.'},
+ {id:'leg',name:'Knee & hip',e:'🦵',w:7, say:'<i>(The right leg jerks at the knee.)</i>',
+  f:'Thigh muscles are some of the strongest in your body, but strength doesn’t need much cortex. Fine control does.'},
+ {id:'trunk',name:'Trunk',w:5, say:'<i>(The muscles on the right side of the trunk tighten.)</i>',
+  f:'Trunk muscles mostly hold you upright. That’s a simple job, so they get very little of the strip.'},
+ {id:'arm',name:'Shoulder, elbow & wrist',e:'💪',w:11, say:'<i>(The right arm lifts and bends at the elbow.)</i>',
+  f:'The arm map runs shoulder → elbow → wrist, leading straight into the giant hand area.'},
+ {id:'hand',name:'Hand & fingers',e:'✋',w:26, say:'<i>(The right hand clenches into a fist.)</i> “I didn’t do that!”',
+  f:'The hand takes about a quarter of the movement strip. Typing, writing and buttoning a shirt need each finger to move on its own, and that takes a lot of neurons.'},
+ {id:'neck',name:'Neck & brow',w:4, say:'<i>(The head turns and the brow wrinkles.)</i>',
+  f:'Neck and brow sit between the hand and the face on the movement map.'},
+ {id:'eye',name:'Eyelids & eyes',e:'👁️',w:4, say:'<i>(The right eyelid blinks shut.)</i>',
+  f:'Blinking on purpose uses the movement strip. Most blinks are automatic and come from the brainstem.'},
+ {id:'face',name:'Face',e:'🙂',w:6, say:'<i>(The right corner of the mouth pulls into a half-smile.)</i>',
+  f:'The lower face is controlled by the opposite side of the brain, so a stroke on one side can make the other corner of the mouth droop.'},
+ {id:'lips',name:'Lips',e:'👄',w:10, say:'<i>(The lips pucker.)</i>',
+  f:'Speech needs split-second control of the lips, tongue and jaw, so the mouth gets a huge share of the movement strip.'},
+ {id:'teeth',name:'Jaw',e:'🦷',w:5, say:'<i>(The jaw clamps shut.)</i>',
+  f:'Chewing and talking both need the jaw to stop at exactly the right point.'},
+ {id:'tongue',name:'Tongue',e:'👅',w:7, say:'<i>(The tongue moves.)</i> The patient can’t speak while the current is on.',
+  f:'Saying “ta-ka-ta-ka” fast needs tiny, precise tongue movements every tenth of a second.'},
+ {id:'swallow',name:'Swallowing',w:5, say:'<i>(The patient swallows.)</i>',
+  f:'Swallowing sits at the very bottom of the movement strip, next to the tongue.'}
+];
+const LIST={touch:TOUCH, move:MOVE};
+const byId=(sys,id)=>LIST[sys].find(r=>r.id===id);
+function shares(sys){ const L=LIST[sys], s=L.reduce((a,r)=>a+r.w,0); const o={}; L.forEach(r=>o[r.id]=r.w/s*100); return o; }
+const SHARE={touch:shares('touch'), move:shares('move')};
+const pct=v=>v<1?'<1':Math.round(v);
+
+/* ---------- the body figure ---------- */
+const SCALES={
+  touch:{hand:3.0,lips:3.4,tongue:2.5,eye:1.6,nose:1.7,head:1.3,foot:1.7,arm:.68,leg:.58,torso:.6,neck:.6},
+  move: {hand:3.3,lips:3.0,tongue:2.5,eye:1.4,nose:1.1,head:1.3,foot:1.3,arm:.7,leg:.6,torso:.6,neck:.75}
+};
+function renderBody(svg,o){
+  svg.innerHTML='';
+  const sys=o.sys||'touch', S=SCALES[sys], m=o.m||0, k=key=>lerp(1,S[key],m);
+  const kh=k('hand'),kl=k('lips'),kt=k('tongue'),ke=k('eye'),kn=k('nose'),kH=k('head'),kf=k('foot'),ka=k('arm'),kg=k('leg'),kT=k('torso'),kN=k('neck');
+  const col=colOf(sys), hi=o.hi||new Set(), side=o.side||'R';
+  const SK='#f1c3a5', OUT='#9a6a55', LINE='#b07c66';
+  const on=(ids,s)=>ids.some(id=>hi.has(id)) && (s===0 || side==='both' || (side==='R'?s<0:s>0));
+  const root=el('g',{},svg);
+  // shadow on the floor
+  el('ellipse',{cx:0,cy:408,rx:70,ry:7,fill:'#000',opacity:.07},root);
+  function limb(a,b,w,fill,parent){ el('line',{x1:a[0],y1:a[1],x2:b[0],y2:b[1],stroke:OUT,'stroke-width':w+3,'stroke-linecap':'round'},parent);
+    el('line',{x1:a[0],y1:a[1],x2:b[0],y2:b[1],stroke:fill,'stroke-width':w,'stroke-linecap':'round'},parent); }
+  function part(parent,lit,fx){ return el('g',{class:'pt'+(lit?' hi':''),'data-fx':fx},parent); }
+  // legs
+  for(const s of [-1,1]){
+    const hip=[s*16*kT,232], knee=[s*(18*kT+3),314], ank=[s*(18*kT+4),388];
+    const lit=on(['leg'],s), g=part(root,lit,'rot');
+    limb(hip,knee,26*kg,lit?col:SK,g); limb(knee,ank,18*kg,lit?col:SK,g);
+    // foot
+    const fl=on(['foot'],s), gf=el('g',{transform:'translate('+ank[0]+' '+(ank[1]-2)+') scale('+kf+')'},root), fp=part(gf,fl,'rot');
+    el('path',{d:'M'+(-9*s)+' 0 C'+(-12*s)+' 10 '+(-6*s)+' 16 '+(6*s)+' 16 C'+(22*s)+' 16 '+(26*s)+' 10 '+(20*s)+' 4 C'+(12*s)+' 0 '+(2*s)+' -4 '+(-9*s)+' 0 Z',fill:fl?col:SK,stroke:OUT,'stroke-width':1.6/kf},fp);
+    for(let i=0;i<5;i++) el('circle',{cx:s*(2+i*4.6),cy:16.5-i*.6,r:2.6-i*.25,fill:fl?col:SK,stroke:OUT,'stroke-width':1.1/kf},fp);
+  }
+  // torso
+  const tl=on(['trunk'],0), gt=part(root,tl,'sq');
+  el('path',{d:'M'+(-44*kT)+' 104 C'+(-48*kT)+' 150 '+(-34*kT)+' 190 '+(-31*kT)+' 230 L'+(31*kT)+' 230 C'+(34*kT)+' 190 '+(48*kT)+' 150 '+(44*kT)+' 104 C'+(20*kT)+' 96 '+(-20*kT)+' 96 '+(-44*kT)+' 104 Z',fill:tl?col:SK,stroke:OUT,'stroke-width':1.6},gt);
+  el('path',{d:'M'+(-12*kT)+' 132 C-4 138 4 138 '+(12*kT)+' 132',fill:'none',stroke:LINE,'stroke-width':1.2,opacity:.6},gt);
+  el('circle',{cx:0,cy:186,r:1.8,fill:LINE},gt);
+  if(hi.has('gut')){ const gg=part(root,true,'sq'); el('ellipse',{cx:0,cy:180,rx:20*kT+4,ry:20,fill:col,opacity:.55,stroke:shade(col),'stroke-dasharray':'3 3'},gg); }
+  // shorts
+  const sl=on(['genitals'],0), gs=part(root,sl,'sq');
+  el('path',{d:'M'+(-32*kT)+' 214 L'+(32*kT)+' 214 L'+(34*kT+5)+' 254 L4 254 L0 242 L-4 254 L'+(-34*kT-5)+' 254 Z',fill:sl?col:'#56708f',stroke:'#3c4f66','stroke-width':1.5},gs);
+  // arms + hands
+  for(const s of [-1,1]){
+    const sh=[s*(44*kT-5),114], elb=[s*(44*kT+11),178], wr=[s*(44*kT+18),238];
+    const lit=on(['arm'],s), g=part(root,lit,'rot');
+    limb(sh,elb,19*ka,lit?col:SK,g); limb(elb,wr,15*ka,lit?col:SK,g);
+    const hl=on(['hand'],s), gh=el('g',{transform:'translate('+wr[0]+' '+(wr[1]-3)+') rotate('+(-s*6)+') scale('+kh+')'},root), hp=part(gh,hl,'rot');
+    const hf=hl?col:SK, w=1.4/kh;
+    for(const fx of [-6,-2,2,6]){ const len=fx===-6||fx===6?13:16; el('line',{x1:fx*.9*s,y1:16,x2:fx*1.15*s,y2:16+len,stroke:OUT,'stroke-width':4.8+w*2,'stroke-linecap':'round'},hp); }
+    el('line',{x1:s*8,y1:8,x2:s*15,y2:22,stroke:OUT,'stroke-width':5.4+w*2,'stroke-linecap':'round'},hp);
+    el('ellipse',{cx:0,cy:12,rx:10,ry:12,fill:hf,stroke:OUT,'stroke-width':w},hp);
+    for(const fx of [-6,-2,2,6]){ const len=fx===-6||fx===6?13:16; el('line',{x1:fx*.9*s,y1:16,x2:fx*1.15*s,y2:16+len,stroke:hf,'stroke-width':4.8,'stroke-linecap':'round'},hp); }
+    el('line',{x1:s*8,y1:8,x2:s*15,y2:22,stroke:hf,'stroke-width':5.4,'stroke-linecap':'round'},hp);
+    el('ellipse',{cx:0,cy:13,rx:9,ry:10,fill:hf},hp);
+  }
+  // neck
+  const nl=on(['neck'],0)||(sys==='touch'&&on(['trunk'],0)), gn=part(root,nl,'sq');
+  limb([0,82],[0,108],18*kN,nl?col:SK,gn);
+  if(hi.has('swallow')||(sys==='touch'&&hi.has('tongue'))){ el('ellipse',{cx:0,cy:98,rx:6*kN+2,ry:7,fill:col,opacity:.8},root); }
+  // head
+  const cy=92-34*kH, rx=28*kH, ry=34*kH;
+  for(const s of [-1,1]) el('ellipse',{cx:s*rx*.98,cy:cy+2*kH,rx:5*kH,ry:8.5*kH,fill:SK,stroke:OUT,'stroke-width':1.4},root);
+  const gh=el('g',{},root);
+  el('ellipse',{cx:0,cy,rx,ry,fill:SK,stroke:OUT,'stroke-width':1.6},gh);
+  const fl=on(['face'],-1)||on(['face'],1);
+  if(fl){ const g=part(gh,true,'sq');
+    const sw = side==='both'?null:(side==='R'?0:1);
+    if(sw===null) el('ellipse',{cx:0,cy,rx,ry,fill:col,opacity:.75},g);
+    else el('path',{d:'M0 '+(cy-ry)+' A'+rx+' '+ry+' 0 0 '+sw+' 0 '+(cy+ry)+' Z',fill:col,opacity:.75},g); }
+  // hair
+  el('path',{d:'M'+(-rx*1.02)+' '+(cy-2*kH)+' C'+(-rx*1.05)+' '+(cy-ry*1.25)+' '+(rx*1.05)+' '+(cy-ry*1.25)+' '+(rx*1.02)+' '+(cy-2*kH)+' C'+(rx*.7)+' '+(cy-ry*.62)+' '+(-rx*.45)+' '+(cy-ry*.75)+' '+(-rx*1.02)+' '+(cy-2*kH)+' Z',fill:'#5b4034'},gh);
+  // brows + eyes
+  const ey=cy-3*kH;
+  for(const s of [-1,1]){
+    const bl=on(['neck'],0)&&sys==='move' || (sys==='move'&&on(['eye'],s));
+    el('path',{d:'M'+(s*5*kH)+' '+(ey-9*ke)+' Q'+(s*11*kH)+' '+(ey-12*ke)+' '+(s*17*kH)+' '+(ey-8*ke),fill:'none',stroke:bl?col:'#5b4034','stroke-width':bl?3.2:2.2,'stroke-linecap':'round'},root);
+    const el2=on(['eye'],s), ge=part(root,el2,'sq');
+    el('ellipse',{cx:s*11*kH,cy:ey,rx:6*ke,ry:4.2*ke,fill:'#fff',stroke:el2?col:OUT,'stroke-width':el2?3:1.1},ge);
+    el('circle',{cx:s*11*kH,cy:ey+.4,r:2.7*ke,fill:'#4a3a2e'},ge);
+    el('circle',{cx:s*11*kH+.9*ke,cy:ey-.8*ke,r:.8*ke,fill:'#fff'},ge);
+  }
+  // nose
+  const nlit=sys==='touch'&&(on(['eye'],-1)||on(['eye'],1)), ny=cy+3*kH, gno=part(root,nlit,'sq');
+  el('path',{d:'M0 '+ny+' L'+(-4.5*kn)+' '+(ny+11*kn)+' Q0 '+(ny+14.5*kn)+' '+(4.5*kn)+' '+(ny+11*kn),fill:nlit?col:'none',stroke:nlit?shade(col):LINE,'stroke-width':1.6,'stroke-linejoin':'round'},gno);
+  // mouth: tongue, teeth, lips
+  const ly=cy+21*kH;
+  const tongueOn=hi.has('tongue'), tOp=tongueOn?1:clamp((m-.12)*3,0,1);
+  if(tOp>0){ const g=part(root,tongueOn,'sq'); el('path',{d:'M'+(-6*kt)+' '+ly+' C'+(-7*kt)+' '+(ly+14*kt)+' '+(7*kt)+' '+(ly+14*kt)+' '+(6*kt)+' '+ly+' Z',fill:tongueOn?col:'#e07a83',stroke:'#a8505a','stroke-width':1.2,opacity:tOp},g);
+    el('line',{x1:0,y1:ly+2,x2:0,y2:ly+8*kt,stroke:'#a8505a','stroke-width':1,opacity:tOp*.7},g); }
+  const teethOn=hi.has('teeth');
+  if(teethOn){ const g=part(root,true,'sq'); el('rect',{x:-6*kl,y:ly-1.2*kl,width:12*kl,height:2.6*kl,rx:1,fill:'#fff',stroke:col,'stroke-width':1.5},g);
+    el('path',{d:'M'+(-rx*.8)+' '+(cy+ry*.45)+' Q0 '+(cy+ry*1.18)+' '+(rx*.8)+' '+(cy+ry*.45),fill:'none',stroke:col,'stroke-width':4,'stroke-linecap':'round',opacity:.85},g); }
+  const ll=hi.has('lips'), gl=part(root,ll,'sq'), lc=ll?col:'#c4565a';
+  el('path',{d:'M'+(-10*kl)+' '+ly+' Q'+(-5*kl)+' '+(ly-4.6*kl)+' 0 '+(ly-2*kl)+' Q'+(5*kl)+' '+(ly-4.6*kl)+' '+(10*kl)+' '+ly+' Z',fill:lc,stroke:shade(lc==='#c4565a'?'#c4565a':col,.7),'stroke-width':1},gl);
+  el('path',{d:'M'+(-10*kl)+' '+ly+' Q0 '+(ly+(teethOn?7.5:6.5)*kl)+' '+(10*kl)+' '+ly+(teethOn?' Q0 '+(ly+2.6*kl)+' '+(-10*kl)+' '+ly:'')+' Z',fill:lc,stroke:shade(lc==='#c4565a'?'#c4565a':col,.7),'stroke-width':1},gl);
+  if(o.anim && !RM){ svg.classList.remove('tingle','twitch'); void svg.getBoundingClientRect(); svg.classList.add(o.anim); }
+}
+
+/* =====================================================================
+   1. LATERAL BRAIN
+   ===================================================================== */
+const CER='M118 352 C102 286 128 220 184 168 C244 114 334 82 432 72 C522 64 612 70 692 96 C782 126 852 184 890 262 C914 312 916 362 898 400 C882 430 852 442 818 446 C792 470 752 494 706 508 C640 528 560 538 492 530 C440 524 404 508 386 484 C372 466 368 446 378 430 C366 424 350 420 330 422 C280 426 220 420 176 404 C140 392 124 376 118 352 Z';
+const CB='M690 482 C736 452 818 442 870 452 C918 462 940 502 926 544 C908 592 838 614 774 606 C728 600 700 574 694 542 C691 520 690 500 690 482 Z';
+const STEM='M598 500 C588 520 582 548 588 574 C594 596 604 610 608 630 C612 652 612 672 614 696 L664 696 C664 672 668 642 676 612 C684 578 692 540 690 500 Z';
+const CS =[[606,62],[597,98],[585,126],[578,148],[592,166],[584,190],[562,206],[546,232],[530,268],[512,306],[496,340],[484,368]];
+const CSs=[[606,62],[594,104],[580,146],[566,188],[548,228],[530,268],[512,306],[496,340],[484,368]];
+const NL=200;
+const Pc=resample(crPoints(CS,12,false),NL,false), Sc=resample(crPoints(CSs,12,false),NL,false), Nc=normals(Sc,false);
+const WID={move:50,touch:42};
+const SG={move:1,touch:-1};
+function offCurve(base,sys,off,t0,t1){ const pts=[]; const i0=Math.round(t0*(NL-1)), i1=Math.round(t1*(NL-1));
+  for(let i=i0;i<=i1;i++) pts.push(add(base[i],Nc[i],SG[sys]*off)); return pts; }
+function stripPoly(sys,t0,t1){ const a=offCurve(Pc,sys,3,t0,t1), b=offCurve(Sc,sys,WID[sys],t0,t1).reverse(); return a.concat(b); }
+function stripMid(sys,t){ const i=Math.round(clamp(t,0,1)*(NL-1)); return add(add(Pc[i],Nc[i],0),Nc[i],SG[sys]*WID[sys]*0.5); }
+function latRanges(sys){ const L=LIST[sys].filter(r=>!r.med), tot=L.reduce((a,r)=>a+r.w,0); let acc=0; const out={};
+  L.forEach(r=>{ out[r.id]=[acc/tot, (acc+r.w)/tot]; acc+=r.w; }); return out; }
+const LAT={touch:latRanges('touch'), move:latRanges('move')};
+
+const SULCI_MAJOR=[
+ 'M386 424 C440 412 500 398 560 386 C612 374 652 362 688 338 C698 330 704 318 702 304',            // lateral fissure
+ 'M396 466 C470 450 552 444 620 430 C668 420 708 402 738 372 C752 358 762 342 772 326',              // superior temporal
+ 'M430 506 C506 498 590 490 654 478 C700 470 734 458 764 442',                                       // inferior temporal
+ 'M512 132 C468 136 420 130 372 138 C322 146 282 162 244 188',                                       // superior frontal
+ 'M462 256 C424 254 388 262 350 266 C302 272 262 284 222 304',                                       // inferior frontal
+ 'M648 214 C694 222 736 234 776 252 C810 268 842 294 864 324'                                        // intraparietal
+];
+const SULCI_MINOR=[
+ 'M440 410 C436 392 440 378 448 364','M468 403 C478 386 474 370 484 356',                            // rami of lateral fissure
+ 'M426 184 C400 190 380 204 350 204','M330 222 C300 218 280 232 250 238','M396 214 C380 230 360 232 340 246',
+ 'M300 108 C292 128 302 140 292 162','M210 228 C186 250 196 270 172 292','M160 320 C182 330 204 320 226 342',
+ 'M262 362 C292 350 322 368 352 356','M420 330 C400 342 380 330 356 342','M204 384 C234 376 262 392 292 386',
+ 'M712 304 C732 292 744 270 736 248','M704 132 C724 152 716 172 734 192','M782 170 C802 190 792 212 812 222',
+ 'M826 386 C852 374 872 364 892 352','M858 292 C870 318 880 340 878 370','M802 308 C820 330 816 350 836 362',
+ 'M760 300 C776 318 790 316 798 332','M740 420 C760 410 780 418 800 410'
+];
+const SULCI_TERT=[
+ 'M250 140 C262 158 256 176 274 184','M340 100 C342 118 362 124 366 142','M436 92 C440 108 458 110 462 124','M378 166 C392 176 410 172 420 182',
+ 'M236 210 C252 220 268 214 282 224','M168 260 C186 268 194 286 212 290','M140 330 C156 338 166 352 182 352','M272 318 C290 312 306 324 322 316',
+ 'M318 396 C338 392 352 404 372 400','M182 300 C198 296 212 306 226 300','M300 290 C318 296 330 288 344 296','M394 290 C410 300 428 294 440 304',
+ 'M676 112 C690 124 686 140 700 148','M744 150 C758 168 752 184 768 196','M820 216 C836 236 830 256 846 270','M700 268 C716 276 728 270 742 282',
+ 'M846 330 C862 340 870 334 884 342','M616 466 C640 462 656 470 676 464','M520 476 C540 472 556 480 576 474','M560 512 C580 508 600 514 620 508',
+ 'M664 496 C680 488 696 492 710 484','M454 486 C470 482 482 490 496 486','M786 400 C800 392 816 398 830 390','M654 404 C670 396 686 400 700 392'
+];
+
+let s1sys='touch', s1sel=null, showLbl=true;
+const gBack=$('latBack'), gCer=$('latCer'), gStrips=$('latStrips'), gLbl=$('latLabels'), gProbe=$('latProbe');
+(function buildLat(){
+  $('cerClipPath').setAttribute('d',CER); $('cbClipPath').setAttribute('d',CB);
+  el('ellipse',{cx:540,cy:640,rx:360,ry:36,fill:'#5a3a30',opacity:.22,filter:'url(#shadow)'},gBack);
+  // brainstem + cerebellum
+  const gb=el('g',{filter:'url(#relief2)'},gBack);
+  el('path',{d:STEM,fill:'#fff'},gb);
+  el('path',{d:'M592 548 C600 540 640 538 684 548',fill:'none',stroke:'#444','stroke-width':3,'stroke-linecap':'round'},gb);
+  el('path',{d:'M606 626 C620 620 650 620 668 626',fill:'none',stroke:'#555','stroke-width':2.2,'stroke-linecap':'round'},gb);
+  el('path',{d:CB,fill:'#fff'},gb);
+  const fol=el('g',{'clip-path':'url(#cbClip)',fill:'none',stroke:'#2a2a2a','stroke-linecap':'round'},gb);
+  for(let i=0;i<17;i++){ const y=458+i*9.6, b=i*0.9; el('path',{d:'M680 '+(y+18)+' C730 '+(y-6+b)+' 830 '+(y-12+b)+' 940 '+(y+14-b*.6),'stroke-width':i%4===0?2.6:1.5},fol); }
+  // cerebrum relief
+  const gc=el('g',{filter:'url(#relief)'},gCer);
+  el('path',{d:CER,fill:'#fff'},gc);
+  const sg=el('g',{'clip-path':'url(#cerClip)',fill:'none','stroke-linecap':'round','stroke-linejoin':'round'},gc);
+  SULCI_TERT.forEach(d=>el('path',{d,stroke:'#666','stroke-width':3},sg));
+  SULCI_MINOR.forEach(d=>el('path',{d,stroke:'#333','stroke-width':4.4},sg));
+  SULCI_MAJOR.forEach((d,i)=>el('path',{d,stroke:'#000','stroke-width':i===0?9:6.5},sg));
+  el('path',{d:pathD(Pc),stroke:'#000','stroke-width':7.5},sg);                                  // central sulcus
+  el('path',{d:pathD(offCurve(Sc,'move',WID.move+6,0.03,0.43)),stroke:'#000','stroke-width':6.5},sg);   // precentral sulcus
+  el('path',{d:pathD(offCurve(Sc,'move',WID.move+6,0.5,0.93)),stroke:'#000','stroke-width':6.5},sg);
+  el('path',{d:pathD(offCurve(Sc,'touch',WID.touch+6,0.05,0.86)),stroke:'#000','stroke-width':6.5},sg); // postcentral sulcus
+  el('path',{d:CER,fill:'url(#vign)',style:'mix-blend-mode:multiply','pointer-events':'none'},gCer);
+  // strips
+  for(const sys of ['move','touch']){
+    const R=LAT[sys], col=colOf(sys);
+    LIST[sys].filter(r=>!r.med).forEach((r,idx)=>{
+      const [t0,t1]=R[r.id];
+      const p=el('path',{d:pathD(stripPoly(sys,t0,t1),true),class:'seg','data-sys':sys,'data-id':r.id,fill:idx%2?col:shade(col,.82),style:'mix-blend-mode:color'},gStrips);
+      p.addEventListener('mouseenter',()=>hoverLat(sys,r.id));
+      p.addEventListener('mouseleave',()=>hoverLat(null));
+      p.addEventListener('click',()=>stimulate(sys,r.id));
+    });
+  }
+  el('g',{id:'latEdge','pointer-events':'none'},gStrips);
+  drawLatLabels();
+})();
+function drawLatLabels(){
+  gLbl.innerHTML='';
+  if(!showLbl) return;
+  const lead=(x1,y1,x2,y2)=>el('path',{d:'M'+x1+' '+y1+' L'+x2+' '+y2,stroke:'#8a8578','stroke-width':1.3,fill:'none','stroke-dasharray':'1 4','stroke-linecap':'round'},gLbl);
+  const mM=stripMid('move',0.06), mS=stripMid('touch',0.06);
+  lead(462,40,mM[0],mM[1]); lead(706,40,mS[0],mS[1]); lead(588,26,Pc[4][0],Pc[4][1]);
+  txt(gLbl,456,34,'Movement strip',{'text-anchor':'end','font-size':19,fill:shade(C_M),'font-weight':'bold'});
+  txt(gLbl,456,52,'precentral gyrus · M1',{'text-anchor':'end','font-size':14,fill:'#7a7468'});
+  txt(gLbl,712,34,'Touch strip',{'font-size':19,fill:shade(C_S),'font-weight':'bold'});
+  txt(gLbl,712,52,'postcentral gyrus · S1',{'font-size':14,fill:'#7a7468'});
+  txt(gLbl,588,22,'Central sulcus',{'text-anchor':'middle','font-size':16,fill:'#2a2a2a'});
+  const lobe={fill:'#6b5049','font-size':17,'text-anchor':'middle',stroke:'rgba(255,240,234,.85)','stroke-width':5};
+  txt(gLbl,262,262,'Frontal lobe',lobe); txt(gLbl,770,196,'Parietal lobe',lobe); txt(gLbl,846,404,'Occipital',lobe);
+  txt(gLbl,574,486,'Temporal lobe',lobe);
+  lead(352,472,420,414); txt(gLbl,346,478,'Lateral fissure',{'text-anchor':'end','font-size':15,fill:'#6b6f76'});
+  txt(gLbl,846,640,'Cerebellum',{'text-anchor':'middle','font-size':15,fill:'#8a8578'});
+  txt(gLbl,676,690,'Brainstem',{'font-size':15,fill:'#8a8578'});
+  txt(gLbl,96,688,'← front',{'font-size':15,fill:'#8a8578'}); txt(gLbl,950,688,'back →',{'font-size':15,fill:'#8a8578','text-anchor':'end'});
+}
+function paintLat(){
+  const hov=paintLat.hov;
+  gStrips.querySelectorAll('.seg').forEach(p=>{
+    const sys=p.dataset.sys, id=p.dataset.id, sel=(s1sel&&s1sel.sys===sys&&s1sel.id===id), hv=hov&&hov.sys===sys&&hov.id===id;
+    p.setAttribute('fill-opacity', sel?1 : hv?.95 : sys===s1sys? .72 : .42);
+  });
+  const edge=$('latEdge'); edge.innerHTML='';
+  const outl=(sys,id,w)=>{ const r=LAT[sys][id]; if(!r) return; el('path',{d:pathD(stripPoly(sys,r[0],r[1]),true),fill:'none',stroke:'#fff','stroke-width':w,'stroke-linejoin':'round',opacity:.95},edge); };
+  if(hov) outl(hov.sys,hov.id,2);
+  if(s1sel) outl(s1sel.sys,s1sel.id,3);
+}
+function hoverLat(sys,id){
+  paintLat.hov = sys?{sys,id}:null; paintLat();
+  if(sys){ const r=byId(sys,id); $('tip1').innerHTML='<b style="color:'+shade(colOf(sys))+'">'+(sys==='move'?'Movement':'Touch')+' strip: '+r.name+'.</b> Tap to stimulate.'; }
+  else if(s1sel){ const r=byId(s1sel.sys,s1sel.id); $('tip1').innerHTML='Stimulating the <b>'+r.name.toLowerCase()+'</b> area of the '+(s1sel.sys==='move'?'movement':'touch')+' strip.'; }
+}
+function probe(x,y,col){
+  gProbe.innerHTML='';
+  const g=el('g',{'pointer-events':'none'},gProbe), dx=-0.5, dy=-0.866, L=150;
+  el('line',{x1:x+dx*L,y1:y+dy*L,x2:x,y2:y,stroke:'#4d5159','stroke-width':8,'stroke-linecap':'round'},g);
+  el('line',{x1:x+dx*L,y1:y+dy*L,x2:x+dx*6,y2:y+dy*6,stroke:'#d5dae2','stroke-width':3,'stroke-linecap':'round'},g);
+  el('circle',{cx:x,cy:y,r:4.5,fill:'#fff',stroke:'#222','stroke-width':1.5},g);
+  if(!RM) for(let i=0;i<3;i++) el('circle',{cx:x,cy:y,r:6,fill:'none',stroke:'#fff','stroke-width':2.4,class:'zap',style:'animation-delay:'+(i*0.3)+'s'},g);
+  el('circle',{cx:x,cy:y,r:9,fill:'none',stroke:col,'stroke-width':2},g);
+}
+function stimulate(sys,id){
+  s1sel={sys,id}; if(sys!==s1sys) setSys1(sys,true);
+  const r=byId(sys,id), col=colOf(sys);
+  let pt, medNote=false;
+  if(LAT[sys][id]){ const [t0,t1]=LAT[sys][id]; pt=stripMid(sys,(t0+t1)/2); }
+  else { pt=stripMid(sys,0.012); pt=[pt[0],pt[1]+4]; medNote=true; }
+  probe(pt[0],pt[1],col);
+  if(medNote){ const g=el('g',{'pointer-events':'none'},gProbe);
+    el('path',{d:'M'+(pt[0]+14)+' '+(pt[1]+2)+' C'+(pt[0]+40)+' '+(pt[1]-22)+' '+(pt[0]+70)+' '+(pt[1]-18)+' '+(pt[0]+76)+' '+(pt[1]+6),fill:'none',stroke:col,'stroke-width':2.4,'marker-end':''},g);
+    txt(g,pt[0]+82,pt[1]+16,'over the top, onto the inner wall',{'font-size':15,fill:shade(col)}); }
+  paintLat(); hoverLat(null);
+  $('panel1').style.setProperty('--c',col);
+  $('bubble1').innerHTML=r.say;
+  renderBody($('body1'),{sys,m:0,hi:new Set([id]),side:'R',anim:sys==='touch'?'tingle':'twitch'});
+  const sh=SHARE[sys][id];
+  let h='<h3>'+r.name+'</h3><p class="sub">'+(sys==='move'?'Movement':'Touch')+' strip of the <b>left</b> hemisphere → <b>right</b> side of the body</p><dl class="stats">';
+  h+='<dt>Share of this strip</dt><dd style="color:'+shade(col)+'">≈ '+pct(sh)+'%</dd>';
+  if(sys==='touch'){ h+='<dt>Share of your skin</dt><dd>'+(r.skin?'≈ '+pct(r.skin)+'%':'— (inside the body)')+'</dd>'; if(r.tp) h+='<dt>Two-point threshold</dt><dd>'+r.tp+'</dd>'; }
+  h+='</dl><p class="fact">'+r.f+'</p>';
+  if(sys==='touch' && r.tp) h+='<p class="sub" style="margin-top:6px">Two-point threshold: how far apart two pencil tips must be before they feel like two touches instead of one. Smaller means a finer map.</p>';
+  $('info1').innerHTML=h;
+  chips1();
+}
+function setSys1(sys,keep){
+  s1sys=sys; $('tabs1').querySelectorAll('.tab').forEach(b=>{ const on=b.dataset.sys===sys; b.setAttribute('aria-pressed',on); b.style.color=on?colOf(sys):''; });
+  document.getElementById('s1').style.setProperty('--c',colOf(sys));
+  if(!keep){ s1sel=null; gProbe.innerHTML=''; $('bubble1').innerHTML='<i>Waiting for the electrode…</i>'; $('info1').innerHTML='<p class="sub">Pick a spot on the strip. The <b>left</b> hemisphere is wired to the <b>right</b> side of the body, so watch the person’s right side (on your left).</p>';
+    renderBody($('body1'),{sys,m:0,hi:new Set()}); $('panel1').style.setProperty('--c',colOf(sys)); }
+  paintLat(); chips1();
+}
+function chips1(){
+  const box=$('chips1'); box.innerHTML='';
+  LIST[s1sys].forEach(r=>{ const b=document.createElement('button'); b.className='chip';
+    b.innerHTML=(r.e?'<span class="e">'+r.e+'</span>':'')+r.name; b.setAttribute('aria-pressed',!!(s1sel&&s1sel.sys===s1sys&&s1sel.id===r.id));
+    b.addEventListener('click',()=>stimulate(s1sys,r.id)); box.appendChild(b); });
+}
+$('tabs1').querySelectorAll('.tab').forEach(b=>b.addEventListener('click',()=>setSys1(b.dataset.sys)));
+$('lblTog').addEventListener('click',()=>{ showLbl=!showLbl; $('lblTog').setAttribute('aria-pressed',showLbl); drawLatLabels(); });
+
+/* =====================================================================
+   folded hemisphere (for slices)
+   ===================================================================== */
+function foldHemi(base,o){
+  const raw=crPoints(base,16,true), tot=arcLen(raw,true), N=Math.round(tot/o.step);
+  const B=resample(raw,N,true), n=normals(B,true,o.flip), ds=tot/N, R=rng(o.seed);
+  const sul=[]; let s=o.first||20;
+  while(s<tot-15){ const i=Math.round(s/ds)%N; if(!(o.skip&&o.skip(B[i]))) sul.push({i,depth:o.depth*(0.55+0.45*R()),bend:(R()-.5)*o.bend}); s+=o.gap*(0.7+0.6*R()); }
+  const O=B.map((p,i)=>{ let d=0; for(const q of sul){ let k=Math.abs(i-q.i); k=Math.min(k,N-k); const x=k*ds; d+=o.notch*Math.exp(-(x*x)/(2*o.nw*o.nw)); } return add(p,n[i],d); });
+  const W=B.map((p,i)=>add(p,n[i],o.T));
+  sul.forEach(q=>{ const p=B[q.i], v=n[q.i], tg=[v[1],-v[0]];
+    const pt=(d,b)=>add(add(p,v,d),tg,b);
+    const a=pt(o.T*0.9,0), c=pt(q.depth*0.6,q.bend*0.35), e=pt(q.depth,q.bend);
+    q.d='M'+f1(a[0])+' '+f1(a[1])+' Q'+f1(c[0])+' '+f1(c[1])+' '+f1(e[0])+' '+f1(e[1]);
+    const a2=pt(o.notch*0.4,0), e2=pt(q.depth-o.T*0.55,q.bend*Math.pow((q.depth-o.T*0.55)/q.depth,2));
+    q.d2='M'+f1(a2[0])+' '+f1(a2[1])+' Q'+f1(c[0])+' '+f1(c[1])+' '+f1(e2[0])+' '+f1(e2[1]); });
+  return {B,n,O,W,sul,ds,N,T:o.T};
+}
+function drawHemi(g,H,o){
+  el('path',{d:pathD(H.O,true),fill:o.gray,stroke:o.edge,'stroke-width':1.3},g);
+  el('path',{d:pathD(H.W,true),fill:o.white},g);
+  H.sul.forEach(q=>el('path',{d:q.d,fill:'none',stroke:o.gray,'stroke-width':H.T*1.7,'stroke-linecap':'round'},g));
+  H.sul.forEach(q=>el('path',{d:q.d2,fill:'none',stroke:o.edge,'stroke-width':1.3,'stroke-linecap':'round'},g));
+}
+function addMask(mask,H){
+  el('path',{d:pathD(H.O,true),fill:'#fff'},mask);
+  el('path',{d:pathD(H.W,true),fill:'#000'},mask);
+  H.sul.forEach(q=>el('path',{d:q.d,fill:'none',stroke:'#fff','stroke-width':H.T*1.7,'stroke-linecap':'round'},mask));
+}
+// weights along a map with morph toward skin area
+function mapBounds(sys,t){ const L=LIST[sys];
+  const wc=L.map(r=>r.w), wsk=L.map(r=>sys==='touch'?Math.max(r.skin,0.35):r.w);
+  const sc=wc.reduce((a,b)=>a+b,0), ss=wsk.reduce((a,b)=>a+b,0);
+  const w=L.map((r,i)=>lerp(wc[i]/sc,wsk[i]/ss,t)); let acc=0; const out={};
+  L.forEach((r,i)=>{ out[r.id]=[acc,acc+w[i]]; acc+=w[i]; }); return out; }
+function bandPoly(H,i0,i1,o0,o1){ const a=[],b=[]; for(let i=i0;i<=i1;i++){ a.push(add(H.B[i],H.n[i],-o0)); b.push(add(H.B[i],H.n[i],-o1)); } return a.concat(b.reverse()); }
+function washPoly(H,i0,i1,depth){ const a=[],b=[]; for(let i=i0;i<=i1;i++){ a.push(add(H.B[i],H.n[i],-3)); b.push(add(H.B[i],H.n[i],depth)); } return a.concat(b.reverse()); }
+
+/* =====================================================================
+   2. SLICE + HOMUNCULUS
+   ===================================================================== */
+const HB2=[[300,292],[300,200],[301,118],[316,74],[372,44],[460,40],[540,66],[600,116],[636,184],[646,256],[634,318],[612,350],[566,360],[540,372],[570,384],[618,392],[648,420],[652,470],[626,512],[570,530],[514,520],[478,490],[458,452],[440,420],[404,400],[352,392],[318,372],[302,330]];
+const H2=foldHemi(HB2,{step:1.4,seed:11,T:15,gap:46,depth:36,notch:3.2,nw:2.4,bend:16,first:30,
+  skip:p=>(p[0]>520&&p[1]>338&&p[1]<398)||(p[0]<470&&p[1]>360)});
+const ia2=nearest(H2.B,[300,236]), ib2=nearest(H2.B,[612,348]);
+let s2sys='touch', s2t=0, s2sel='hand', s2m=0, s2anim=null;
+(function buildSlice(){
+  const g=$('sliceBrain');
+  el('line',{x1:300,y1:16,x2:300,y2:548,stroke:'#c9c3b6','stroke-width':1.5,'stroke-dasharray':'5 6'},g);
+  drawHemi(g,H2,{gray:'#c9a39b',white:'#f6efe9',edge:'#8d6660'});
+  // deep structures
+  el('path',{d:'M302 262 C330 244 368 250 384 276 C376 292 344 298 302 294 Z',fill:'#7b5d58',opacity:.85},g);
+  el('ellipse',{cx:376,cy:304,rx:17,ry:20,fill:'#d2afa7'},g);
+  el('ellipse',{cx:494,cy:350,rx:20,ry:34,fill:'#d2afa7',transform:'rotate(-14 494 350)'},g);
+  el('ellipse',{cx:350,cy:352,rx:34,ry:22,fill:'#d6b6ae'},g);
+  addMask($('gm2'),H2);
+  txt(g,292,30,'midline',{'text-anchor':'end','font-size':14,fill:'#a29d93'});
+  txt(g,676,372,'lateral fissure',{'font-size':14,fill:'#a29d93'});
+  el('path',{d:'M672 368 L622 360',stroke:'#a29d93','stroke-width':1.2,'stroke-dasharray':'1 4',fill:'none'},g);
+  txt(g,560,452,'temporal lobe',{'text-anchor':'middle','font-size':15,fill:'#9c7d76',stroke:'#f6efe9'});
+  txt(g,470,238,'white matter',{'text-anchor':'middle','font-size':14,fill:'#b8a59f',stroke:'#f6efe9'});
+})();
+function drawSlice(){
+  const sys=s2sys, col=colOf(sys), Bd=mapBounds(sys,s2t), span=ib2-ia2;
+  const gw=$('sliceWash'), gb=$('sliceBand'), gl=$('sliceLbl'); gw.innerHTML=''; gb.innerHTML=''; gl.innerHTML='';
+  LIST[sys].forEach((r,k)=>{
+    const [a,b]=Bd[r.id], i0=Math.round(ia2+a*span), i1=Math.max(i0+1,Math.round(ia2+b*span)), sel=r.id===s2sel;
+    const fill=k%2?col:shade(col,.8);
+    el('path',{d:pathD(washPoly(H2,i0,i1,44),true),fill,'fill-opacity':sel?.75:.4},gw);
+    const bp=el('path',{d:pathD(bandPoly(H2,i0,i1,5,20),true),fill:sel?shade(col,.85):fill,'fill-opacity':sel?1:.85,stroke:'#fffdf8','stroke-width':1.2,class:'seg'},gb);
+    const len=(i1-i0)*H2.ds, im=Math.round((i0+i1)/2), nv=H2.n[im], out=[-nv[0],-nv[1]];
+    const size=clamp(10+len*0.33,12,88), stag=(len<40&&k%2)?16:0;
+    const c=add(H2.B[im],out,30+size/2+stag);
+    const gg=el('g',{class:'seg','data-id':r.id},gl);
+    el('circle',{cx:c[0],cy:c[1],r:size*0.62,fill:'transparent'},gg);
+    if(r.e){ const t=el('text',{x:c[0],y:c[1],'text-anchor':'middle','dominant-baseline':'central','font-size':size,style:'font-family:"Apple Color Emoji","Segoe UI Emoji","Noto Color Emoji",sans-serif'},gg); t.textContent=r.e; }
+    else { const fs=clamp(size*.42,12,34); txt(gg,c[0],c[1]+fs*.35,r.id==='genitals'?'genitals':r.id==='gut'?'gut':r.name.split(' ')[0].toLowerCase(),{'text-anchor':'middle','font-size':fs,fill:shade(col,.7),'font-weight':'bold'}); }
+    if(r.e && (len>=34||sel)){
+      const anchor=out[0]<-0.35?'end':out[0]>0.35?'start':'middle';
+      const lp=add(H2.B[im],out,30+size+stag+(anchor==='middle'?10:4));
+      txt(gl,lp[0],lp[1]+(anchor==='middle'?(out[1]<0?0:12):5),r.name,{'text-anchor':anchor,'font-size':sel?16:13.5,fill:sel?shade(col,.7):'#7a7468','font-weight':sel?'bold':'normal','pointer-events':'none'});
+    }
+    [bp,gg].forEach(n=>{ n.addEventListener('click',()=>select2(r.id)); n.addEventListener('mouseenter',()=>tip2(r.id)); n.addEventListener('mouseleave',()=>tip2(s2sel)); });
+  });
+}
+function tip2(id){
+  const r=byId(s2sys,id); if(!r){ $('tip2').textContent=''; return; }
+  const sh=SHARE[s2sys][id], col=shade(colOf(s2sys));
+  let h='<b style="color:'+col+'">'+r.name+':</b> ≈ '+pct(sh)+'% of the '+(s2sys==='move'?'movement':'touch')+' strip';
+  if(s2sys==='touch'){ if(r.skin){ const x=sh/r.skin; h+=', but only ≈ '+pct(r.skin)+'% of your skin'+(x>=1.5?' — about <b>'+(x>=10?Math.round(x):x.toFixed(1))+'×</b> its fair share.':x<0.7?' — about <b>'+Math.round(1/x)+'×</b> less than its fair share.':'.'); }
+    else h+=' (it’s inside the body, so it has no skin share).'; }
+  else h+='.';
+  $('tip2').innerHTML=h;
+}
+function select2(id){ s2sel=id; drawSlice(); tip2(id); drawBars(); body2(); }
+function body2(){ renderBody($('body2'),{sys:s2sys,m:s2m,hi:new Set(s2sel?[s2sel]:[]),side:'both'}); }
+function drawBars(){
+  const box=$('bars'), sys=s2sys, col=colOf(sys);
+  let h='<div class="legend">'+(sys==='touch'?'<span style="--k:#b9b2a5">share of your skin</span>':'')+'<span style="--k:'+col+'">share of the '+(sys==='move'?'movement':'touch')+' strip</span></div>';
+  const max=sys==='touch'?38:30;
+  LIST[sys].forEach(r=>{
+    const sh=SHARE[sys][r.id], on=r.id===s2sel;
+    let x='';
+    if(sys==='touch') x=r.skin? (sh/r.skin>=1.5?'×'+(sh/r.skin>=10?Math.round(sh/r.skin):(sh/r.skin).toFixed(1)):sh/r.skin<0.7?'÷'+Math.round(r.skin/sh):'≈') : 'inside';
+    else x=Math.round(sh)+'%';
+    h+='<div class="row'+(on?' on':'')+'" data-id="'+r.id+'"><span class="nm">'+(r.e||'')+' '+r.name+'</span><span class="bb">'+
+      (sys==='touch'?'<span class="b" style="width:'+(r.skin/max*100)+'%;background:#b9b2a5"></span>':'')+
+      '<span class="b" style="width:'+(sh/max*100)+'%;background:'+col+'"></span></span><span class="x">'+x+'</span></div>';
+  });
+  if(sys==='touch') h+='<p class="sub" style="margin-top:6px">×4.4 means a body part gets 4.4 times more strip than its share of your skin. ÷5 means it gets five times less.</p>';
+  else h+='<p class="sub" style="margin-top:6px">The hand and the mouth (lips, jaw, tongue, swallowing) together take more than half of the movement strip.</p>';
+  box.innerHTML=h;
+  box.querySelectorAll('.row').forEach(rw=>rw.addEventListener('click',()=>select2(rw.dataset.id)));
+}
+function setSys2(sys){
+  s2sys=sys; $('tabs2').querySelectorAll('.tab').forEach(b=>{ const on=b.dataset.sys===sys; b.setAttribute('aria-pressed',on); b.style.color=on?colOf(sys):''; });
+  $('s2').style.setProperty('--c',colOf(sys));
+  $('fairBtn').style.display=sys==='touch'?'':'none';
+  if(sys!=='touch'){ s2t=0; }
+  if(!byId(sys,s2sel)) s2sel='hand';
+  $('fairBtn').textContent=s2t>0.5?'Back to how the brain really shares it':'What if the brain shared space by skin area?';
+  drawSlice(); tip2(s2sel); drawBars(); body2();
+}
+$('tabs2').querySelectorAll('.tab').forEach(b=>b.addEventListener('click',()=>setSys2(b.dataset.sys)));
+function tween(from,to,ms,step,done){ if(RM){ step(to); done&&done(); return; } const t0=performance.now();
+  (function f(now){ const u=clamp((now-t0)/ms,0,1); step(lerp(from,to,ease(u))); if(u<1) requestAnimationFrame(f); else done&&done(); })(t0); }
+$('fairBtn').addEventListener('click',()=>{ const to=s2t>0.5?0:1;
+  $('fairBtn').textContent=to?'Back to how the brain really shares it':'What if the brain shared space by skin area?';
+  tween(s2t,to,1100,v=>{ s2t=v; drawSlice(); });
+  $('tip2').innerHTML= to? 'If space went by skin area, your <b>trunk</b> and <b>legs</b> would hog the strip and your hand and lips would almost vanish. Your fingertips would feel about as much detail as your back.' : '';
+  if(!to) setTimeout(()=>tip2(s2sel),1150);
+});
+$('morph').addEventListener('input',e=>{ s2m=e.target.value/100; body2(); });
+$('morphBtn').addEventListener('click',()=>{ const to=s2m>0.5?0:1;
+  $('morphBtn').textContent=to?'◀ Back to a normal body':'▶ Morph into the homunculus';
+  tween(s2m,to,1400,v=>{ s2m=v; $('morph').value=Math.round(v*100); body2(); }); });
+
+/* =====================================================================
+   3. PATHWAY
+   ===================================================================== */
+const HR3=[[506,262],[506,180],[507,100],[522,60],[580,38],[650,50],[708,92],[740,152],[748,214],[734,266],[706,282],[686,290],[712,298],[742,322],[748,368],[722,398],[668,406],[620,388],[584,352],[556,318],[530,298],[508,292]];
+const HL3=HR3.map(p=>[1000-p[0],p[1]]);
+const o3={step:1.4,T:10,gap:34,depth:22,notch:2.2,nw:1.8,bend:9,first:22,skip:p=>(Math.abs(p[0]-500)>170&&p[1]>270&&p[1]<300)||(Math.abs(p[0]-500)<90&&p[1]>270)};
+const H3R=foldHemi(HR3,Object.assign({seed:5},o3)), H3L=foldHemi(HL3,Object.assign({seed:5,flip:true},o3));
+const map3=H=>[nearest(H.B,[H===H3R?506:494,200]), nearest(H.B,[H===H3R?730:270,268])];
+const M3={R:map3(H3R), L:map3(H3L)};   // R = image right = person's LEFT hemisphere
+const STEM3='M470 294 C468 318 466 338 462 350 C444 370 440 410 458 432 C466 446 470 470 474 500 C478 515 480 525 481 540 L482 800 L518 800 L519 540 C520 525 522 515 526 500 C530 470 534 446 542 432 C560 410 556 370 538 350 C534 338 532 318 530 294 Z';
+let s3sys='touch', s3part='handR', s3run=null;
+const PARTS3=[
+  {id:'handR',name:'Right hand',e:'✋',reg:'hand',side:-1},{id:'handL',name:'Left hand',e:'✋',reg:'hand',side:1},
+  {id:'faceR',name:'Right cheek',e:'🙂',reg:'face',side:-1},{id:'faceL',name:'Left cheek',e:'🙂',reg:'face',side:1},
+  {id:'footR',name:'Right foot',e:'🦶',reg:'foot',side:-1},{id:'footL',name:'Left foot',e:'🦶',reg:'foot',side:1}
+];
+const ICON={hand:[112,600],face:[132,404],foot:[150,756]};
+(function buildP3(){
+  const g=$('p3Anat');
+  el('line',{x1:500,y1:24,x2:500,y2:806,stroke:'#d8d2c6','stroke-width':1.5,'stroke-dasharray':'5 6'},g);
+  el('path',{d:STEM3,fill:'#efd8cf',stroke:'#b48a7d','stroke-width':1.8},g);
+  el('path',{d:'M462 352 C480 360 520 360 538 352',fill:'none',stroke:'#c9a397','stroke-width':1.4},g);
+  el('path',{d:'M458 432 C478 440 522 440 542 432',fill:'none',stroke:'#c9a397','stroke-width':1.4},g);
+  el('path',{d:'M478 512 C490 516 510 516 522 512',fill:'none',stroke:'#c9a397','stroke-width':1.4},g);
+  for(const H of [H3L,H3R]) drawHemi(g,H,{gray:'#c9a39b',white:'#f6efe9',edge:'#8d6660'});
+  for(const x of [452,548]){ el('ellipse',{cx:x,cy:262,rx:24,ry:17,fill:'#d6b0a7',stroke:'#b48a7d','stroke-width':1},g); }
+  for(const x of [474,526]) el('path',{d:'M'+x+' 214 C'+(x+(x<500?-14:14))+' 226 '+(x+(x<500?-10:10))+' 238 '+x+' 240 Z',fill:'#7b5d58',opacity:.7},g);
+  addMask($('gm3'),H3L); addMask($('gm3'),H3R);
+  const lv={'font-size':14,fill:'#9a948a','text-anchor':'end'};
+  txt(g,452,330,'midbrain',lv); txt(g,436,374,'pons',lv); txt(g,466,486,'medulla',lv); txt(g,474,560,'spinal cord',lv); txt(g,474,576,'(neck)',lv); txt(g,474,700,'spinal cord',lv); txt(g,474,716,'(lower back)',lv);
+  txt(g,180,60,'person’s RIGHT side',{'font-size':15,fill:'#8a8578','text-anchor':'middle'}); txt(g,820,60,'person’s LEFT side',{'font-size':15,fill:'#8a8578','text-anchor':'middle'});
+  txt(g,240,150,'right hemisphere',{'font-size':14,fill:'#a29d93','text-anchor':'end'}); txt(g,760,150,'left hemisphere',{'font-size':14,fill:'#a29d93'});
+  txt(g,500,812,'(front view, facing the person)',{'font-size':13,fill:'#a29d93','text-anchor':'middle'});
+  const gp=$('p3Parts');
+  PARTS3.forEach(p=>{ const b=ICON[p.reg], x=p.side<0?b[0]:1000-b[0], y=b[1];
+    const gg=el('g',{class:'seg','data-id':p.id,tabindex:0,role:'button','aria-label':p.name},gp);
+    el('circle',{cx:x,cy:y,r:34,fill:'#fff',stroke:'#e2ddd2','stroke-width':1.5,class:'ring'},gg);
+    const t=el('text',{x,y:y+1,'text-anchor':'middle','dominant-baseline':'central','font-size':38,transform:p.side>0?'translate('+(2*x)+' 0) scale(-1 1)':'',style:'font-family:"Apple Color Emoji","Segoe UI Emoji","Noto Color Emoji",sans-serif'},gg); t.textContent=p.e;
+    txt(gg,x,y+52,p.name,{'text-anchor':'middle','font-size':15,fill:'#6b6f76'});
+    gg.addEventListener('click',()=>{ setPart3(p.id); send3(); });
+    gg.addEventListener('keydown',e=>{ if(e.key==='Enter'||e.key===' '){ e.preventDefault(); setPart3(p.id); send3(); } });
+  });
+})();
+function mapPoint(H,M,sys,reg,depth){ const Bd=mapBounds(sys,0)[reg], span=M[1]-M[0], im=Math.round(M[0]+(Bd[0]+Bd[1])/2*span); return {p:add(H.B[im],H.n[im],depth), n:H.n[im], im}; }
+function routes(sys,part){
+  const P=PARTS3.find(p=>p.id===part), mir=P.side>0, X=x=>mir?1000-x:x;
+  const H=mir?H3L:H3R, M=mir?M3.L:M3.R;   // opposite hemisphere: right body → image-right (left) hemisphere
+  const tgt=mapPoint(H,M,sys,P.reg,H.T+1);
+  const T=[X(548),262];
+  const pp=a=>X(a[0])+' '+a[1];
+  const ic=ICON[P.reg], start=[ic[0]+36,ic[1]];
+  const q=(p,v,k)=>add(p,v,k);
+  let R=[], marks=[], steps=[];
+  const toCortex=(from)=>{ const c1=[from[0],from[1]-40], c2=q(tgt.p,tgt.n,46); return 'M'+from[0]+' '+from[1]+' C'+f1(c1[0])+' '+f1(c1[1])+' '+f1(c2[0])+' '+f1(c2[1])+' '+f1(tgt.p[0])+' '+f1(tgt.p[1]); };
+  const fromCortex=(to)=>{ const c1=q(tgt.p,tgt.n,46); return 'M'+f1(tgt.p[0])+' '+f1(tgt.p[1])+' C'+f1(c1[0])+' '+f1(c1[1])+' '+to[0]+' '+(to[1]-60)+' '+to[0]+' '+to[1]; };
+  const side=mir?'left':'right', other=mir?'right':'left', regName={hand:'hand',face:'face',foot:'foot'}[P.reg];
+  if(sys==='touch'){
+    if(P.reg==='hand'){
+      R=['M'+pp(start)+' C'+pp([250,600])+' '+pp([330,596])+' '+pp([410,596])+' L'+pp([470,596])+' C'+pp([482,596])+' '+pp([486,590])+' '+pp([486,580])+' L'+pp([486,494]),
+         'M'+pp([486,494])+' C'+pp([486,482])+' '+pp([500,478])+' '+pp([512,470])+' L'+pp([514,340])+' C'+pp([514,310])+' '+pp([530,285])+' '+pp([540,272]),
+         toCortex(T)];
+      marks=[{p:[X(410),596],t:'dorsal root ganglion',big:1},{p:[X(486),494],t:'nucleus cuneatus'},{p:T,t:'thalamus (VPL)'}];
+    } else if(P.reg==='foot'){
+      R=['M'+pp(start)+' C'+pp([260,756])+' '+pp([340,744])+' '+pp([410,744])+' L'+pp([470,744])+' C'+pp([480,744])+' '+pp([484,738])+' '+pp([484,728])+' L'+pp([484,506]),
+         'M'+pp([484,506])+' C'+pp([486,492])+' '+pp([504,484])+' '+pp([512,474])+' L'+pp([514,340])+' C'+pp([514,310])+' '+pp([530,285])+' '+pp([540,272]),
+         toCortex(T)];
+      marks=[{p:[X(410),744],t:'dorsal root ganglion',big:1},{p:[X(484),506],t:'nucleus gracilis'},{p:T,t:'thalamus (VPL)'}];
+    } else {
+      R=['M'+pp(start)+' C'+pp([260,404])+' '+pp([340,398])+' '+pp([410,398])+' L'+pp([472,398])+' C'+pp([480,398])+' '+pp([486,400])+' '+pp([488,404]),
+         'M'+pp([488,404])+' C'+pp([496,398])+' '+pp([506,392])+' '+pp([514,386])+' L'+pp([516,340])+' C'+pp([516,312])+' '+pp([530,290])+' '+pp([540,274]),
+         toCortex(T)];
+      marks=[{p:[X(410),398],t:'trigeminal ganglion',big:1},{p:[X(488),404],t:'trigeminal nucleus'},{p:T,t:'thalamus (VPM)'}];
+    }
+    const relay=marks[1].t, th=marks[2].t;
+    steps=[
+      '<b>Neuron 1</b> starts at touch receptors in the skin of your '+side+' '+regName+'. '+(P.reg==='face'?'It runs in the <b>trigeminal nerve</b>, with its cell body in the trigeminal ganglion, and enters the pons.':'It runs up a nerve, with its cell body in a <b>dorsal root ganglion</b> beside the spinal cord, then climbs the spinal cord <b>on the same side</b>.')+' It ends in the '+relay+'.',
+      '<b>Neuron 2</b> <b>crosses the midline</b> in the '+(P.reg==='face'?'pons':'medulla')+' and rises through the brainstem to the '+th+', the brain’s relay station.',
+      '<b>Neuron 3</b> carries it from the thalamus up to the '+regName+' area of the <b>'+other+'</b> touch strip.',
+      'You feel it! You know the touch was on your '+side+' '+regName+' because of <i>where</i> on the strip it landed.'
+    ];
+  } else {
+    if(P.reg==='face'){
+      R=[fromCortex([X(524),300])+' L'+pp([522,362])+' C'+pp([520,382])+' '+pp([500,394])+' '+pp([490,406]),
+         'M'+pp([490,406])+' C'+pp([478,410])+' '+pp([470,412])+' '+pp([460,412])+' L'+pp([start[0],412])];
+      marks=[{p:[X(490),406],t:'facial nucleus'}];
+    } else {
+      const y=P.reg==='hand'?598:744, ye=P.reg==='hand'?606:752;
+      R=[fromCortex([X(524),300])+' L'+pp([524,500])+' C'+pp([524,512])+' '+pp([504,516])+' '+pp([494,528])+' C'+pp([488,534])+' '+pp([486,540])+' '+pp([486,552])+' L'+pp([486,y]),
+         'M'+pp([486,y])+' C'+pp([480,ye])+' '+pp([474,ye])+' '+pp([466,ye])+' L'+pp([start[0],ye])];
+      marks=[{p:[X(500),521],t:'crosses here (pyramids)'},{p:[X(486),y],t:'motor neuron (ventral horn)'}];
+    }
+    steps=[
+      '<b>Upper motor neuron.</b> A cell in the '+regName+' area of the <b>'+other+'</b> movement strip fires. Its axon runs down through the brainstem and '+(P.reg==='face'?'<b>crosses the midline</b> in the pons to reach the facial nucleus.':'<b>crosses the midline</b> at the bottom of the medulla (the pyramids), then runs down the spinal cord.'),
+      '<b>Lower motor neuron.</b> '+(P.reg==='face'?'A motor neuron in the facial nucleus sends its axon out in the <b>facial nerve</b> to the muscles of your '+side+' cheek.':'A motor neuron in the front (ventral horn) of the spinal cord sends its axon out in a nerve to the muscles of your '+side+' '+regName+'.'),
+      'Your '+side+' '+regName+' moves!'
+    ];
+  }
+  return {R,marks,steps,tgt,H,M,P};
+}
+function setSys3(sys){ s3sys=sys; $('tabs3').querySelectorAll('.tab').forEach(b=>{ const on=b.dataset.sys===sys; b.setAttribute('aria-pressed',on); b.style.color=on?colOf(sys):''; });
+  $('s3').style.setProperty('--c',colOf(sys)); draw3(); }
+function setPart3(id){ s3part=id; draw3(); }
+function chips3(){ const box=$('chips3'); box.innerHTML='';
+  PARTS3.forEach(p=>{ const b=document.createElement('button'); b.className='chip'; b.innerHTML='<span class="e">'+p.e+'</span>'+p.name; b.setAttribute('aria-pressed',p.id===s3part);
+    b.addEventListener('click',()=>{ setPart3(p.id); send3(); }); box.appendChild(b); }); }
+let cur3=null;
+function draw3(){
+  if(s3run){ cancelAnimationFrame(s3run); s3run=null; }
+  const sys=s3sys, col=colOf(sys), info=routes(sys,s3part); cur3=info;
+  // strip wash on both hemispheres
+  const gw=$('p3Wash'); gw.innerHTML='';
+  for(const [H,M] of [[H3R,M3.R],[H3L,M3.L]]){ const Bd=mapBounds(sys,0), span=M[1]-M[0];
+    LIST[sys].forEach((r,k)=>{ const i0=Math.round(M[0]+Bd[r.id][0]*span), i1=Math.round(M[0]+Bd[r.id][1]*span);
+      const isT=H===info.H && r.id===info.P.reg;
+      el('path',{d:pathD(washPoly(H,i0,i1,30),true),fill:k%2?col:shade(col,.8),'fill-opacity':isT?.9:.28,class:isT?'tgtseg':''},gw); }); }
+  // routes (faint)
+  const gr=$('p3Routes'); gr.innerHTML=''; $('p3Lit').innerHTML='';
+  info.els=info.R.map(d=>el('path',{d,fill:'none',stroke:tint(col,.45),'stroke-width':3,'stroke-dasharray':'2 7','stroke-linecap':'round'},gr));
+  const gm=$('p3Marks'); gm.innerHTML='';
+  info.marks.forEach(mk=>{ el('circle',{cx:mk.p[0],cy:mk.p[1],r:mk.big?8:5.5,fill:'#fff',stroke:shade(col),'stroke-width':2},gm);
+    const right=mk.p[0]>500; txt(gm,mk.p[0]+(right?14:-14),mk.p[1]+(mk.big?-14:4),mk.t,{'text-anchor':right?'start':'end','font-size':14,fill:shade(col,.7)}); });
+  const lab=add(info.tgt.p,info.tgt.n,-48), right=lab[0]>500;
+  txt(gm,lab[0]+(right?10:-10),lab[1],{hand:'hand area',face:'face area',foot:'foot area'}[info.P.reg],{'text-anchor':right?'start':'end','font-size':16,fill:shade(col,.7),'font-weight':'bold'});
+  el('text',{},gm);
+  // header + steps
+  const P=info.P;
+  $('p3Head').textContent=(sys==='touch'?'Touch your ':'Move your ')+P.name.toLowerCase();
+  $('p3Sub').innerHTML=(sys==='touch'?'The signal travels <b>up</b> from the skin to the <b>':'The command travels <b>down</b> from the <b>')+(P.side<0?'left':'right')+'</b> '+(sys==='touch'?'touch strip.':'movement strip to the muscles.')+' '+(sys==='touch'?'Three neurons in a row.':'Two neurons in a row.');
+  $('steps3').innerHTML=info.steps.map(s=>'<li>'+s+'</li>').join('');
+  $('p3Parts').querySelectorAll('[data-id]').forEach(g=>{ const on=g.dataset.id===s3part; const c=g.querySelector('.ring'); c.setAttribute('stroke',on?col:'#e2ddd2'); c.setAttribute('stroke-width',on?3:1.5); });
+  chips3();
+}
+function send3(){
+  const info=cur3, col=colOf(s3sys), lit=$('p3Lit'); lit.innerHTML='';
+  if(s3run){ cancelAnimationFrame(s3run); s3run=null; }
+  const lis=[...$('steps3').children]; lis.forEach(li=>li.className='');
+  const paths=info.els.map(p=>{ const L=p.getTotalLength(); const q=el('path',{d:p.getAttribute('d'),fill:'none',stroke:col,'stroke-width':4.5,'stroke-linecap':'round'},lit); q.style.strokeDasharray=L; q.style.strokeDashoffset=L; return {src:p,q,L}; });
+  const dot=el('circle',{r:7,fill:'#fff',stroke:col,'stroke-width':3,opacity:0},lit);
+  const finish=()=>{ lis.forEach(li=>li.className='done'); lis[lis.length-1].className='now';
+    const t=$('p3Wash').querySelector('.tgtseg'); if(t){ t.classList.remove('flash'); void t.getBoundingClientRect(); t.classList.add('flash'); }
+    const pg=$('p3Parts').querySelector('[data-id="'+s3part+'"]'); if(pg && !RM){ pg.style.transformBox='fill-box'; pg.style.transformOrigin='center'; pg.animate([{transform:'scale(1)'},{transform:'scale(1.18)'},{transform:'scale(1)'}],{duration:350,iterations:3}); } };
+  if(RM){ paths.forEach(p=>p.q.style.strokeDashoffset=0); finish(); return; }
+  let i=0, t0=performance.now(), speed=380, pause=350;
+  const dur=p=>Math.max(700,p.L/speed*1000);
+  lis[0].className='now';
+  function f(now){
+    const p=paths[i], u=clamp((now-t0)/dur(p),0,1), e=u;
+    p.q.style.strokeDashoffset=p.L*(1-e);
+    const pt=p.src.getPointAtLength(e*p.L); dot.setAttribute('cx',pt.x); dot.setAttribute('cy',pt.y); dot.setAttribute('opacity',1);
+    if(u>=1){
+      if(now-t0 < dur(p)+pause){ s3run=requestAnimationFrame(f); return; }
+      i++; if(i>=paths.length){ dot.remove(); finish(); s3run=null; return; }
+      lis[i-1].className='done'; lis[i].className='now'; t0=now;
+    }
+    s3run=requestAnimationFrame(f);
+  }
+  s3run=requestAnimationFrame(f);
+}
+$('tabs3').querySelectorAll('.tab').forEach(b=>b.addEventListener('click',()=>setSys3(b.dataset.sys)));
+$('sendBtn').addEventListener('click',send3);
+
+/* ---------- init ---------- */
+$('copyBtn').addEventListener('click',()=>{ const t=$('embedCode').textContent; if(navigator.clipboard) navigator.clipboard.writeText(t).then(()=>{ $('copyBtn').textContent='Copied'; setTimeout(()=>$('copyBtn').textContent='Copy',1500); },()=>{}); });
+setSys1('touch');
+setSys2('touch');
+setSys3('touch');
+})();
+</script>
+</body>
+</html>
