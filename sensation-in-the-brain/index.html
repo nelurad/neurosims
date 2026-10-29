@@ -39,6 +39,9 @@
 
   .stage{display:grid;grid-template-columns:minmax(0,1.75fr) minmax(280px,1fr);gap:24px;align-items:start}
   svg{display:block;width:100%;height:auto;user-select:none;-webkit-user-select:none}
+  .latbox{position:relative}
+  .latbox canvas{position:absolute;inset:0;width:100%;height:100%;display:block}
+  .latbox svg{position:relative}
   .tip{font-size:14.5px;color:var(--muted);min-height:2.6em;margin:4px 0 0}
   .tip b{color:var(--ink)}
 
@@ -131,47 +134,17 @@
     </div>
     <div class="stage">
       <div>
+        <div class="latbox">
+        <canvas id="latCanvas" aria-hidden="true"></canvas>
         <svg id="lat" viewBox="60 8 900 690" role="img" aria-labelledby="latTitle">
           <title id="latTitle">Side view of the left hemisphere with the movement strip in front of the central sulcus and the touch strip behind it</title>
-          <defs>
-            <filter id="relief" x="-3%" y="-3%" width="106%" height="106%" color-interpolation-filters="sRGB">
-              <feGaussianBlur in="SourceGraphic" stdDeviation="2.8" result="b"/>
-              <feColorMatrix in="b" type="luminanceToAlpha" result="h"/>
-              <feDiffuseLighting in="h" surfaceScale="8" diffuseConstant="1.18" lighting-color="#ffffff" result="d"><feDistantLight azimuth="228" elevation="44"/></feDiffuseLighting>
-              <feSpecularLighting in="h" surfaceScale="8" specularConstant=".55" specularExponent="18" lighting-color="#fff6f0" result="sp"><feDistantLight azimuth="228" elevation="56"/></feSpecularLighting>
-              <feComposite in="sp" in2="SourceAlpha" operator="in" result="sp2"/>
-              <feFlood flood-color="#e6ad9e" result="c"/>
-              <feBlend in="d" in2="c" mode="multiply" result="t"/>
-              <feGaussianBlur in="SourceGraphic" stdDeviation="5.5" result="b2"/>
-              <feComponentTransfer in="b2" result="ao"><feFuncR type="linear" slope=".55" intercept=".45"/><feFuncG type="linear" slope=".6" intercept=".4"/><feFuncB type="linear" slope=".6" intercept=".4"/></feComponentTransfer>
-              <feBlend in="t" in2="ao" mode="multiply" result="t2"/>
-              <feComposite in="t2" in2="sp2" operator="arithmetic" k2="1" k3=".5" result="t3"/>
-              <feComposite in="t3" in2="SourceAlpha" operator="in"/>
-            </filter>
-            <filter id="relief2" x="-3%" y="-3%" width="106%" height="106%" color-interpolation-filters="sRGB">
-              <feGaussianBlur in="SourceGraphic" stdDeviation="1.6" result="b"/>
-              <feColorMatrix in="b" type="luminanceToAlpha" result="h"/>
-              <feDiffuseLighting in="h" surfaceScale="5" diffuseConstant="1.15" lighting-color="#ffffff" result="d"><feDistantLight azimuth="228" elevation="44"/></feDiffuseLighting>
-              <feFlood flood-color="#d99d8f" result="c"/>
-              <feBlend in="d" in2="c" mode="multiply" result="t"/>
-              <feGaussianBlur in="SourceGraphic" stdDeviation="3" result="b2"/>
-              <feComponentTransfer in="b2" result="ao"><feFuncR type="linear" slope=".5" intercept=".5"/><feFuncG type="linear" slope=".55" intercept=".45"/><feFuncB type="linear" slope=".55" intercept=".45"/></feComponentTransfer>
-              <feBlend in="t" in2="ao" mode="multiply" result="t2"/>
-              <feComposite in="t2" in2="SourceAlpha" operator="in"/>
-            </filter>
-            <filter id="shadow" x="-20%" y="-20%" width="140%" height="140%"><feGaussianBlur stdDeviation="14"/></filter>
-            <radialGradient id="vign" cx="38%" cy="32%" r="75%">
-              <stop offset="0" stop-color="#ffffff"/><stop offset=".62" stop-color="#f3e4df"/><stop offset="1" stop-color="#b98c84"/>
-            </radialGradient>
-            <clipPath id="cerClip"><path id="cerClipPath"/></clipPath>
-            <clipPath id="cbClip"><path id="cbClipPath"/></clipPath>
-          </defs>
-          <g id="latBack"></g>
-          <g id="latCer"></g>
+          <defs><clipPath id="cerClip"><path id="cerClipPath"/></clipPath></defs>
+          <path id="latPlaceholder" fill="#e2b3a5"/>
           <g id="latStrips" clip-path="url(#cerClip)"></g>
           <g id="latLabels"></g>
           <g id="latProbe"></g>
         </svg>
+        </div>
         <p class="tip" id="tip1" aria-live="polite">Tap the <b class="m">front strip</b> or the <b class="s">back strip</b>, or pick a body part below.</p>
         <div class="chips" id="chips1" role="group" aria-label="Stimulate a body part"></div>
       </div>
@@ -193,7 +166,7 @@
     </div>
     <div class="stage">
       <div>
-        <svg id="slice" viewBox="0 0 720 560" role="img" aria-labelledby="sliceTitle">
+        <svg id="slice" viewBox="0 -96 850 666" role="img" aria-labelledby="sliceTitle">
           <title id="sliceTitle">Slice through the left hemisphere showing the body map along the strip</title>
           <defs><mask id="gm2" maskUnits="userSpaceOnUse" x="0" y="0" width="720" height="560"></mask></defs>
           <g id="sliceBrain"></g>
@@ -532,46 +505,149 @@ const SULCI_MINOR=[
  'M826 386 C852 374 872 364 892 352','M858 292 C870 318 880 340 878 370','M802 308 C820 330 816 350 836 362',
  'M760 300 C776 318 790 316 798 332','M740 420 C760 410 780 418 800 410'
 ];
-const SULCI_TERT=[
- 'M250 140 C262 158 256 176 274 184','M340 100 C342 118 362 124 366 142','M436 92 C440 108 458 110 462 124','M378 166 C392 176 410 172 420 182',
- 'M236 210 C252 220 268 214 282 224','M168 260 C186 268 194 286 212 290','M140 330 C156 338 166 352 182 352','M272 318 C290 312 306 324 322 316',
- 'M318 396 C338 392 352 404 372 400','M182 300 C198 296 212 306 226 300','M300 290 C318 296 330 288 344 296','M394 290 C410 300 428 294 440 304',
- 'M676 112 C690 124 686 140 700 148','M744 150 C758 168 752 184 768 196','M820 216 C836 236 830 256 846 270','M700 268 C716 276 728 270 742 282',
- 'M846 330 C862 340 870 334 884 342','M616 466 C640 462 656 470 676 464','M520 476 C540 472 556 480 576 474','M560 512 C580 508 600 514 620 508',
- 'M664 496 C680 488 696 492 710 484','M454 486 C470 482 482 490 496 486','M786 400 C800 392 816 398 830 390','M654 404 C670 396 686 400 700 392'
-];
+
+const FOLIA=[]; for(let i=0;i<19;i++){ const y=452+i*8.6, b=i*0.9; FOLIA.push('M680 '+(y+18)+' C730 '+(y-6+b)+' 830 '+(y-12+b)+' 940 '+(y+14-b*.6)); }
+const STEM_LINES=['M592 548 C600 540 640 538 684 548','M606 626 C620 620 650 620 668 626'];
+
+/* ---- realistic surface: height map → lit, glossy render on a canvas ---- */
+function makeNoise(seed){ const R=rng(seed), p=new Uint8Array(256); for(let i=0;i<256;i++) p[i]=i;
+  for(let i=255;i>0;i--){ const j=Math.floor(R()*(i+1)), t=p[i]; p[i]=p[j]; p[j]=t; }
+  const P=new Uint8Array(512); for(let i=0;i<512;i++) P[i]=p[i&255];
+  const GX=[1,-1,1,-1,1,-1,0,0], GY=[1,1,-1,-1,0,0,1,-1], F2=0.5*(Math.sqrt(3)-1), G2=(3-Math.sqrt(3))/6;
+  return function(x,y){ const s=(x+y)*F2, i=Math.floor(x+s), j=Math.floor(y+s), t=(i+j)*G2, x0=x-(i-t), y0=y-(j-t);
+    const i1=x0>y0?1:0, j1=1-i1, x1=x0-i1+G2, y1=y0-j1+G2, x2=x0-1+2*G2, y2=y0-1+2*G2, ii=i&255, jj=j&255; let n=0, q, g;
+    q=0.5-x0*x0-y0*y0; if(q>0){ g=P[ii+P[jj]]&7; q*=q; n+=q*q*(GX[g]*x0+GY[g]*y0); }
+    q=0.5-x1*x1-y1*y1; if(q>0){ g=P[ii+i1+P[jj+j1]]&7; q*=q; n+=q*q*(GX[g]*x1+GY[g]*y1); }
+    q=0.5-x2*x2-y2*y2; if(q>0){ g=P[ii+1+P[jj+1]]&7; q*=q; n+=q*q*(GX[g]*x2+GY[g]*y2); }
+    return 70*n; }; }
+// exact Euclidean distance transform (Felzenszwalb & Huttenlocher); sites where mask=1
+function edt(mask,W,H){
+  const INF=1e20, M=Math.max(W,H), f=new Float64Array(M), d=new Float64Array(M), z=new Float64Array(M+1), v=new Int32Array(M), g=new Float64Array(W*H);
+  for(let i=0;i<W*H;i++) g[i]=mask[i]?0:INF;
+  function dt(n){ let k=0; v[0]=0; z[0]=-INF; z[1]=INF;
+    for(let q=1;q<n;q++){ let s=((f[q]+q*q)-(f[v[k]]+v[k]*v[k]))/(2*q-2*v[k]);
+      while(s<=z[k]){ k--; s=((f[q]+q*q)-(f[v[k]]+v[k]*v[k]))/(2*q-2*v[k]); }
+      k++; v[k]=q; z[k]=s; z[k+1]=INF; }
+    k=0; for(let q=0;q<n;q++){ while(z[k+1]<q) k++; d[q]=(q-v[k])*(q-v[k])+f[v[k]]; } }
+  for(let x=0;x<W;x++){ for(let y=0;y<H;y++) f[y]=g[y*W+x]; dt(H); for(let y=0;y<H;y++) g[y*W+x]=d[y]; }
+  const out=new Float32Array(W*H);
+  for(let y=0;y<H;y++){ for(let x=0;x<W;x++) f[x]=g[y*W+x]; dt(W); for(let x=0;x<W;x++) out[y*W+x]=Math.sqrt(d[x]); }
+  return out;
+}
+const SEGS=[]; let LR=null;
+function renderLat(){
+  const s=1.4, W=Math.round(900*s), H=Math.round(690*s), N=W*H;
+  const oc=document.createElement('canvas'); oc.width=W; oc.height=H; const c=oc.getContext('2d',{willReadFrequently:true});
+  const raster=(draw,blur)=>{ c.setTransform(1,0,0,1,0,0); c.clearRect(0,0,W,H); c.filter=blur?'blur('+(blur*s)+'px)':'none';
+    c.setTransform(s,0,0,s,-60*s,-8*s); draw(c); c.filter='none'; return c.getImageData(0,0,W,H).data; };
+  const alpha=d=>{ const a=new Float32Array(N); for(let i=0;i<N;i++) a[i]=d[i*4+3]/255; return a; };
+  const site=(a,th)=>{ const m=new Uint8Array(N); for(let i=0;i<N;i++) m[i]=a[i]>th?1:0; return m; };
+  const outside=a=>{ const m=new Uint8Array(N); for(let i=0;i<N;i++) m[i]=a[i]<0.5?1:0; return m; };
+  const fillP=d=>cc=>{ cc.fillStyle='#000'; cc.fill(new Path2D(d)); };
+  const strokes=(list,wf)=>cc=>{ cc.strokeStyle='#000'; cc.lineCap='round'; cc.lineJoin='round'; list.forEach((d,i)=>{ cc.lineWidth=wf(i); cc.stroke(new Path2D(d)); }); };
+  const aCer=alpha(raster(fillP(CER))), aCb=alpha(raster(fillP(CB))), aSt=alpha(raster(fillP(STEM)));
+  const majorD=SULCI_MAJOR.concat([pathD(Pc),pathD(offCurve(Sc,'move',WID.move+6,0,0.43)),pathD(offCurve(Sc,'move',WID.move+6,0.5,0.95)),pathD(offCurve(Sc,'touch',WID.touch+6,0,0.88))]);
+  const majM=site(alpha(raster(strokes(majorD,i=>i===0?6:i===SULCI_MAJOR.length?2.4:1.4))),0.3);
+  const minM=site(alpha(raster(strokes(SULCI_MINOR.concat(STEM_LINES),()=>1))),0.3);
+  const dMaj=edt(majM,W,H), dMin=edt(minM,W,H);
+  const dFol=edt(site(alpha(raster(cc=>{ cc.save(); cc.clip(new Path2D(CB)); strokes(FOLIA,()=>0.8)(cc); cc.restore(); })),0.3),W,H);
+  const eCer=edt(outside(aCer),W,H), eCb=edt(outside(aCb),W,H), eSt=edt(outside(aSt),W,H), oCer=edt(site(aCer,0.5),W,H), oCb=edt(site(aCb,0.5),W,H);
+  const zone=alpha(raster(fillP(pathD(offCurve(Sc,'move',WID.move+5,0,1).concat(offCurve(Sc,'touch',WID.touch+5,0,1).reverse()),true))));
+  const tint={move:alpha(raster(cc=>SEGS.forEach(q=>{ if(q.sys==='move') fillP(pathD(q.poly,true))(cc); }),2.2)),
+              touch:alpha(raster(cc=>SEGS.forEach(q=>{ if(q.sys==='touch') fillP(pathD(q.poly,true))(cc); }),2.2))};
+  const sidD=raster(cc=>SEGS.forEach((q,k)=>{ cc.fillStyle='rgb('+(k+1)+',0,0)'; cc.fill(new Path2D(pathD(q.poly,true))); }));
+  const SID=new Uint8Array(N); for(let i=0;i<N;i++) SID[i]=sidD[i*4+3]>200?sidD[i*4]:0;
+  const nz=makeNoise(7), nw=makeNoise(19), nb=makeNoise(31);
+  const shape=(t,p)=>1-Math.pow(1-Math.min(1,t),p);
+  // random sulci = zero-crossings of a warped noise field, joined with the named sulci; gyri bulge between them
+  const NZ=new Float32Array(N);
+  for(let py=0;py<H;py++) for(let px=0;px<W;px++){ const i=py*W+px; if(aCer[i]<=0) continue;
+    const x=60+px/s, y=8+py/s, wx=x+16*nw(x/150,y/150), wy=y+16*nw(x/150+37,y/150+71);
+    NZ[i]=nz(wx/146,wy/98)+0.12*nz(wx/60+9,wy/46+3); }
+  const allM=new Uint8Array(N);
+  for(let i=0;i<N-W-1;i++){ if(majM[i]||minM[i]){ allM[i]=1; continue; }
+    if(aCer[i]>0.5 && zone[i]<0.4 && (NZ[i]*NZ[i+1]<0 || NZ[i]*NZ[i+W]<0)) allM[i]=1; }
+  const dAll=edt(allM,W,H);
+  // gyral crowns: rounded profile from the distance to the nearest sulcus, blurred so ridges don't crease
+  const GY=new Float32Array(N);
+  for(let i=0;i<N;i++){ if(aCer[i]<=0) continue; const R=lerp(19,25,zone[i]), tg=clamp((dAll[i]/s-1.6)/R,0,1); GY[i]=Math.sqrt(1-(1-tg)*(1-tg)); }
+  (function blur(a,r,pass){ const t=new Float32Array(N);
+    for(let p=0;p<pass;p++){
+      for(let y=0;y<H;y++){ let acc=0; const o=y*W; for(let x=-r;x<W;x++){ if(x+r<W) acc+=a[o+x+r]; if(x-r-1>=0) acc-=a[o+x-r-1]; if(x>=0) t[o+x]=acc/(2*r+1); } }
+      for(let x=0;x<W;x++){ let acc=0; for(let y=-r;y<H;y++){ if(y+r<H) acc+=t[(y+r)*W+x]; if(y-r-1>=0) acc-=t[(y-r-1)*W+x]; if(y>=0) a[y*W+x]=acc/(2*r+1); } } }
+  })(GY,Math.round(2.6*s),2);
+  const Hh=new Float32Array(N), AO=new Float32Array(N), ALB=new Float32Array(N*3), REG=new Uint8Array(N), A=new Float32Array(N);
+  for(let py=0;py<H;py++) for(let px=0;px<W;px++){
+    const i=py*W+px, a=Math.max(aCer[i],aCb[i],aSt[i]); A[i]=a; if(a<=0) continue;
+    const x=60+px/s, y=8+py/s, tone=1+0.07*nb(x/160,y/160);
+    if(aCer[i]>=0.5 || (aCer[i]>0 && aCer[i]>=aCb[i] && aCer[i]>=aSt[i])){
+      REG[i]=1; const de=eCer[i]/s, t=Math.min(1,de/125), dome=Math.sqrt(1-(1-t)*(1-t));
+      const zz=zone[i], gy=GY[i];
+      const lump=(0.5+0.5*nb(x/34,y/34))*(0.4+0.6*zz);
+      const deep=shape(dMaj[i]/s/10,2);
+      Hh[i]=22+72*dome+(17*gy+2.2*lump)*Math.min(1,de/5);
+      AO[i]=(0.5+0.5*Math.pow(gy,0.7))*(0.72+0.28*deep);
+      ALB[i*3]=220*tone; ALB[i*3+1]=150*tone; ALB[i*3+2]=126*tone;
+    } else if(aCb[i]>=aSt[i]){
+      REG[i]=2; const de=eCb[i]/s, t=Math.min(1,de/70), dome=Math.sqrt(1-(1-t)*(1-t)), hf=shape(dFol[i]/s/3.2,2);
+      Hh[i]=46*dome+4.5*hf*Math.min(1,de/3); AO[i]=(0.66+0.34*hf)*(0.35+0.65*Math.min(1,oCer[i]/s/16));
+      ALB[i*3]=184*tone; ALB[i*3+1]=110*tone; ALB[i*3+2]=96*tone;
+    } else {
+      REG[i]=3; const de=eSt[i]/s, t=Math.min(1,de/26), dome=Math.sqrt(1-(1-t)*(1-t)), hs=0.4+0.6*shape(dMin[i]/s/3,2);
+      Hh[i]=34*dome+3*hs; AO[i]=(0.6+0.4*hs)*(0.35+0.65*Math.min(1,oCer[i]/s/18))*(0.45+0.55*Math.min(1,oCb[i]/s/14));
+      ALB[i*3]=190*tone; ALB[i*3+1]=118*tone; ALB[i*3+2]=102*tone;
+    }
+  }
+  let Lx=-0.42,Ly=-0.62,Lz=0.66; const Ln=Math.hypot(Lx,Ly,Lz); Lx/=Ln; Ly/=Ln; Lz/=Ln;
+  let hx=Lx,hy=Ly,hz=Lz+1; const hn=Math.hypot(hx,hy,hz); hx/=hn; hy/=hn; hz/=hn;
+  const LIGHT=new Float32Array(N), SPEC=new Float32Array(N), SH=new Float32Array(N);
+  for(let py=1;py<H-1;py++) for(let px=1;px<W-1;px++){
+    const i=py*W+px; const x=60+px/s, y=8+py/s;
+    const dx=(x-540)/330, dy=(y-652)/30; SH[i]=0.26*Math.exp(-2.4*dx*dx-1.8*dy*dy);
+    if(!REG[i]) continue;
+    const gx=(Hh[i+1]-Hh[i-1])*s/2, gy=(Hh[i+W]-Hh[i-W])*s/2, l=Math.hypot(gx,gy,1), nx=-gx/l, ny=-gy/l, nzv=1/l;
+    const dif=Math.max(0,nx*Lx+ny*Ly+nzv*Lz), nh=Math.max(0,nx*hx+ny*hy+nzv*hz);
+    LIGHT[i]=(0.36+0.72*dif)*AO[i];
+    SPEC[i]=(0.38*Math.pow(nh,34)+0.1*Math.pow(nh,6))*(0.4+0.6*AO[i]);
+  }
+  const cv=$('latCanvas'); cv.width=W; cv.height=H;
+  LR={W,H,N,LIGHT,SPEC,ALB,REG,A,SH,SID,tint,ctx:cv.getContext('2d'),img:new ImageData(W,H)};
+  $('latPlaceholder').setAttribute('display','none');
+  paintLat();
+}
+function composeLat(){
+  if(!LR) return;
+  const {N,LIGHT,SPEC,ALB,REG,A,SH,SID,tint,img}=LR, d=img.data, hov=paintLat.hov;
+  const BASE={move:[238,122,86],touch:[96,150,228]};
+  const seg=SEGS.map(q=>{ const sel=s1sel&&s1sel.sys===q.sys&&s1sel.id===q.id, hv=hov&&hov.sys===q.sys&&hov.id===q.id;
+    const b=BASE[q.sys], w=sel?1:hv?.92:q.sys===s1sys?.74:.46, k=sel?.3:hv?.15:0;
+    return {sys:q.sys,w,c:[lerp(b[0],255,k),lerp(b[1],255,k),lerp(b[2],255,k)]}; });
+  const baseW={move:s1sys==='move'?.74:.46, touch:s1sys==='touch'?.74:.46};
+  for(let i=0;i<N;i++){
+    const a=A[i], j=i*4;
+    if(!REG[i]){ d[j]=90; d[j+1]=58; d[j+2]=48; d[j+3]=SH[i]*255; continue; }
+    let r=ALB[i*3], g=ALB[i*3+1], b=ALB[i*3+2];
+    if(REG[i]===1){
+      for(const sys of ['move','touch']){ const m=tint[sys][i]; if(m<=0) continue;
+        const q=SID[i]?seg[SID[i]-1]:null, use=q&&q.sys===sys?q:null, w=(use?use.w:baseW[sys])*m, cc=use?use.c:BASE[sys];
+        r=lerp(r,cc[0],w); g=lerp(g,cc[1],w); b=lerp(b,cc[2],w); }
+    }
+    const L=LIGHT[i], S=SPEC[i]*255;
+    r=r*L+S; g=g*L+S; b=b*L+S;
+    const sa=SH[i]*(1-a), fa=a+sa;
+    d[j]=Math.min(255,(r*a+90*sa)/fa); d[j+1]=Math.min(255,(g*a+58*sa)/fa); d[j+2]=Math.min(255,(b*a+48*sa)/fa); d[j+3]=fa*255;
+  }
+  LR.ctx.putImageData(img,0,0);
+}
 
 let s1sys='touch', s1sel=null, showLbl=true;
-const gBack=$('latBack'), gCer=$('latCer'), gStrips=$('latStrips'), gLbl=$('latLabels'), gProbe=$('latProbe');
+const gStrips=$('latStrips'), gLbl=$('latLabels'), gProbe=$('latProbe');
 (function buildLat(){
-  $('cerClipPath').setAttribute('d',CER); $('cbClipPath').setAttribute('d',CB);
-  el('ellipse',{cx:540,cy:640,rx:360,ry:36,fill:'#5a3a30',opacity:.22,filter:'url(#shadow)'},gBack);
-  // brainstem + cerebellum
-  const gb=el('g',{filter:'url(#relief2)'},gBack);
-  el('path',{d:STEM,fill:'#fff'},gb);
-  el('path',{d:'M592 548 C600 540 640 538 684 548',fill:'none',stroke:'#444','stroke-width':3,'stroke-linecap':'round'},gb);
-  el('path',{d:'M606 626 C620 620 650 620 668 626',fill:'none',stroke:'#555','stroke-width':2.2,'stroke-linecap':'round'},gb);
-  el('path',{d:CB,fill:'#fff'},gb);
-  const fol=el('g',{'clip-path':'url(#cbClip)',fill:'none',stroke:'#2a2a2a','stroke-linecap':'round'},gb);
-  for(let i=0;i<17;i++){ const y=458+i*9.6, b=i*0.9; el('path',{d:'M680 '+(y+18)+' C730 '+(y-6+b)+' 830 '+(y-12+b)+' 940 '+(y+14-b*.6),'stroke-width':i%4===0?2.6:1.5},fol); }
-  // cerebrum relief
-  const gc=el('g',{filter:'url(#relief)'},gCer);
-  el('path',{d:CER,fill:'#fff'},gc);
-  const sg=el('g',{'clip-path':'url(#cerClip)',fill:'none','stroke-linecap':'round','stroke-linejoin':'round'},gc);
-  SULCI_TERT.forEach(d=>el('path',{d,stroke:'#666','stroke-width':3},sg));
-  SULCI_MINOR.forEach(d=>el('path',{d,stroke:'#333','stroke-width':4.4},sg));
-  SULCI_MAJOR.forEach((d,i)=>el('path',{d,stroke:'#000','stroke-width':i===0?9:6.5},sg));
-  el('path',{d:pathD(Pc),stroke:'#000','stroke-width':7.5},sg);                                  // central sulcus
-  el('path',{d:pathD(offCurve(Sc,'move',WID.move+6,0.03,0.43)),stroke:'#000','stroke-width':6.5},sg);   // precentral sulcus
-  el('path',{d:pathD(offCurve(Sc,'move',WID.move+6,0.5,0.93)),stroke:'#000','stroke-width':6.5},sg);
-  el('path',{d:pathD(offCurve(Sc,'touch',WID.touch+6,0.05,0.86)),stroke:'#000','stroke-width':6.5},sg); // postcentral sulcus
-  el('path',{d:CER,fill:'url(#vign)',style:'mix-blend-mode:multiply','pointer-events':'none'},gCer);
-  // strips
+  $('cerClipPath').setAttribute('d',CER); $('latPlaceholder').setAttribute('d',CER);
   for(const sys of ['move','touch']){
-    const R=LAT[sys], col=colOf(sys);
-    LIST[sys].filter(r=>!r.med).forEach((r,idx)=>{
-      const [t0,t1]=R[r.id];
-      const p=el('path',{d:pathD(stripPoly(sys,t0,t1),true),class:'seg','data-sys':sys,'data-id':r.id,fill:idx%2?col:shade(col,.82),style:'mix-blend-mode:color'},gStrips);
+    LIST[sys].filter(r=>!r.med).forEach(r=>{
+      const [t0,t1]=LAT[sys][r.id], poly=stripPoly(sys,t0,t1); SEGS.push({sys,id:r.id,poly});
+      const p=el('path',{d:pathD(poly,true),class:'seg','data-sys':sys,'data-id':r.id,fill:'#000','fill-opacity':0},gStrips);
       p.addEventListener('mouseenter',()=>hoverLat(sys,r.id));
       p.addEventListener('mouseleave',()=>hoverLat(null));
       p.addEventListener('click',()=>stimulate(sys,r.id));
@@ -579,6 +655,7 @@ const gBack=$('latBack'), gCer=$('latCer'), gStrips=$('latStrips'), gLbl=$('latL
   }
   el('g',{id:'latEdge','pointer-events':'none'},gStrips);
   drawLatLabels();
+  setTimeout(renderLat,30);
 })();
 function drawLatLabels(){
   gLbl.innerHTML='';
@@ -601,14 +678,11 @@ function drawLatLabels(){
 }
 function paintLat(){
   const hov=paintLat.hov;
-  gStrips.querySelectorAll('.seg').forEach(p=>{
-    const sys=p.dataset.sys, id=p.dataset.id, sel=(s1sel&&s1sel.sys===sys&&s1sel.id===id), hv=hov&&hov.sys===sys&&hov.id===id;
-    p.setAttribute('fill-opacity', sel?1 : hv?.95 : sys===s1sys? .72 : .42);
-  });
+  composeLat();
   const edge=$('latEdge'); edge.innerHTML='';
-  const outl=(sys,id,w)=>{ const r=LAT[sys][id]; if(!r) return; el('path',{d:pathD(stripPoly(sys,r[0],r[1]),true),fill:'none',stroke:'#fff','stroke-width':w,'stroke-linejoin':'round',opacity:.95},edge); };
-  if(hov) outl(hov.sys,hov.id,2);
-  if(s1sel) outl(s1sel.sys,s1sel.id,3);
+  const outl=(sys,id,w,o)=>{ const r=LAT[sys][id]; if(!r) return; el('path',{d:pathD(stripPoly(sys,r[0],r[1]),true),fill:'none',stroke:'#fff','stroke-width':w,'stroke-linejoin':'round',opacity:o},edge); };
+  if(hov) outl(hov.sys,hov.id,1.4,.55);
+  if(s1sel) outl(s1sel.sys,s1sel.id,1.8,.75);
 }
 function hoverLat(sys,id){
   paintLat.hov = sys?{sys,id}:null; paintLat();
