@@ -1,0 +1,1170 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>From Sight to Sleep</title>
+<link rel="icon" href="data:,">
+<meta name="description" content="A follow-along lab for a lecture on vision, color, dreams, biological rhythms, sleep and brain waves. Hands-on demos and questions for every part, with a downloadable worksheet at the end.">
+<style>
+  :root{ --bg:#fffdf8; --ink:#2a2a2a; --muted:#6b6f76; --line:#e2ddd2;
+    --hand:"Segoe Print","Ink Free","Noteworthy","Chalkboard SE","Bradley Hand","Comic Sans MS",cursive;
+    --sans:system-ui,-apple-system,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif;
+    --mono:ui-monospace,"SF Mono",Menlo,Consolas,monospace;
+    --c:#8a4fbf; --ok:#2f9e6e; --bad:#d1495b; --warn:#e8b400; }
+  *{box-sizing:border-box}
+  html{-webkit-text-size-adjust:100%;scroll-behavior:smooth}
+  html,body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.5 var(--sans);-webkit-font-smoothing:antialiased}
+  .wrap{margin:0 auto;padding:20px 16px 32px;max-width:1180px}
+  a{color:#3d6fa8}
+  .back{font-size:13.5px;color:var(--muted);text-decoration:none}
+  .back:hover{text-decoration:underline}
+  h1{font-family:Georgia,"Times New Roman",serif;font-weight:normal;font-size:clamp(26px,2.6vw,38px);margin:6px 0 8px;letter-spacing:-.01em}
+  .intro{margin:0 0 10px;max-width:56em;font-size:clamp(15px,1.2vw,17px)}
+  section{margin-top:44px;scroll-margin-top:64px;--c:var(--sc,#8a4fbf)}
+  h2.sec{font-family:var(--hand);font-weight:normal;font-size:clamp(24px,2.4vw,32px);margin:0 0 2px;line-height:1.2;color:var(--c)}
+  h2.sec .n{display:inline-block;width:1.45em;height:1.45em;line-height:1.45em;text-align:center;border-radius:50%;background:var(--c);color:#fff;font-size:.7em;margin-right:8px;vertical-align:.2em;font-family:var(--sans)}
+  .slides{font-size:12.5px;color:var(--muted);text-transform:uppercase;letter-spacing:.06em;font-weight:600;margin:0 0 6px}
+  .lede{margin:0 0 14px;max-width:56em;color:#3b3b3b}
+  :focus-visible{outline:2px solid #3d6fa8;outline-offset:2px}
+  svg{display:block;width:100%;height:auto;user-select:none;-webkit-user-select:none}
+  canvas{display:block;width:100%;height:auto;touch-action:none}
+
+  .pipe{position:sticky;top:0;z-index:20;background:rgba(255,253,248,.96);backdrop-filter:blur(4px);border-bottom:1px solid var(--line);margin:14px -16px 0;padding:8px 16px}
+  .pipe ol{list-style:none;margin:0;padding:0;display:flex;gap:4px;overflow-x:auto;scrollbar-width:none}
+  .pipe a{display:flex;align-items:center;gap:6px;text-decoration:none;color:var(--muted);font-size:13.5px;padding:4px 10px;border-radius:999px;white-space:nowrap;border:1.5px solid transparent}
+  .pipe a:hover{color:var(--ink);border-color:var(--line)}
+  .pipe a.on{color:#fff;background:var(--ink)}
+  .pipe a .ck{font-size:11px;color:var(--ok)}
+  .prog{height:5px;background:#eee8dc;border-radius:3px;margin-top:6px;overflow:hidden}
+  .prog i{display:block;height:100%;width:0;background:linear-gradient(90deg,#2a78c4,#8a4fbf,#2f9e6e);transition:width .4s}
+
+  .grid2{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,420px),1fr));gap:18px;align-items:start}
+  .card{background:#fff;border:1.5px solid var(--line);border-radius:14px;padding:14px 16px}
+  .card h4{font-family:var(--hand);font-weight:normal;font-size:21px;margin:0 0 4px;color:var(--c);line-height:1.25}
+  .card p{margin:0 0 8px}
+  .try{font-size:14px;color:var(--muted);margin:0 0 8px}
+  .try b{color:var(--ink)}
+  .ctrl{display:flex;flex-wrap:wrap;gap:8px 12px;align-items:center;margin:8px 0;font-size:14px;color:var(--muted)}
+  .ctrl input[type=range]{flex:1;min-width:140px;accent-color:var(--c)}
+  .ctrl b{color:var(--ink)}
+  select{font:inherit;font-size:14px;padding:4px 8px;border:1.5px solid var(--line);border-radius:8px;background:#fff;color:var(--ink);max-width:100%}
+  .tog{font:inherit;font-size:13.5px;background:#fff;border:1.5px solid var(--line);border-radius:999px;padding:4px 12px;cursor:pointer;color:var(--muted)}
+  .tog:hover{color:var(--ink)}
+  .tog[aria-pressed="true"]{color:#fff;border-color:var(--c);background:var(--c)}
+  .btn{font:inherit;font-size:14.5px;background:#fff;border:1.5px solid #bdb7aa;border-radius:8px;padding:6px 14px;cursor:pointer;color:var(--ink)}
+  .btn:hover{border-color:var(--c);color:var(--c)}
+  .btn.primary{background:var(--c);border-color:var(--c);color:#fff}
+  .btn.primary:hover{filter:brightness(1.08);color:#fff}
+  .out{background:#faf7f0;border-left:3px solid var(--c);padding:8px 12px;font-size:14.5px;margin:10px 0 0;border-radius:0 8px 8px 0;min-height:2.6em}
+  .fact{background:#fff;border-left:3px solid var(--c);padding:6px 10px;font-size:14.5px;margin:10px 0 0}
+  .meters{display:grid;grid-template-columns:auto 1fr 3.4em;gap:4px 8px;font-size:13.5px;align-items:center;margin:8px 0}
+  .meters .m{height:9px;border-radius:5px;background:#eee8dc;overflow:hidden}
+  .meters .m i{display:block;height:100%;width:0;transition:width .2s}
+  .meters .v{text-align:right;font-variant-numeric:tabular-nums;color:var(--ink)}
+  .lbl{font-family:var(--hand);font-size:15px;fill:#3b3b3b;pointer-events:none}
+  .hot{cursor:pointer}
+  .hot:hover{filter:brightness(1.12)}
+
+  /* questions */
+  .qs{margin-top:18px;border:2px dashed #d9d2c2;border-radius:14px;padding:12px 16px;background:#fffefb}
+  .qs > .qh{font-family:var(--hand);font-size:20px;margin:0 0 6px;color:var(--ink)}
+  .q{padding:10px 0;border-top:1px solid #efe9dc}
+  .q:first-of-type{border-top:0}
+  .q .qt{margin:0 0 6px;font-weight:600}
+  .q .qt .num{color:var(--c);margin-right:4px}
+  .opts{display:flex;flex-wrap:wrap;gap:6px}
+  .opt{font:inherit;font-size:14.5px;text-align:left;background:#fff;border:1.5px solid var(--line);border-radius:10px;padding:6px 12px;cursor:pointer;color:var(--ink)}
+  .opt:hover{border-color:var(--c)}
+  .opt.right{background:#e3f4ea;border-color:var(--ok)}
+  .opt.wrong{background:#fbe6e8;border-color:var(--bad);text-decoration:line-through;color:#7a3a42}
+  .why{font-size:14px;margin:6px 0 0;color:#3b3b3b;display:none}
+  .why.show{display:block}
+  .why b.ok{color:var(--ok)} .why b.no{color:var(--bad)}
+  textarea{width:100%;min-height:70px;font:inherit;font-size:15px;padding:8px 10px;border:1.5px solid var(--line);border-radius:10px;background:#fff;resize:vertical}
+  textarea:focus{border-color:var(--c);outline:none}
+  .saved{font-size:12px;color:var(--ok);margin-left:6px;opacity:0;transition:opacity .3s}
+  .saved.on{opacity:1}
+
+  /* sort chips */
+  .sort{display:grid;gap:6px}
+  .chip{display:flex;flex-wrap:wrap;align-items:center;gap:6px;background:#faf7f0;border:1.5px solid var(--line);border-radius:10px;padding:6px 10px;font-size:14.5px}
+  .chip .t{flex:1 1 180px}
+  .chip .b{font:inherit;font-size:13px;border:1.5px solid var(--line);background:#fff;border-radius:999px;padding:2px 10px;cursor:pointer}
+  .chip .b:hover{border-color:var(--c)}
+  .chip.ok{background:#e3f4ea;border-color:var(--ok)}
+  .chip.no{background:#fbe6e8;border-color:var(--bad)}
+  .chip .b.sel{background:var(--ink);color:#fff;border-color:var(--ink)}
+  .score{font-family:var(--hand);font-size:18px;color:var(--c)}
+
+  /* blind spot */
+  .bs{position:relative;height:150px;background:#fff;border:1.5px solid var(--line);border-radius:10px;overflow:hidden}
+  .bs .plus{position:absolute;left:12%;top:50%;transform:translate(-50%,-50%);font:700 40px/1 var(--sans)}
+  .bs .dot{position:absolute;left:78%;top:50%;width:34px;height:34px;border-radius:50%;background:#d1495b;transform:translate(-50%,-50%)}
+  .bs.lines{background:repeating-linear-gradient(0deg,#fff 0 10px,#2a78c4 10px 14px)}
+  .bs.lines .dot{background:#fff;box-shadow:0 0 0 0 #fff}
+  .bs.lines .plus{background:#fff;padding:2px 6px;border-radius:6px}
+
+  /* afterimage */
+  .after{position:relative;background:#fff;border:1.5px solid var(--line);border-radius:10px;overflow:hidden}
+  .after .cd{position:absolute;right:10px;top:8px;font:700 22px var(--sans);color:var(--muted)}
+
+  .two{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+  .swatch{height:56px;border-radius:10px;border:1.5px solid var(--line);display:flex;align-items:end;justify-content:center;font-size:12px;color:#fff;text-shadow:0 1px 2px rgba(0,0,0,.6);padding:4px}
+  .radios{display:flex;flex-wrap:wrap;gap:6px 14px;font-size:14.5px;margin:4px 0 8px}
+  .radios label{display:flex;gap:5px;align-items:center;cursor:pointer}
+
+  .stagebtns{display:flex;flex-wrap:wrap;gap:6px;margin:6px 0}
+  .big{font-family:var(--hand);font-size:24px;color:var(--c);line-height:1.2;margin:4px 0}
+  .tagline{font-size:13px;color:var(--muted)}
+
+  /* name + download */
+  .namebar{display:flex;flex-wrap:wrap;gap:10px;align-items:center;margin:10px 0 0;background:#fff;border:1.5px solid var(--line);border-radius:12px;padding:10px 14px}
+  .namebar input{font:inherit;padding:5px 10px;border:1.5px solid var(--line);border-radius:8px;min-width:200px;flex:1}
+  .finish{background:linear-gradient(135deg,#f3ecfb,#e7f4ee);border:2px solid #cdbde3;border-radius:16px;padding:18px}
+  .summary{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:10px;margin:10px 0 14px}
+  .summary div{background:#fff;border-radius:12px;padding:10px;text-align:center;border:1.5px solid var(--line)}
+  .summary b{display:block;font-size:26px;font-family:var(--hand);color:var(--c)}
+
+  .foot{margin-top:36px;padding-top:14px;border-top:1px dashed #c9c3b6;font-size:12.5px;color:var(--muted)}
+  .foot p{margin:0 0 8px}
+  .embed{display:flex;gap:8px;align-items:flex-start;flex-wrap:wrap}
+  .embed code{flex:1;min-width:0;font-family:var(--mono);font-size:11.5px;background:#fff;border:1px solid var(--line);padding:5px 8px;overflow-wrap:anywhere}
+  .embed button{font:inherit;font-size:12px;padding:4px 10px;background:#fff;border:1px solid #bdb7aa;border-radius:4px;cursor:pointer}
+  .refs{margin:0 0 10px;padding-left:18px}
+  @media (max-width:600px){ .two{grid-template-columns:1fr} }
+  @media (prefers-reduced-motion:reduce){ html{scroll-behavior:auto} }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <a class="back" href="../">← All NeuroSims</a>
+  <h1>From Sight to Sleep: a follow-along lab</h1>
+  <p class="intro">This goes with today's lecture on <b>vision, color, dreams, biological rhythms, sleep and brain waves</b>. Each numbered part matches a part of the slides. Play with the demos, then answer the questions. Your answers save automatically in this browser. At the end you can <b>download your worksheet</b>.</p>
+  <div class="namebar">
+    <label for="who"><b>Your name</b> (for your download):</label>
+    <input id="who" type="text" autocomplete="name" placeholder="First Last">
+    <span class="tagline" id="progTxt">0% done</span>
+  </div>
+
+  <nav class="pipe" aria-label="Parts of the lab">
+    <ol id="pipe"></ol>
+    <div class="prog"><i id="progBar"></i></div>
+  </nav>
+
+  <!-- ================= 1 SENSING ================= -->
+  <section id="s1" style="--sc:#2a78c4" data-title="Sensing" data-icon="⚡">
+    <h2 class="sec"><span class="n">1</span>How sensing works</h2>
+    <p class="slides">Slides 3–7 · transduction, labeled lines, sensation vs. perception</p>
+    <p class="lede">Every sense turns energy into the same thing: <b>action potentials</b>. So how does your brain know a signal is light and not sound? It goes by <b>which line</b> is firing.</p>
+    <div class="grid2">
+      <div class="card">
+        <h4>The labeled-line switchboard</h4>
+        <p class="try"><b>Try:</b> pick a stimulus, then try <b>"press on closed eyelid."</b> Then rewire the line and see what the brain "experiences".</p>
+        <div class="ctrl"><span>Stimulus</span>
+          <select id="llStim">
+            <option value="light">Light hits the retina</option>
+            <option value="sound">Sound waves reach the cochlea</option>
+            <option value="eyelid">Press gently on a closed eyelid</option>
+            <option value="touch">Touch on a fingertip</option>
+            <option value="sugar">Sugar on the tongue</option>
+            <option value="smell">A coffee smell reaches the nose</option>
+          </select></div>
+        <div class="ctrl"><span>Which line fires?</span>
+          <select id="llLine">
+            <option value="auto">Its normal line</option>
+            <option value="visual">Rewire to: visual line</option>
+            <option value="auditory">Rewire to: auditory line</option>
+            <option value="touch">Rewire to: touch line</option>
+            <option value="taste">Rewire to: taste line</option>
+          </select></div>
+        <div class="ctrl"><span>Stimulus strength</span><input type="range" id="llStr" min="1" max="10" value="4"><b id="llStrV">4</b></div>
+        <canvas id="llSpikes" width="600" height="90" aria-label="Spike train"></canvas>
+        <div class="out" id="llOut"></div>
+      </div>
+      <div class="card">
+        <h4>From receptor to perception</h4>
+        <p class="try"><b>Try:</b> step through the 6 stages. Notice the one sense that skips a stop.</p>
+        <svg viewBox="0 0 520 300" id="rpSvg" aria-label="Six stages from receptor to perception"></svg>
+        <div class="ctrl"><button class="btn" id="rpPrev">← Back</button><button class="btn primary" id="rpNext">Next step →</button>
+          <label style="margin-left:auto"><input type="checkbox" id="rpSmell"> follow <b>smell</b> instead</label></div>
+        <div class="out" id="rpOut"></div>
+      </div>
+    </div>
+    <div class="qs" data-sec="s1"></div>
+  </section>
+
+  <!-- ================= 2 EYE ================= -->
+  <section id="s2" style="--sc:#e4572e" data-title="The eye" data-icon="👁">
+    <h2 class="sec"><span class="n">2</span>The eye, rods & cones, and your blind spot</h2>
+    <p class="slides">Slides 8–13</p>
+    <p class="lede">Light passes through the cornea, pupil and lens and lands on the retina. There, rods and cones turn it into neural signals.</p>
+    <div class="grid2">
+      <div class="card">
+        <h4>Parts of the eye</h4>
+        <div class="ctrl"><button class="tog" id="eyeExplore" aria-pressed="true">Explore</button><button class="tog" id="eyeQuiz" aria-pressed="false">Quiz me</button><span class="score" id="eyeScore"></span></div>
+        <svg viewBox="0 0 520 300" id="eyeSvg" aria-label="Cross-section of the eye"></svg>
+        <div class="out" id="eyeOut">Click any part of the eye.</div>
+      </div>
+      <div class="card">
+        <h4>Turn down the lights: rods vs. cones</h4>
+        <p class="try"><b>Try:</b> slide from daylight to moonlight. What happens to the colors and the fine detail?</p>
+        <svg viewBox="0 0 420 180" id="fruitSvg" aria-label="Fruit bowl scene"></svg>
+        <div class="ctrl"><span>🌙</span><input type="range" id="lux" min="0" max="100" value="100"><span>☀️</span></div>
+        <div class="meters">
+          <span>Rods</span><div class="m"><i id="rodM" style="background:#6b6f76"></i></div><span class="v" id="rodV"></span>
+          <span>Cones</span><div class="m"><i id="coneM" style="background:#e4572e"></i></div><span class="v" id="coneV"></span>
+        </div>
+        <div class="out" id="luxOut"></div>
+      </div>
+    </div>
+    <div class="card" style="margin-top:18px">
+      <h4>Find your blind spot</h4>
+      <p class="try">1) Close your <b>left</b> eye. 2) Stare at the <b>+</b> with your right eye. 3) Slowly move your face toward or away from the screen (start about an arm's length away). At some distance the red dot vanishes. Then switch on <b>"Fill-in mode"</b>: when the dot disappears, does your brain show a gap or continue the stripes?</p>
+      <div class="bs" id="bs"><span class="plus">+</span><span class="dot"></span></div>
+      <div class="ctrl"><button class="tog" id="bsLines" aria-pressed="false">Fill-in mode</button><button class="btn" id="bsFound">I made it disappear! ✔</button><span id="bsMsg" class="tagline"></span></div>
+    </div>
+    <div class="qs" data-sec="s2"></div>
+  </section>
+
+  <!-- ================= 3 TO THE BRAIN ================= -->
+  <section id="s3" style="--sc:#2f9e6e" data-title="Eye → brain" data-icon="🧠">
+    <h2 class="sec"><span class="n">3</span>From eye to brain: the chiasm, V1 and the two streams</h2>
+    <p class="slides">Slides 14–17 · optic chiasm, LGN, V1, dorsal & ventral streams, FFA</p>
+    <div class="grid2">
+      <div class="card">
+        <h4>Which side of the brain sees it?</h4>
+        <p class="try"><b>Try:</b> light up the left visual field, then the right. Follow where the fibers cross.</p>
+        <svg viewBox="0 0 440 380" id="vfSvg" aria-label="Top-down view of the visual pathway"></svg>
+        <div class="ctrl"><button class="tog" id="vfL" aria-pressed="false">Left visual field ★</button><button class="tog" id="vfR" aria-pressed="false">Right visual field ●</button></div>
+        <div class="out" id="vfOut">Choose a visual field.</div>
+        <p class="tagline">Want more? Try the full <a href="../vision/">From Light to Sight</a> sim.</p>
+      </div>
+      <div class="card">
+        <h4>Sort it: the "what" or the "where/how" stream?</h4>
+        <p class="try">For each everyday task, pick the stream that does most of the work.</p>
+        <div class="sort" id="streamSort"></div>
+        <p class="score" id="streamScore"></p>
+      </div>
+    </div>
+    <div class="qs" data-sec="s3"></div>
+  </section>
+
+  <!-- ================= 4 COLOR ================= -->
+  <section id="s4" style="--sc:#c2410c" data-title="Color" data-icon="🎨">
+    <h2 class="sec"><span class="n">4</span>Color: three cones, opposing pairs, and the dress</h2>
+    <p class="slides">Slides 18–20, 25–27</p>
+    <div class="grid2">
+      <div class="card">
+        <h4>Three cones, one color</h4>
+        <p class="try"><b>Try:</b> slide the wavelength. Color is your brain <b>comparing</b> the three cone types. Find a wavelength where M and L are both high but S is quiet.</p>
+        <canvas id="coneCv" width="640" height="260" aria-label="Cone sensitivity curves"></canvas>
+        <div class="ctrl"><span>Wavelength</span><input type="range" id="wl" min="400" max="700" value="580"><b id="wlV">580 nm</b></div>
+        <div class="ctrl"><button class="tog" data-wl="450">Blue</button><button class="tog" data-wl="530">Green</button><button class="tog" data-wl="580">Yellow</button><button class="tog" data-wl="650">Red</button></div>
+        <div class="out" id="coneOut"></div>
+      </div>
+      <div class="card">
+        <h4>Opponent process: the afterimage</h4>
+        <p class="try"><b>Try:</b> press Start and stare at the black dot for the whole countdown without moving your eyes. When it turns white, keep looking at the dot.</p>
+        <div class="after"><svg viewBox="0 0 400 220" id="afterSvg" aria-label="Afterimage demo"></svg><span class="cd" id="afterCd"></span></div>
+        <div class="ctrl"><button class="btn primary" id="afterGo">Start (20 s)</button><span class="tagline">Not flashing: the image switches once, at the end.</span></div>
+        <div class="out" id="afterOut">The red heart and blue star will leave afterimages. What colors do you predict?</div>
+      </div>
+      <div class="card">
+        <h4>Do we all see the same colors?</h4>
+        <p class="try"><b>Try:</b> read the number, then view it the way someone with a missing or shifted cone type would (these are approximate simulations).</p>
+        <canvas id="plate" width="300" height="300" style="max-width:300px;margin:0 auto" aria-label="Color dot plate"></canvas>
+        <div class="ctrl" id="cbBtns" style="justify-content:center"></div>
+        <div class="out" id="cbOut"></div>
+      </div>
+      <div class="card">
+        <h4>The dress: your brain picks the lighting</h4>
+        <p class="try"><b>Try:</b> the same two colors, two guesses about the light. Pick what your brain assumes.</p>
+        <div class="two">
+          <svg viewBox="0 0 160 220" id="dressSvg" aria-label="Striped dress drawing"></svg>
+          <div>
+            <p class="sub tagline" style="margin:0 0 4px">My brain assumes the dress is…</p>
+            <div class="stagebtns" style="flex-direction:column;align-items:stretch">
+              <button class="tog" id="dressShade" aria-pressed="false">…in bluish shadow / daylight</button>
+              <button class="tog" id="dressWarm" aria-pressed="false">…under warm yellow indoor light</button>
+            </div>
+            <div class="two" id="dressSw" style="margin-top:8px"></div>
+          </div>
+        </div>
+        <div class="out" id="dressOut">The pixels never change. Only your brain's guess about the light does.</div>
+        <p style="margin:10px 0 2px;font-weight:600">Quick poll (saved in your worksheet)</p>
+        <div class="radios" id="pollDress"></div>
+        <div class="radios" id="pollLark"></div>
+      </div>
+    </div>
+    <div class="qs" data-sec="s4"></div>
+  </section>
+
+  <!-- ================= 5 DREAMS ================= -->
+  <section id="s5" style="--sc:#7c3aed" data-title="Dreams" data-icon="💭">
+    <h2 class="sec"><span class="n">5</span>What is the brain doing when we dream?</h2>
+    <p class="slides">Slides 21–24 · REM dreaming, amygdala, PFC, activation-synthesis</p>
+    <div class="grid2">
+      <div class="card">
+        <h4>Switch the brain from awake to dreaming</h4>
+        <p class="try"><b>Try:</b> flip between Awake and REM dreaming, then click each region to see what it adds to a dream.</p>
+        <div class="ctrl"><button class="tog" id="drAwake" aria-pressed="true">☀️ Awake</button><button class="tog" id="drRem" aria-pressed="false">🌙 REM dreaming</button></div>
+        <svg viewBox="0 0 520 320" id="dreamSvg" aria-label="Side view of the brain with regions"></svg>
+        <div class="out" id="dreamOut">Click a region.</div>
+      </div>
+      <div class="card">
+        <h4>Build the dream</h4>
+        <p class="try">Each dream feature below comes from a brain region being turned <b>up</b> or <b>down</b> in REM. Match them.</p>
+        <div class="sort" id="dreamSort"></div>
+        <p class="score" id="dreamScore"></p>
+      </div>
+    </div>
+    <div class="qs" data-sec="s5"></div>
+  </section>
+
+  <!-- ================= 6 CLOCK ================= -->
+  <section id="s6" style="--sc:#d97706" data-title="Body clock" data-icon="⏰">
+    <h2 class="sec"><span class="n">6</span>Biological rhythms and your master clock</h2>
+    <p class="slides">Slides 28–42 · circadian rhythms, entrainment, SCN, ipRGCs, melatonin, PER genes</p>
+    <div class="card">
+      <h4>Running-wheel lab: be the experimenter</h4>
+      <p class="try"><b>Try each experiment.</b> Each row is one day (midnight to midnight). Black ticks = the hamster running on its wheel. The grey background = lights off.</p>
+      <div class="stagebtns" id="actoBtns"></div>
+      <div class="ctrl" id="tauRow"><span>Hamster's internal clock period (τ)</span><input type="range" id="tau" min="23" max="25" step="0.1" value="24.4"><b id="tauV">24.4 h</b></div>
+      <canvas id="acto" width="900" height="470" aria-label="Actogram"></canvas>
+      <div class="out" id="actoOut"></div>
+    </div>
+    <div class="grid2" style="margin-top:18px">
+      <div class="card">
+        <h4>Rhythm sorter</h4>
+        <p class="try">Circadian (~24 h), ultradian (&lt; 24 h), infradian (&gt; 24 h), or circannual (~1 year)?</p>
+        <div class="sort" id="rhySort"></div>
+        <p class="score" id="rhyScore"></p>
+      </div>
+      <div class="card">
+        <h4>Phones in bed: light → SCN → melatonin</h4>
+        <p class="try"><b>Try:</b> change the screen color and how long you scroll in bed. Watch the melatonin curve.</p>
+        <div class="ctrl"><span>Screen</span><select id="scrCol"><option value="0.15">Night mode (warm amber)</option><option value="0.6" selected>Normal white</option><option value="1">Extra-bright blue-white</option></select></div>
+        <div class="ctrl"><span>Scrolling in bed</span><input type="range" id="scrMin" min="0" max="180" step="5" value="60"><b id="scrMinV">60 min</b></div>
+        <canvas id="melCv" width="640" height="230" aria-label="Melatonin curve"></canvas>
+        <div class="meters">
+          <span>ipRGCs (melanopsin)</span><div class="m"><i id="ipM" style="background:#2a78c4"></i></div><span class="v" id="ipV"></span>
+          <span>SCN says "daytime!"</span><div class="m"><i id="scnM" style="background:#d97706"></i></div><span class="v" id="scnV"></span>
+        </div>
+        <div class="out" id="melOut"></div>
+      </div>
+    </div>
+    <div class="qs" data-sec="s6"></div>
+  </section>
+
+  <!-- ================= 7 SLEEP ================= -->
+  <section id="s7" style="--sc:#1d4ed8" data-title="Sleep" data-icon="😴">
+    <h2 class="sec"><span class="n">7</span>Why we sleep, and the stages of a night</h2>
+    <p class="slides">Slides 43–52 · adenosine, NREM & REM, EEG signatures, functions of sleep</p>
+    <div class="card">
+      <h4>A night in the sleep lab</h4>
+      <p class="try"><b>Try:</b> drag through the night (or press Play). Watch the hypnogram, the brain waves (EEG) and the eye movements (EOG). When do you get the most deep sleep? The most REM?</p>
+      <canvas id="hyp" width="900" height="210" aria-label="Hypnogram"></canvas>
+      <div class="ctrl"><button class="btn" id="hypPlay">▶ Play</button><span>11 pm</span><input type="range" id="hypT" min="0" max="480" value="40"><span>7 am</span><b id="hypClock"></b></div>
+      <canvas id="eeg" width="900" height="230" aria-label="EEG and EOG traces"></canvas>
+      <div class="big" id="stageName"></div>
+      <div class="out" id="stageOut"></div>
+      <p class="tagline" style="margin-top:6px">Compare with waking: <button class="tog" id="eegWake">Awake, alert (beta)</button> <button class="tog" id="eegRelax">Eyes closed, relaxed (alpha)</button></p>
+    </div>
+    <div class="grid2" style="margin-top:18px">
+      <div class="card">
+        <h4>Game: Name that sleep stage</h4>
+        <p class="try">You're the sleep technician. Read the trace and pick the stage. 8 rounds.</p>
+        <canvas id="game" width="640" height="200" aria-label="Mystery EEG trace"></canvas>
+        <div class="stagebtns" id="gameBtns"></div>
+        <div class="out" id="gameOut">Press Start.</div>
+        <div class="ctrl"><button class="btn primary" id="gameGo">Start</button><span class="score" id="gameScore"></span></div>
+      </div>
+      <div class="card">
+        <h4>Sleep pressure: adenosine & coffee</h4>
+        <p class="try"><b>Try:</b> stay up later, then add a coffee. Caffeine blocks adenosine <b>receptors</b>, but does it remove the adenosine?</p>
+        <canvas id="adCv" width="640" height="250" aria-label="Sleep pressure graph"></canvas>
+        <div class="ctrl"><span>Bedtime</span><input type="range" id="bed" min="20" max="28" step="0.5" value="23"><b id="bedV">11:00 pm</b></div>
+        <div class="ctrl"><button class="tog" id="cafOn" aria-pressed="false">☕ Add a coffee</button><span>at</span><input type="range" id="cafT" min="8" max="23" step="0.5" value="16"><b id="cafV">4:00 pm</b></div>
+        <div class="out" id="adOut"></div>
+      </div>
+    </div>
+    <div class="qs" data-sec="s7"></div>
+  </section>
+
+  <!-- ================= 8 WAVES ================= -->
+  <section id="s8" style="--sc:#0f766e" data-title="Brain waves" data-icon="〰️">
+    <h2 class="sec"><span class="n">8</span>Neural oscillations: brain waves</h2>
+    <p class="slides">Slides 53–66 · delta, theta, alpha, beta, gamma, synchrony, coupling, entrainment, EEG</p>
+    <div class="grid2">
+      <div class="card">
+        <h4>Tune the brain wave</h4>
+        <p class="try"><b>Try:</b> sweep from 0.5 to 100 cycles per second (Hz). Notice that faster waves are also smaller.</p>
+        <canvas id="bandCv" width="640" height="200" aria-label="Brain wave"></canvas>
+        <div class="ctrl"><span>Frequency</span><input type="range" id="fq" min="0" max="1000" value="500"><b id="fqV"></b></div>
+        <div class="big" id="bandName"></div>
+        <div class="out" id="bandOut"></div>
+      </div>
+      <div class="card">
+        <h4>Why EEG needs a crowd: synchrony & entrainment</h4>
+        <p class="try"><b>Try:</b> 1) Raise <b>connection strength</b> until the neurons fall into step, and watch what the EEG electrode picks up. 2) Turn on an <b>outside rhythm</b> (like a steady beat) and see the neurons lock to it: <b>entrainment</b>.</p>
+        <canvas id="syncCv" width="640" height="330" aria-label="Neurons and summed signal"></canvas>
+        <div class="ctrl"><span>Connection strength</span><input type="range" id="kc" min="0" max="100" value="5"><b id="kcV"></b></div>
+        <div class="ctrl"><button class="tog" id="drive" aria-pressed="false">🥁 Outside rhythm</button><span>strength</span><input type="range" id="dk" min="0" max="100" value="60"></div>
+        <div class="meters"><span>Synchrony</span><div class="m"><i id="syncM" style="background:#0f766e"></i></div><span class="v" id="syncV"></span></div>
+        <p class="tagline">The animation is slowed down about 10× so you can see it. It is not flashing.</p>
+      </div>
+      <div class="card">
+        <h4>Wave coupling: theta conducts gamma</h4>
+        <p class="try"><b>Try:</b> toggle coupling. In the hippocampus, bursts of fast gamma ride on the peaks of slow theta, like a conductor (theta) timing a fast drummer (gamma).</p>
+        <canvas id="cplCv" width="640" height="200" aria-label="Theta-gamma coupling"></canvas>
+        <div class="ctrl"><button class="tog" id="cpl" aria-pressed="true">Coupled</button></div>
+      </div>
+      <div class="card">
+        <h4>Match the wave to the moment</h4>
+        <p class="try">Which band would dominate an EEG recorded…</p>
+        <div class="sort" id="bandSort"></div>
+        <p class="score" id="bandScore"></p>
+      </div>
+    </div>
+    <div class="qs" data-sec="s8"></div>
+  </section>
+
+  <!-- ================= 9 WRAP ================= -->
+  <section id="s9" style="--sc:#be185d" data-title="Wrap-up" data-icon="⭐">
+    <h2 class="sec"><span class="n">9</span>Let's review, then download your worksheet</h2>
+    <p class="slides">Slide 67</p>
+    <div class="qs" data-sec="s9"></div>
+    <div class="finish" style="margin-top:18px">
+      <h4 style="font-family:var(--hand);font-weight:normal;font-size:24px;margin:0 0 4px">Your worksheet</h4>
+      <div class="summary" id="summary"></div>
+      <div class="ctrl">
+        <button class="btn primary" id="dlHtml">⬇ Download my worksheet</button>
+        <button class="btn" id="dlPdf">🖨 Print / save as PDF</button>
+        <button class="btn" id="resetAll" style="margin-left:auto">Start over</button>
+      </div>
+      <p class="tagline">The download is a single file that opens in any browser, so you can upload it to Canvas. Nothing is sent anywhere: your answers stay on this device.</p>
+    </div>
+  </section>
+
+  <footer class="foot">
+    <p class="embed"><span>Embed:</span>
+      <code id="embedCode">&lt;iframe src="https://nelurad.github.io/neurosims/sight-to-sleep/" width="100%" height="5200" style="border:0" title="From Sight to Sleep"&gt;&lt;/iframe&gt;</code>
+      <button id="copyBtn">Copy</button></p>
+    <p style="margin-bottom:2px">References</p>
+    <ul class="refs">
+      <li>Hobson, J. A. (1989). <i>Sleep</i>. Scientific American Library.</li>
+      <li>Murzyn, E. (2008). Do we only dream in colour? <i>Consciousness and Cognition</i>, 17, 1228–1237.</li>
+      <li>Winawer, J., et al. (2007). Russian blues reveal effects of language on color discrimination. <i>PNAS</i>, 104, 7780–7785.</li>
+      <li>Wallisch, P. (2017). Illumination assumptions account for individual differences in the perceptual interpretation of a profoundly ambiguous stimulus in the color domain: "The dress." <i>Journal of Vision</i>, 17(4):5.</li>
+      <li>Ralph, M. R., Foster, R. G., Davis, F. C., &amp; Menaker, M. (1990). Transplanted suprachiasmatic nucleus determines circadian period. <i>Science</i>, 247, 975–978.</li>
+      <li>Borbély, A. A. (1982). A two process model of sleep regulation. <i>Human Neurobiology</i>, 1, 195–204.</li>
+      <li>Xie, L., et al. (2013). Sleep drives metabolite clearance from the adult brain. <i>Science</i>, 342, 373–377.</li>
+      <li>Buzsáki, G. (2006). <i>Rhythms of the Brain</i>. Oxford University Press.</li>
+    </ul>
+    <p>Part of <a href="../">NeuroSims</a>, made by Nelu Radpour (Florida State University) for PSB 2000. Content licensed CC BY 4.0; code licensed MIT. Free to use and adapt with credit. Color-vision views are approximate simulations.</p>
+  </footer>
+</div>
+
+<script>
+"use strict";
+const $=id=>document.getElementById(id);
+const clamp=(x,a,b)=>Math.max(a,Math.min(b,x)), lerp=(a,b,t)=>a+(b-a)*t;
+const NS="http://www.w3.org/2000/svg";
+function el(tag,attrs,parent){ const e=document.createElementNS(NS,tag); for(const k in attrs) e.setAttribute(k,attrs[k]); if(parent) parent.appendChild(e); return e; }
+function txt(parent,x,y,s,attrs={}){ const t=el('text',Object.assign({x,y,class:'lbl'},attrs),parent); t.textContent=s; return t; }
+function rng(seed){ return function(){ seed|=0; seed=seed+0x6D2B79F5|0; let t=Math.imul(seed^seed>>>15,1|seed); t=t+Math.imul(t^t>>>7,61|t)^t; return ((t^t>>>14)>>>0)/4294967296; }; }
+function fitCanvas(cv){ const r=window.devicePixelRatio||1; const w=cv.width, h=cv.height; if(!cv._base){ cv._base=[w,h]; cv.width=w*r; cv.height=h*r; } const ctx=cv.getContext('2d'); ctx.setTransform(r,0,0,r,0,0); return [ctx,cv._base[0],cv._base[1]]; }
+const reduceMotion=window.matchMedia&&window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+/* ======================= state / saving ======================= */
+const KEY='neurosims-sight-to-sleep-v1';
+let S={name:'',mcq:{},text:{},sort:{},games:{},poll:{},done:{}};
+try{ const raw=localStorage.getItem(KEY); if(raw) S=Object.assign(S,JSON.parse(raw)); }catch(e){}
+let saveT=null;
+function save(){ clearTimeout(saveT); saveT=setTimeout(()=>{ try{ localStorage.setItem(KEY,JSON.stringify(S)); }catch(e){} },150); updateProgress(); }
+$('who').value=S.name||''; $('who').addEventListener('input',e=>{ S.name=e.target.value; save(); });
+
+/* ======================= questions ======================= */
+const Q={
+ s1:[
+  {id:'s1a',type:'mc',q:'Pressing on your closed eyelid makes you "see" a flash of light. Why?',o:['Pressure makes the eye produce real light','The visual line fired, and the brain reads any signal on that line as light','Touch receptors in the eyelid connect to V1','Light leaks through the eyelid'],a:1,why:'Labeled lines: the brain knows WHAT you sensed from WHICH line is active, not from the type of energy.'},
+  {id:'s1b',type:'mc',q:'Whatever the sense, what does the brain actually receive?',o:['Tiny copies of the stimulus','Action potentials','Light and sound waves','Hormones'],a:1,why:'Every sense uses the same "currency": action potentials. Receptors transduce energy into receptor potentials, and those trigger action potentials.'},
+  {id:'s1c',type:'mc',q:'Which sense does NOT relay through the thalamus on its way to cortex?',o:['Touch','Vision','Smell','Hearing'],a:2,why:'Smell goes from the olfactory bulb straight to olfactory cortex, skipping the thalamus.'},
+  {id:'s1d',type:'mc',q:'How does the brain code how STRONG a stimulus is?',o:['Bigger action potentials','Faster firing rate','A different line','Longer axons'],a:1,why:'Action potentials are all-or-none, so intensity is coded by firing rate (and by how many receptors fire).'},
+  {id:'s1e',type:'text',q:'Top-down perception: describe a time your expectations or context changed what you perceived (heard, saw, tasted…).'}
+ ],
+ s2:[
+  {id:'s2a',type:'mc',q:'Which photoreceptor mainly detects differences in brightness, and works in dim light?',o:['Rods','Cones','Ganglion cells','Bipolar cells'],a:0,why:'Rods: "night vision". Very sensitive to low light, but no color.'},
+  {id:'s2b',type:'mc',q:'Which photoreceptor gives you color and fine detail?',o:['Rods','Cones'],a:1,why:'Cones: "day vision". They need bright light and give color and sharp detail.'},
+  {id:'s2c',type:'mc',q:'Why do we have a blind spot?',o:['The lens can\'t focus there','The optic nerve leaves the eye there, so there are no rods or cones','The fovea has only cones','The iris blocks that area'],a:1,why:'Where the optic nerve exits (the optic disc), there is no room for photoreceptors.'},
+  {id:'s2d',type:'text',q:'You never notice your blind spot in everyday life. Give two reasons why. (Hint: two eyes… and what did fill-in mode show?)'}
+ ],
+ s3:[
+  {id:'s3a',type:'mc',q:'A star appears in your LEFT visual field. Which hemisphere\'s V1 processes it first?',o:['Left','Right','Both equally','Neither: it goes to the SCN'],a:1,why:'Contralateral: nasal fibers cross at the optic chiasm, so the left visual field ends up in the right hemisphere.'},
+  {id:'s3b',type:'mc',q:'Where does the optic tract synapse before reaching V1?',o:['Lateral geniculate nucleus (LGN) of the thalamus','Hippocampus','Suprachiasmatic nucleus','Cerebellum'],a:0,why:'Retina → optic nerve → chiasm → optic tract → LGN (thalamus) → V1 in the occipital lobe.'},
+  {id:'s3c',type:'mc',q:'Someone can see faces perfectly well but can\'t recognize their own mother. Which area is most likely damaged?',o:['V1','Fusiform face area (FFA)','The dorsal stream','The optic chiasm'],a:1,why:'Prosopagnosia (face blindness) comes from damage to the fusiform face area in the ventral "what" stream. V1 is fine, so they still see the face.'},
+  {id:'s3d',type:'text',q:'Catching a ball uses BOTH streams. Explain what each stream contributes.'}
+ ],
+ s4:[
+  {id:'s4a',type:'mc',q:'Yellow light (about 580 nm) mostly activates which cones?',o:['S only','M and L, with S quiet','S and M','All three equally'],a:1,why:'Yellow = M and L both active, S quiet. Color is the brain comparing all three.'},
+  {id:'s4b',type:'mc',q:'After staring at red, you see green on a white wall. Which theory explains this?',o:['Trichromatic theory','Opponent-process theory','Labeled lines','Color constancy'],a:1,why:'Opponent process: red vs. green, blue vs. yellow. Tire one side and the other side "wins" for a moment.'},
+  {id:'s4c',type:'mc',q:'Damage to V4 can cause…',o:['Face blindness','Cerebral achromatopsia: the world looks gray','A larger blind spot','Night blindness'],a:1,why:'V4 has color-tuned neurons. Damage leaves the eyes and cones working, but the world looks gray.'},
+  {id:'s4d',type:'mc',q:'Why is red-green color blindness much more common in men?',o:['Men have fewer cones','The M and L pigment genes are on the X chromosome, and men have only one X','Testosterone damages cones','Men use V4 less'],a:1,why:'One faulty copy on a man\'s single X is enough. Women usually have a backup copy.'},
+  {id:'s4e',type:'mc',q:'A banana looks yellow in sunlight AND in shade. This is…',o:['Color constancy','Tetrachromacy','An afterimage','Achromatopsia'],a:0,why:'The brain estimates the lighting and corrects for it. The same process explains the dress.'},
+  {id:'s4f',type:'text',q:'What did YOU see in the dress, and are you a lark or a night owl? Does it fit Wallisch (2017)? Explain using color constancy.'}
+ ],
+ s5:[
+  {id:'s5a',type:'mc',q:'Why are dreams often so emotional (fear, joy, anxiety)?',o:['The prefrontal cortex is very active','The amygdala is highly active in REM','The eyes are moving','The thalamus is off'],a:1,why:'The amygdala is highly active in REM, which drives the strong emotional content of dreams.'},
+  {id:'s5b',type:'mc',q:'Why don\'t we question bizarre events while dreaming?',o:['The amygdala is inactive','The prefrontal cortex (logic, judgment) is much less active','Visual cortex is off','We are fully awake'],a:1,why:'Reduced PFC activity means weak logic, poor judgment and weak working memory.'},
+  {id:'s5c',type:'mc',q:'The activation-synthesis hypothesis (Hobson) says dreams are…',o:['Hidden wishes','The cortex trying to make sense of random brain activity','Memories replayed exactly','Caused by the stomach'],a:1,why:'Brainstem activity in REM "activates" the cortex, and the cortex "synthesizes" a story.'},
+  {id:'s5d',type:'text',q:'Describe a recent dream (keep it classroom-friendly!). Pick one feature of it and explain which brain region caused it.'}
+ ],
+ s6:[
+  {id:'s6a',type:'mc',q:'A cue that sets the internal clock (like light) is called a…',o:['Zeitgeber','Free-runner','Chronotype','Neuromodulator'],a:0,why:'Zeitgeber = "time-giver". Light is the main one.'},
+  {id:'s6b',type:'mc',q:'In constant dim light, the hamster\'s activity starts a little later each day. What does that show?',o:['It is arrhythmic','Its endogenous clock runs a bit longer than 24 h (free-running)','The SCN was destroyed','Light is still entraining it'],a:1,why:'Without a zeitgeber the clock free-runs at its own period. It is still rhythmic, just not locked to 24 h.'},
+  {id:'s6c',type:'mc',q:'A hamster gets an SCN transplant from a mutant donor with a 20-hour rhythm. Its new rhythm is…',o:['24 hours','20 hours: the donor\'s','Arrhythmic forever','48 hours'],a:1,why:'The rhythm follows the SCN tissue (the donor\'s), which proves the SCN generates the rhythm.'},
+  {id:'s6d',type:'mc',q:'Which cells tell the SCN that it is daytime?',o:['Rods','Cones','ipRGCs containing melanopsin','Hair cells'],a:2,why:'Intrinsically photosensitive retinal ganglion cells (ipRGCs) use melanopsin, are most sensitive to blue light, and signal the SCN through the retinohypothalamic tract.'},
+  {id:'s6e',type:'mc',q:'The retinohypothalamic tract releases which neurotransmitter onto SCN neurons to reset the clock?',o:['Dopamine','Glutamate','GABA','Adenosine'],a:1,why:'Glutamate → metabotropic receptors → second-messenger cascade → turns on PER, which resets the clock.'},
+  {id:'s6f',type:'mc',q:'Where is the SCN?',o:['In the hypothalamus, right above the optic chiasm','In the occipital lobe','In the pineal gland','In the retina'],a:0,why:'Its location right above the chiasm gives it direct input from the eyes.'},
+  {id:'s6g',type:'text',q:'Design a better bedtime routine for a college student using ipRGCs, the SCN and melatonin. Give at least two specific changes.'}
+ ],
+ s7:[
+  {id:'s7a',type:'mc',q:'Sleep spindles and K-complexes are the signature of which stage?',o:['N1','N2','N3','REM'],a:1,why:'N2: where you spend most of the night. Spindles are linked to memory.'},
+  {id:'s7b',type:'mc',q:'Slow-wave (delta) sleep happens mostly in…',o:['The first half of the night','The second half of the night','Only during naps','Evenly all night'],a:0,why:'Most SWS is early in the night, and most REM is late. Check the hypnogram!'},
+  {id:'s7c',type:'mc',q:'REM is called "paradoxical sleep" because…',o:['The EEG looks almost awake, but the body is paralyzed (atonia)','You sleepwalk','The brain is silent','There are only delta waves'],a:0,why:'REM EEG is low-amplitude and fast like waking, with rapid eye movements, but the muscles are paralyzed (atonia).'},
+  {id:'s7d',type:'mc',q:'Caffeine keeps you awake by…',o:['Destroying adenosine','Blocking adenosine receptors','Increasing melatonin','Speeding up the SCN'],a:1,why:'Caffeine is an adenosine receptor antagonist. The adenosine is still there, which is why you crash later.'},
+  {id:'s7e',type:'mc',q:'The glymphatic "brainwashing" system clears toxins like beta-amyloid most during…',o:['Deep NREM (N3) sleep','Alert wakefulness','Eating','REM only'],a:0,why:'During deep sleep, brain cells shrink and more CSF flows through, flushing out waste.'},
+  {id:'s7f',type:'text',q:'You have an exam tomorrow. Using what you learned about SWS, REM and memory, argue for (or against) pulling an all-nighter.'}
+ ],
+ s8:[
+  {id:'s8a',type:'mc',q:'Which band dominates deep N3 sleep?',o:['Delta (0.5–4 Hz)','Alpha (8–12 Hz)','Beta (12–30 Hz)','Gamma (30–100 Hz)'],a:0,why:'Delta: slow, high-amplitude waves, the sign of many neurons firing together.'},
+  {id:'s8b',type:'mc',q:'An EEG mostly picks up…',o:['Single action potentials','Synchronized activity of huge populations of cortical neurons','Blood flow','Muscle movement only'],a:1,why:'EEG sums the activity of hundreds of thousands of neurons. If they aren\'t in sync, it mostly cancels out (as in the synchrony demo).'},
+  {id:'s8c',type:'mc',q:'Who first described alpha waves when he invented the EEG in 1924?',o:['Hans Berger','Sigmund Freud','Hubel & Wiesel','Hobson'],a:0,why:'Alpha waves are also called "Berger\'s waves".'},
+  {id:'s8d',type:'mc',q:'Which EEG pattern has been linked to ADHD?',o:['More theta, less beta','More delta, less gamma','No alpha','Only spindles'],a:0,why:'From the clinical slide: ADHD has been associated with more theta and less beta.'},
+  {id:'s8e',type:'text',q:'In your own words: what is neural entrainment, and how did the "outside rhythm" demo show it?'}
+ ],
+ s9:[
+  {id:'s9a',type:'mc',q:'How many main types of brain waves did we cover?',o:['3','4','5','7'],a:2,why:'Delta, theta, alpha, beta, gamma.'},
+  {id:'s9b',type:'mc',q:'Brain waves are most commonly measured using ______.',o:['fMRI','EEG','PET','X-ray'],a:1,why:'Electroencephalography (EEG).'},
+  {id:'s9c',type:'mc',q:'When the brain\'s rhythmic activity syncs to an external stimulus, that is called…',o:['Coupling','Entrainment','Free-running','Transduction'],a:1,why:'Neural entrainment. Same word as the clock: syncing an internal rhythm to an outside one.'},
+  {id:'s9d',type:'text',q:'Connect the dots: explain how LIGHT links today\'s two big topics, vision and sleep.'},
+  {id:'s9e',type:'text',q:'Muddiest point: what is still confusing, or what do you want to know more about?'}
+ ]
+};
+const MC_ALL=[]; const TX_ALL=[];
+let qnum=0;
+document.querySelectorAll('.qs').forEach(box=>{
+  const sec=box.dataset.sec; const h=document.createElement('p'); h.className='qh'; h.textContent='✏️ Check your understanding'; box.appendChild(h);
+  Q[sec].forEach(item=>{
+    qnum++; item.n=qnum; item.sec=sec;
+    const d=document.createElement('div'); d.className='q';
+    const qt=document.createElement('p'); qt.className='qt'; qt.innerHTML='<span class="num">'+qnum+'.</span>'; qt.appendChild(document.createTextNode(item.q)); d.appendChild(qt);
+    if(item.type==='mc'){
+      MC_ALL.push(item);
+      const ops=document.createElement('div'); ops.className='opts'; const why=document.createElement('p'); why.className='why';
+      item.o.forEach((o,i)=>{ const b=document.createElement('button'); b.className='opt'; b.type='button'; b.textContent=o;
+        b.addEventListener('click',()=>{ const rec=S.mcq[item.id]||{tries:0,first:null};
+          if(rec.correct) return;
+          rec.tries++; rec.last=i; if(rec.first===null) rec.first=i; rec.correct=(i===item.a); S.mcq[item.id]=rec; save(); paint(); });
+        ops.appendChild(b); });
+      function paint(){ const rec=S.mcq[item.id]; if(!rec) return; const bs=ops.querySelectorAll('.opt');
+        bs.forEach((b,i)=>{ b.classList.remove('right','wrong'); });
+        if(rec.correct){ bs[item.a].classList.add('right'); why.innerHTML='<b class="ok">Yes!</b> '+item.why; }
+        else { bs[rec.last].classList.add('wrong'); why.innerHTML='<b class="no">Not quite. Try again.</b>'; }
+        why.classList.add('show'); }
+      d.appendChild(ops); d.appendChild(why); paint();
+    } else {
+      TX_ALL.push(item);
+      const ta=document.createElement('textarea'); ta.value=S.text[item.id]||''; ta.setAttribute('aria-label',item.q); ta.placeholder='Type your answer…';
+      const sv=document.createElement('span'); sv.className='saved'; sv.textContent='saved ✓';
+      let t; ta.addEventListener('input',()=>{ S.text[item.id]=ta.value; save(); sv.classList.add('on'); clearTimeout(t); t=setTimeout(()=>sv.classList.remove('on'),1200); });
+      d.appendChild(ta); d.appendChild(sv);
+    }
+    box.appendChild(d);
+  });
+});
+
+/* generic sorter */
+const SORTS={};
+function makeSort(id,items,cats,key,scoreEl){
+  const box=$(id); SORTS[key]={items,cats};
+  items.forEach((it,k)=>{
+    const row=document.createElement('div'); row.className='chip';
+    const t=document.createElement('span'); t.className='t'; t.textContent=it[0]; row.appendChild(t);
+    cats.forEach((c,ci)=>{ const b=document.createElement('button'); b.className='b'; b.type='button'; b.textContent=c;
+      b.addEventListener('click',()=>{ S.sort[key]=S.sort[key]||{}; S.sort[key][k]=ci; save(); paintRow(); paintScore(); }); row.appendChild(b); });
+    const fb=document.createElement('span'); fb.className='tagline'; fb.style.flexBasis='100%'; row.appendChild(fb);
+    function paintRow(){ const v=S.sort[key]&&S.sort[key][k]; row.classList.remove('ok','no'); row.querySelectorAll('.b').forEach((b,ci)=>b.classList.toggle('sel',ci===v));
+      if(v===undefined) { fb.textContent=''; return; }
+      const ok=v===it[1]; row.classList.add(ok?'ok':'no'); fb.textContent=ok?('✓ '+(it[2]||'')):'✗ Not quite. Try the other option.'; }
+    row._paint=paintRow; box.appendChild(row); paintRow();
+  });
+  function paintScore(){ const a=S.sort[key]||{}; let n=0,c=0; items.forEach((it,k)=>{ if(a[k]!==undefined){ n++; if(a[k]===it[1]) c++; } });
+    $(scoreEl).textContent=n?`${c} / ${items.length} correct`:''; }
+  paintScore();
+}
+function sortScore(key){ const s=SORTS[key]; const a=S.sort[key]||{}; let c=0; s.items.forEach((it,k)=>{ if(a[k]===it[1]) c++; }); return [c,s.items.length]; }
+
+/* ======================= 1. labeled lines ======================= */
+(function(){
+  const stim={light:['visual','light'],sound:['auditory','sound'],eyelid:['visual','pressure'],touch:['touch','pressure'],sugar:['taste','chemical'],smell:['smell','chemical']};
+  const lineInfo={
+    visual:{exp:'💡 a flash of LIGHT',path:'optic nerve → thalamus (LGN) → V1 (occipital lobe)'},
+    auditory:{exp:'🔊 a SOUND',path:'auditory nerve → brainstem → thalamus (MGN) → A1 (temporal lobe)'},
+    touch:{exp:'✋ a TOUCH / pressure',path:'sensory nerve → spinal cord → thalamus → S1 (parietal lobe)'},
+    taste:{exp:'🍬 a TASTE (sweet)',path:'cranial nerves → brainstem → thalamus → gustatory cortex (insula)'},
+    smell:{exp:'☕ a SMELL',path:'olfactory nerve → olfactory bulb → olfactory cortex. It skips the thalamus!'}};
+  const cv=$('llSpikes'); let t0=performance.now(); let spikes=[];
+  function upd(){
+    const s=$('llStim').value, rw=$('llLine').value, str=+$('llStr').value; $('llStrV').textContent=str;
+    const [nat,energy]=stim[s]; const line=rw==='auto'?nat:rw; const L=lineInfo[line];
+    const rate=str*9;
+    let msg=`<b>Energy:</b> ${energy}. <b>Line firing:</b> ${line} (${L.path}).<br><b>Your brain experiences:</b> ${L.exp}, at about <b>${rate} spikes/s</b> (stronger stimulus = faster firing).`;
+    if(s==='eyelid'&&rw==='auto') msg+='<br>🤯 No light at all! Pressure made the <b>visual</b> line fire, so you "see" light (a phosphene).';
+    if(rw!=='auto'&&rw!==nat) msg+=`<br>🔀 You rewired a ${nat} receptor to the ${rw} line, so the brain reports ${L.exp.split(' ').slice(1).join(' ')}. <b>What you sense = which line fires.</b>`;
+    if(s==='smell'&&rw==='auto') msg+='<br>👃 Smell is the one sense that does not relay through the thalamus first.';
+    $('llOut').innerHTML=msg; cv._rate=rate;
+  }
+  ['llStim','llLine','llStr'].forEach(i=>$(i).addEventListener('input',upd)); upd();
+  const r=rng(7); let last=performance.now();
+  function frame(now){
+    const [ctx,W,H]=fitCanvas(cv); const dt=Math.min(.05,(now-last)/1000); last=now;
+    if(r()<(cv._rate||30)*dt) spikes.push(0);
+    spikes=spikes.map(x=>x+dt*160).filter(x=>x<W);
+    ctx.clearRect(0,0,W,H); ctx.strokeStyle='#e2ddd2'; ctx.beginPath(); ctx.moveTo(0,H-20); ctx.lineTo(W,H-20); ctx.stroke();
+    ctx.strokeStyle='#2a78c4'; ctx.lineWidth=2; spikes.forEach(x=>{ const X=W-x; ctx.beginPath(); ctx.moveTo(X,H-20); ctx.lineTo(X,14); ctx.stroke(); });
+    ctx.fillStyle='#6b6f76'; ctx.font='12px system-ui'; ctx.fillText('action potentials on the line → (all the same size)',8,H-4);
+    requestAnimationFrame(frame);
+  }
+  requestAnimationFrame(frame);
+})();
+
+/* receptor → perception steps */
+(function(){
+  const svg=$('rpSvg'); const steps=[
+    ['Receptor','detects the stimulus (retina, skin, ear, tongue, nose)'],
+    ['Transduction','energy → receptor potential → action potentials'],
+    ['Nerve','signal travels to the spinal cord or brainstem'],
+    ['Thalamus','relay station for every sense except smell'],
+    ['Primary cortex','S1 (touch), V1 (vision), A1 (hearing)'],
+    ['Association cortex','adds memory and context → PERCEPTION']];
+  let k=0; const boxes=[];
+  steps.forEach((s,i)=>{ const x=20+(i%3)*170, y=i<3?30:170;
+    const g=el('g',{},svg); const r=el('rect',{x,y,width:150,height:100,rx:14,fill:'#fff',stroke:'#e2ddd2','stroke-width':2},g);
+    txt(g,x+75,y+30,(i+1)+'. '+s[0],{'text-anchor':'middle',style:'font-size:17px'});
+    const fo=el('foreignObject',{x:x+8,y:y+38,width:134,height:60},g); const dv=document.createElement('div'); dv.style.cssText='font:12.5px/1.3 system-ui;color:#6b6f76;text-align:center'; dv.textContent=s[1]; fo.appendChild(dv);
+    boxes.push([r,g]); });
+  el('path',{d:'M170 80 h20 M340 80 h20 M445 130 v40 M360 220 h-20 M190 220 h-20',stroke:'#c9c3b6','stroke-width':3,fill:'none','marker-end':''},svg);
+  function paint(){ const smell=$('rpSmell').checked;
+    boxes.forEach(([r,g],i)=>{ const skip=smell&&i===3; r.setAttribute('fill',i===k?'#e8f1fb':(i<k?'#f6f8fb':'#fff')); r.setAttribute('stroke',skip?'#d1495b':(i===k?'#2a78c4':'#e2ddd2')); r.setAttribute('stroke-dasharray',skip?'6 5':''); g.style.opacity=skip?.45:1; });
+    let m=`<b>Step ${k+1}: ${steps[k][0]}.</b> ${steps[k][1]}.`;
+    if(smell){ const sm=['Odor molecules bind receptors in the nose','Chemical → receptor potential → action potentials','Olfactory nerve → olfactory bulb','SKIPPED: smell goes straight from the olfactory bulb to the olfactory cortex','Primary olfactory (piriform) cortex','Association cortex: "that\'s coffee!"']; m=`<b>Smell, step ${k+1}:</b> ${sm[k]}.`; }
+    $('rpOut').innerHTML=m; }
+  $('rpNext').addEventListener('click',()=>{ k=Math.min(5,k+1); if($('rpSmell').checked&&k===3) k=4; paint(); });
+  $('rpPrev').addEventListener('click',()=>{ k=Math.max(0,k-1); if($('rpSmell').checked&&k===3) k=2; paint(); });
+  $('rpSmell').addEventListener('change',paint); paint();
+})();
+
+/* ======================= 2. eye ======================= */
+(function(){
+  const svg=$('eyeSvg');
+  el('rect',{x:0,y:0,width:520,height:300,fill:'#fffdf8'},svg);
+  // light rays
+  const parts={};
+  parts.sclera=el('circle',{cx:280,cy:150,r:125,fill:'#fff',stroke:'#c9c3b6','stroke-width':3},svg);
+  [[110,0.9],[150,0],[190,-0.9]].forEach(([y])=>{ el('path',{d:`M0 ${y} L150 ${y} L405 ${150+(150-y)*0.12}`,stroke:'#e8b400','stroke-width':2,fill:'none',opacity:.7,'stroke-dasharray':'6 4'},svg); });
+  parts.retina=el('path',{d:'M 330 34 A 118 118 0 0 1 330 266',stroke:'#e4572e','stroke-width':9,fill:'none',class:'hot','data-k':'retina'},svg);
+  parts.nerve=el('path',{d:'M398 132 L500 122 L500 178 L398 168 Z',fill:'#f2c94c',stroke:'#c79a1e','stroke-width':2,class:'hot','data-k':'nerve'},svg);
+  parts.cornea=el('path',{d:'M 170 85 Q 120 150 170 215',stroke:'#7fb3e0','stroke-width':9,fill:'none',class:'hot','data-k':'cornea'},svg);
+  parts.iris=el('g',{class:'hot','data-k':'iris'},svg);
+  el('rect',{x:178,y:88,width:12,height:44,rx:4,fill:'#5b8c5a'},parts.iris); el('rect',{x:178,y:168,width:12,height:44,rx:4,fill:'#5b8c5a'},parts.iris);
+  parts.pupil=el('rect',{x:174,y:132,width:20,height:36,fill:'#111',opacity:.85,class:'hot','data-k':'pupil'},svg);
+  parts.lens=el('ellipse',{cx:212,cy:150,rx:17,ry:44,fill:'#cfe6f7',stroke:'#7fb3e0','stroke-width':2,class:'hot','data-k':'lens'},svg);
+  el('circle',{cx:399,cy:150,r:5,fill:'#111'},svg);
+  txt(svg,384,290,'blind spot = where the nerve leaves',{style:'font-size:12.5px','text-anchor':'middle'});
+  txt(svg,40,96,'light',{style:'font-size:14px'});
+  const info={cornea:['Cornea','Where light first passes through. It does most of the focusing.'],
+    pupil:['Pupil','The opening that sets how much light enters.'],
+    iris:['Iris','The colored muscle that sets the size of the pupil.'],
+    lens:['Lens','Bends (focuses) light inward onto the retina.'],
+    retina:['Retina','Layer at the back with rods and cones that transduce light into neural signals.'],
+    nerve:['Optic nerve','Bundle of ganglion-cell axons carrying visual information to the brain. Where it leaves the eye is your blind spot.']};
+  const labels={}; const pos={cornea:[118,70],pupil:[150,250],iris:[205,78],lens:[248,248],retina:[440,40],nerve:[455,112]};
+  for(const k in pos){ labels[k]=txt(svg,pos[k][0],pos[k][1],info[k][0],{'text-anchor':'middle',style:'font-size:16px'}); }
+  let quiz=false, target=null, qs=0, qn=0; const keys=Object.keys(info);
+  function showLabels(on){ for(const k in labels) labels[k].style.opacity=on?1:0; }
+  function ask(){ target=keys[Math.floor(Math.random()*keys.length)]; $('eyeOut').innerHTML=`<b>Click the: ${info[target][0]}</b>`; }
+  svg.querySelectorAll('.hot').forEach(h=>h.addEventListener('click',()=>{ const k=h.dataset.k;
+    if(!quiz){ $('eyeOut').innerHTML=`<b>${info[k][0]}:</b> ${info[k][1]}`; return; }
+    qn++; if(k===target){ qs++; $('eyeOut').innerHTML=`✓ Yes, that's the ${info[k][0]}. `; } else $('eyeOut').innerHTML=`✗ That was the ${info[k][0]}. `;
+    $('eyeScore').textContent=`${qs}/${qn}`; S.games.eye={score:qs,of:qn}; save(); setTimeout(ask,900); }));
+  $('eyeExplore').addEventListener('click',()=>{ quiz=false; $('eyeExplore').setAttribute('aria-pressed','true'); $('eyeQuiz').setAttribute('aria-pressed','false'); showLabels(true); $('eyeOut').textContent='Click any part of the eye.'; });
+  $('eyeQuiz').addEventListener('click',()=>{ quiz=true; qs=0; qn=0; $('eyeScore').textContent=''; $('eyeQuiz').setAttribute('aria-pressed','true'); $('eyeExplore').setAttribute('aria-pressed','false'); showLabels(false); ask(); });
+})();
+
+/* rods vs cones */
+(function(){
+  const svg=$('fruitSvg');
+  const g=el('g',{},svg); el('rect',{x:0,y:0,width:420,height:180,fill:'#f4efe2'},g);
+  el('ellipse',{cx:210,cy:150,rx:170,ry:22,fill:'#8c6b4a'},g);
+  [[90,110,34,'#d62828'],[160,104,30,'#f77f00'],[300,112,30,'#7cb518'],[350,118,24,'#d62828']].forEach(([x,y,r,c])=>el('circle',{cx:x,cy:y,r,fill:c},g));
+  el('path',{d:'M200 120 Q230 60 275 90 Q240 80 212 128 Z',fill:'#fcbf49',stroke:'#c99a2e','stroke-width':2},g);
+  for(let i=0;i<9;i++) el('circle',{cx:225+(i%3)*12,cy:132-(Math.floor(i/3))*11,r:7,fill:'#6a4c93'},g);
+  const t=el('text',{x:30,y:36,style:'font:11px Georgia;fill:#333'},g); t.textContent='Fine print: "Sale ends at noon"';
+  const t2=el('text',{x:300,y:36,style:'font:bold 22px system-ui;fill:#1d4ed8'},g); t2.textContent='BLUE';
+  function upd(){ const L=+$('lux').value; const cone=clamp((L-25)/50,0,1); const rod=L<70?clamp(1-(L-50)/20,0,1)*(L<3?L/3:1):0;
+    const sat=cone, bright=lerp(.18,1,clamp(L/60,0,1)), blur=lerp(2.2,0,cone);
+    g.style.filter=`saturate(${sat}) brightness(${bright}) blur(${blur}px)`;
+    $('rodM').style.width=(rod*100)+'%'; $('coneM').style.width=(cone*100)+'%'; $('rodV').textContent=Math.round(rod*100)+'%'; $('coneV').textContent=Math.round(cone*100)+'%';
+    $('luxOut').innerHTML= L>70?'☀️ <b>Daylight: cones</b> do the work: full color and sharp detail (you can read the fine print). Rods are saturated.':
+      L>25?'🌆 <b>Dusk:</b> both rods and cones contribute. Colors start to fade.':
+      L>2?'🌙 <b>Moonlight: rods only.</b> No color, blurry detail, but you can still see shapes. Rods are great at brightness, not color.':'⚫ Almost no light: even rods have nothing to work with.'; }
+  $('lux').addEventListener('input',upd); upd();
+})();
+(function(){
+  $('bsLines').addEventListener('click',e=>{ const on=e.currentTarget.getAttribute('aria-pressed')!=='true'; e.currentTarget.setAttribute('aria-pressed',on); $('bs').classList.toggle('lines',on);
+    $('bsMsg').textContent=on?'The white dot sits on blue stripes. When it falls in your blind spot, most people see the stripes continue: the brain fills in!':''; });
+  $('bsFound').addEventListener('click',()=>{ S.games.blindspot=true; save(); $('bsMsg').textContent='✔ Nice! The dot landed on your optic disc, where there are no photoreceptors.'; });
+  if(S.games.blindspot) $('bsMsg').textContent='✔ You found your blind spot.';
+})();
+
+/* ======================= 3. visual fields ======================= */
+(function(){
+  const svg=$('vfSvg');
+  el('rect',{x:0,y:0,width:440,height:380,fill:'#fffdf8'},svg);
+  txt(svg,110,22,'LEFT visual field',{'text-anchor':'middle',style:'font-size:15px'}); txt(svg,330,22,'RIGHT visual field',{'text-anchor':'middle',style:'font-size:15px'});
+  el('line',{x1:220,y1:8,x2:220,y2:70,stroke:'#c9c3b6','stroke-dasharray':'4 4'},svg);
+  const star=el('text',{x:110,y:60,'text-anchor':'middle',style:'font-size:30px',fill:'#2a78c4'},svg); star.textContent='★';
+  const dot=el('circle',{cx:330,cy:50,r:12,fill:'#e4572e'},svg);
+  // eyes
+  [[150,'L'],[290,'R']].forEach(([x,s])=>{ el('circle',{cx:x,cy:110,r:30,fill:'#fff',stroke:'#c9c3b6','stroke-width':3},svg); el('circle',{cx:x,cy:84,r:7,fill:'#333'},svg); txt(svg,x,150,(s==='L'?'left':'right')+' eye',{'text-anchor':'middle',style:'font-size:13px'}); });
+  // brain outline
+  el('path',{d:'M60 170 Q60 365 220 372 Q380 365 380 170 Z',fill:'#fbf7ee',stroke:'#e2ddd2','stroke-width':2},svg);
+  el('line',{x1:220,y1:170,x2:220,y2:372,stroke:'#e2ddd2','stroke-width':2},svg);
+  txt(svg,220,212,'optic chiasm',{'text-anchor':'middle',style:'font-size:13px'});
+  txt(svg,120,262,'LGN',{'text-anchor':'middle',style:'font-size:13px'}); txt(svg,320,262,'LGN',{'text-anchor':'middle',style:'font-size:13px'});
+  txt(svg,130,356,'left V1',{'text-anchor':'middle',style:'font-size:14px'}); txt(svg,310,356,'right V1',{'text-anchor':'middle',style:'font-size:14px'});
+  const v1L=el('ellipse',{cx:150,cy:332,rx:50,ry:16,fill:'#eee8dc'},svg), v1R=el('ellipse',{cx:290,cy:332,rx:50,ry:16,fill:'#eee8dc'},svg);
+  // fibers: from each eye: temporal (outer) half stays, nasal (inner) half crosses
+  const P={
+    L_temp:'M136 138 L130 200 L130 250 L145 320',   // left eye temporal -> left
+    L_nasal:'M162 138 L210 200 L300 250 L290 320',  // left eye nasal -> crosses -> right
+    R_temp:'M304 138 L310 200 L310 250 L295 320',   // right eye temporal -> right
+    R_nasal:'M278 138 L230 200 L140 250 L150 320'}; // right eye nasal -> crosses -> left
+  const paths={}; for(const k in P) paths[k]=el('path',{d:P[k],stroke:'#d9d2c2','stroke-width':5,fill:'none','stroke-linecap':'round'},svg);
+  el('circle',{cx:130,cy:250,r:9,fill:'#c9c3b6'},svg); el('circle',{cx:310,cy:250,r:9,fill:'#c9c3b6'},svg);
+  let mode=null;
+  function paint(){ for(const k in paths){ paths[k].setAttribute('stroke','#d9d2c2'); }
+    v1L.setAttribute('fill','#eee8dc'); v1R.setAttribute('fill','#eee8dc'); star.style.opacity=mode==='R'?.25:1; dot.style.opacity=mode==='L'?.25:1;
+    $('vfL').setAttribute('aria-pressed',mode==='L'); $('vfR').setAttribute('aria-pressed',mode==='R');
+    if(mode==='L'){ // left field lands on right side of each retina: left eye nasal, right eye temporal
+      paths.L_nasal.setAttribute('stroke','#2a78c4'); paths.R_temp.setAttribute('stroke','#2a78c4'); v1R.setAttribute('fill','#9cc3ea');
+      $('vfOut').innerHTML='★ The <b>left</b> visual field lands on the <b>nasal</b> half of the left retina (those fibers <b>cross</b> at the chiasm) and the <b>temporal</b> half of the right retina (those stay on the same side). Both arrive in the <b>RIGHT</b> LGN → <b>RIGHT V1</b>. Contralateral!'; }
+    else if(mode==='R'){ paths.R_nasal.setAttribute('stroke','#e4572e'); paths.L_temp.setAttribute('stroke','#e4572e'); v1L.setAttribute('fill','#f3b3a1');
+      $('vfOut').innerHTML='● The <b>right</b> visual field goes to the <b>LEFT</b> LGN → <b>LEFT V1</b>. Nasal fibers from the right eye cross, and temporal fibers from the left eye stay on their side.'; }
+  }
+  $('vfL').addEventListener('click',()=>{ mode=mode==='L'?null:'L'; paint(); }); $('vfR').addEventListener('click',()=>{ mode=mode==='R'?null:'R'; paint(); }); paint();
+})();
+makeSort('streamSort',[
+  ['Recognizing your friend\'s face in a crowd',0,'Ventral "what" stream (the FFA!)'],
+  ['Judging how fast a car is coming',1,'Dorsal: motion (area MT)'],
+  ['Reaching out to grab your coffee cup',1,'Dorsal: "where / how" guides action'],
+  ['Noticing that an apple is red',0,'Ventral: color (V4)'],
+  ['Reading the word "neuron"',0,'Ventral: identifying shapes and letters'],
+  ['Knowing where the ball is in space',1,'Dorsal: location']],['Ventral "what"','Dorsal "where/how"'],'streams','streamScore');
+
+/* ======================= 4. color ======================= */
+function wl2rgb(w){ let r=0,g=0,b=0;
+  if(w<440){ r=-(w-440)/40; b=1; } else if(w<490){ g=(w-440)/50; b=1; } else if(w<510){ g=1; b=-(w-510)/20; } else if(w<580){ r=(w-510)/70; g=1; } else if(w<645){ r=1; g=-(w-645)/65; } else r=1;
+  let f=w<420?.3+.7*(w-400)/20:(w>680?.3+.7*(700-w)/20:1); f=clamp(f,.3,1);
+  return [Math.round(255*Math.pow(r*f,.8)),Math.round(255*Math.pow(g*f,.8)),Math.round(255*Math.pow(b*f,.8))]; }
+const cone=(w,p,s)=>Math.exp(-0.5*Math.pow((w-p)/s,2));
+(function(){
+  const cv=$('coneCv');
+  function draw(){ const w=+$('wl').value; $('wlV').textContent=w+' nm'; const [ctx,W,H]=fitCanvas(cv);
+    ctx.clearRect(0,0,W,H); const x0=40,x1=W-150,y0=20,y1=H-40; const X=v=>x0+(v-400)/300*(x1-x0), Y=v=>y1-v*(y1-y0);
+    const grd=ctx.createLinearGradient(x0,0,x1,0); for(let v=400;v<=700;v+=10){ const c=wl2rgb(v); grd.addColorStop((v-400)/300,`rgb(${c})`); }
+    ctx.fillStyle=grd; ctx.fillRect(x0,y1+6,x1-x0,10);
+    ctx.fillStyle='#6b6f76'; ctx.font='12px system-ui'; ctx.fillText('400 nm',x0-14,H-6); ctx.fillText('700 nm',x1-24,H-6); ctx.fillText('response',2,y0+4);
+    const C=[['S',420,28,'#2a78c4'],['M',534,42,'#2f9e6e'],['L',564,48,'#e4572e']]; const resp=[];
+    C.forEach(([n,p,s,col])=>{ ctx.strokeStyle=col; ctx.lineWidth=2.5; ctx.beginPath(); for(let v=400;v<=700;v+=2){ const yy=Y(cone(v,p,s)); v===400?ctx.moveTo(X(v),yy):ctx.lineTo(X(v),yy); } ctx.stroke();
+      ctx.fillStyle=col; ctx.font='bold 14px system-ui'; ctx.fillText(n,X(p)-4,Y(1)-4); resp.push(cone(w,p,s)); });
+    ctx.strokeStyle='#2a2a2a'; ctx.setLineDash([4,4]); ctx.beginPath(); ctx.moveTo(X(w),y0); ctx.lineTo(X(w),y1); ctx.stroke(); ctx.setLineDash([]);
+    // bars
+    const bx=x1+30; C.forEach(([n,,,col],i)=>{ const h=resp[i]*(y1-y0); ctx.fillStyle='#eee8dc'; ctx.fillRect(bx+i*34,y0,24,y1-y0); ctx.fillStyle=col; ctx.fillRect(bx+i*34,y1-h,24,h); ctx.fillStyle='#2a2a2a'; ctx.font='bold 13px system-ui'; ctx.fillText(n,bx+i*34+7,y1+16); });
+    const c=wl2rgb(w); ctx.fillStyle=`rgb(${c})`; ctx.beginPath(); ctx.arc(bx+46,H-14,0,0,7); ctx.fill();
+    const [s,m,l]=resp; const hi=v=>v>.5?'high':(v>.15?'some':'quiet');
+    let name=w<450?'violet-blue':w<490?'blue':w<510?'cyan':w<565?'green':w<590?'yellow':w<620?'orange':'red';
+    $('coneOut').innerHTML=`<span style="display:inline-block;width:18px;height:18px;border-radius:50%;vertical-align:-4px;background:rgb(${c});margin-right:6px"></span>You see <b>${name}</b>. S is ${hi(s)}, M is ${hi(m)}, L is ${hi(l)}. `+
+      (name==='yellow'?'<b>M + L both active, S quiet = yellow</b>, just like the slide (and like the red + green pixels on your screen right now).':'The brain reads the <b>ratio</b> of the three cones, not any one of them alone.');
+    document.querySelectorAll('[data-wl]').forEach(b=>b.setAttribute('aria-pressed',+b.dataset.wl===w)); }
+  $('wl').addEventListener('input',draw); document.querySelectorAll('[data-wl]').forEach(b=>b.addEventListener('click',()=>{ $('wl').value=b.dataset.wl; draw(); })); draw();
+})();
+(function(){
+  const svg=$('afterSvg');
+  function scene(white){ svg.innerHTML=''; el('rect',{x:0,y:0,width:400,height:220,fill:'#fff'},svg);
+    if(!white){ el('path',{d:'M110 90 C110 55 160 55 160 90 C160 55 210 55 210 90 C210 130 160 150 160 175 C160 150 110 130 110 90 Z',fill:'#e11d2e',transform:'translate(-40,0)'},svg);
+      el('path',{d:'M290 50 L304 92 L348 92 L313 118 L326 160 L290 134 L254 160 L267 118 L232 92 L276 92 Z',fill:'#1e40af'},svg); }
+    el('circle',{cx:200,cy:110,r:4,fill:'#111'},svg); }
+  scene(false); let timer=null;
+  $('afterGo').addEventListener('click',()=>{ if(timer) return; scene(false); let n=20; $('afterCd').textContent=n; $('afterOut').textContent='Stare at the black dot… keep your eyes still.';
+    timer=setInterval(()=>{ n--; $('afterCd').textContent=n>0?n:''; if(n<=0){ clearInterval(timer); timer=null; scene(true);
+      $('afterOut').innerHTML='Now on white: most people see a <b>green/cyan heart</b> and a <b>yellow star</b>. The red-responding and blue-responding channels got tired, so their <b>opponents</b> (green, yellow) win for a moment. That\'s <b>opponent processing</b> in ganglion cells and the LGN.'; S.games.afterimage=true; save(); } },1000); });
+})();
+(function(){
+  const cv=$('plate'); const ctx=cv.getContext('2d'); const W=300,H=300; cv.width=W; cv.height=H;
+  const mask=document.createElement('canvas'); mask.width=W; mask.height=H; const m=mask.getContext('2d');
+  m.fillStyle='#000'; m.font='bold 215px Arial, Helvetica, sans-serif'; m.textAlign='center'; m.textBaseline='middle'; m.fillText('6',W/2,H/2+10);
+  const md=m.getImageData(0,0,W,H).data; const r=rng(42);
+  const fig=['#d9603b','#e0814e','#c9563a','#e57a4a','#cf6a3f'], bg=['#8fae5a','#a3b862','#7fa152','#9fb36e','#b0b36a','#89a95f'];
+  ctx.fillStyle='#fff'; ctx.fillRect(0,0,W,H);
+  for(let i=0;i<2600;i++){ const x=r()*W, y=r()*H; if(Math.hypot(x-W/2,y-H/2)>142) continue; const rad=3+r()*5.5;
+    const inFig=md[(Math.floor(y)*W+Math.floor(x))*4+3]>100; const pal=inFig?fig:bg; ctx.fillStyle=pal[Math.floor(r()*pal.length)]; ctx.beginPath(); ctx.arc(x,y,rad,0,7); ctx.fill(); }
+  const orig=ctx.getImageData(0,0,W,H);
+  const MAT={typical:null,
+    protan:[[.567,.433,0],[.558,.442,0],[0,.242,.758]],
+    deutan:[[.625,.375,0],[.7,.3,0],[0,.3,.7]],
+    tritan:[[.95,.05,0],[0,.433,.567],[0,.475,.525]],
+    achro:[[.299,.587,.114],[.299,.587,.114],[.299,.587,.114]]};
+  const names={typical:'Typical (3 cones)',protan:'Protanopia (no L)',deutan:'Deuteranopia (no M)',tritan:'Tritanopia (no S)',achro:'Achromatopsia (V4 damage)'};
+  const say={typical:'Most people see a <b>6</b>. Type what you saw in the questions below if you like!',
+    protan:'Without working <b>L (red) cones</b>, the red and green dots look alike and the 6 nearly disappears. About 1% of men.',
+    deutan:'Without <b>M (green) cones</b>, the most common type (~5% of men). The 6 blends into the background.',
+    tritan:'Missing <b>S (blue) cones</b> is rare. Red vs. green still differs, so the 6 stays visible.',
+    achro:'Cerebral achromatopsia: the eyes are fine but <b>V4</b> is damaged, so the world is in grayscale. These dots were matched for brightness, so the 6 is very hard to see.'};
+  const box=$('cbBtns');
+  function show(k){ const im=new ImageData(new Uint8ClampedArray(orig.data),W,H); const M=MAT[k];
+    if(M){ const d=im.data; for(let i=0;i<d.length;i+=4){ const R=d[i],G=d[i+1],B=d[i+2]; d[i]=M[0][0]*R+M[0][1]*G+M[0][2]*B; d[i+1]=M[1][0]*R+M[1][1]*G+M[1][2]*B; d[i+2]=M[2][0]*R+M[2][1]*G+M[2][2]*B; } }
+    ctx.putImageData(im,0,0); box.querySelectorAll('button').forEach(b=>b.setAttribute('aria-pressed',b.dataset.k===k)); $('cbOut').innerHTML=`<b>${names[k]}.</b> ${say[k]}`; }
+  Object.keys(names).forEach(k=>{ const b=document.createElement('button'); b.className='tog'; b.dataset.k=k; b.textContent=names[k].split(' (')[0]; b.addEventListener('click',()=>show(k)); box.appendChild(b); });
+  show('typical');
+})();
+(function(){
+  const svg=$('dressSvg'); el('rect',{x:0,y:0,width:160,height:220,fill:'#d8c8a0'},svg); el('rect',{x:0,y:0,width:160,height:220,fill:'#fff6d8',opacity:.45},svg);
+  const body='#8f97b9', stripe='#6f5f3c';
+  const clip=el('clipPath',{id:'dc'},el('defs',{},svg)); el('path',{d:'M58 14 L102 14 L110 60 L98 72 L140 208 L20 208 L62 72 L50 60 Z'},clip);
+  const g=el('g',{'clip-path':'url(#dc)'},svg); el('rect',{x:0,y:0,width:160,height:220,fill:body},g);
+  [62,80,118,150,182].forEach(y=>el('rect',{x:0,y,width:160,height:y===62?12:10,fill:stripe},g));
+  const sw=$('dressSw');
+  function setSw(a,b,la,lb){ sw.innerHTML=`<div class="swatch" style="background:${a}">${la}</div><div class="swatch" style="background:${b}">${lb}</div>`; }
+  setSw(body,stripe,'pixel color 1','pixel color 2');
+  function pick(which){ $('dressShade').setAttribute('aria-pressed',which==='shade'); $('dressWarm').setAttribute('aria-pressed',which==='warm');
+    if(which==='shade'){ setSw('#f2efe6','#b8913a','→ WHITE','→ GOLD'); $('dressOut').innerHTML='Your brain assumes <b>bluish shadow/daylight</b> and <b>subtracts blue</b>: the dress looks <b>white & gold</b>. Wallisch (2017): people who assume daylight (often <b>larks</b>, who see more daylight) tend to see white & gold.'; }
+    else { setSw('#2f4fa8','#1c1c1c','→ BLUE','→ BLACK'); $('dressOut').innerHTML='Your brain assumes <b>warm artificial light</b> and <b>subtracts yellow</b>: the dress looks <b>blue & black</b>. <b>Night owls</b> (more artificial light) were more likely to see blue & black.'; }
+    S.games.dress=which; save(); }
+  $('dressShade').addEventListener('click',()=>pick('shade')); $('dressWarm').addEventListener('click',()=>pick('warm'));
+  function poll(id,key,q,opts){ const box=$(id); const lab=document.createElement('span'); lab.style.cssText='flex-basis:100%;font-size:14px;color:#6b6f76'; lab.textContent=q; box.appendChild(lab);
+    opts.forEach(o=>{ const l=document.createElement('label'); const r=document.createElement('input'); r.type='radio'; r.name=key; r.value=o; r.checked=S.poll[key]===o; r.addEventListener('change',()=>{ S.poll[key]=o; save(); }); l.appendChild(r); l.appendChild(document.createTextNode(o)); box.appendChild(l); }); }
+  poll('pollDress','dress','When you first saw the real photo of the dress, you saw…',['White & gold','Blue & black','It switched','Never saw it']);
+  poll('pollLark','chrono','You are more of a…',['Lark (early riser)','Night owl','Somewhere in between']);
+})();
+
+/* ======================= 5. dreams ======================= */
+(function(){
+  const svg=$('dreamSvg'); el('rect',{x:0,y:0,width:520,height:320,fill:'#fffdf8'},svg);
+  el('path',{d:'M70 170 C60 90 150 30 260 32 C380 30 470 80 470 165 C470 215 440 240 400 245 C380 275 330 285 300 262 C260 268 230 262 210 250 C150 262 85 240 70 170 Z',fill:'#f6e9e4',stroke:'#c9a99c','stroke-width':3},svg);
+  el('path',{d:'M300 262 C305 290 300 305 292 318',stroke:'#c9a99c','stroke-width':16,fill:'none','stroke-linecap':'round'},svg);
+  const R={
+    pfc:{d:'M78 160 C72 100 120 58 175 50 C185 95 175 140 140 175 C110 180 90 178 78 160 Z',name:'Prefrontal cortex',wake:.9,rem:.2,say:'↓ <b>Turned DOWN in REM.</b> Logic, judgment and working memory go offline, so the dream is bizarre and you don\'t question it ("sure, my dog can drive").'},
+    vis:{d:'M405 95 C450 115 470 150 462 190 C445 222 420 236 398 240 C392 200 388 150 405 95 Z',name:'Visual (association) cortex',wake:.7,rem:.95,say:'↑ <b>Active in REM</b> even though your eyes are closed: it builds vivid images with no input from the eyes, which is why dreams are hallucinations.'},
+    s1:{d:'M268 38 C285 40 300 44 312 50 C300 110 292 150 285 190 C275 192 268 190 262 188 C270 140 274 90 268 38 Z',name:'Primary sensory cortex',wake:.85,rem:.15,say:'↓ <b>Little activity in REM.</b> Almost no real input arrives from the world, so nothing competes with the brain\'s self-generated story.'},
+    amy:{d:'M222 205 m-17 0 a17 13 0 1 0 34 0 a17 13 0 1 0 -34 0',name:'Amygdala',wake:.4,rem:1,say:'↑ <b>Highly active in REM:</b> strong emotions like fear, joy and anxiety. 25% of college students have at least one nightmare a month.'},
+    hyp:{d:'M262 182 m-15 0 a15 11 0 1 0 30 0 a15 11 0 1 0 -30 0',name:'Hypothalamus',wake:.5,rem:.85,say:'↑ <b>Active in REM:</b> basic drives and motivations (hunger, thirst, sex, fight-or-flight) show up in dream plots.'},
+    hip:{d:'M300 205 C320 200 345 205 352 218 C340 224 318 222 300 215 Z',name:'Memory (PFC working memory)',wake:.8,rem:.35,say:'↓ <b>Memory is weak in dreams:</b> without PFC working memory, scenes jump around and most dreams are forgotten within minutes of waking.'}};
+  const labelPos={pfc:[120,118],vis:[430,170],s1:[290,22],amy:[190,240],hyp:[262,160],hip:[372,212]};
+  const shp={};
+  for(const k in R){ shp[k]=el('path',{d:R[k].d,class:'hot',fill:'#7c3aed',stroke:'#4c1d95','stroke-width':1.5},svg); shp[k].addEventListener('click',()=>{ $('dreamOut').innerHTML=`<b>${R[k].name}.</b> `+(rem?R[k].say:`Awake activity level: ${Math.round(R[k].wake*100)}%. Switch to REM to see what changes.`); }); }
+  for(const k in R){ txt(svg,labelPos[k][0],labelPos[k][1],R[k].name.replace(' (association)','').replace(' (PFC working memory)',''),{'text-anchor':'middle',style:'font-size:13px'}); }
+  let rem=false;
+  function paint(){ for(const k in R){ const a=rem?R[k].rem:R[k].wake; shp[k].setAttribute('fill-opacity',.12+.78*a); }
+    $('drAwake').setAttribute('aria-pressed',!rem); $('drRem').setAttribute('aria-pressed',rem); }
+  $('drAwake').addEventListener('click',()=>{ rem=false; paint(); }); $('drRem').addEventListener('click',()=>{ rem=true; paint(); $('dreamOut').innerHTML='🌙 REM: darker = less active. Click each region.'; }); paint();
+})();
+makeSort('dreamSort',[
+  ['You feel intense fear while being chased',0,'Amygdala up'],
+  ['A cat turns into your professor and you think it\'s normal',1,'Prefrontal cortex down: no logic check'],
+  ['You see vivid colors and places with your eyes closed',0,'Visual cortex up'],
+  ['You forget the dream 5 minutes after waking up',1,'Working memory (PFC) down'],
+  ['The dream is about food because you went to bed hungry',0,'Hypothalamus up: drives & motivations']],['Region turned UP','Region turned DOWN'],'dream','dreamScore');
+
+/* ======================= 6. actogram ======================= */
+(function(){
+  const cv=$('acto'); const EX={
+    entrain:{b:'1. Entrainment (12 h light : 12 h dark)',say:'The hamster is <b>nocturnal</b>, so it runs during the dark. Its activity starts at lights-off every day: the clock is <b>entrained</b> (locked) to light.'},
+    shift:{b:'2. Phase shift (jet lag)',say:'On day 11 the lights-off time jumps 6 hours <b>earlier</b>. Activity doesn\'t jump: it shifts about an hour a day until it catches up. That\'s jet lag, and it proves <b>light is the zeitgeber</b>.'},
+    free:{b:'3. Free-run (constant dim light)',say:'No light cue. Activity drifts by (τ − 24 h) every day. With τ > 24 h it starts <b>later and later</b>. The rhythm is still there (<b>not arrhythmic</b>), which shows the clock is <b>endogenous</b>. Try other τ values!'},
+    lesion:{b:'4. Destroy the SCN',say:'On day 11 the SCN is lesioned. Activity is scattered across all hours: the hamster is <b>arrhythmic</b>. It still runs about as much, just with no timing. The SCN is the master clock.'},
+    transplant:{b:'5. SCN transplant (20-hour donor)',say:'Lesion on day 6 → arrhythmic. Fetal SCN from a <b>mutant with a 20-h rhythm</b> is transplanted on day 14. A rhythm returns with a <b>20-h period</b> (activity starts 4 h earlier each day): <b>the donor\'s rhythm</b>, as in Ralph et al. (1990).'}};
+  let cur='entrain'; const box=$('actoBtns');
+  for(const k in EX){ const b=document.createElement('button'); b.className='tog'; b.textContent=EX[k].b; b.dataset.k=k; b.addEventListener('click',()=>{ cur=k; draw(); S.games.acto=S.games.acto||{}; S.games.acto[k]=true; save(); }); box.appendChild(b); }
+  function draw(){
+    box.querySelectorAll('button').forEach(b=>b.setAttribute('aria-pressed',b.dataset.k===cur)); $('tauRow').style.display=cur==='free'?'':'none';
+    const tau=+$('tau').value; $('tauV').textContent=tau.toFixed(1)+' h';
+    const [ctx,W,H]=fitCanvas(cv); ctx.clearRect(0,0,W,H);
+    const days=30, x0=56, x1=W-130, y0=26, rh=(H-y0-10)/days; const X=h=>x0+(h/24)*(x1-x0);
+    ctx.fillStyle='#6b6f76'; ctx.font='12px system-ui'; ['midnight','6 am','noon','6 pm','midnight'].forEach((s,i)=>{ ctx.textAlign='center'; ctx.fillText(s,X(i*6),16); }); ctx.textAlign='left';
+    const r=rng(cur==='free'?Math.round(tau*10):3);
+    let onset=18;
+    for(let d=0;d<days;d++){
+      const y=y0+d*rh;
+      // lighting
+      let dark=null, constDim=false;
+      if(cur==='entrain') dark=[18,30];
+      else if(cur==='shift') dark=d<10?[18,30]:[12,24];
+      else if(cur==='free') constDim=true;
+      else if(cur==='lesion') dark=[18,30];
+      else if(cur==='transplant') constDim=true;
+      ctx.fillStyle='#fffbe8'; ctx.fillRect(x0,y,x1-x0,rh-1);
+      if(constDim){ ctx.fillStyle='#e9e6df'; ctx.fillRect(x0,y,x1-x0,rh-1); }
+      else { ctx.fillStyle='#d5d0c6'; const a=dark[0],b=dark[1]; ctx.fillRect(X(a),y,X(Math.min(b,24))-X(a),rh-1); if(b>24) ctx.fillRect(X(0),y,X(b-24)-X(0),rh-1); }
+      // activity onset
+      let arr=false, dur=10;
+      if(cur==='entrain') onset=18+(r()-.5)*.4;
+      else if(cur==='shift'){ if(d<10) onset=18+(r()-.5)*.4; else onset=Math.max(12,onset-1.1)+(r()-.5)*.3; }
+      else if(cur==='free'){ onset=18+(tau-24)*d; }
+      else if(cur==='lesion'){ if(d<10) onset=18+(r()-.5)*.4; else arr=true; }
+      else if(cur==='transplant'){ if(d<5) onset=18+.3*d; else if(d<13) arr=true; else { if(d===13) onset=20; else onset-=4; } dur=8; }
+      ctx.fillStyle='#111';
+      if(arr){ for(let k=0;k<26;k++){ const h=r()*24, w=.15+r()*.5; ctx.fillRect(X(h),y+rh*(.25+r()*.3),Math.max(1,X(h+w)-X(h)),rh*.45); } }
+      else { for(let h=0;h<dur;h+=.18){ if(r()<.18) continue; const hh=((onset+h)%24+24)%24; const amp=(h<dur*.6?1:.5)*(.5+r()*.5); ctx.fillRect(X(hh),y+rh*(1-amp)*.9,Math.max(1.4,(x1-x0)/24*.14),rh*amp*.9); } }
+      ctx.fillStyle='#9a9489'; ctx.font='11px system-ui'; if(d%5===0){ ctx.textAlign='right'; ctx.fillText('day '+(d+1),x0-6,y+rh-2); ctx.textAlign='left'; }
+    }
+    // events
+    const ev=(d,s,col)=>{ const y=y0+d*rh; ctx.strokeStyle=col; ctx.lineWidth=2; ctx.beginPath(); ctx.moveTo(x0-2,y); ctx.lineTo(x1+4,y); ctx.stroke(); ctx.fillStyle=col; ctx.font='bold 12px system-ui'; ctx.fillText(s,x1+8,y+4); };
+    if(cur==='shift') ev(10,'lights shifted 6 h earlier','#d97706');
+    if(cur==='lesion') ev(10,'SCN lesion','#d1495b');
+    if(cur==='transplant'){ ev(5,'SCN lesion','#d1495b'); ev(13,'SCN transplant (20-h donor)','#2f9e6e'); }
+    if(cur==='free') ev(0,'lights stay dim from now on','#6b6f76');
+    if(cur==='entrain') ev(0,'12:12 light/dark','#6b6f76');
+    ctx.fillStyle='#6b6f76'; ctx.font='11px system-ui'; ctx.fillText('■ grey = dark',x1+8,H-24); ctx.fillText('▮ black = running',x1+8,H-10);
+    $('actoOut').innerHTML=EX[cur].say;
+  }
+  $('tau').addEventListener('input',draw); window.addEventListener('resize',draw); draw();
+})();
+makeSort('rhySort',[
+  ['Sleep-wake cycle',0,'~24 h'],['The ~90-minute cycle of sleep stages',1,'Repeats several times a night'],['Melatonin release at night',0,'~24 h, controlled by the SCN'],
+  ['Menstrual cycle',2,'~28 days'],['Bear hibernation',3,'Once a year'],['Bird migration',3,'Once a year'],['Body temperature dipping before dawn',0,'~24 h'],['Feeling hungry ~3 times a day',1,'More than once a day']],
+  ['Circadian','Ultradian','Infradian','Circannual'],'rhythms','rhyScore');
+(function(){
+  const cv=$('melCv');
+  function draw(){ const col=+$('scrCol').value, mins=+$('scrMin').value; $('scrMinV').textContent=mins+' min';
+    const ip=clamp(col*(mins>0?1:0)*(.4+.6*Math.min(1,mins/60)),0,1); const delay=col*Math.min(mins,150)*1.1; // minutes (illustrative)
+    $('ipM').style.width=(ip*100)+'%'; $('ipV').textContent=Math.round(ip*100)+'%'; $('scnM').style.width=(ip*90)+'%'; $('scnV').textContent=Math.round(ip*90)+'%';
+    const [ctx,W,H]=fitCanvas(cv); ctx.clearRect(0,0,W,H); const x0=40,x1=W-14,y0=18,y1=H-34; const T0=18,T1=32; const X=t=>x0+(t-T0)/(T1-T0)*(x1-x0);
+    ctx.fillStyle='#eef2fb'; ctx.fillRect(X(22),y0,X(22+mins/60)-X(22),y1-y0); if(mins) { ctx.fillStyle='#2a78c4'; ctx.font='11px system-ui'; ctx.fillText('📱 screen',X(22)+3,y0+12); }
+    ctx.strokeStyle='#e2ddd2'; ctx.beginPath(); ctx.moveTo(x0,y1); ctx.lineTo(x1,y1); ctx.stroke();
+    ctx.fillStyle='#6b6f76'; ctx.font='12px system-ui'; ctx.textAlign='center'; [18,20,22,24,26,28,30,32].forEach(t=>ctx.fillText(((t%24)%12||12)+((t%24)<12?' am':' pm'),X(t),H-14)); ctx.textAlign='left';
+    const curve=(on)=>{ ctx.beginPath(); for(let t=T0;t<=T1;t+=.05){ const v=1/(1+Math.exp(-(t-on-1)*2.2))*(1/(1+Math.exp((t-30.5)*2))); const y=y1-v*(y1-y0-16); t===T0?ctx.moveTo(X(t),y):ctx.lineTo(X(t),y); } ctx.stroke(); };
+    ctx.setLineDash([5,5]); ctx.strokeStyle='#b8b2a6'; ctx.lineWidth=2; curve(21); ctx.setLineDash([]);
+    ctx.strokeStyle='#7c3aed'; ctx.lineWidth=3; curve(21+delay/60);
+    ctx.fillStyle='#7c3aed'; ctx.font='bold 12px system-ui'; ctx.fillText('melatonin',X(29),y0+26); ctx.fillStyle='#9a9489'; ctx.font='11px system-ui'; ctx.fillText('dashed = no screen',X(29),y0+42);
+    $('melOut').innerHTML=mins===0?'No screen: melatonin starts rising around <b>9 pm</b>, and the pineal gland signals "night".':
+      `Screen light hits <b>ipRGCs (melanopsin)</b>, which are most sensitive to <b>blue</b>. Signal → retinohypothalamic tract (glutamate) → <b>SCN</b> says "it's still day!" → the pineal gland holds back melatonin. Melatonin onset is delayed by about <b>${Math.round(delay)} minutes</b>.`+(col<.3?' Night mode helps a lot: there is much less blue light.':''); }
+  ['scrCol','scrMin'].forEach(i=>$(i).addEventListener('input',draw)); draw();
+})();
+
+/* ======================= 7. sleep: EEG synthesis ======================= */
+const FS=200;
+function genTrace(stage,secs,seed){
+  const r=rng(seed), N=Math.round(secs*FS), eeg=new Float32Array(N), eog=new Float32Array(N);
+  const band=(f1,f2,amp,n=7)=>{ const comps=[]; for(let i=0;i<n;i++) comps.push([f1+r()*(f2-f1),r()*6.283,amp*(.6+r()*.8)/Math.sqrt(n)]); return comps; };
+  let C=[]; const P={wake:[[14,30,12],[8,12,4]],relax:[[8.5,11.5,38],[14,25,5]],N1:[[4,7.5,26],[8,11,6],[14,25,4]],N2:[[4,7,22],[1,3,14]],N3:[[0.6,2,85],[3,6,12]],REM:[[4,7,15],[15,30,9],[8,12,4]]}[stage];
+  P.forEach(p=>C=C.concat(band(p[0],p[1],p[2])));
+  const events=[];
+  if(stage==='N2'){ for(let t=0.6+r();t<secs;t+=2.4+r()*2.2) events.push([r()<.55?'sp':'kc',t]); }
+  if(stage==='N1'){ for(let t=1.5+r()*2;t<secs;t+=4+r()*3) events.push(['vx',t]); }
+  if(stage==='REM'){ for(let t=0.4+r();t<secs;t+=2+r()*3) events.push(['saw',t]); }
+  if(stage==='relax'){ /* waxing/waning envelope */ }
+  // EOG events
+  const eogEv=[]; if(stage==='REM'){ let t=r()*.5; while(t<secs){ const burst=2+Math.floor(r()*4); for(let k=0;k<burst&&t<secs;k++){ eogEv.push([t,(r()<.5?-1:1)*(60+r()*60)]); t+=.25+r()*.35; } t+=.8+r()*1.8; } }
+  if(stage==='wake'){ for(let t=r();t<secs;t+=1.2+r()*2) eogEv.push([t,(r()<.5?-1:1)*(40+r()*50)]); }
+  for(let i=0;i<N;i++){ const t=i/FS; let v=0; for(const [f,ph,a] of C) v+=a*Math.sin(6.283*f*t+ph);
+    if(stage==='relax') v*=0.65+0.35*Math.sin(6.283*0.4*t);
+    v+=(r()-.5)*4;
+    for(const [ty,t0] of events){ const u=t-t0;
+      if(ty==='sp'&&u>0&&u<1.0) v+=26*Math.sin(Math.PI*u/1.0)**2*Math.sin(6.283*13*u);
+      if(ty==='kc'&&u>0&&u<0.9) v+= -110*Math.exp(-(((u-.18)/.09)**2)) + 70*Math.exp(-(((u-.5)/.15)**2));
+      if(ty==='vx'&&u>0&&u<.4) v+= -55*Math.exp(-(((u-.15)/.05)**2));
+      if(ty==='saw'&&u>0&&u<1.2) v+= 22*(((u*2.5)%1)-.5)*2; }
+    eeg[i]=v;
+    let e=(r()-.5)*3; if(stage==='N1') e+=55*Math.sin(6.283*.25*t+1);
+    let lvl=0; for(const [t0,a] of eogEv){ if(t>=t0) lvl=a; } if(stage==='REM'||stage==='wake') e+=lvl;
+    if(stage==='wake'){ for(const [t0] of eogEv){ const u=t-t0; if(u>0&&u<.25) e+=120*Math.sin(Math.PI*u/.25); } }
+    eog[i]=e; }
+  return {eeg,eog,N};
+}
+const STAGES={
+  wake:{n:'Awake, alert',c:'#e8b400',d:'<b>Beta waves</b>: low amplitude, high frequency, "desynchronized". Neurons are all busy doing different things. Eyes move and blink.'},
+  relax:{n:'Awake, eyes closed and relaxed',c:'#e8b400',d:'<b>Alpha rhythm</b> (8–12 Hz): slower and more regular. This is the "pre-sleep" pattern.'},
+  N1:{n:'Stage N1: drifting off',c:'#93c5fd',d:'Light sleep: alpha fades into <b>theta</b>, with occasional <b>vertex spikes</b> and slow rolling eye movements. Wake someone now and they\'ll often deny they were asleep!'},
+  N2:{n:'Stage N2: light sleep',c:'#3b82f6',d:'Theta background plus <b>sleep spindles</b> (short 12–14 Hz bursts, linked to memory) and <b>K-complexes</b> (big sharp down-up waves). You spend <b>most of the night</b> here.'},
+  N3:{n:'Stage N3: deep, slow-wave sleep',c:'#1e3a8a',d:'<b>Delta waves</b>: high amplitude, low frequency. Huge numbers of neurons fire together. This is the most restorative stage: hard to wake from, glymphatic "brainwashing", growth hormone, and declarative memory consolidation.'},
+  REM:{n:'REM sleep: dreaming',c:'#be185d',d:'Low-amplitude, fast EEG that looks <b>almost awake</b>, plus <b>rapid eye movements</b> on the EOG. The body is in <b>atonia</b> (paralyzed), so you don\'t act out your dreams. That\'s why it\'s called <b>paradoxical sleep</b>. Most vivid, story-like dreams happen here.'}};
+const TRACES={}; for(const k in STAGES) TRACES[k]=genTrace(k,30,{wake:1,relax:2,N1:3,N2:4,N3:5,REM:6}[k]);
+function drawTrace(cv,tr,offset,secs,showLabels=true,col='#2a2a2a'){
+  const [ctx,W,H]=fitCanvas(cv); ctx.clearRect(0,0,W,H); const x0=showLabels?70:10, x1=W-10; const n=Math.round(secs*FS);
+  const lanes=[[tr.eeg,H*.38,'EEG',0.55,col],[tr.eog,H*.82,'EOG (eyes)',0.35,'#6b6f76']];
+  for(const [arr,mid,lab,sc,cc] of lanes){ ctx.strokeStyle='#efe9dc'; ctx.lineWidth=1; ctx.beginPath(); ctx.moveTo(x0,mid); ctx.lineTo(x1,mid); ctx.stroke();
+    ctx.strokeStyle=cc; ctx.lineWidth=1.4; ctx.beginPath(); for(let i=0;i<n;i++){ const v=arr[(offset+i)%tr.N]; const x=x0+i/n*(x1-x0), y=mid-v*sc*(H/230); i?ctx.lineTo(x,y):ctx.moveTo(x,y); } ctx.stroke();
+    if(showLabels){ ctx.fillStyle='#6b6f76'; ctx.font='12px system-ui'; ctx.fillText(lab,6,mid+4); } }
+  ctx.fillStyle='#9a9489'; ctx.font='11px system-ui'; ctx.fillText('1 second',x1-60,H-4); ctx.strokeStyle='#9a9489'; ctx.beginPath(); ctx.moveTo(x1-(x1-x0)/secs,H-14); ctx.lineTo(x1,H-14); ctx.stroke();
+}
+(function(){
+  // typical night, minutes from 11 pm
+  const seg=[['wake',0,8],['N1',8,14],['N2',14,32],['N3',32,72],['N2',72,82],['REM',82,92],
+    ['N2',92,112],['N3',112,142],['N2',142,165],['REM',165,185],['N1',185,188],
+    ['N2',188,220],['N3',220,236],['N2',236,262],['REM',262,292],
+    ['N2',292,332],['REM',332,368],['wake',368,370],['N1',370,374],['N2',374,410],['REM',410,465],['wake',465,480]];
+  const lvl={wake:0,REM:1,N1:2,N2:3,N3:4};
+  const stageAt=m=>{ for(const s of seg) if(m>=s[1]&&m<s[2]) return s[0]; return 'wake'; };
+  const hcv=$('hyp'), ecv=$('eeg'); let override=null, playing=false, off=0;
+  function drawHyp(m){ const [ctx,W,H]=fitCanvas(hcv); ctx.clearRect(0,0,W,H); const x0=70,x1=W-12,y0=14,y1=H-30; const X=t=>x0+t/480*(x1-x0), Y=l=>y0+l*(y1-y0)/4;
+    ['Awake','REM','N1','N2','N3'].forEach((s,i)=>{ ctx.fillStyle='#6b6f76'; ctx.font='12px system-ui'; ctx.fillText(s,8,Y(i)+4); ctx.strokeStyle='#f1ece1'; ctx.beginPath(); ctx.moveTo(x0,Y(i)); ctx.lineTo(x1,Y(i)); ctx.stroke(); });
+    ctx.fillStyle='rgba(30,58,138,.08)'; ctx.fillRect(X(0),y0,X(240)-X(0),y1-y0); ctx.fillStyle='rgba(190,24,93,.07)'; ctx.fillRect(X(240),y0,X(480)-X(240),y1-y0);
+    ctx.fillStyle='#1e3a8a'; ctx.font='11px system-ui'; ctx.fillText('first half: most deep sleep (N3)',X(4),y1+14); ctx.fillStyle='#be185d'; ctx.fillText('second half: most REM',X(244),y1+14);
+    ctx.lineWidth=3; seg.forEach(([s,a,b],i)=>{ ctx.strokeStyle=STAGES[s].c; ctx.beginPath(); ctx.moveTo(X(a),Y(lvl[s])); ctx.lineTo(X(b),Y(lvl[s])); ctx.stroke();
+      if(i<seg.length-1){ ctx.strokeStyle='#c9c3b6'; ctx.lineWidth=1; ctx.beginPath(); ctx.moveTo(X(b),Y(lvl[s])); ctx.lineTo(X(b),Y(lvl[seg[i+1][0]])); ctx.stroke(); ctx.lineWidth=3; } });
+    ctx.strokeStyle='#2a2a2a'; ctx.lineWidth=1.5; ctx.beginPath(); ctx.moveTo(X(m),y0-6); ctx.lineTo(X(m),y1+2); ctx.stroke(); ctx.fillStyle='#2a2a2a'; ctx.beginPath(); ctx.arc(X(m),y0-6,4,0,7); ctx.fill(); }
+  function upd(){ const m=+$('hypT').value; const mm=(23*60+m)%(24*60); const hh=Math.floor(mm/60), mi=mm%60; $('hypClock').textContent=`${(hh%12)||12}:${String(mi).padStart(2,'0')} ${hh<12?'am':'pm'}`;
+    drawHyp(m); const st=override||stageAt(m); $('stageName').textContent=STAGES[st].n; $('stageName').style.color=STAGES[st].c; $('stageOut').innerHTML=STAGES[st].d;
+    $('eegWake').setAttribute('aria-pressed',override==='wake'); $('eegRelax').setAttribute('aria-pressed',override==='relax'); }
+  $('hypT').addEventListener('input',()=>{ override=null; upd(); S.games.hyp=true; save(); });
+  $('eegWake').addEventListener('click',()=>{ override=override==='wake'?null:'wake'; upd(); }); $('eegRelax').addEventListener('click',()=>{ override=override==='relax'?null:'relax'; upd(); });
+  $('hypPlay').addEventListener('click',()=>{ playing=!playing; $('hypPlay').textContent=playing?'⏸ Pause':'▶ Play'; override=null; });
+  let last=performance.now(), acc=0;
+  function loop(now){ const dt=Math.min(.05,(now-last)/1000); last=now; off=(off+Math.round(dt*FS))%TRACES.wake.N;
+    if(playing){ acc+=dt*12; if(acc>=1){ const v=(+$('hypT').value+Math.floor(acc))%481; acc%=1; $('hypT').value=v; upd(); } }
+    const m=+$('hypT').value; const st=override||stageAt(m); drawTrace(ecv,TRACES[st],off,6,true,STAGES[st].c==='#e8b400'?'#8a6d00':STAGES[st].c);
+    requestAnimationFrame(loop); }
+  upd(); requestAnimationFrame(loop); window.addEventListener('resize',upd);
+})();
+(function(){
+  const opts=['wake','relax','N1','N2','N3','REM']; const box=$('gameBtns'); let round=0, score=0, ans=null, live=false, seed=100;
+  const short={wake:'Awake (beta)',relax:'Relaxed (alpha)',N1:'N1',N2:'N2',N3:'N3',REM:'REM'};
+  opts.forEach(k=>{ const b=document.createElement('button'); b.className='tog'; b.textContent=short[k]; b.disabled=true; b.addEventListener('click',()=>guess(k)); b.dataset.k=k; box.appendChild(b); });
+  const clues={wake:'fast, tiny waves + eye blinks/saccades',relax:'regular ~10 Hz alpha waves, quiet eyes',N1:'theta, a vertex spike, slow rolling eyes',N2:'spindles and/or a K-complex',N3:'big, slow delta waves',REM:'fast low-amplitude EEG + rapid eye movements'};
+  function next(){ round++; ans=opts[Math.floor(Math.random()*opts.length)]; seed++; const tr=genTrace(ans,8,seed*7); drawTrace($('game'),tr,0,8,true,'#2a2a2a');
+    $('gameOut').innerHTML=`Round ${round} of 8: which stage is this?`; live=true; box.querySelectorAll('button').forEach(b=>{ b.disabled=false; b.setAttribute('aria-pressed','false'); }); }
+  function guess(k){ if(!live) return; live=false; const ok=k===ans; if(ok) score++; box.querySelectorAll('button').forEach(b=>{ b.disabled=true; if(b.dataset.k===ans) b.setAttribute('aria-pressed','true'); });
+    $('gameOut').innerHTML=(ok?'✓ <b>Correct!</b> ':`✗ It was <b>${short[ans]}</b>. `)+'Clue: '+clues[ans]+'.'; $('gameScore').textContent=`${score} / ${round}`;
+    S.games.stage={score,of:round,best:Math.max(score,(S.games.stage&&S.games.stage.best)||0)}; save();
+    if(round<8) setTimeout(next,1800); else { $('gameGo').textContent='Play again'; $('gameOut').innerHTML+=` <br><b>Final score: ${score}/8.</b> ${score>=7?'Sleep-tech material! 🏆':score>=5?'Nice work!':'Look back at the sleep lab traces and try again.'}`; } }
+  $('gameGo').addEventListener('click',()=>{ round=0; score=0; $('gameScore').textContent=''; next(); });
+  if(S.games.stage) $('gameScore').textContent=`best so far: ${S.games.stage.best}/8`;
+  { const [ctx,W,H]=fitCanvas($('game')); ctx.fillStyle='#faf7f0'; ctx.fillRect(0,0,W,H); ctx.fillStyle='#9a9489'; ctx.font='16px system-ui'; ctx.textAlign='center'; ctx.fillText('🧠 Mystery trace appears here: press Start',W/2,H/2); ctx.textAlign='left'; }
+})();
+(function(){
+  const cv=$('adCv');
+  const fmt=h=>{ const H=((h%24)+24)%24; const hh=Math.floor(H), mm=Math.round((H-hh)*60); return `${(hh%12)||12}:${String(mm).padStart(2,'0')} ${hh<12?'am':'pm'}`; };
+  function draw(){ const bed=+$('bed').value, caf=$('cafOn').getAttribute('aria-pressed')==='true', ct=+$('cafT').value; $('bedV').textContent=fmt(bed); $('cafV').textContent=fmt(ct);
+    const wake=7, T0=7, T1=31; const [ctx,W,H]=fitCanvas(cv); ctx.clearRect(0,0,W,H); const x0=46,x1=W-12,y0=16,y1=H-36; const X=t=>x0+(t-T0)/(T1-T0)*(x1-x0), Y=v=>y1-v*(y1-y0);
+    ctx.fillStyle='#eef0fa'; ctx.fillRect(X(bed),y0,X(31)-X(bed),y1-y0); ctx.fillStyle='#1d4ed8'; ctx.font='12px system-ui'; ctx.fillText('😴 asleep',X(bed)+4,y0+14);
+    ctx.fillStyle='#6b6f76'; ctx.textAlign='center'; for(let t=7;t<=31;t+=4) ctx.fillText(fmt(t),X(t),H-16); ctx.textAlign='left';
+    let Sv=.12, pts=[], felt=[]; for(let t=T0;t<=T1;t+=.05){ if(t<bed) Sv=1-(1-Sv)*Math.exp(-.05/16); else Sv=Sv*Math.exp(-.05/3.2); const block=caf&&t>=ct&&t<bed?.45*Math.exp(-(t-ct)/5)*(t-ct<.5?(t-ct)/.5:1):0; pts.push([t,Sv]); felt.push([t,t<bed?Math.max(0,Sv-block):Sv]); }
+    ctx.strokeStyle='#1d4ed8'; ctx.lineWidth=3; ctx.beginPath(); pts.forEach(([t,v],i)=>i?ctx.lineTo(X(t),Y(v*.9)):ctx.moveTo(X(t),Y(v*.9))); ctx.stroke();
+    if(caf){ ctx.strokeStyle='#8a5a2b'; ctx.setLineDash([6,4]); ctx.lineWidth=2.5; ctx.beginPath(); felt.forEach(([t,v],i)=>i?ctx.lineTo(X(t),Y(v*.9)):ctx.moveTo(X(t),Y(v*.9))); ctx.stroke(); ctx.setLineDash([]); ctx.font='16px system-ui'; ctx.fillText('☕',X(ct)-8,Y(.06)); }
+    ctx.fillStyle='#1d4ed8'; ctx.font='bold 12px system-ui'; ctx.fillText('adenosine (sleep pressure)',x0+6,y0+14); if(caf){ ctx.fillStyle='#8a5a2b'; ctx.fillText('how sleepy you FEEL with caffeine',x0+6,y0+30); }
+    const atBed=pts.find(p=>p[0]>=bed)[1]; const feltBed=felt.find(p=>p[0]>=bed-0.05)[1]; const left=caf?Math.round(100*Math.pow(.5,(bed-ct)/5)):0;
+    $('adOut').innerHTML=`Awake for <b>${(bed-wake).toFixed(1)} h</b>: adenosine has built up to <b>${Math.round(atBed*100)}%</b>. During sleep it is cleared away, which is why you wake up refreshed.`+
+      (caf?` ☕ Caffeine <b>blocks adenosine receptors</b>, so you <i>feel</i> less sleepy (dashed line), but the adenosine is still there. At bedtime about <b>${left}%</b> of the caffeine is still in your system (half-life about 5 h). ${left>25?'That can make it harder to fall asleep!':''}`:'');
+    S.games.adeno=true; }
+  ['bed','cafT'].forEach(i=>$(i).addEventListener('input',draw)); $('cafOn').addEventListener('click',e=>{ e.currentTarget.setAttribute('aria-pressed',e.currentTarget.getAttribute('aria-pressed')!=='true'); draw(); }); draw();
+})();
+
+/* ======================= 8. waves ======================= */
+const BANDS=[['Delta',0.5,4,'#1e3a8a','Deep, dreamless slow-wave sleep (N3). The slowest and biggest waves.'],['Theta',4,8,'#3b82f6','Drowsiness, light sleep, deep relaxation and meditation, creativity, dreaming. Also hippocampal memory.'],['Alpha',8,12,'#e8b400','Relaxed, awake, eyes closed or daydreaming. "Berger\'s waves" (Hans Berger, inventor of EEG, 1924).'],['Beta',12,30,'#e4572e','Awake, alert, focused, problem-solving. Fast and low amplitude.'],['Gamma',30,100,'#be185d','Heightened attention and concentration, binding information together. The fastest.']];
+(function(){
+  const cv=$('bandCv'); let ph=0, last=performance.now();
+  const fOf=v=>0.5*Math.pow(200,v/1000);
+  function loop(now){ const dt=Math.min(.05,(now-last)/1000); last=now; ph+=dt*.6; const f=fOf(+$('fq').value);
+    const b=BANDS.find(b=>f>=b[1]&&f<b[2])||BANDS[4]; $('fqV').textContent=(f<10?f.toFixed(1):Math.round(f))+' Hz';
+    $('bandName').textContent=b[0]+' ('+b[1]+'–'+b[2]+' Hz)'; $('bandName').style.color=b[3]==='#e8b400'?'#a67c00':b[3]; $('bandOut').innerHTML=b[4];
+    const [ctx,W,H]=fitCanvas(cv); ctx.clearRect(0,0,W,H); const amp=clamp(70/Math.pow(f,.45),7,72); const mid=H/2-6;
+    ctx.strokeStyle='#efe9dc'; ctx.beginPath(); ctx.moveTo(0,mid); ctx.lineTo(W,mid); ctx.stroke();
+    ctx.strokeStyle=b[3]; ctx.lineWidth=2; ctx.beginPath(); for(let x=0;x<=W;x++){ const t=x/W; const y=mid-amp*Math.sin(6.283*(f*t-ph*Math.min(f,4)/f*0)+ph*6.283*.2); x?ctx.lineTo(x,y):ctx.moveTo(x,y); } ctx.stroke();
+    ctx.fillStyle='#9a9489'; ctx.font='11px system-ui'; ctx.fillText('← 1 second shown →',W/2-50,H-6);
+    requestAnimationFrame(loop); }
+  requestAnimationFrame(loop);
+})();
+(function(){
+  const cv=$('syncCv'); const N=48; const r=rng(11); const th=[], w=[]; for(let i=0;i<N;i++){ th.push(r()*6.283); w.push(6.283*(1+(r()-.5)*.5)); }
+  const hist=[]; let last=performance.now(), drPh=0, rAvg=0;
+  function loop(now){ const dt=Math.min(.04,(now-last)/1000); last=now; const K=+$('kc').value/100*3.2, drive=$('drive').getAttribute('aria-pressed')==='true', Dk=+$('dk').value/100*2.6;
+    $('kcV').textContent=K<.6?'weak':K<1.6?'medium':'strong';
+    let cx=0,cy=0; for(let i=0;i<N;i++){ cx+=Math.cos(th[i]); cy+=Math.sin(th[i]); } cx/=N; cy/=N; const R=Math.hypot(cx,cy), Ph=Math.atan2(cy,cx);
+    drPh+=6.283*1.15*dt;
+    for(let i=0;i<N;i++){ let d=w[i]+K*R*Math.sin(Ph-th[i]); if(drive) d+=Dk*Math.sin(drPh-th[i]); th[i]+=d*dt; }
+    rAvg=lerp(rAvg,R,.05); $('syncM').style.width=(rAvg*100)+'%'; $('syncV').textContent=Math.round(rAvg*100)+'%';
+    let sum=0; for(let i=0;i<N;i++) sum+=Math.sin(th[i]); hist.push(sum/N); if(hist.length>420) hist.shift();
+    const [ctx,W,H]=fitCanvas(cv); ctx.clearRect(0,0,W,H);
+    const cols=12, cell=Math.min(30,(W-40)/cols); const gx=(W-cols*cell)/2;
+    for(let i=0;i<N;i++){ const a=(1+Math.sin(th[i]))/2; const x=gx+(i%cols)*cell+cell/2, y=18+Math.floor(i/cols)*cell+cell/2;
+      ctx.fillStyle=`rgba(15,118,110,${.15+.75*a})`; ctx.beginPath(); ctx.arc(x,y,cell*.32,0,7); ctx.fill(); }
+    if(drive){ const a=(1+Math.sin(drPh))/2; ctx.fillStyle='#6b6f76'; ctx.font='13px system-ui'; ctx.fillText('🥁 beat',gx+cols*cell+8,40); ctx.fillStyle=`rgba(217,119,6,${.2+.7*a})`; ctx.beginPath(); ctx.arc(gx+cols*cell+26,62,10,0,7); ctx.fill(); }
+    const top=30+4*cell, mid=top+(H-top)/2; ctx.fillStyle='#6b6f76'; ctx.font='12px system-ui'; ctx.fillText('What the EEG electrode on the scalp records (the sum of all 48):',10,top);
+    ctx.strokeStyle='#efe9dc'; ctx.beginPath(); ctx.moveTo(10,mid); ctx.lineTo(W-10,mid); ctx.stroke();
+    ctx.strokeStyle='#0f766e'; ctx.lineWidth=2.2; ctx.beginPath(); hist.forEach((v,i)=>{ const x=10+i/420*(W-20), y=mid-v*(H-top)/2.4; i?ctx.lineTo(x,y):ctx.moveTo(x,y); }); ctx.stroke();
+    requestAnimationFrame(loop); }
+  $('drive').addEventListener('click',e=>{ e.currentTarget.setAttribute('aria-pressed',e.currentTarget.getAttribute('aria-pressed')!=='true'); S.games.entrain=true; save(); });
+  $('kc').addEventListener('input',()=>{ S.games.sync=true; save(); });
+  requestAnimationFrame(loop);
+})();
+(function(){
+  const cv=$('cplCv'); const r=rng(5); const rnd=Array.from({length:30},()=>r());
+  function draw(){ const on=$('cpl').getAttribute('aria-pressed')==='true'; $('cpl').textContent=on?'Coupled ✓':'Not coupled';
+    const [ctx,W,H]=fitCanvas(cv); ctx.clearRect(0,0,W,H); const mid=H/2;
+    ctx.strokeStyle='#efe9dc'; ctx.beginPath(); ctx.moveTo(0,mid); ctx.lineTo(W,mid); ctx.stroke();
+    ctx.strokeStyle='#3b82f6'; ctx.lineWidth=2; ctx.beginPath(); for(let x=0;x<=W;x++){ const t=x/W; const y=mid-40*Math.sin(6.283*6*t); x?ctx.lineTo(x,y):ctx.moveTo(x,y);} ctx.stroke();
+    ctx.strokeStyle='#be185d'; ctx.lineWidth=1.4; ctx.beginPath(); for(let x=0;x<=W;x++){ const t=x/W; const th=Math.sin(6.283*6*t); const env=on?Math.max(0,th)**2:(.25+.45*rnd[Math.floor(t*29.99)]); const y=mid-40*th-14*env*Math.sin(6.283*60*t); x?ctx.lineTo(x,y):ctx.moveTo(x,y);} ctx.stroke();
+    ctx.fillStyle='#3b82f6'; ctx.font='12px system-ui'; ctx.fillText('slow theta (≈6 Hz)',8,16); ctx.fillStyle='#be185d'; ctx.fillText(on?'fast gamma bursts ride on each theta peak':'gamma happens at random times: no coordination',8,H-8); }
+  $('cpl').addEventListener('click',e=>{ e.currentTarget.setAttribute('aria-pressed',e.currentTarget.getAttribute('aria-pressed')!=='true'); draw(); }); draw();
+})();
+makeSort('bandSort',[
+  ['…during deep, dreamless slow-wave sleep (N3)',0,'Delta'],['…while you meditate or start drifting off',1,'Theta'],['…while you sit with your eyes closed, relaxed',2,'Alpha'],
+  ['…while you solve a tough exam problem',3,'Beta'],['…during intense focus, binding sight and sound together',4,'Gamma'],['…while you chat with a friend, awake and alert',3,'Beta']],
+  ['Delta','Theta','Alpha','Beta','Gamma'],'bands','bandScore');
+
+/* ======================= nav, progress, summary, download ======================= */
+const SECS=[...document.querySelectorAll('section[data-title]')];
+const pipe=$('pipe');
+SECS.forEach((s,i)=>{ const li=document.createElement('li'); const a=document.createElement('a'); a.href='#'+s.id; a.innerHTML=`<span>${s.dataset.icon}</span>${i+1}. ${s.dataset.title} <span class="ck" id="ck-${s.id}"></span>`; li.appendChild(a); pipe.appendChild(li); s._a=a; });
+if('IntersectionObserver' in window){ const io=new IntersectionObserver(es=>{ es.forEach(e=>{ if(e.isIntersecting){ SECS.forEach(s=>s._a.classList.remove('on')); e.target._a.classList.add('on'); const ol=pipe, a=e.target._a; ol.scrollLeft=a.offsetLeft-ol.clientWidth/2+a.offsetWidth/2; } }); },{rootMargin:'-45% 0px -50% 0px'}); SECS.forEach(s=>io.observe(s)); }
+function secDone(sec){ const items=Q[sec]; let n=0; items.forEach(it=>{ if(it.type==='mc'?(S.mcq[it.id]&&S.mcq[it.id].correct):((S.text[it.id]||'').trim().length>2)) n++; }); return [n,items.length]; }
+function updateProgress(){ let n=0,t=0; Object.keys(Q).forEach(sec=>{ const [a,b]=secDone(sec); n+=a; t+=b; const ck=$('ck-'+sec); if(ck) ck.textContent=a===b?'✓':''; });
+  const pct=Math.round(100*n/t); $('progBar').style.width=pct+'%'; $('progTxt').textContent=`${pct}% done (${n}/${t} questions)`; renderSummary(); }
+function mcStats(){ let first=0,ans=0; MC_ALL.forEach(it=>{ const r=S.mcq[it.id]; if(r&&r.correct){ ans++; if(r.first===it.a) first++; } }); return {first,ans,total:MC_ALL.length}; }
+function renderSummary(){ const m=mcStats(); const tx=TX_ALL.filter(it=>(S.text[it.id]||'').trim().length>2).length;
+  const sorts=Object.keys(SORTS).map(k=>sortScore(k)); const sc=sorts.reduce((a,b)=>a+b[0],0), st=sorts.reduce((a,b)=>a+b[1],0);
+  $('summary').innerHTML=`<div><b>${m.ans}/${m.total}</b>multiple choice answered</div><div><b>${m.first}</b>right on the first try</div><div><b>${tx}/${TX_ALL.length}</b>written answers</div><div><b>${sc}/${st}</b>sorting tasks correct</div><div><b>${S.games.stage?S.games.stage.best+'/8':'–'}</b>Name-that-stage best</div>`; }
+function esc(s){ return String(s==null?'':s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c])); }
+function buildReport(){
+  const m=mcStats(); const now=new Date(); const secTitles={}; SECS.forEach((s,i)=>secTitles[s.id]=(i+1)+'. '+s.querySelector('h2').textContent.replace(/^\d+/,''));
+  let h=`<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Worksheet: From Sight to Sleep${S.name?' – '+esc(S.name):''}</title>
+<style>body{font:15px/1.5 system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;color:#222;max-width:820px;margin:24px auto;padding:0 18px}h1{font-family:Georgia,serif;font-weight:normal;margin:0}h2{font-size:18px;margin:26px 0 6px;padding-bottom:4px;border-bottom:2px solid #e2ddd2;color:#4c1d95}
+.meta{color:#666;margin:4px 0 16px}.q{margin:10px 0;padding:8px 12px;border-left:3px solid #e2ddd2;background:#fbfaf6}.q p{margin:0 0 4px}.ok{color:#1f7a50;font-weight:600}.no{color:#b3263a;font-weight:600}.ans{white-space:pre-wrap;background:#fff;border:1px solid #e2ddd2;padding:6px 8px;border-radius:6px}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:8px}.grid div{border:1px solid #e2ddd2;border-radius:8px;padding:8px;text-align:center}.grid b{display:block;font-size:22px;color:#4c1d95}@media print{body{margin:0}.q{break-inside:avoid}}</style></head><body>
+<h1>From Sight to Sleep: follow-along lab worksheet</h1><p class="meta"><b>Name:</b> ${esc(S.name)||'__________________'} &nbsp;·&nbsp; <b>Date:</b> ${now.toLocaleDateString()} &nbsp;·&nbsp; PSB 2000: Introduction to Neuroscience &nbsp;·&nbsp; nelurad.github.io/neurosims/sight-to-sleep</p>
+<div class="grid"><div><b>${m.ans}/${m.total}</b>multiple choice correct</div><div><b>${m.first}</b>right on first try</div><div><b>${TX_ALL.filter(it=>(S.text[it.id]||'').trim().length>2).length}/${TX_ALL.length}</b>written answers</div><div><b>${S.games.stage?S.games.stage.best+'/8':'–'}</b>Name-that-stage best</div><div><b>${S.games.eye?S.games.eye.score+'/'+S.games.eye.of:'–'}</b>Eye-parts quiz</div></div>`;
+  Object.keys(Q).forEach(sec=>{ h+=`<h2>${esc(secTitles[sec])}</h2>`;
+    Q[sec].forEach(it=>{ h+=`<div class="q"><p><b>${it.n}.</b> ${esc(it.q)}</p>`;
+      if(it.type==='mc'){ const r=S.mcq[it.id]; if(!r) h+=`<p class="no">Not answered</p>`; else { h+=`<p>First answer: ${esc(it.o[r.first])} ${r.first===it.a?'<span class="ok">✓</span>':'<span class="no">✗</span>'}${r.correct?` &nbsp;·&nbsp; Correct answer: <span class="ok">${esc(it.o[it.a])}</span> (${r.tries} ${r.tries===1?'try':'tries'})`:''}</p>`; if(r.correct) h+=`<p style="color:#555;font-size:13.5px">${esc(it.why)}</p>`; } }
+      else h+=`<div class="ans">${esc(S.text[it.id])||'<i style="color:#999">No answer yet</i>'}</div>`;
+      h+='</div>'; });
+    const sk={s3:'streams',s5:'dream',s6:'rhythms',s8:'bands'}[sec]; if(sk){ const [c,t]=sortScore(sk); h+=`<p><b>Sorting activity:</b> ${c}/${t} correct.</p>`; }
+    if(sec==='s4'){ h+=`<p><b>Poll:</b> I saw the dress as <b>${esc(S.poll.dress||'–')}</b>. I am a <b>${esc(S.poll.chrono||'–')}</b>.</p>`; }
+  });
+  h+=`<p style="margin-top:28px;color:#888;font-size:12.5px">Made with NeuroSims by Nelu Radpour (Florida State University).</p></body></html>`;
+  return h;
+}
+$('dlHtml').addEventListener('click',()=>{ const blob=new Blob([buildReport()],{type:'text/html'}); const a=document.createElement('a'); a.href=URL.createObjectURL(blob);
+  a.download='SightToSleep_Worksheet_'+((S.name||'student').trim().replace(/[^\w-]+/g,'_')||'student')+'.html'; document.body.appendChild(a); a.click(); setTimeout(()=>{ URL.revokeObjectURL(a.href); a.remove(); },500); });
+$('dlPdf').addEventListener('click',()=>{ const f=document.createElement('iframe'); f.style.cssText='position:fixed;right:0;bottom:0;width:0;height:0;border:0'; document.body.appendChild(f);
+  f.contentDocument.open(); f.contentDocument.write(buildReport()); f.contentDocument.close(); setTimeout(()=>{ try{ f.contentWindow.focus(); f.contentWindow.print(); }catch(e){} setTimeout(()=>f.remove(),2000); },300); });
+$('resetAll').addEventListener('click',()=>{ if(!$('resetAll').dataset.arm){ $('resetAll').dataset.arm='1'; $('resetAll').textContent='Click again to erase everything'; setTimeout(()=>{ delete $('resetAll').dataset.arm; $('resetAll').textContent='Start over'; },3000); return; }
+  try{ localStorage.removeItem(KEY); }catch(e){} location.reload(); });
+$('copyBtn').addEventListener('click',()=>{ const t=$('embedCode').textContent; if(navigator.clipboard) navigator.clipboard.writeText(t).then(()=>{ $('copyBtn').textContent='Copied'; setTimeout(()=>$('copyBtn').textContent='Copy',1500); },()=>{}); });
+updateProgress();
+</script>
+</body>
+</html>
