@@ -628,29 +628,131 @@ function drawLateral(svg){
 {
   const svg=$('loewiSvg');
   const heartD='M0,-12 C-18,-36 -50,-10 0,28 C50,-10 18,-36 0,-12 Z';
-  const beaker=(x,label)=>{S('path',{d:`M${x},40 L${x},200 Q${x},215 ${x+15},215 L${x+185},215 Q${x+200},215 ${x+200},200 L${x+200},40`,fill:'none',stroke:'#8aa',"stroke-width":2.5},svg);
-    const fl=S('rect',{x:x+3,y:80,width:194,height:132,fill:'#dff1f7'},svg);
-    const g=S('g',{transform:`translate(${x+100},150)`},svg);
-    const h=S('path',{d:heartD,fill:'#e0475b',stroke:'#8f1f2e','stroke-width':2,class:'heart'},g); h.style.animation='beat .8s infinite';
+  /* a heart with a face: awake (big eyes, smile) or sleepy (closed eyes, zzz) */
+  const beaker=(x,label)=>{
+    S('path',{d:`M${x},40 L${x},200 Q${x},215 ${x+15},215 L${x+185},215 Q${x+200},215 ${x+200},200 L${x+200},40`,fill:'none',stroke:'#8aa','stroke-width':2.5},svg);
+    S('rect',{x:x+3,y:80,width:194,height:132,rx:10,fill:'#dff1f7'},svg);
+    S('path',{d:`M${x+3},80 q24,-7 48,0 t48,0 t48,0 t48,0`,fill:'none',stroke:'#a9d6e6','stroke-width':2},svg);
+    const bub=S('g',{},svg); const r0=rng(x+3);
+    for(let i=0;i<6;i++){const c=S('circle',{cx:x+20+r0()*160,cy:200,r:2+r0()*2.5,fill:'#fff',stroke:'#b6dbe8',class:'bubble'},bub);c.style.animationDelay=(-r0()*4).toFixed(2)+'s';}
+    const outer=S('g',{transform:`translate(${x+100},150) scale(1.15)`},svg);
+    const g=S('g',{class:'heart'},outer); g.style.animation='beat .8s infinite';
+    S('path',{d:heartD,fill:'#ef5a6f',stroke:'#8f1f2e','stroke-width':2},g);
+    S('path',{d:'M-30,-14 C-32,-22 -24,-27 -18,-24',fill:'none',stroke:'#fff','stroke-width':3,'stroke-linecap':'round',opacity:.7},g);
+    const awake=S('g',{},g);
+    [-14,14].forEach(ex=>{S('circle',{cx:ex,cy:-4,r:7,fill:'#fff',stroke:'#5a1520','stroke-width':1.2},awake);S('circle',{cx:ex+1.5,cy:-3,r:3.6,fill:'#2a1a1d'},awake);S('circle',{cx:ex+2.8,cy:-4.6,r:1.2,fill:'#fff'},awake);});
+    S('path',{d:'M-7,8 Q0,15 7,8',fill:'none',stroke:'#5a1520','stroke-width':2,'stroke-linecap':'round'},awake);
+    const sleepy=S('g',{opacity:0},g);
+    [-14,14].forEach(ex=>S('path',{d:`M${ex-6},-4 Q${ex},1 ${ex+6},-4`,fill:'none',stroke:'#5a1520','stroke-width':2,'stroke-linecap':'round'},sleepy));
+    S('ellipse',{cx:0,cy:10,rx:3,ry:2.4,fill:'#5a1520'},sleepy);
+    [-24,24].forEach(cx=>S('ellipse',{cx,cy:7,rx:6,ry:3.4,fill:'#ffb3c0',opacity:.9},g));
+    const zz=S('g',{opacity:0},svg);
+    [0,1,2].forEach(i=>{const z=T(x+150+i*9,105-i*11,'z',{'font-size':13+i*4,'font-weight':700,fill:'#6a7fa0',class:'zz'},zz);z.style.animationDelay=(i*.5)+'s';});
     T(x+100,238,label,{'text-anchor':'middle','font-size':14,'font-weight':700},svg);
     const b=T(x+100,256,'normal rate',{'text-anchor':'middle','font-size':12.5,fill:C.muted},svg);
     const ach=S('g',{opacity:0},svg); const r=rng(x); for(let i=0;i<12;i++)S('circle',{cx:x+20+r()*160,cy:95+r()*105,r:3.5,fill:C.purple},ach);
-    return {fl,h,b,ach};};
+    const set=slow=>{g.style.animation=slow?'beat 1.8s infinite':'beat .8s infinite';awake.setAttribute('opacity',slow?0:1);sleepy.setAttribute('opacity',slow?1:0);zz.setAttribute('opacity',slow?1:0);};
+    return {b,ach,set};};
   const H1=beaker(60,'Heart 1 (with vagus nerve)'), H2=beaker(500,'Heart 2 (no nerve)');
-  const nerve=S('path',{d:'M20,20 C80,30 120,90 150,135',fill:'none',stroke:'#d4a017','stroke-width':4},svg);
+  const nerve=S('path',{d:'M20,20 C80,30 120,90 150,135',fill:'none',stroke:'#d4a017','stroke-width':4,'stroke-linecap':'round'},svg);
+  T(14,52,'vagus',{'font-size':11.5,fill:'#9a7410','font-weight':700},svg);T(14,65,'nerve',{'font-size':11.5,fill:'#9a7410','font-weight':700},svg);
   const bolt=T(28,22,'⚡',{'font-size':22,opacity:.25},svg);
   const pipe=S('path',{d:'M250,70 C330,-10 430,-10 510,70',fill:'none',stroke:'#8aa','stroke-width':2,'stroke-dasharray':'6 5'},svg);
   const drop=S('circle',{r:9,fill:'#b9d9ea',stroke:C.purple,'stroke-width':2,opacity:0},svg);
-  let s1=false;
-  $('lwStim').addEventListener('click',()=>{s1=true;bolt.setAttribute('opacity',1);setTimeout(()=>bolt.setAttribute('opacity',.25),600);
-    H1.h.style.animation='beat 1.8s infinite';H1.b.textContent='SLOWED';H1.ach.setAttribute('opacity',1);
+  /* the frog: big eyes that look at whichever heart matters */
+  const frog=S('g',{},svg);
+  S('ellipse',{cx:380,cy:244,rx:74,ry:13,fill:'#8fd08a',stroke:'#4f9a4c','stroke-width':1.5},frog);
+  S('path',{d:'M380,244 L440,236 L446,246 Z',fill:'#dff1f7'},frog);
+  const fb=S('g',{},frog);
+  [[336,226],[424,226]].forEach(([cx,cy])=>S('ellipse',{cx,cy,rx:24,ry:14,fill:'#5fae5a',stroke:'#3f8a3e','stroke-width':1.5},fb));
+  S('ellipse',{cx:380,cy:202,rx:50,ry:40,fill:'#74c46f',stroke:'#3f8a3e','stroke-width':2},fb);
+  S('ellipse',{cx:380,cy:215,rx:31,ry:24,fill:'#e2f5cf'},fb);
+  [[357,170],[403,170]].forEach(([cx,cy])=>{S('circle',{cx,cy,r:17,fill:'#74c46f',stroke:'#3f8a3e','stroke-width':2},fb);S('circle',{cx,cy:cy-1,r:12,fill:'#fff'},fb);});
+  const pupils=[357,403].map(cx=>{const p=S('g',{},fb);S('circle',{cx,cy:170,r:6.5,fill:'#1d2a1c'},p);S('circle',{cx:cx+2.5,cy:167,r:2,fill:'#fff'},p);return p;});
+  [[345,197],[415,197]].forEach(([cx,cy])=>S('ellipse',{cx,cy,rx:8,ry:4.5,fill:'#ff9fb0',opacity:.85},fb));
+  const mouth=S('path',{d:'M362,196 Q380,210 398,196',fill:'none',stroke:'#2f5d2d','stroke-width':2.4,'stroke-linecap':'round'},fb);
+  [[362,240],[398,240]].forEach(([cx,cy])=>S('ellipse',{cx,cy,rx:11,ry:5,fill:'#5fae5a',stroke:'#3f8a3e','stroke-width':1.5},fb));
+  const bubG=S('g',{},svg);
+  S('rect',{x:296,y:84,width:168,height:34,rx:17,fill:'#fff',stroke:'#3f8a3e','stroke-width':1.6},bubG);
+  S('path',{d:'M372,117 L380,131 L388,117',fill:'#fff',stroke:'#3f8a3e','stroke-width':1.6},bubG);
+  S('rect',{x:373,y:114,width:14,height:4,fill:'#fff'},bubG);
+  const say=T(380,106,'',{'text-anchor':'middle','font-size':13,'font-weight':700,fill:'#2f5d2d'},bubG);
+  const look=dx=>pupils.forEach(p=>p.setAttribute('transform',`translate(${dx},${dx?2:0})`));
+  const face=mode=>mouth.setAttribute('d',mode==='o'?'M372,200 Q380,212 388,200 Q380,192 372,200':mode==='big'?'M358,194 Q380,218 402,194 Z':'M362,196 Q380,210 398,196');
+  const hop=()=>tween(650,k=>fb.setAttribute('transform',`translate(0,${-Math.sin(Math.PI*k)*18})`));
+  const reset=()=>{say.textContent='Electrical or chemical?';look(0);face('smile');mouth.setAttribute('fill','none');};
+  reset();
+  let s1=false, busy=false;
+  $('lwStim').addEventListener('click',()=>{ if(busy)return; s1=true;bolt.setAttribute('opacity',1);setTimeout(()=>bolt.setAttribute('opacity',.25),600);
+    H1.set(true);H1.b.textContent='SLOWED';H1.ach.setAttribute('opacity',1);
+    look(-4);face('o');mouth.setAttribute('fill','#2f5d2d');say.textContent='Heart 1 slowed down!';
     $('lwTxt').innerHTML='Stimulating the vagus nerve slows heart 1. Something (purple dots) was released into its fluid. Was the signal electrical, or a chemical?';});
-  $('lwMove').addEventListener('click',()=>{ if(!s1){$('lwTxt').innerHTML='Stimulate heart 1 first, so there is something in its fluid to move.';return;}
-    drop.setAttribute('opacity',1);
-    tween(1300,k=>{const p=along(pipe,ease(k));drop.setAttribute('cx',p.x);drop.setAttribute('cy',p.y);},()=>{drop.setAttribute('opacity',0);
-      H2.ach.setAttribute('opacity',1);H2.h.style.animation='beat 1.8s infinite';H2.b.textContent='SLOWED (no nerve touched!)';
+  $('lwMove').addEventListener('click',()=>{ if(busy)return; if(!s1){say.textContent='Zap heart 1 first!';$('lwTxt').innerHTML='Stimulate heart 1 first, so there is something in its fluid to move.';return;}
+    busy=true; drop.setAttribute('opacity',1); say.textContent='Moving the fluid...';
+    tween(1300,k=>{const p=along(pipe,ease(k));drop.setAttribute('cx',p.x);drop.setAttribute('cy',p.y);look(-4+8*ease(k));},()=>{drop.setAttribute('opacity',0);busy=false;
+      H2.ach.setAttribute('opacity',1);H2.set(true);H2.b.textContent='SLOWED (no nerve touched!)';
+      face('big');mouth.setAttribute('fill','#c8343f');say.textContent="It's a chemical! Ribbit!";hop();
       $('lwTxt').innerHTML='<b>Heart 2 slowed too, with no nerve stimulation.</b> A <b>chemical</b> in the fluid carried the message. Loewi called it "vagus substance"; we know it as <b>acetylcholine</b>. That showed nerves communicate <b>chemically</b>.';});});
-  $('lwReset').addEventListener('click',()=>{s1=false;[H1,H2].forEach(H=>{H.h.style.animation='beat .8s infinite';H.b.textContent='normal rate';H.ach.setAttribute('opacity',0);});$('lwTxt').innerHTML='Both hearts beat at their normal rate.';});
+  $('lwReset').addEventListener('click',()=>{ if(busy)return; s1=false;[H1,H2].forEach(H=>{H.set(false);H.b.textContent='normal rate';H.ach.setAttribute('opacity',0);});reset();$('lwTxt').innerHTML='Both hearts beat at their normal rate.';});
+}
+{
+  const svg=$('pillSvg');
+  S('rect',{x:20,y:14,width:180,height:92,rx:16,fill:'#eef1f4',stroke:'#b9c2cb','stroke-width':1.5},svg);
+  [[70,60,'#fff7d6','#c9a93a'],[150,60,'#ffffff','#b9b2a6']].forEach(([cx,cy,f,s],i)=>{
+    S('ellipse',{cx,cy:cy+4,rx:30,ry:20,fill:'#d6dbe0'},svg);
+    S('ellipse',{cx,cy,rx:30,ry:20,fill:f,stroke:s,'stroke-width':1.8},svg);
+    S('ellipse',{cx:cx-10,cy:cy-8,rx:9,ry:4,fill:'#fff',opacity:.9},svg);
+    T(cx,cy+5,i?'5':'10',{'text-anchor':'middle','font-size':13,'font-weight':700,fill:s},svg);});
+  T(110,128,'donepezil (Aricept)',{'text-anchor':'middle','font-size':14,'font-weight':700},svg);
+  T(110,145,'tablets, 5 or 10 mg',{'text-anchor':'middle','font-size':12,fill:C.muted},svg);
+}
+/* ============ 12b. Donepezil and the cholinergic hypothesis ============ */
+{
+  const svg=$('adSvg'); drawMidsag(svg,true);
+  const BF=[240,250];
+  const TG=[[118,172,'frontal'],[168,104],[268,70],[384,70],[486,112],[530,196],[424,236,'hip']];
+  const ALIVE=[true,false,false,true,false,true,false];
+  S('ellipse',{cx:424,cy:236,rx:28,ry:12,fill:C.teal,'fill-opacity':.12,stroke:C.teal,'stroke-dasharray':'5 4','stroke-width':1.6},svg);
+  T(458,241,'hippocampus',{'text-anchor':'start','font-size':12,fill:C.teal,'font-weight':700},svg);
+  T(442,46,'cortex',{'font-size':12.5,fill:C.muted,'font-weight':700},svg);
+  const fibers=TG.map(([x,y],i)=>{const mx=(BF[0]+x)/2-20, my=Math.min(BF[1],y)-10;
+    const p=S('path',{d:`M${BF[0]},${BF[1]} Q${mx},${my} ${x},${y}`,fill:'none',stroke:C.purple,'stroke-width':3.2,'stroke-linecap':'round'},svg);
+    const halo=S('circle',{cx:x,cy:y,r:9,fill:C.purple,'fill-opacity':.18,stroke:'none'},svg);
+    const end=S('circle',{cx:x,cy:y,r:4,fill:C.purple},svg);
+    return {p,halo,end};});
+  const cells=[[-14,-4],[-5,-10],[6,-6],[-10,6],[2,4],[13,2],[-2,13]].map(([dx,dy])=>S('circle',{cx:BF[0]+dx,cy:BF[1]+dy,r:5,fill:C.purple,stroke:'#fff','stroke-width':1.2},svg));
+  T(178,292,'basal forebrain',{'text-anchor':'middle','font-size':12.5,fill:C.purple,'font-weight':700},svg);
+  T(178,307,'(nucleus basalis)',{'text-anchor':'middle','font-size':11.5,fill:C.purple},svg);
+  const dots=fibers.map(()=>[0,1,2].map(()=>S('circle',{r:3.6,fill:C.gold,stroke:'#7a5a00','stroke-width':.8,opacity:0},svg)));
+  /* meters */
+  const mt=(x,label1,label2,col)=>{S('rect',{x,y:70,width:44,height:240,rx:10,fill:'#fff',stroke:'#c9c3b6'},svg);
+    const bar=S('rect',{x:x+5,width:34,rx:7,fill:col},svg);
+    T(x+22,334,label1,{'text-anchor':'middle','font-size':12,'font-weight':700,fill:col},svg);T(x+22,349,label2,{'text-anchor':'middle','font-size':12,'font-weight':700,fill:col},svg);
+    const v=T(x+22,60,'',{'text-anchor':'middle','font-size':13,'font-weight':700,fill:col},svg);
+    return {bar,v,cur:1};};
+  const M1=mt(600,'ACh neurons','still alive',C.purple), M2=mt(680,'ACh signal','in cortex',C.gold);
+  const setM=(M,k)=>{M.bar.setAttribute('y',305-230*k);M.bar.setAttribute('height',230*k);M.v.textContent=Math.round(k*100)+'%';};
+  const LV={healthy:[1,1],ad:[.4,.35],don:[.4,.62]};
+  const TX={healthy:'<b>Healthy brain:</b> a small cluster of <b>cholinergic</b> (ACh-making) neurons in the basal forebrain sends axons to the <b>whole cortex</b> and the <b>hippocampus</b>. The ACh they release (gold dots) helps with attention, learning and memory.',
+    ad:'<b>Alzheimer\'s disease:</b> these cholinergic neurons are among the <b>first to die</b> (grey). Less ACh reaches the cortex and hippocampus, and memory and attention get worse. This is the <b>cholinergic hypothesis</b>: part of the memory loss comes from <b>too little ACh</b>. (The underlying disease, with its amyloid plaques and tau tangles, is what kills the neurons.)',
+    don:'<b>Alzheimer\'s + donepezil:</b> the lost neurons are <b>still lost</b>. Donepezil can\'t bring them back. It blocks the enzyme that breaks ACh down, so the ACh the <b>surviving</b> neurons release lasts longer and spreads farther (glow at the axon tips). Symptoms improve a little for a while, but the disease keeps progressing.'};
+  let mode='healthy', run=false, t=0;
+  function style(){const dead=mode!=='healthy';
+    fibers.forEach((f,i)=>{const ok=ALIVE[i]||!dead;
+      f.p.setAttribute('stroke',ok?C.purple:'#c9c3b6');f.p.setAttribute('stroke-dasharray',ok?'none':'4 7');f.p.setAttribute('opacity',ok?.85:.7);
+      f.end.setAttribute('fill',ok?C.purple:'#c9c3b6');
+      f.halo.setAttribute('r',ok?(mode==='don'?22:9):0);f.halo.setAttribute('fill-opacity',mode==='don'?.22:.15);});
+    cells.forEach((c,i)=>c.setAttribute('fill',dead&&i%5!==0&&i!==3?'#c9c3b6':C.purple));
+    $('adTxt').innerHTML=TX[mode];}
+  let shown=[1,1];
+  function f(){ if(!run)return; t=(t+.005)%1;
+    const tgtv=LV[mode]; shown=shown.map((s,i)=>s+(tgtv[i]-s)*.06); setM(M1,shown[0]); setM(M2,shown[1]);
+    fibers.forEach((fb,i)=>{const ok=ALIVE[i]||mode==='healthy';
+      dots[i].forEach((d,j)=>{const k=(t+j/3+i*.13)%1;const q=along(fb.p,k);d.setAttribute('cx',q.x);d.setAttribute('cy',q.y);d.setAttribute('opacity',ok?1:0);});});
+    requestAnimationFrame(f);}
+  pressGroup([...document.querySelectorAll('[data-ad]')],b=>{mode=b.dataset.ad;style();if(REDUCE){shown=LV[mode].slice();setM(M1,shown[0]);setM(M2,shown[1]);}});
+  setM(M1,1);setM(M2,1); style();
+  onVisible(svg,()=>{if(!run){run=true;requestAnimationFrame(f);}},()=>{run=false;});
 }
 {
   const svg=$('donSvg');
@@ -686,27 +788,56 @@ function drawLateral(svg){
 /* ============ 13. Families ============ */
 {
   const svg=$('famSvg');
-  const node=(x,y,w,t,sub,col,fillc)=>{const g=S('g',{},svg);const r=S('rect',{x:x-w/2,y:y-20,width:w,height:sub?44:34,rx:10,fill:fillc||'#fff',stroke:col,'stroke-width':2},g);
+  const tree=S('g',{transform:'translate(70,0)'},svg);
+  const node=(x,y,w,t,sub,col,fillc)=>{const g=S('g',{},tree);const r=S('rect',{x:x-w/2,y:y-20,width:w,height:sub?44:34,rx:10,fill:fillc||'#fff',stroke:col,'stroke-width':2},g);
     T(x,y+(sub?0:2),t,{'text-anchor':'middle','font-size':14.5,'font-weight':700,fill:col},g); if(sub)T(x,y+16,sub,{'text-anchor':'middle','font-size':11.5,fill:C.muted},g);return r;};
-  const ln=(x1,y1,x2,y2)=>S('line',{x1,y1,x2,y2,stroke:'#b8b1a3','stroke-width':2},svg);
+  const ln=(x1,y1,x2,y2)=>S('line',{x1,y1,x2,y2,stroke:'#b8b1a3','stroke-width':2},tree);
   ln(380,48,230,92);ln(380,48,590,92);ln(230,136,95,166);ln(230,136,240,166);ln(230,136,390,166);ln(590,136,590,166);
   node(380,32,150,'Monoamines',null,C.ink);
   node(230,110,190,'Catecholamines','made from tyrosine',C.blue,'#eef3fb');
   node(590,110,190,'Indolamine','made from tryptophan',C.pink,'#fbeef4');
   node(95,186,120,'Dopamine',null,C.blue);node(240,186,150,'Norepinephrine',null,C.blue);node(390,186,126,'Epinephrine',null,C.blue);
   node(590,186,120,'Serotonin',null,C.pink);
-  T(590,226,'monoamine, but NOT a catecholamine',{'text-anchor':'middle','font-size':12.5,fill:C.red,'font-weight':700},svg);
+  T(590,226,'monoamine, but NOT a catecholamine',{'text-anchor':'middle','font-size':12.5,fill:C.red,'font-weight':700},tree);
+  /* little food drawings */
+  const FOOD={
+    cheese:g=>{S('path',{d:'M-17,11 L17,11 L17,-3 L-17,-13 Z',fill:'#f7c948',stroke:'#c99a1e','stroke-width':1.4,'stroke-linejoin':'round'},g);
+      S('path',{d:'M-17,-13 L17,-3 L17,-6 L-12,-15 Z',fill:'#fbe08a',stroke:'#c99a1e','stroke-width':1.2,'stroke-linejoin':'round'},g);
+      [[-7,2,3.2],[7,4,2.6],[1,-4,2],[11,-1,1.6]].forEach(([cx,cy,r])=>S('circle',{cx,cy,r,fill:'#e0aa2a'},g));},
+    egg:g=>{S('ellipse',{cx:0,cy:0,rx:11.5,ry:15,fill:'#fffaf0',stroke:'#c9b79a','stroke-width':1.4},g);S('ellipse',{cx:-4,cy:-6,rx:3,ry:4.5,fill:'#fff'},g);},
+    fish:g=>{S('path',{d:'M12,0 L22,-8 L22,8 Z',fill:'#6fb3dd',stroke:'#3c7ea6','stroke-width':1.3,'stroke-linejoin':'round'},g);
+      S('ellipse',{cx:-2,cy:0,rx:16,ry:9,fill:'#8ec5e8',stroke:'#3c7ea6','stroke-width':1.4},g);S('circle',{cx:-10,cy:-2,r:1.8,fill:'#1d3a52'},g);
+      S('path',{d:'M-2,-6 Q2,0 -2,6',fill:'none',stroke:'#3c7ea6','stroke-width':1.1},g);},
+    drum:g=>{S('rect',{x:6,y:-3,width:13,height:6,rx:3,fill:'#fffaf0',stroke:'#b8ad99',transform:'rotate(-35)'},g);
+      S('circle',{cx:19,cy:-15,r:3.4,fill:'#fffaf0',stroke:'#b8ad99'},g);S('circle',{cx:22,cy:-10,r:3.4,fill:'#fffaf0',stroke:'#b8ad99'},g);
+      S('ellipse',{cx:-4,cy:4,rx:15,ry:11,fill:'#c98a4b',stroke:'#8a5a2b','stroke-width':1.4,transform:'rotate(-35 -4 4)'},g);
+      S('ellipse',{cx:-8,cy:0,rx:5,ry:2.5,fill:'#e0aa70',transform:'rotate(-35 -8 0)'},g);},
+    milk:g=>{S('path',{d:'M-11,-15 L11,-15 L9,15 L-9,15 Z',fill:'#fff',stroke:'#8a9aa6','stroke-width':1.4,'stroke-linejoin':'round'},g);
+      S('path',{d:'M-10,-7 L10,-7 L9,15 L-9,15 Z',fill:'#f4f7fb'},g);S('path',{d:'M-10,-7 Q-5,-10 0,-7 T10,-7',fill:'none',stroke:'#c7d3dc','stroke-width':1.2},g);},
+    seeds:g=>{[[-9,4,-25],[0,-6,10],[9,5,35]].forEach(([cx,cy,a])=>S('ellipse',{cx,cy,rx:5.5,ry:9,fill:'#e8d9a8',stroke:'#a8925a','stroke-width':1.3,transform:`rotate(${a} ${cx} ${cy})`},g));}
+  };
   const am=arrowDef(svg,'fA','#999');
+  const pantry=(y,col,bg,items,cap)=>{const g=S('g',{},svg);
+    const r=S('rect',{x:10,y:y-38,width:176,height:76,rx:14,fill:bg,stroke:col,'stroke-width':1.6,'stroke-dasharray':'5 4'},g);
+    T(98,y-26,'from food',{'text-anchor':'middle','font-size':11,fill:col,'font-weight':700,'letter-spacing':'.08em'},g);
+    const icons=items.map((k,i)=>{const ig=S('g',{transform:`translate(${46+i*52},${y+1})`},g);const inner=S('g',{transform:'scale(1.3)'},ig);FOOD[k](inner);return inner;});
+    T(98,y+32,cap,{'text-anchor':'middle','font-size':11.5,fill:C.muted},g);
+    S('line',{x1:188,y1:y,x2:205,y2:y,stroke:'#999','stroke-width':1.6,'marker-end':am},svg);
+    return {r,icons,bg};};
+  const F1=pantry(306,C.blue,'#f4f8fd',['cheese','egg','fish'],'cheese, eggs, fish, soy');
+  const F2=pantry(392,C.pink,'#fdf4f8',['drum','milk','seeds'],'turkey, milk, oats, seeds');
   const chain1=['Tyrosine','L-DOPA','Dopamine','Norepinephrine','Epinephrine'], chain2=['Tryptophan','5-HTP','Serotonin'];
-  const mk=(arr,y,col)=>{let cx=20,prev=null;return arr.map(t=>{const w=Math.max(80,t.length*8+24);const r=S('rect',{x:cx,y:y-14,width:w,height:28,rx:14,fill:'#fff',stroke:col,'stroke-width':1.6},svg);
+  const mk=(arr,y,col)=>{let cx=210,prev=null;return arr.map(t=>{const w=Math.max(80,t.length*8+24);const r=S('rect',{x:cx,y:y-14,width:w,height:28,rx:14,fill:'#fff',stroke:col,'stroke-width':1.6},svg);
     T(cx+w/2,y+5,t,{'text-anchor':'middle','font-size':12.5},svg); if(prev!==null)S('line',{x1:prev,y1:y,x2:cx-3,y2:y,stroke:'#999','stroke-width':1.6,'marker-end':am},svg); prev=cx+w; cx+=w+28; return r;});};
-  T(20,262,'',{},svg);
-  const R1=mk(chain1,270,C.blue), R2=mk(chain2,312,C.pink);
-  T(640,275,'catecholamine line',{'font-size':12,fill:C.blue},svg); T(375,316,'serotonin line',{'font-size':12,fill:C.pink},svg);
+  const R1=mk(chain1,306,C.blue), R2=mk(chain2,392,C.pink);
+  T(210,280,'catecholamine line',{'font-size':12,fill:C.blue,'font-weight':700},svg); T(210,366,'serotonin line',{'font-size':12,fill:C.pink,'font-weight':700},svg);
   let busy=false;
+  const wiggle=F=>{F.r.setAttribute('fill',F.bg==='#f4f8fd'?'#dbe8f8':'#f8dbe8');
+    F.icons.forEach((ic,i)=>setTimeout(()=>tween(420,k=>ic.setAttribute('transform',`translate(0,${-Math.sin(Math.PI*k)*9})`)),REDUCE?0:i*110));};
   $('famGo').addEventListener('click',()=>{ if(busy)return; busy=true; [...R1,...R2].forEach(r=>r.setAttribute('fill','#fff'));
+    [F1,F2].forEach(F=>F.r.setAttribute('fill',F.bg));
     const lit=(arr,col,i,done)=>{ if(i>=arr.length){done&&done();return;} arr[i].setAttribute('fill',col); setTimeout(()=>lit(arr,col,i+1,done),REDUCE?0:450);};
-    lit(R1,'#d7e6fa',0,()=>lit(R2,'#f8d9e7',0,()=>busy=false));});
+    wiggle(F1); setTimeout(()=>lit(R1,'#d7e6fa',0,()=>{wiggle(F2);setTimeout(()=>lit(R2,'#f8d9e7',0,()=>busy=false),REDUCE?0:500);}),REDUCE?0:500);});
   const DR=[['LSD / psilocybin','Serotonin: activate <b>5-HT2A</b> receptors (agonists). Not dopamine!',true],
     ['Cocaine','Blocks reuptake transporters for dopamine, norepinephrine and serotonin.'],
     ['Amphetamine','Makes dopamine and norepinephrine transporters run in reverse, pushing transmitter out.'],
@@ -742,7 +873,7 @@ function drawLateral(svg){
   T(420,240,'substantia nigra',{'font-size':12,'font-weight':700},svg); S('line',{x1:418,y1:236,x2:386,y2:252,stroke:'#555'},svg);
   T(300,312,'VTA',{'font-size':12,'font-weight':700,'text-anchor':'end'},svg); S('line',{x1:303,y1:308,x2:350,y2:267,stroke:'#555'},svg);
   const xs=S('g',{opacity:0},svg); Object.values(tgt).forEach(([x,y])=>T(x,y+8,'✗',{'text-anchor':'middle','font-size':26,fill:C.red,'font-weight':700},xs));
-  const dots=[];for(let i=0;i<3;i++)dots.push(S('circle',{r:5,fill:C.gold,stroke:'#222'},svg));
+  const dots=[];for(let i=0;i<3;i++)dots.push(S('circle',{r:5,fill:C.gold,stroke:'#222',opacity:0},svg));
   const TX={striatal:'<b>Mesostriatal (nigrostriatal):</b> substantia nigra → striatum (part of the basal ganglia). <b>Job:</b> starting and smoothing voluntary movement. Lose it → Parkinson\'s. Block it → tremor and rigidity.',
     limbic:'<b>Mesolimbic:</b> VTA → nucleus accumbens. <b>Job:</b> reward, motivation, "wanting." Too much activity here is linked to psychosis (hallucinations, delusions), and addictive drugs hijack it. Blocking D2 here is how antipsychotics help.',
     cortical:'<b>Mesocortical:</b> VTA → prefrontal cortex. <b>Job:</b> attention, planning, working memory. Blocking it can worsen flat mood and thinking problems.'};

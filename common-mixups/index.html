@@ -101,6 +101,16 @@
   .cmp th{font-family:var(--hand);font-weight:normal;font-size:18px}
 
   .heart{transform-box:fill-box;transform-origin:center}
+  .bubble{animation:rise 4.5s linear infinite}
+  @keyframes rise{0%{transform:translateY(0);opacity:0}15%{opacity:.9}100%{transform:translateY(-112px);opacity:0}}
+  .zz{animation:zz 2.2s ease-out infinite;opacity:0}
+  @keyframes zz{0%{opacity:0;transform:translate(0,6px)}30%{opacity:1}100%{opacity:0;transform:translate(10px,-18px)}}
+  @media (prefers-reduced-motion:reduce){.bubble,.zz{animation:none}.zz{opacity:1}}
+  .pillrow{display:grid;grid-template-columns:200px minmax(0,1fr);gap:20px;align-items:center}
+  .pillrow svg{max-width:200px}
+  .kv{display:grid;grid-template-columns:auto 1fr;gap:6px 14px;margin:0;font-size:15px;line-height:1.45}
+  .kv dt{font-weight:700;color:var(--muted);white-space:nowrap} .kv dd{margin:0}
+  @media (max-width:640px){.pillrow{grid-template-columns:1fr}.pillrow svg{margin:0 auto}.kv{grid-template-columns:1fr}.kv dt{margin-top:6px}}
   @keyframes beat{0%,100%{transform:scale(1)}12%{transform:scale(1.13)}24%{transform:scale(.97)}36%{transform:scale(1.06)}}
   :focus-visible{outline:2px solid #3d6fa8;outline-offset:2px}
 
@@ -433,8 +443,8 @@
     <div class="thead"><span class="num">12</span><h3>Acetylcholine: one transmitter, opposite effects</h3></div>
     <p class="lede">The same ACh molecule makes skeletal muscle <b>contract</b> but makes the heart <b>slow down</b>. The difference comes from the <b>receptor</b>, not the transmitter.</p>
     <div class="mix">
-      <div class="wrong"><span class="lab">The mix-up</span><p>ACh turns into an inhibitory chemical before it reaches the heart.</p><p>Loewi's experiment showed that nerves signal electrically.</p><p>Donepezil works by blocking ACh reuptake.</p></div>
-      <div class="right"><span class="lab">Actually</span><p>Muscle has <b>nicotinic</b> receptors (Na⁺ in, contract). The heart has <b>muscarinic</b> receptors (G protein, K⁺ out, slower beat).</p><p>Loewi showed that a <b>chemical</b> in the fluid (ACh, which he called "vagus substance") slowed a second heart. That's how we know synapses are chemical.</p><p>ACh isn't taken back up. It's broken down in the synapse by the enzyme <b>acetylcholinesterase</b>, and donepezil <b>blocks that enzyme</b>.</p></div>
+      <div class="wrong"><span class="lab">The mix-up</span><p>ACh turns into an inhibitory chemical before it reaches the heart.</p><p>Loewi's experiment showed that nerves signal electrically.</p><p>Donepezil works by blocking ACh reuptake.</p><p>Donepezil cures Alzheimer's by replacing lost neurons.</p></div>
+      <div class="right"><span class="lab">Actually</span><p>Muscle has <b>nicotinic</b> receptors (Na⁺ in, contract). The heart has <b>muscarinic</b> receptors (G protein, K⁺ out, slower beat).</p><p>Loewi showed that a <b>chemical</b> in the fluid (ACh, which he called "vagus substance") slowed a second heart. That's how we know synapses are chemical.</p><p>ACh isn't taken back up. It's broken down in the synapse by the enzyme <b>acetylcholinesterase</b>, and donepezil <b>blocks that enzyme</b>.</p><p>Donepezil only helps the surviving cholinergic neurons get more out of their ACh. It eases symptoms; it doesn't stop the disease.</p></div>
     </div>
     <div class="viz">
       <h4>Same key, different locks</h4>
@@ -443,7 +453,8 @@
     </div>
     <div class="viz">
       <h4>Loewi's two frog hearts (1921)</h4>
-      <svg id="loewiSvg" viewBox="0 0 760 260" role="img" aria-label="Two frog hearts in fluid baths. Stimulating the vagus nerve of the first slows it; moving its fluid to the second heart slows the second heart too."></svg>
+      <p class="sub">Otto Loewi kept two frog hearts beating in dishes of salty fluid. Only heart 1 still had its vagus nerve attached.</p>
+      <svg id="loewiSvg" viewBox="0 0 760 262" role="img" aria-label="A cartoon frog sits between two frog hearts in fluid baths. Stimulating the vagus nerve of the first slows it; moving its fluid to the second heart slows the second heart too."></svg>
       <div class="controls">
         <button class="tg" id="lwStim">1. Stimulate heart 1's vagus nerve</button>
         <button class="tg" id="lwMove">2. Move the fluid to heart 2</button>
@@ -452,12 +463,36 @@
       <p class="readout" id="lwTxt" aria-live="polite">Both hearts beat at their normal rate.</p>
     </div>
     <div class="viz">
-      <h4>How donepezil helps: protect the ACh that's left</h4>
+      <h4>What is donepezil?</h4>
+      <div class="pillrow">
+        <svg id="pillSvg" viewBox="0 0 220 150" role="img" aria-label="A donepezil tablet labeled with its brand name, Aricept."></svg>
+        <dl class="kv">
+          <dt>What it is</dt><dd>A prescription pill for <b>Alzheimer's disease</b>, sold as <b>Aricept</b> and taken once a day. It's one of the most commonly prescribed Alzheimer's drugs.</dd>
+          <dt>Drug type</dt><dd>An <b>acetylcholinesterase inhibitor</b>: it blocks the enzyme that breaks down ACh. It crosses the blood–brain barrier, so it works in the brain.</dd>
+          <dt>What it does</dt><dd>Leaves <b>more ACh</b> in the synapses for longer. That can modestly help memory and thinking.</dd>
+          <dt>What it doesn't do</dt><dd>It <b>doesn't cure</b> Alzheimer's, stop neurons from dying, or clear plaques and tangles. It treats symptoms while the disease keeps going.</dd>
+          <dt>Side effects</dt><dd>Nausea, diarrhea, vivid dreams, and a <b>slower heartbeat</b>. Extra ACh reaches the heart's muscarinic receptors too, just like Loewi's "vagus substance."</dd>
+        </dl>
+      </div>
+    </div>
+    <div class="viz">
+      <h4>Why give it? The "too little ACh" idea of Alzheimer's</h4>
+      <p class="sub">Pick a brain and watch the ACh (gold dots) travel from the basal forebrain to the cortex.</p>
+      <svg id="adSvg" viewBox="0 0 760 430" role="img" aria-label="Midline brain showing cholinergic neurons in the basal forebrain sending acetylcholine to the cortex and hippocampus, with meters for surviving neurons and ACh signal."></svg>
+      <div class="controls" role="group" aria-label="Brain">
+        <button class="tg" data-ad="healthy" aria-pressed="true">Healthy brain</button>
+        <button class="tg" data-ad="ad" aria-pressed="false">Alzheimer's</button>
+        <button class="tg" data-ad="don" aria-pressed="false">Alzheimer's + donepezil</button>
+      </div>
+      <p class="readout" id="adTxt" aria-live="polite"></p>
+    </div>
+    <div class="viz">
+      <h4>Zoom in on one synapse: donepezil protects the ACh that's left</h4>
       <svg id="donSvg" viewBox="0 0 760 230" role="img" aria-label="Synapse with acetylcholine molecules and acetylcholinesterase enzymes that cut them; donepezil blocks the enzymes so acetylcholine lasts longer."></svg>
       <div class="controls"><button class="tg" id="donTog" aria-pressed="false">Add donepezil</button></div>
       <p class="readout" id="donTxt" aria-live="polite"></p>
     </div>
-    <p class="remember"><b>Remember it:</b> The transmitter is the key, the receptor is the lock, and <b>the lock decides what happens</b>. ACh is cleared by an <b>enzyme</b>, not by reuptake.</p>
+    <p class="remember"><b>Remember it:</b> The transmitter is the key, the receptor is the lock, and <b>the lock decides what happens</b>. ACh is cleared by an <b>enzyme</b>, not by reuptake. Alzheimer's = fewer ACh neurons; donepezil = make the ACh you still have last longer.</p>
   </section>
 
   <section class="topic" id="families">
@@ -469,8 +504,9 @@
     </div>
     <div class="viz">
       <h4>The family tree, and the assembly line</h4>
-      <svg id="famSvg" viewBox="0 0 760 330" role="img" aria-label="Monoamines branch into catecholamines (dopamine, norepinephrine, epinephrine, made from tyrosine) and serotonin (made from tryptophan)."></svg>
+      <svg id="famSvg" viewBox="0 0 900 432" role="img" aria-label="Monoamines branch into catecholamines (dopamine, norepinephrine, epinephrine, made from tyrosine) and serotonin (made from tryptophan)."></svg>
       <div class="controls"><button class="tg" id="famGo">Run the assembly line</button></div>
+      <p class="note" style="font-size:14px">Both start as amino acids from the <b>protein in your food</b>. <b>Tryptophan</b> is an essential amino acid: your body can't make it, so it has to come from your diet. <b>Tyrosine</b> comes from food too, and your liver can also make it from another amino acid, phenylalanine. Fun fact: tyrosine is named after the Greek word for cheese (<i>tyros</i>), because it was first found in cheese. Myth check: turkey doesn't make you sleepy because of tryptophan. It has about the same amount as chicken. The big meal is the real cause.</p>
     </div>
     <div class="viz">
       <h4>Drug → target</h4>
