@@ -1,0 +1,593 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Common Mix-Ups</title>
+<link rel="icon" href="data:,">
+<meta name="description" content="An exam review that walks through the trickiest ideas from the first half of Introduction to Neuroscience, with interactive pictures of the most common mix-ups.">
+<style>
+  :root{ --bg:#fffdf8; --ink:#2a2a2a; --muted:#646a72; --line:#e2ddd2; --panel:#ffffff;
+    --blue:#1f6fd1; --red:#c8343f; --green:#2a8a4c; --orange:#e4572e; --gold:#f2a900; --purple:#7b4fb3; --teal:#16898f; --pink:#d4508a;
+    --hand:"Segoe Print","Ink Free","Noteworthy","Chalkboard SE","Bradley Hand","Comic Sans MS",cursive;
+    --serif:Georgia,"Times New Roman",serif;
+    --sans:system-ui,-apple-system,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif;
+    --mono:ui-monospace,"SF Mono",Menlo,Consolas,monospace; }
+  *{box-sizing:border-box}
+  html{-webkit-text-size-adjust:100%;scroll-behavior:smooth}
+  html,body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.5 var(--sans);-webkit-font-smoothing:antialiased}
+  .wrap{margin:0 auto;padding:20px 16px 40px;max-width:1080px}
+  a{color:#3d6fa8}
+  .back{font-size:13.5px;color:var(--muted);text-decoration:none}
+  .back:hover{text-decoration:underline}
+  h1{font-family:var(--serif);font-weight:normal;font-size:clamp(30px,3.6vw,48px);margin:6px 0 8px;letter-spacing:-.01em;line-height:1.1}
+  .intro{margin:0 0 18px;max-width:52em;font-size:clamp(15px,1.25vw,17.5px)}
+
+  .toc{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin:0 0 10px}
+  .toc div{background:var(--panel);border:1.5px solid var(--line);border-radius:12px;padding:12px 14px}
+  .toc h2{font-family:var(--hand);font-weight:normal;font-size:22px;margin:0 0 6px}
+  .toc ol{margin:0;padding-left:22px;font-size:15px}
+  .toc li{margin:2px 0}
+  .toc a{text-decoration:none}
+  .toc a:hover{text-decoration:underline}
+
+  .exam-band{margin:46px 0 0;padding:10px 0 8px;border-bottom:3px solid var(--ink);display:flex;align-items:baseline;gap:14px;flex-wrap:wrap}
+  .exam-band h2{font-family:var(--serif);font-weight:normal;font-size:clamp(28px,3vw,40px);margin:0}
+  .exam-band p{margin:0;color:var(--muted);font-size:15px}
+
+  section.topic{padding:34px 0 30px;border-bottom:1.5px dashed #d4cec1}
+  .thead{display:flex;align-items:center;gap:12px;margin:0 0 6px}
+  .num{flex:0 0 auto;width:38px;height:38px;border-radius:50%;background:var(--ink);color:#fff;display:grid;place-items:center;font-weight:700;font-size:16px}
+  .thead h3{font-family:var(--serif);font-weight:normal;font-size:clamp(23px,2.4vw,32px);margin:0;line-height:1.15}
+  .lede{margin:4px 0 14px;max-width:56em;font-size:16.5px}
+
+  .mix{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin:0 0 16px}
+  .mix > div{border-radius:10px;padding:10px 14px 12px;font-size:15.5px;border:1.5px solid}
+  .mix .wrong{background:#fdf0f0;border-color:#efc3c6}
+  .mix .right{background:#eef8f1;border-color:#b9dfc5}
+  .mix .lab{display:block;font-family:var(--hand);font-size:19px;margin-bottom:2px}
+  .mix .wrong .lab{color:var(--red)} .mix .right .lab{color:var(--green)}
+  .mix .wrong p,.mix .right p{margin:4px 0 0}
+  .mix .wrong p::before{content:"✗ ";color:var(--red);font-weight:700}
+  .mix .right p::before{content:"✓ ";color:var(--green);font-weight:700}
+
+  .viz{background:var(--panel);border:1.5px solid var(--line);border-radius:12px;padding:14px 14px 12px;margin:0 0 14px}
+  .viz h4{font-family:var(--hand);font-weight:normal;font-size:21px;margin:0 0 4px}
+  .viz .sub{margin:0 0 8px;color:var(--muted);font-size:14.5px}
+  .viz svg{display:block;width:100%;height:auto;max-height:520px;max-width:860px;margin:0 auto}
+  #langSvg{max-width:640px}
+  .viz svg text{font-family:var(--sans)}
+  .two{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+  .controls{display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin:10px 0 0}
+  .tg{font:inherit;font-size:14.5px;background:#fff;border:1.5px solid #bdb7aa;border-radius:7px;padding:5px 12px;cursor:pointer;color:var(--ink)}
+  .tg:hover{border-color:var(--ink)}
+  .tg[aria-pressed="true"]{background:var(--ink);color:#fff;border-color:var(--ink)}
+  .tg.good{background:#e3f4e8;border-color:var(--green)}
+  .tg.bad{background:#fbe3e4;border-color:var(--red)}
+  .readout{font-size:15.5px;margin:10px 0 0;min-height:2.7em;line-height:1.45}
+  .readout b{color:var(--ink)}
+  .slider{display:flex;align-items:center;gap:12px;flex-wrap:wrap;margin:10px 0 0;font-size:15px}
+  .slider input{flex:1;min-width:180px;accent-color:var(--ink)}
+  .slider output{font-family:var(--mono);font-size:14px;min-width:7ch}
+  .remember{margin:0;padding:10px 14px;background:#fff7d6;border-left:5px solid var(--gold);border-radius:6px;font-size:16px}
+  .remember > b:first-child{font-family:var(--hand);font-weight:normal;font-size:19px;margin-right:4px}
+  .see{font-size:14px;color:var(--muted);margin:8px 0 0}
+  .note{font-size:13px;color:var(--muted);margin:6px 0 0}
+
+  .chips{display:flex;flex-wrap:wrap;gap:8px;margin:8px 0}
+  .chip{font:inherit;font-size:14.5px;background:#fff;border:1.5px solid #bdb7aa;border-radius:999px;padding:5px 12px;cursor:pointer;color:var(--ink);text-align:left}
+  .chip[aria-pressed="true"]{border-color:var(--ink);box-shadow:0 2px 0 var(--ink);background:#fffbe6}
+  .chip.placed{cursor:default;opacity:.95}
+  .bins{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px;margin-top:8px}
+  .bin{font:inherit;text-align:left;background:#fbfaf6;border:2px dashed #c9c3b6;border-radius:10px;padding:10px;min-height:130px;cursor:pointer;color:var(--ink)}
+  .bin:hover{border-color:var(--ink)}
+  .bin .bn{display:block;font-family:var(--hand);font-size:20px;line-height:1.1}
+  .bin .bd{display:block;font-size:13.5px;color:var(--muted);margin-bottom:6px}
+  .bin .got{display:block;font-size:13.5px;background:#fff;border:1px solid var(--line);border-radius:6px;padding:3px 7px;margin:4px 0}
+
+  .drugs{display:grid;grid-template-columns:repeat(auto-fill,minmax(190px,1fr));gap:10px}
+  .drug{font:inherit;text-align:left;background:#fff;border:1.5px solid var(--line);border-radius:10px;padding:10px 12px;cursor:pointer;color:var(--ink);min-height:92px}
+  .drug:hover{border-color:#bdb7aa}
+  .drug .dn{display:block;font-weight:700;font-size:15.5px}
+  .drug .dq{display:block;font-size:13.5px;color:var(--muted)}
+  .drug .da{display:none;font-size:14px;margin-top:4px}
+  .drug[aria-expanded="true"]{background:#f6f9ff;border-color:var(--blue)}
+  .drug[aria-expanded="true"] .dq{display:none}
+  .drug[aria-expanded="true"] .da{display:block}
+  .drug.star{border-color:var(--red)}
+
+  .cmp{width:100%;border-collapse:collapse;font-size:15px}
+  .cmp th,.cmp td{border-bottom:1px solid var(--line);padding:6px 8px;text-align:left;vertical-align:top}
+  .cmp th{font-family:var(--hand);font-weight:normal;font-size:18px}
+
+  .heart{transform-box:fill-box;transform-origin:center}
+  @keyframes beat{0%,100%{transform:scale(1)}12%{transform:scale(1.13)}24%{transform:scale(.97)}36%{transform:scale(1.06)}}
+  :focus-visible{outline:2px solid #3d6fa8;outline-offset:2px}
+
+  .foot{margin-top:34px;padding-top:14px;border-top:1px dashed #c9c3b6;font-size:12.5px;color:var(--muted)}
+  .foot p{margin:0 0 8px}
+  .embed{display:flex;gap:8px;align-items:flex-start;flex-wrap:wrap}
+  .embed code{flex:1;min-width:0;font-family:var(--mono);font-size:11.5px;background:#fff;border:1px solid var(--line);padding:5px 8px;overflow-wrap:anywhere}
+  .embed button{font:inherit;font-size:12px;padding:4px 10px;background:#fff;border:1px solid #bdb7aa;border-radius:4px;cursor:pointer}
+  .refs{margin:4px 0 10px;padding-left:18px}
+
+  @media (max-width:760px){
+    .toc,.mix,.two{grid-template-columns:1fr}
+    .bins{grid-template-columns:1fr}
+  }
+  @media (prefers-reduced-motion:reduce){ html{scroll-behavior:auto} }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <a class="back" href="../">← All NeuroSims</a>
+  <h1>Common Mix-Ups: Exam 1 and Exam 2 Review</h1>
+  <p class="intro">These are the ideas that tripped up the most people on the first two exams in Introduction to Neuroscience. Each topic shows <b>the mix-up</b> next to <b>what's actually true</b>, then gives you a picture you can poke at until it makes sense. Everything here is interactive: click, drag the sliders, and press play.</p>
+
+  <nav class="toc" aria-label="Topics">
+    <div>
+      <h2>Exam 1: The nervous system and brain</h2>
+      <ol>
+        <li><a href="#divisions">Afferent, efferent, and who controls breathing</a></li>
+        <li><a href="#neurontypes">Bipolar vs. pseudounipolar neurons</a></li>
+        <li><a href="#midsag">Finding structures on the midline view</a></li>
+        <li><a href="#circuits">Basal ganglia, cerebellum, or limbic system?</a></li>
+        <li><a href="#language">Broca's and Wernicke's areas</a></li>
+        <li><a href="#methods">Choosing a brain method, and Nissl vs. Golgi stains</a></li>
+        <li><a href="#spine">The spinal cord, top to bottom</a></li>
+      </ol>
+    </div>
+    <div>
+      <h2>Exam 2: Signals, synapses and drugs</h2>
+      <ol start="8">
+        <li><a href="#resting">Potassium and the resting potential</a></li>
+        <li><a href="#ap">Refractory periods and one-way travel</a></li>
+        <li><a href="#release">The order of synaptic release (and gas transmitters)</a></li>
+        <li><a href="#receptors">Ionotropic vs. metabotropic receptors</a></li>
+        <li><a href="#ach">Acetylcholine: one transmitter, opposite effects</a></li>
+        <li><a href="#families">Transmitter families and which drug hits which</a></li>
+        <li><a href="#dopamine">Dopamine pathways and antipsychotics</a></li>
+        <li><a href="#doseresponse">Reading a dose-response curve</a></li>
+        <li><a href="#tolerance">Tolerance traps and alcohol's two phases</a></li>
+      </ol>
+    </div>
+  </nav>
+
+  <!-- ===================== EXAM 1 ===================== -->
+  <div class="exam-band"><h2>Exam 1</h2><p>The nervous system's layout, the brain's parts, and how we study them</p></div>
+
+  <section class="topic" id="divisions">
+    <div class="thead"><span class="num">1</span><h3>Afferent, efferent, and who controls breathing</h3></div>
+    <p class="lede">Signals going <b>toward</b> the brain and spinal cord are <b>afferent</b>. Signals going <b>away</b> from them are <b>efferent</b>. A few behaviors, like breathing, are run by two control systems at once.</p>
+    <div class="mix">
+      <div class="wrong"><span class="lab">The mix-up</span><p>Afferent neurons carry movement commands out; efferent neurons bring sensations in.</p><p>Breathing is controlled only by the autonomic nervous system, and paying attention temporarily overrides it.</p></div>
+      <div class="right"><span class="lab">Actually</span><p><b>A</b>fferent <b>a</b>rrives (sensory in). <b>E</b>fferent <b>e</b>xits (motor out).</p><p>The diaphragm is <b>skeletal muscle</b>. The brainstem drives it automatically, and the motor cortex can take over on purpose. Both send their commands through the same motor neurons in the spinal cord.</p></div>
+    </div>
+    <div class="viz">
+      <h4>Arrives vs. exits</h4>
+      <p class="sub">Touch the stove and follow the signal in, then back out.</p>
+      <svg id="affSvg" viewBox="0 0 760 210" role="img" aria-label="A sensory signal travels from the skin into the spinal cord along an afferent path, and a motor signal leaves along an efferent path to a muscle."></svg>
+      <div class="controls"><button class="tg" id="affGo">Touch the hot stove</button></div>
+    </div>
+    <div class="viz">
+      <h4>Two drivers, one set of motor neurons</h4>
+      <p class="sub">Pick a situation and see which path is in charge of the diaphragm.</p>
+      <svg id="breathSvg" viewBox="0 0 760 300" role="img" aria-label="The brainstem and the motor cortex both send signals to phrenic motor neurons, which move the diaphragm."></svg>
+      <div class="controls" role="group" aria-label="Breathing situation">
+        <button class="tg" data-b="auto" aria-pressed="true">Asleep (automatic)</button>
+        <button class="tg" data-b="hold" aria-pressed="false">Hold your breath</button>
+        <button class="tg" data-b="talk" aria-pressed="false">Talk or sing</button>
+        <button class="tg" data-b="co2" aria-pressed="false">Hold it too long</button>
+      </div>
+      <p class="readout" id="breathTxt" aria-live="polite"></p>
+    </div>
+    <p class="remember"><b>Remember it:</b> SAME = Sensory Afferent, Motor Efferent. "Autonomic" describes <i>which body parts</i> a pathway controls (organs, glands, heart). It doesn't just mean "happens without thinking." Breathing uses skeletal muscle, so its motor neurons are somatic, even when it runs on autopilot.</p>
+  </section>
+
+  <section class="topic" id="neurontypes">
+    <div class="thead"><span class="num">2</span><h3>Bipolar vs. pseudounipolar neurons</h3></div>
+    <p class="lede">Neurons are named by how many processes leave the <b>cell body</b>. Count only where each branch leaves the cell body, not how many branches there are farther out.</p>
+    <div class="mix">
+      <div class="wrong"><span class="lab">The mix-up</span><p>A pseudounipolar neuron has two long branches, so it must be bipolar.</p><p>Neurons are classified by how many dendritic spines or synapses they have.</p></div>
+      <div class="right"><span class="lab">Actually</span><p><b>Bipolar</b>: <b>two</b> processes leave the cell body, one on each side.</p><p><b>Pseudounipolar</b>: <b>one</b> stalk leaves the cell body and <i>then</i> splits into a T. It's "pseudo" (fake) unipolar because the single stalk turns into two branches.</p></div>
+    </div>
+    <div class="viz">
+      <h4>Count only where branches leave the cell body</h4>
+      <svg id="ntSvg" viewBox="0 0 800 270" role="img" aria-label="Drawings of multipolar, bipolar and pseudounipolar neurons with the processes leaving the cell body highlighted and counted."></svg>
+      <div class="controls"><button class="tg" id="ntCount" aria-pressed="true">Highlight stalks at the cell body</button></div>
+    </div>
+    <p class="remember"><b>Remember it:</b> <b>Bi</b>polar = <b>bi</b>cycle, with one wheel on each side of the cell body. Pseudounipolar = a <b>T</b>: one stalk, then a split. Your touch and pain neurons are pseudounipolar. Bipolar neurons are in the retina, nose and inner ear.</p>
+    <p class="see">Go deeper: <a href="../neuron-types/">Types of Neurons</a></p>
+  </section>
+
+  <section class="topic" id="midsag">
+    <div class="thead"><span class="num">3</span><h3>Finding structures on the midline view</h3></div>
+    <p class="lede">The midsagittal view is the brain sliced down the middle, so you're looking at the inside face of one half. The front of the brain is on the left in this drawing. The most-missed labels were the <b>lateral ventricle</b>, <b>corpus callosum</b>, <b>thalamus</b> and <b>hypothalamus</b>.</p>
+    <div class="mix">
+      <div class="wrong"><span class="lab">The mix-up</span><p>Mixing up the corpus callosum with the lateral ventricle just under it.</p><p>Mixing up the thalamus with the hypothalamus.</p></div>
+      <div class="right"><span class="lab">Actually</span><p>The <b>corpus callosum</b> is the C-shaped band of white matter (axons) arching over the top. The <b>lateral ventricle</b> is the fluid-filled space tucked right <i>under</i> that arch.</p><p>The <b>thalamus</b> is the big oval in the center. <b>Hypo</b>thalamus means "<b>below</b> the thalamus." It's the small region just underneath, sitting above the pituitary.</p></div>
+    </div>
+    <div class="viz">
+      <h4>Explore, then quiz yourself</h4>
+      <div class="two" style="align-items:start">
+        <svg id="msSvg" viewBox="0 0 600 420" role="img" aria-label="Simplified midsagittal brain; click a structure to learn about it."></svg>
+        <div>
+          <div class="controls" role="group" aria-label="Mode" style="margin-top:0">
+            <button class="tg" id="msExplore" aria-pressed="true">Explore</button>
+            <button class="tg" id="msQuiz" aria-pressed="false">Quiz me</button>
+          </div>
+          <p class="readout" id="msTxt" aria-live="polite" style="min-height:9em">Click any colored structure.</p>
+        </div>
+      </div>
+    </div>
+    <p class="remember"><b>Remember it:</b> The <b>corpus callosum</b> is the bridge on top. The <b>ventricle</b> is the pond under the bridge. The <b>thalamus</b> is the island in the middle. <b>Hypo</b> = below.</p>
+  </section>
+
+  <section class="topic" id="circuits">
+    <div class="thead"><span class="num">4</span><h3>Basal ganglia, cerebellum, or limbic system?</h3></div>
+    <p class="lede">Two of these three systems help with movement, so it's easy to blame the wrong one. Ask what kind of problem you're seeing: trouble <b>starting or stopping</b> movement, <b>clumsy</b> movement, or problems with <b>feelings and memory</b>.</p>
+    <div class="mix">
+      <div class="wrong"><span class="lab">The mix-up</span><p>Parkinson's disease is a cerebellum problem because it affects movement.</p></div>
+      <div class="right"><span class="lab">Actually</span><p><b>Basal ganglia</b>: starting, stopping and choosing movements (Parkinson's, Huntington's).</p><p><b>Cerebellum</b>: smoothness, timing and balance (clumsy, shaky reaching, unsteady walking).</p><p><b>Limbic system</b>: emotion and memory (hippocampus, amygdala).</p></div>
+    </div>
+    <div class="viz">
+      <h4>Sort the symptoms</h4>
+      <p class="sub">Click a symptom, then click the system you'd blame. Wrong answers bounce back.</p>
+      <div class="two" style="align-items:center">
+        <svg id="circSvg" viewBox="0 0 600 380" role="img" aria-label="See-through side view of the brain showing the basal ganglia deep inside, the cerebellum at the back, and limbic structures in the temporal lobe."></svg>
+        <div class="chips" id="circChips"></div>
+      </div>
+      <div class="bins" id="circBins"></div>
+      <p class="readout" id="circTxt" aria-live="polite"></p>
+    </div>
+    <p class="remember"><b>Remember it:</b> Basal ganglia = the <b>start/stop button</b>. Cerebellum = the <b>autocorrect</b> that smooths movement. Limbic = <b>feelings and memories</b>.</p>
+  </section>
+
+  <section class="topic" id="language">
+    <div class="thead"><span class="num">5</span><h3>Broca's and Wernicke's areas</h3></div>
+    <p class="lede">Language uses a whole network of areas, but two of them stand out. <b>Broca's area</b> in the frontal lobe is key for <b>producing</b> speech. <b>Wernicke's area</b> in the temporal lobe is key for <b>understanding</b> it.</p>
+    <div class="mix">
+      <div class="wrong"><span class="lab">The mix-up</span><p>Speaking should light up Wernicke's area most, because you have to understand words before you can say them.</p><p>Both areas light up equally no matter what you're doing.</p></div>
+      <div class="right"><span class="lab">Actually</span><p>Compare <b>speaking minus listening</b> and the area that stands out is <b>Broca's</b>. Compare listening minus speaking and <b>Wernicke's</b> (plus auditory cortex) stands out.</p></div>
+    </div>
+    <div class="viz">
+      <h4>Turn on a task</h4>
+      <svg id="langSvg" viewBox="0 0 600 360" role="img" aria-label="Side view of the left hemisphere with Broca's area in the frontal lobe and Wernicke's area in the temporal lobe."></svg>
+      <div class="controls" role="group" aria-label="Task">
+        <button class="tg" data-l="speak" aria-pressed="false">Speaking</button>
+        <button class="tg" data-l="listen" aria-pressed="false">Listening</button>
+        <button class="tg" data-l="contrast" aria-pressed="true">Speaking minus listening</button>
+      </div>
+      <p class="readout" id="langTxt" aria-live="polite"></p>
+    </div>
+    <p class="remember"><b>Remember it:</b> <b>B</b>roca = <b>B</b>uilding speech (front, near the mouth's motor area). <b>W</b>ernicke = <b>W</b>hat does it mean? (back, near hearing). Damage to Broca's area causes slow, effortful speech. Damage to Wernicke's area causes fluent speech that doesn't make sense.</p>
+  </section>
+
+  <section class="topic" id="methods">
+    <div class="thead"><span class="num">6</span><h3>Choosing a brain method, and Nissl vs. Golgi stains</h3></div>
+    <p class="lede">Every method trades off two things: <b>where</b> (spatial resolution) and <b>when</b> (temporal resolution). The first question to ask is whether you need a picture of the brain's <b>structure</b> or a measure of its <b>activity</b>.</p>
+    <div class="mix">
+      <div class="wrong"><span class="lab">The mix-up</span><p>To check whether the hippocampus has shrunk, use fMRI or EEG. Those are "brain scans" too.</p><p>A Golgi stain shows how densely packed cells are, and a Nissl stain shows a neuron's branches.</p></div>
+      <div class="right"><span class="lab">Actually</span><p>Shrinkage is a question about <b>structure</b>, so use <b>MRI</b>. fMRI, PET and EEG measure <b>activity</b>.</p><p><b>Nissl</b> stains the cell body of <i>every</i> cell, so you see density and layers. <b>Golgi</b> stains only a few neurons, but each one shows up <i>completely</i>, with all its branches.</p></div>
+    </div>
+    <div class="viz">
+      <h4>The methods map</h4>
+      <p class="sub">Click a method. Activity methods are placed by how well they pin down <i>where</i> and <i>when</i>.</p>
+      <svg id="methSvg" viewBox="0 0 720 370" role="img" aria-label="Chart of brain methods by spatial and temporal resolution, with structural methods and TMS shown separately."></svg>
+      <p class="readout" id="methTxt" aria-live="polite">Click a bubble.</p>
+    </div>
+    <div class="viz">
+      <h4>Which method would you use?</h4>
+      <p class="sub" id="scenQ"></p>
+      <div class="controls" id="scenBtns"></div>
+      <p class="readout" id="scenTxt" aria-live="polite"></p>
+    </div>
+    <div class="viz">
+      <h4>Same slice of cortex, two stains</h4>
+      <div class="two">
+        <div><svg id="nisslSvg" viewBox="0 0 340 230" role="img" aria-label="Nissl stain: many small purple dots showing every cell body, arranged in layers."></svg><p class="note" style="text-align:center"><b>Nissl</b>: every cell body, so you see density and layers.</p></div>
+        <div><svg id="golgiSvg" viewBox="0 0 340 230" role="img" aria-label="Golgi stain: just a few black neurons, each with all of its dendrites and axon visible."></svg><p class="note" style="text-align:center"><b>Golgi</b>: only a few cells, but each one complete.</p></div>
+      </div>
+    </div>
+    <p class="remember"><b>Remember it:</b> <b>N</b>issl = <b>N</b>umbers (count cell bodies). <b>G</b>olgi = the <b>G</b>orgeous whole neuron. For methods: "Structure? MRI. Exactly where it's active? fMRI. Exactly when? EEG. Is it <i>needed</i>? TMS."</p>
+  </section>
+
+  <section class="topic" id="spine">
+    <div class="thead"><span class="num">7</span><h3>The spinal cord, top to bottom</h3></div>
+    <p class="lede">The five regions follow your body from the neck down: <b>cervical → thoracic → lumbar → sacral → coccygeal</b>.</p>
+    <div class="mix">
+      <div class="wrong"><span class="lab">The mix-up</span><p>Lumbar comes before thoracic, or the order starts at the tailbone.</p></div>
+      <div class="right"><span class="lab">Actually</span><p>Neck (<b>C</b>ervical), chest (<b>T</b>horacic), lower back (<b>L</b>umbar), pelvis (<b>S</b>acral), tailbone (<b>C</b>occygeal). There are 31 pairs of spinal nerves: 8 + 12 + 5 + 5 + 1.</p></div>
+    </div>
+    <div class="viz">
+      <div class="two" style="align-items:center">
+        <svg id="spineSvg" viewBox="0 0 420 520" role="img" aria-label="Spinal cord drawn top to bottom with cervical, thoracic, lumbar, sacral and coccygeal regions."></svg>
+        <div>
+          <h4>Put them in order</h4>
+          <p class="sub">Click the regions from top (closest to the brain) to bottom.</p>
+          <div class="controls" id="spBtns"></div>
+          <p class="readout" id="spTxt" aria-live="polite"></p>
+        </div>
+      </div>
+    </div>
+    <p class="remember"><b>Remember it:</b> "<b>C</b>an <b>T</b>he <b>L</b>ittle <b>S</b>nake <b>C</b>url?" Or just go down your body: neck, chest, lower back, pelvis, tailbone.</p>
+  </section>
+
+  <!-- ===================== EXAM 2 ===================== -->
+  <div class="exam-band"><h2>Exam 2</h2><p>How neurons fire, how synapses talk, and how drugs change both</p></div>
+
+  <section class="topic" id="resting">
+    <div class="thead"><span class="num">8</span><h3>Potassium and the resting potential</h3></div>
+    <p class="lede">At rest, K⁺ is much more concentrated <b>inside</b> the neuron. K⁺ leaks out down that gradient and takes positive charge with it, which leaves the inside around <b>−70 mV</b>. If you change the K⁺ outside the cell, you change how hard it pushes out.</p>
+    <div class="mix">
+      <div class="wrong"><span class="lab">The mix-up</span><p>If extra K⁺ builds up outside (hyperkalemia), more K⁺ leaks out and the cell hyperpolarizes.</p><p>The Na⁺/K⁺ pump instantly fixes it, so nothing changes.</p><p>At rest the inside is positive because there's so much K⁺ in there.</p></div>
+      <div class="right"><span class="lab">Actually</span><p>More K⁺ outside makes the gradient <b>smaller</b>, so <b>less</b> K⁺ leaks out. Less positive charge leaves, so the cell <b>depolarizes</b> (becomes less negative).</p><p>The pump is slow and only rebuilds the gradients over time. It can't hold the resting potential in place.</p><p>The inside is <b>negative</b> at rest, precisely because positive K⁺ has leaked out.</p></div>
+    </div>
+    <div class="viz">
+      <h4>Raise the potassium outside the cell</h4>
+      <svg id="kSvg" viewBox="0 0 760 300" role="img" aria-label="Neuron membrane with potassium ions inside and outside, an arrow showing how strongly potassium leaks out, and a voltage meter."></svg>
+      <div class="slider"><label for="kSlide">K⁺ outside the cell</label><input type="range" id="kSlide" min="2" max="20" step="0.5" value="4"><output id="kOut">4 mM</output></div>
+      <p class="readout" id="kTxt" aria-live="polite"></p>
+      <p class="note">Calculated with the Goldman equation using typical textbook concentrations (K⁺ inside 140 mM, Na⁺ outside 145 mM, inside 15 mM, resting Na⁺:K⁺ permeability 0.04:1). Normal K⁺ outside is about 4 mM.</p>
+    </div>
+    <p class="remember"><b>Remember it:</b> K⁺ leaking out is what makes the inside negative. Anything that shrinks that leak (like more K⁺ outside) makes the inside <b>less</b> negative.</p>
+  </section>
+
+  <section class="topic" id="ap">
+    <div class="thead"><span class="num">9</span><h3>Refractory periods and one-way travel</h3></div>
+    <p class="lede">An action potential has two refractory periods. Right after a spike, <b>Na⁺ channels are inactivated</b> and can't reopen at any stimulus strength (the <b>absolute</b> refractory period). After that, the membrane is still a bit hyperpolarized, so a <b>bigger-than-normal</b> stimulus is needed (the <b>relative</b> refractory period). This is also why the signal only moves forward.</p>
+    <div class="mix">
+      <div class="wrong"><span class="lab">The mix-up</span><p>The axon hillock blocks signals from coming back, or Na⁺ ions can only flow toward the terminal.</p><p>The Na⁺/K⁺ pump causes repolarization.</p><p>In saltatory conduction, ions jump from node to node.</p></div>
+      <div class="right"><span class="lab">Actually</span><p>The membrane <b>just behind</b> the spike is still refractory, so the spike can only spread forward into fresh membrane.</p><p><b>Voltage-gated K⁺ channels</b> opening, plus Na⁺ channels inactivating, cause repolarization. The pump is far too slow.</p><p>In a myelinated axon, <b>electrical current</b> spreads quickly under the myelin, and the spike is <b>regenerated</b> at each node. No ions jump.</p></div>
+    </div>
+    <div class="viz">
+      <h4>What's happening at each moment</h4>
+      <svg id="apSvg" viewBox="0 0 680 300" role="img" aria-label="Action potential graph with rising phase, falling phase, undershoot, and shaded absolute and relative refractory periods."></svg>
+      <div class="controls" role="group" aria-label="Phase">
+        <button class="tg" data-p="rise" aria-pressed="true">Rising phase</button>
+        <button class="tg" data-p="fall" aria-pressed="false">Falling phase</button>
+        <button class="tg" data-p="abs" aria-pressed="false">Absolute refractory</button>
+        <button class="tg" data-p="rel" aria-pressed="false">Relative refractory</button>
+      </div>
+      <p class="readout" id="apTxt" aria-live="polite"></p>
+    </div>
+    <div class="viz">
+      <h4>Why it only goes forward</h4>
+      <p class="sub">Fire from the axon hillock as usual. Then zap the <i>middle</i> of the axon and watch what happens. The membrane itself can carry a spike in either direction.</p>
+      <svg id="axSvg" viewBox="0 0 760 170" role="img" aria-label="Axon divided into patches that light up as the action potential passes, with refractory patches shown behind it."></svg>
+      <div class="controls">
+        <button class="tg" id="axHill">Fire from the axon hillock</button>
+        <button class="tg" id="axMid">Zap the middle of the axon</button>
+        <span class="note" style="margin:0 0 0 6px"><span style="color:var(--orange)">■</span> firing &nbsp; <span style="color:#555">■</span> absolute refractory &nbsp; <span style="color:#b9b4aa">■</span> relative refractory</span>
+      </div>
+      <p class="readout" id="axTxt" aria-live="polite"></p>
+    </div>
+    <div class="viz">
+      <h4>Saltatory conduction: current spreads, the spike is rebuilt</h4>
+      <svg id="salSvg" viewBox="0 0 760 230" role="img" aria-label="Two myelinated axons; in the healthy one current spreads under myelin and regenerates the spike at each node, in the damaged one current leaks out and fails to reach the next node."></svg>
+      <div class="controls"><button class="tg" id="salGo">Send a spike down both</button></div>
+    </div>
+    <p class="remember"><b>Remember it:</b> Na⁺ opens the door (rising phase). K⁺ closes the deal (falling phase). Behind every spike, the Na⁺ channels are <b>locked</b> for a moment. That's what keeps the signal moving forward.</p>
+    <p class="see">Go deeper: <a href="../APgraph/">The Action Potential Graph</a> · <a href="../saltatory-conduction/">Saltatory Conduction</a> · <a href="../action-potential/">The Salty Banana</a></p>
+  </section>
+
+  <section class="topic" id="release">
+    <div class="thead"><span class="num">10</span><h3>The order of synaptic release (and gas transmitters)</h3></div>
+    <p class="lede">Calcium is the trigger. Without Ca²⁺ coming into the terminal, vesicles don't fuse and no transmitter is released.</p>
+    <div class="mix">
+      <div class="wrong"><span class="lab">The mix-up</span><p>The action potential arrives, vesicles fuse, and then Ca²⁺ channels open.</p><p>Gas transmitters like nitric oxide work like the others, just smaller.</p></div>
+      <div class="right"><span class="lab">Actually</span><p>Spike arrives → <b>Ca²⁺ channels open</b> → vesicles fuse → transmitter binds receptors → transmitter is cleared.</p><p>Gas transmitters are <b>made on demand</b> and are <b>never stored in vesicles</b>. They diffuse straight through cell membranes.</p></div>
+    </div>
+    <div class="viz">
+      <h4>Step through a synapse</h4>
+      <svg id="synSvg" viewBox="0 0 720 330" role="img" aria-label="A presynaptic terminal with calcium channels and vesicles above a postsynaptic membrane with receptors."></svg>
+      <div class="controls">
+        <button class="tg" id="synPrev">← Back</button>
+        <button class="tg" id="synNext">Next step →</button>
+        <button class="tg" id="synNoCa" aria-pressed="false">Remove Ca²⁺ from outside</button>
+      </div>
+      <p class="readout" id="synTxt" aria-live="polite"></p>
+    </div>
+    <div class="viz">
+      <h4>Put the steps in order</h4>
+      <p class="sub">Click the steps in the order they happen.</p>
+      <div class="controls" id="ordBtns"></div>
+      <p class="readout" id="ordTxt" aria-live="polite"></p>
+    </div>
+    <div class="viz">
+      <h4>The exception: gas transmitters</h4>
+      <div class="two" style="align-items:center">
+        <svg id="gasSvg" viewBox="0 0 360 220" role="img" aria-label="Nitric oxide is made by an enzyme and diffuses straight through membranes in all directions, with no vesicles."></svg>
+        <table class="cmp">
+          <tr><th></th><th>Classic (glutamate, GABA, dopamine)</th><th>Gas (nitric oxide)</th></tr>
+          <tr><td>Made</td><td>Ahead of time</td><td>On demand, by an enzyme</td></tr>
+          <tr><td>Stored in vesicles?</td><td>Yes</td><td><b>No</b></td></tr>
+          <tr><td>Released by</td><td>Exocytosis</td><td>Diffusing through the membrane</td></tr>
+          <tr><td>Acts on</td><td>Receptors on the cell surface</td><td>Targets <i>inside</i> nearby cells, and can travel backward to the sending cell</td></tr>
+        </table>
+      </div>
+    </div>
+    <p class="remember"><b>Remember it:</b> "No Ca²⁺, no release." And gases can't be bottled: there are no vesicles for NO.</p>
+    <p class="see">Go deeper: <a href="../exploring-synapses/">Exploring Synapses</a> · <a href="../clearance/">Clearing the Synapse</a></p>
+  </section>
+
+  <section class="topic" id="receptors">
+    <div class="thead"><span class="num">11</span><h3>Ionotropic vs. metabotropic receptors</h3></div>
+    <p class="lede"><b>Ionotropic</b> receptors <i>are</i> ion channels: transmitter binds, the channel opens, and the effect is <b>fast and brief</b>. <b>Metabotropic</b> receptors aren't channels. They start a G-protein chain reaction inside the cell, so the effect is <b>slower and longer-lasting</b>.</p>
+    <div class="mix">
+      <div class="wrong"><span class="lab">The mix-up</span><p>The nicotinic receptor at the muscle is metabotropic.</p><p>GABA-A makes an IPSP by letting Na⁺ in.</p></div>
+      <div class="right"><span class="lab">Actually</span><p>The <b>nicotinic</b> ACh receptor is <b>ionotropic</b> (a ligand-gated channel). The <b>muscarinic</b> receptor is metabotropic.</p><p><b>GABA-A</b> is a channel that lets <b>Cl⁻ in</b>. Negative charge enters, the inside gets more negative, and that's an IPSP.</p></div>
+    </div>
+    <div class="viz">
+      <h4>Race them</h4>
+      <svg id="recSvg" viewBox="0 0 760 300" role="img" aria-label="Left: an ionotropic receptor that is itself a channel. Right: a metabotropic receptor that activates a G protein which later opens a separate channel."></svg>
+      <div class="controls"><button class="tg" id="recGo">Release transmitter on both</button></div>
+      <p class="readout" id="recTxt" aria-live="polite"></p>
+    </div>
+    <p class="remember"><b>Remember it:</b> <b>Iono</b>tropic = the receptor <i>is</i> the <b>ion</b> door. <b>Meta</b>botropic = a <b>middleman</b> (the G protein). <b>N</b>icotinic = <b>N</b>ow (fast). <b>M</b>uscarinic = <b>M</b>iddleman.</p>
+    <p class="see">Go deeper: <a href="../receptor-pharmacology/">Receptor Mechanisms</a></p>
+  </section>
+
+  <section class="topic" id="ach">
+    <div class="thead"><span class="num">12</span><h3>Acetylcholine: one transmitter, opposite effects</h3></div>
+    <p class="lede">The same ACh molecule makes skeletal muscle <b>contract</b> but makes the heart <b>slow down</b>. The difference comes from the <b>receptor</b>, not the transmitter.</p>
+    <div class="mix">
+      <div class="wrong"><span class="lab">The mix-up</span><p>ACh turns into an inhibitory chemical before it reaches the heart.</p><p>Loewi's experiment showed that nerves signal electrically.</p><p>Donepezil works by blocking ACh reuptake.</p></div>
+      <div class="right"><span class="lab">Actually</span><p>Muscle has <b>nicotinic</b> receptors (Na⁺ in, contract). The heart has <b>muscarinic</b> receptors (G protein, K⁺ out, slower beat).</p><p>Loewi showed that a <b>chemical</b> in the fluid (ACh, which he called "vagus substance") slowed a second heart. That's how we know synapses are chemical.</p><p>ACh isn't taken back up. It's broken down in the synapse by the enzyme <b>acetylcholinesterase</b>, and donepezil <b>blocks that enzyme</b>.</p></div>
+    </div>
+    <div class="viz">
+      <h4>Same key, different locks</h4>
+      <svg id="achSvg" viewBox="0 0 760 270" role="img" aria-label="Acetylcholine binds nicotinic receptors on skeletal muscle causing contraction, and muscarinic receptors on the heart causing slowing."></svg>
+      <div class="controls"><button class="tg" id="achGo">Release ACh on both</button></div>
+    </div>
+    <div class="viz">
+      <h4>Loewi's two frog hearts (1921)</h4>
+      <svg id="loewiSvg" viewBox="0 0 760 260" role="img" aria-label="Two frog hearts in fluid baths. Stimulating the vagus nerve of the first slows it; moving its fluid to the second heart slows the second heart too."></svg>
+      <div class="controls">
+        <button class="tg" id="lwStim">1. Stimulate heart 1's vagus nerve</button>
+        <button class="tg" id="lwMove">2. Move the fluid to heart 2</button>
+        <button class="tg" id="lwReset">Reset</button>
+      </div>
+      <p class="readout" id="lwTxt" aria-live="polite">Both hearts beat at their normal rate.</p>
+    </div>
+    <div class="viz">
+      <h4>How donepezil helps: protect the ACh that's left</h4>
+      <svg id="donSvg" viewBox="0 0 760 230" role="img" aria-label="Synapse with acetylcholine molecules and acetylcholinesterase enzymes that cut them; donepezil blocks the enzymes so acetylcholine lasts longer."></svg>
+      <div class="controls"><button class="tg" id="donTog" aria-pressed="false">Add donepezil</button></div>
+      <p class="readout" id="donTxt" aria-live="polite"></p>
+    </div>
+    <p class="remember"><b>Remember it:</b> The transmitter is the key, the receptor is the lock, and <b>the lock decides what happens</b>. ACh is cleared by an <b>enzyme</b>, not by reuptake.</p>
+  </section>
+
+  <section class="topic" id="families">
+    <div class="thead"><span class="num">13</span><h3>Transmitter families and which drug hits which</h3></div>
+    <p class="lede"><b>Monoamines</b> are the big family. <b>Catecholamines</b> (dopamine, norepinephrine, epinephrine) are a branch of it made from <b>tyrosine</b>. <b>Serotonin</b> is also a monoamine, but it's made from <b>tryptophan</b>, so it's not a catecholamine.</p>
+    <div class="mix">
+      <div class="wrong"><span class="lab">The mix-up</span><p>Serotonin is a catecholamine.</p><p>LSD and psilocybin are dopamine drugs.</p></div>
+      <div class="right"><span class="lab">Actually</span><p>All catecholamines are monoamines, but not every monoamine is a catecholamine. <b>Serotonin is the odd one out.</b></p><p>Classic psychedelics (LSD, psilocybin, mescaline) mainly activate <b>serotonin 5-HT2A</b> receptors.</p></div>
+    </div>
+    <div class="viz">
+      <h4>The family tree, and the assembly line</h4>
+      <svg id="famSvg" viewBox="0 0 760 330" role="img" aria-label="Monoamines branch into catecholamines (dopamine, norepinephrine, epinephrine, made from tyrosine) and serotonin (made from tryptophan)."></svg>
+      <div class="controls"><button class="tg" id="famGo">Run the assembly line</button></div>
+    </div>
+    <div class="viz">
+      <h4>Drug → target</h4>
+      <p class="sub">Guess first, then click to check.</p>
+      <div class="drugs" id="drugGrid"></div>
+    </div>
+    <p class="remember"><b>Remember it:</b> <b>T</b>yrosine → <b>D</b>OPA → <b>D</b>opamine → <b>N</b>orepinephrine → <b>E</b>pinephrine. "<b>T</b>iny <b>D</b>ogs <b>D</b>on't <b>N</b>eed <b>E</b>xercise." Psychedelics → serotonin.</p>
+  </section>
+
+  <section class="topic" id="dopamine">
+    <div class="thead"><span class="num">14</span><h3>Dopamine pathways and antipsychotics</h3></div>
+    <p class="lede">Dopamine neurons in the midbrain send fibers along separate highways, and each highway does a different job. A drug that blocks D2 receptors <i>everywhere</i> hits all of them at once.</p>
+    <div class="mix">
+      <div class="wrong"><span class="lab">The mix-up</span><p>Haloperidol's tremor and stiffness come from blocking the mesolimbic (reward) pathway.</p><p>Parkinson's disease is caused by losing dopamine in the reward pathway.</p></div>
+      <div class="right"><span class="lab">Actually</span><p>Blocking D2 in the <b>mesolimbic</b> pathway is the <b>goal</b> (fewer hallucinations and delusions). Blocking it in the <b>mesostriatal</b> (nigrostriatal) pathway causes the <b>movement side effects</b>.</p><p>Parkinson's happens when the <b>substantia nigra</b> neurons of the <b>mesostriatal</b> (movement) pathway die.</p></div>
+    </div>
+    <div class="viz">
+      <h4>Three highways from the midbrain</h4>
+      <div class="two" style="align-items:start">
+        <svg id="daSvg" viewBox="0 0 600 420" role="img" aria-label="Midline brain showing dopamine pathways from the substantia nigra to the striatum and from the ventral tegmental area to the nucleus accumbens and prefrontal cortex."></svg>
+        <div>
+          <div class="controls" role="group" aria-label="Pathway" style="margin-top:0">
+            <button class="tg" data-d="striatal" aria-pressed="true">Mesostriatal</button>
+            <button class="tg" data-d="limbic" aria-pressed="false">Mesolimbic</button>
+            <button class="tg" data-d="cortical" aria-pressed="false">Mesocortical</button>
+          </div>
+          <div class="controls">
+            <button class="tg" id="daHal" aria-pressed="false">Give haloperidol (blocks D2)</button>
+            <button class="tg" id="daPd" aria-pressed="false">Parkinson's disease</button>
+          </div>
+          <p class="readout" id="daTxt" aria-live="polite" style="min-height:10em"></p>
+        </div>
+      </div>
+    </div>
+    <p class="remember"><b>Remember it:</b> <b>Striatal</b> = <b>stride</b> (movement). <b>Limbic</b> = <b>liking</b> and wanting (reward). <b>Cortical</b> = <b>cognition</b> (planning, focus). Haloperidol blocks all three, so the helpful effect comes with side effects.</p>
+    <p class="see">Go deeper: <a href="../dopamine-pathways/">Dopamine: Movement vs. Motivation</a> · <a href="../neurotransmitter-pathways/">Neurotransmitter Pathways</a></p>
+  </section>
+
+  <section class="topic" id="doseresponse">
+    <div class="thead"><span class="num">15</span><h3>Reading a dose-response curve</h3></div>
+    <p class="lede">Two numbers describe most dose-response curves. <b>Potency</b> is how much drug you need, shown by the curve's left-right position (its ED50). <b>Efficacy</b> is how big the effect can get, shown by the curve's maximum height.</p>
+    <div class="mix">
+      <div class="wrong"><span class="lab">The mix-up</span><p>A drug with a bigger ED50 is more potent.</p><p>Tolerance lowers the curve's maximum, or shifts the curve left.</p><p>Same ED50 means the same safety.</p></div>
+      <div class="right"><span class="lab">Actually</span><p><b>Lower ED50 = more potent</b>, because a smaller dose gets the job done. That puts the curve farther left.</p><p><b>Tolerance shifts the curve right</b> (you need more drug), and the maximum usually stays the same. <b>Sensitization shifts it left.</b></p><p>Safety depends on the <b>therapeutic index</b> (LD50 ÷ ED50), the gap between a helpful dose and a deadly one.</p></div>
+    </div>
+    <div class="viz">
+      <h4>Change the drug, watch the curve</h4>
+      <svg id="drSvg" viewBox="0 0 680 340" role="img" aria-label="Dose-response curve on a log dose axis, with a dashed reference curve."></svg>
+      <div class="controls" role="group" aria-label="Changes">
+        <button class="tg" data-r="reset">Reset</button>
+        <button class="tg" data-r="potent">More potent drug</button>
+        <button class="tg" data-r="weak">Less potent drug</button>
+        <button class="tg" data-r="tol">Tolerance</button>
+        <button class="tg" data-r="sens">Sensitization</button>
+        <button class="tg" data-r="partial">Partial agonist</button>
+      </div>
+      <p class="readout" id="drTxt" aria-live="polite"></p>
+    </div>
+    <div class="viz">
+      <h4>Therapeutic index: same ED50, very different safety</h4>
+      <svg id="tiSvg" viewBox="0 0 680 300" role="img" aria-label="Effective-dose curve and lethal-dose curve for a drug, with the safety gap between them shaded."></svg>
+      <div class="controls" role="group" aria-label="Drug">
+        <button class="tg" data-t="x" aria-pressed="true">Drug X (ED50 10, LD50 1,000)</button>
+        <button class="tg" data-t="y" aria-pressed="false">Drug Y (ED50 10, LD50 40)</button>
+        <button class="tg" data-t="barb" aria-pressed="false">Barbiturate-like</button>
+        <button class="tg" data-t="benzo" aria-pressed="false">Benzodiazepine-like</button>
+      </div>
+      <p class="readout" id="tiTxt" aria-live="polite"></p>
+    </div>
+    <p class="remember"><b>Remember it:</b> <b>Left = less needed = more potent.</b> Height = efficacy. Tolerance moves the curve <b>right</b>, sensitization moves it <b>left</b>. A narrow therapeutic index means overdose is easy.</p>
+  </section>
+
+  <section class="topic" id="tolerance">
+    <div class="thead"><span class="num">16</span><h3>Tolerance traps and alcohol's two phases</h3></div>
+    <p class="lede">Tolerance doesn't build evenly for every effect of a drug. With alcohol, early "excitement" comes from <b>switching off the brain's brakes</b>, not from stimulating the brain.</p>
+    <div class="mix">
+      <div class="wrong"><span class="lab">The mix-up</span><p>Opioid users become tolerant to breathing suppression, so they raise the dose for the high.</p><p>Alcohol is a stimulant at first and becomes a depressant later.</p></div>
+      <div class="right"><span class="lab">Actually</span><p>It's the reverse. Tolerance to the <b>high and pain relief</b> builds quickly, but tolerance to <b>breathing suppression</b> builds slowly. Raising the dose for the same high moves the user toward the dose that stops breathing.</p><p>Alcohol is a <b>depressant the whole time</b> (it boosts GABA-A and blocks NMDA). Low doses quiet the <b>prefrontal brakes</b> first, so behavior looks excited. Higher doses slow everything.</p></div>
+    </div>
+    <div class="viz">
+      <h4>The opioid tolerance gap</h4>
+      <svg id="opSvg" viewBox="0 0 680 320" role="img" aria-label="Two dose-response curves for an opioid: the high, which shifts right with tolerance, and breathing suppression, which barely moves."></svg>
+      <div class="slider"><label for="opSlide">Months of regular use</label><input type="range" id="opSlide" min="0" max="12" step="1" value="0"><output id="opOut">0</output></div>
+      <p class="readout" id="opTxt" aria-live="polite"></p>
+      <p class="note">The numbers are made up to show the idea; real doses vary widely from person to person.</p>
+    </div>
+    <div class="viz">
+      <h4>Alcohol: releasing the brakes, then slowing everything down</h4>
+      <svg id="alSvg" viewBox="0 0 680 300" role="img" aria-label="As blood alcohol rises, prefrontal brakes drop first, then overall brain activity drops; outward behavior first looks livelier, then sedated."></svg>
+      <div class="slider"><label for="alSlide">Blood alcohol (BAC)</label><input type="range" id="alSlide" min="0" max="0.4" step="0.01" value="0.04"><output id="alOut">0.04</output></div>
+      <p class="readout" id="alTxt" aria-live="polite"></p>
+    </div>
+    <div class="viz">
+      <h4>Why alcohol plus benzodiazepines is dangerous</h4>
+      <svg id="stSvg" viewBox="0 0 680 180" role="img" aria-label="Bars showing nervous system depression from alcohol alone, a benzodiazepine alone, and both together crossing a danger line."></svg>
+      <div class="controls" role="group" aria-label="Combination">
+        <button class="tg" data-s="a" aria-pressed="false">Alcohol</button>
+        <button class="tg" data-s="b" aria-pressed="false">Benzodiazepine</button>
+        <button class="tg" data-s="ab" aria-pressed="true">Both together</button>
+      </div>
+      <p class="readout" id="stTxt" aria-live="polite"></p>
+    </div>
+    <p class="remember"><b>Remember it:</b> Chasing the same high is the trap, because breathing suppression doesn't build tolerance at the same pace. A new setting is another risk: without the usual cues, the body's learned (conditioned) tolerance doesn't kick in. Alcohol releases the brakes first, then slows everything down. Two depressants together add up.</p>
+  </section>
+
+  <footer class="foot">
+    <p class="embed"><span>Embed:</span>
+      <code id="embedCode">&lt;iframe src="https://nelurad.github.io/neurosims/common-mixups/" width="100%" height="1200" style="border:0" title="Common Mix-Ups"&gt;&lt;/iframe&gt;</code>
+      <button id="copyBtn">Copy</button></p>
+    <p style="margin-bottom:2px">References</p>
+    <ul class="refs">
+      <li>Purves, D., et al. <i>Neuroscience</i>. Sinauer / Oxford University Press.</li>
+      <li>Meyer, J. S., &amp; Quenzer, L. F. <i>Psychopharmacology: Drugs, the Brain, and Behavior</i>. Sinauer / Oxford University Press.</li>
+      <li>Loewi, O. (1921). Über humorale Übertragbarkeit der Herznervenwirkung. <i>Pflügers Archiv</i>, 189, 239–242.</li>
+    </ul>
+    <p>Drawings are simplified and not to scale. Part of <a href="../">NeuroSims</a>, made by <a href="https://nelurad.github.io/">Nelu Radpour</a> (Florida State University). Content licensed CC BY 4.0; code licensed MIT. Free to use and adapt with credit.</p>
+  </footer>
+</div>
+<script src="mixups.js"></script>
+</body>
+</html>
