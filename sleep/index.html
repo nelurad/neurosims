@@ -55,7 +55,7 @@
   .pipe{position:sticky;top:0;z-index:20;background:color-mix(in srgb,var(--bg) 92%,transparent);backdrop-filter:blur(6px);border-bottom:1.5px solid var(--line);margin:0 -24px;padding:8px 24px;display:flex;gap:10px;align-items:center}
   .pipe ol{list-style:none;margin:0;padding:0;display:flex;gap:4px;overflow-x:auto;scrollbar-width:none;flex:1}
   .pipe ol::-webkit-scrollbar{display:none}
-  .pipe a{display:flex;align-items:center;gap:5px;text-decoration:none;color:var(--muted);font-size:.74rem;padding:5px 9px;border-radius:999px;white-space:nowrap;border:1.5px solid transparent}
+  .pipe a{display:flex;align-items:center;gap:4px;text-decoration:none;color:var(--muted);font-size:.72rem;padding:5px 7px;border-radius:999px;white-space:nowrap;border:1.5px solid transparent}
   .pipe a .i{font-family:var(--mono);font-size:.85em;opacity:.7}
   .pipe a:hover{color:var(--ink);border-color:var(--line)}
   .pipe a.on{color:#0f1430;background:var(--accent)}
@@ -193,7 +193,7 @@
       <div><b>~25 years</b>of an average lifetime spent asleep</div>
       <div><b>7–9 h</b>what most adults need; about 1 in 3 U.S. adults gets less than 7</div>
     </div>
-    <p class="hint">Teaching on a projector? Press <span class="kbd">P</span> for Present mode (one section per screen), then use <span class="kbd">→</span>/<span class="kbd">←</span> or <span class="kbd">1</span>–<span class="kbd">8</span>. <span class="kbd">F</span> for full screen, <span class="kbd">T</span> to switch between the dark and bright-room themes.</p>
+    <p class="hint">Teaching on a projector? Press <span class="kbd">P</span> for Present mode (one section per screen), then use <span class="kbd">→</span>/<span class="kbd">←</span> or <span class="kbd">1</span>–<span class="kbd">9</span>, <span class="kbd">0</span>. <span class="kbd">F</span> for full screen, <span class="kbd">T</span> to switch between the dark and bright-room themes.</p>
   </header>
 
   <nav class="pipe" aria-label="Sections">
@@ -204,9 +204,48 @@
     </div>
   </nav>
 
-  <!-- =================== 1. BRAIN WAVES =================== -->
-  <section class="s" id="waves" style="--sc:var(--s1)" data-title="Brain waves">
+  <!-- =================== EEG vs ERP =================== -->
+  <section class="s" id="signal" style="--sc:var(--s1)" data-title="EEG &amp; ERP">
     <p class="kicker">Part 1</p>
+    <h2 class="sec">What an EEG actually measures</h2>
+    <p class="lede">A scalp electrode does not record individual neurons firing. It picks up the <b>summed electrical currents</b> of huge numbers of cortical neurons, mostly <b>postsynaptic potentials</b> in pyramidal cells, and only when those cells are <b>lined up</b> and active <b>at the same time</b>. An <b>ERP</b> (event-related potential) is the small part of that signal that is time-locked to an event, pulled out by averaging many trials.</p>
+    <div class="tabs" role="tablist" id="sigTabs">
+      <button class="tab" role="tab" aria-selected="true" data-p="src">Where the signal comes from</button>
+      <button class="tab" role="tab" aria-selected="false" data-p="erp">EEG vs. ERP</button>
+    </div>
+    <div class="sgp" data-p="src">
+      <div class="stage">
+        <div class="box flush"><canvas id="dipole" style="aspect-ratio:16/9.6" aria-label="Pyramidal neurons in cortex acting as dipoles, with their summed signal at a scalp electrode"></canvas>
+          <div class="ctrl" style="margin:4px 8px"><span>Synchrony</span><input type="range" id="syncR" min="0" max="100" value="15" aria-label="Synchrony"><b id="syncOut">15%</b></div>
+          <div class="ctrl" style="margin:0 8px 8px"><button class="chip" id="srcPSP" aria-pressed="true">Postsynaptic potentials</button><button class="chip" id="srcAP" aria-pressed="false">Action potentials only</button><button class="chip" id="orient" aria-pressed="false">Scramble orientation</button></div>
+        </div>
+        <div class="box">
+          <div class="stname">Many small currents, added up</div>
+          <p style="margin:0 0 8px">When synapses on a pyramidal neuron's long <b>apical dendrite</b> are active, current flows into the cell at one end and back out at the other. Each neuron becomes a tiny <b>dipole</b> (arrows). One neuron is far too weak to detect from the scalp; only the sum of many is.</p>
+          <div class="meters"><span>Signal at the scalp</span><div class="m"><i id="sumM"></i></div></div>
+          <div class="callout" id="dipNote"></div>
+        </div>
+      </div>
+    </div>
+    <div class="sgp" data-p="erp" hidden>
+      <div class="stage">
+        <div class="box flush"><canvas id="erp" style="aspect-ratio:16/9.6" aria-label="Continuous EEG cut into epochs around each tone, and the running average that reveals the ERP"></canvas>
+          <div class="ctrl" style="margin:4px 8px"><button class="btn primary" id="erpRun">Run trials</button><button class="btn" id="erp1">+1 trial</button><button class="btn" id="erp10">+10</button><button class="btn" id="erp100">+100</button><button class="btn" id="erpReset">Reset</button></div>
+          <div class="ctrl" style="margin:0 8px 8px"><button class="chip" id="erpOdd" aria-pressed="false">Rare "oddball" tone</button><button class="chip" id="erpTrue" aria-pressed="false">Show the true ERP</button></div>
+        </div>
+        <div class="box">
+          <div class="stname"><span id="erpN">0</span> trials averaged</div>
+          <dl class="kv"><dt>EEG</dt><dd>The continuous signal: everything the cortex is doing, typically tens of µV.</dd><dt>ERP</dt><dd>The response time-locked to one kind of event, from a few µV up to about 20 µV, hidden in the EEG on any single trial.</dd></dl>
+          <div class="callout" id="erpNote"></div>
+        </div>
+      </div>
+    </div>
+    <p class="note">Schematic. Neuron activity is slowed down so you can see it. ERP components follow standard auditory findings (N1 about 100 ms, P2 about 200 ms, P3 about 300–500 ms after a rare tone; Luck, 2014). Positive voltage is plotted up.</p>
+  </section>
+
+  <!-- =================== 1. BRAIN WAVES =================== -->
+  <section class="s" id="waves" style="--sc:var(--s1)" data-title="Waves">
+    <p class="kicker">Part 2</p>
     <h2 class="sec">Brain waves: what an EEG sees</h2>
     <p class="lede">Sleep is defined by three signals recorded at once: <b>EEG</b> (brain waves from the scalp), <b>EOG</b> (eye movements) and <b>EMG</b> (chin muscle tone). Pick a state and watch how all three change. As you fall deeper asleep, the brain waves get <b>slower and bigger</b>, because more neurons fire together in sync.</p>
     <div class="chips" id="stageChips"></div>
@@ -236,12 +275,12 @@
         <div class="callout" id="stNote"></div>
       </div>
     </div>
-    <p class="note">The traces are simulated from the textbook features of each stage (AASM scoring rules): beta 13–30 Hz, alpha 8–12 Hz, theta 4–7 Hz, delta 0.5–2 Hz, sleep spindles 11–16 Hz. 10-second window; grid lines are 1 second apart.</p>
+    <p class="note">The traces are simulated from the textbook features of each stage (AASM scoring rules): beta 13–30 Hz, alpha 8–13 Hz, theta 4–7 Hz, delta 0.5–4 Hz (N3 is scored on slow waves of 0.5–2 Hz and over 75 µV), sleep spindles 11–16 Hz. 10-second window; grid lines are 1 second apart.</p>
   </section>
 
   <!-- =================== 2. A NIGHT =================== -->
   <section class="s" id="night" style="--sc:var(--s2)" data-title="Cycles">
-    <p class="kicker">Part 2</p>
+    <p class="kicker">Part 3</p>
     <h2 class="sec">A night of sleep: the cycles</h2>
     <p class="lede">A <b>hypnogram</b> plots sleep stage across the night. Press play or drag across the night. Notice two patterns: <b>deep N3 is front-loaded</b> into the first half of the night, and <b>REM periods get longer toward morning</b>. Then compare a newborn, an older adult, and a recovery night after an all-nighter.</p>
     <div class="chips" id="presetChips"></div>
@@ -267,9 +306,33 @@
     </div>
   </section>
 
+  <!-- =================== LIGHT & CLOCK =================== -->
+  <section class="s" id="clock" style="--sc:var(--s3)" data-title="Light">
+    <p class="kicker">Part 4</p>
+    <h2 class="sec">Light, melanopsin and the body clock</h2>
+    <p class="lede">Your master clock, the <b>suprachiasmatic nucleus (SCN)</b>, keeps a roughly 24-hour rhythm on its own, but light resets it every day. That light signal comes mainly from a small set of retinal cells that contain the pigment <b>melanopsin</b>, which is most sensitive to <b>blue light</b>. Choose a light source and follow the signal from the eye to the pineal gland.</p>
+    <div class="chips" id="lightChips"></div>
+    <div class="stage">
+      <div class="box flush"><svg id="clockSvg" viewBox="0 20 1000 545" role="img" aria-label="Pathway from melanopsin retinal cells to the SCN, then through the spinal cord and superior cervical ganglion to the pineal gland"></svg></div>
+      <div class="box">
+        <p class="sub">Light spectrum vs. melanopsin sensitivity</p>
+        <canvas id="spec" style="aspect-ratio:16/8" aria-label="Spectrum of the selected light compared with melanopsin sensitivity"></canvas>
+        <div class="meters">
+          <span>Melanopsin activation</span><div class="m"><i id="melM" style="background:var(--blue)"></i></div>
+          <span>Melatonin (if it's night)</span><div class="m"><i id="mltM" style="background:var(--R)"></i></div>
+        </div>
+        <div class="callout" id="lightNote"></div>
+      </div>
+    </div>
+    <div class="box flush" style="margin-top:16px"><canvas id="mel24" style="aspect-ratio:16/4" aria-label="Melatonin across 24 hours"></canvas>
+      <div class="ctrl" style="margin:4px 8px"><button class="chip" id="nightUse" aria-pressed="false">Use this light from 9 PM to midnight</button><span id="melSum"></span></div>
+    </div>
+    <p class="note">Schematic. Melanopsin's peak sensitivity is about 480 nm (Berson et al., 2002; Hattar et al., 2002). Daylight is roughly 10,000–100,000 lux; indoor light is usually a few hundred lux or less. The melatonin curve and the effects of evening light illustrate findings by Gooley et al. (2011) and Chang et al. (2015); they are not exact values.</p>
+  </section>
+
   <!-- =================== 3. TWO PROCESS =================== -->
   <section class="s" id="sleepy" style="--sc:var(--s3)" data-title="Sleepiness">
-    <p class="kicker">Part 3</p>
+    <p class="kicker">Part 5</p>
     <h2 class="sec">Why you get sleepy: two forces</h2>
     <p class="lede"><b>Sleep pressure</b> (Process S) builds every hour you are awake as <b>adenosine</b> accumulates, and drains while you sleep. Your <b>body clock</b> (Process C, run by the SCN) pushes alertness up and down over 24 hours. You fall asleep easily when pressure rises above the clock's alerting signal. Try an all-nighter, a coffee, or a nap, and drag across the two days.</p>
     <div class="chips" id="twoChips"></div>
@@ -294,15 +357,15 @@
           <span>Clock alerting</span><div class="m"><i id="tC" style="background:var(--orange)"></i></div>
         </div>
         <div class="callout" id="tVerdict"></div>
-        <p style="font-size:.88rem;color:var(--muted);margin:12px 0 0" id="tExplain">Drag across the chart. Look for the <b>3–6 AM low</b> (pressure high, clock at its lowest) and the <b>evening second wind</b> (the clock's alerting signal peaks a few hours before bedtime).</p>
+        <p style="font-size:.88rem;color:var(--muted);margin:12px 0 0" id="tExplain">Drag across the chart. Look for the <b>3–6 AM low</b> (pressure high, clock at its lowest) and the <b>evening second wind</b> (the clock's alerting signal peaks in the early evening, a few hours before bedtime).</p>
       </div>
     </div>
-    <p class="note">Two-process model after Borbély (1982), with time constants of about 18 h (build-up) and 4 h (decay). Caffeine is an adenosine receptor <b>antagonist</b>: it hides the pressure but does not remove it, with a half-life of about 5 hours.</p>
+    <p class="note">Two-process model after Borbély (1982) and Daan et al. (1984), with time constants of about 18 h (build-up) and 4 h (decay). Caffeine is an adenosine receptor <b>antagonist</b>: it hides the pressure but does not remove it, with a half-life of about 5 hours.</p>
   </section>
 
   <!-- =================== 4. CIRCUIT =================== -->
-  <section class="s" id="switch" style="--sc:var(--s4)" data-title="Sleep switch">
-    <p class="kicker">Part 4</p>
+  <section class="s" id="switch" style="--sc:var(--s4)" data-title="Switch">
+    <p class="kicker">Part 6</p>
     <h2 class="sec">Sleep in the brain: the flip-flop switch</h2>
     <p class="lede">Wake-promoting centers in the brainstem and hypothalamus and the sleep-promoting <b>VLPO</b> inhibit each other, like a seesaw that is either up or down, so you switch between states quickly instead of drifting. <b>Orexin</b> holds the switch steady. A separate switch in the <b>pons</b> turns on REM and paralyzes your muscles. Pick a state, then click any region.</p>
     <div class="chips" id="circChips"></div>
@@ -323,7 +386,7 @@
 
   <!-- =================== 5. FUNCTIONS =================== -->
   <section class="s" id="why" style="--sc:var(--s5)" data-title="Why sleep?">
-    <p class="kicker">Part 5</p>
+    <p class="kicker">Part 7</p>
     <h2 class="sec">What is sleep for?</h2>
     <p class="lede">Every animal studied sleeps, even though sleeping leaves it defenseless. So sleep must do something that cannot be done while awake. Scientists have found several jobs, and they likely all matter.</p>
     <div class="tabs" role="tablist" id="fnTabs">
@@ -340,7 +403,7 @@
         <div class="box">
           <div class="stname">The glymphatic system</div>
           <p>Brain cells make waste as they work, including <b>beta-amyloid</b>, the protein that clumps in Alzheimer's disease. In sleeping mice, the space between brain cells grew by about <b>60%</b>, and cerebrospinal fluid flushed beta-amyloid out about <b>twice as fast</b> as during waking (Xie et al., 2013).</p>
-          <div class="callout">In people, large pulses of fluid wash through the brain during NREM sleep, timed to the slow waves (Fultz et al., 2019). <b>Still debated:</b> a 2024 mouse study measured <i>less</i> clearance during sleep (Miao et al., 2024), so expect this story to keep developing.</div>
+          <div class="callout">In people, slow waves of cerebrospinal fluid pulse in and out of the brain's fluid spaces during NREM sleep, timed to the slow brain waves (Fultz et al., 2019). <b>Still debated:</b> a 2024 mouse study measured <i>less</i> clearance during sleep (Miao et al., 2024), so expect this story to keep developing.</div>
         </div>
       </div>
     </div>
@@ -351,7 +414,7 @@
         </div>
         <div class="box">
           <div class="stname">Replaying the day</div>
-          <p>Hippocampal <b>place cells</b> fire in order as a rat runs a track. During NREM sleep the <b>same sequence replays</b>, compressed about 10–20× faster, during bursts called <b>sharp-wave ripples</b> (Wilson &amp; McNaughton, 1994).</p>
+          <p>Hippocampal <b>place cells</b> fire in order as a rat runs a track. During NREM sleep the <b>same sequence replays</b>, and cells that fired together fire together again (Wilson &amp; McNaughton, 1994). The whole sequence can replay in order, about 20× faster, during brief bursts called <b>sharp-wave ripples</b> (Lee &amp; Wilson, 2002).</p>
           <div class="callout">Ripples tend to arrive with <b>sleep spindles</b> and cortical <b>slow waves</b>, which is thought to move memories from the hippocampus into long-term storage in the cortex. Sleep after learning improves recall more than the same time spent awake (Diekelmann &amp; Born, 2010).</div>
         </div>
       </div>
@@ -371,18 +434,18 @@
     <div class="fnp" data-p="body" hidden>
       <div class="cards">
         <div class="card"><h4>Growth &amp; repair</h4><p>The biggest pulse of <b>growth hormone</b> each day comes during the first deep N3 period of the night.</p></div>
-        <div class="card"><h4>Immune defense</h4><p>When volunteers were exposed to a cold virus, people who slept under 6 hours were about <b>4× more likely</b> to get sick than those sleeping over 7 (Prather et al., 2015).</p></div>
+        <div class="card"><h4>Immune defense</h4><p>When volunteers were exposed to a cold virus, people who slept under 6 hours (measured with a wrist tracker) were about <b>4× more likely</b> to get sick than those sleeping over 7 (Prather et al., 2015).</p></div>
         <div class="card"><h4>Emotional reset</h4><p>REM sleep is when the brain replays emotional memories with stress chemicals such as norepinephrine switched off. It may take the sting out of hard experiences ("overnight therapy"; Walker &amp; van der Helm, 2009).</p></div>
         <div class="card"><h4>Saving energy</h4><p>Metabolism and body temperature fall during NREM sleep. The saving is modest (~10%), so energy alone can't explain why we sleep.</p></div>
         <div class="card"><h4>Appetite &amp; metabolism</h4><p>After two nights of only 4 hours, the fullness hormone <b>leptin</b> dropped 18%, the hunger hormone <b>ghrelin</b> rose 28%, and cravings for high-carb foods went up (Spiegel et al., 2004).</p></div>
-        <div class="card"><h4>It's essential</h4><p>Rats kept completely awake died within about 2–3 weeks (Rechtschaffen &amp; Bergmann). In people, the rare genetic disease <b>fatal familial insomnia</b> destroys the thalamus and with it the ability to sleep.</p></div>
+        <div class="card"><h4>It's essential</h4><p>Rats kept completely awake died within about 2–3 weeks (Rechtschaffen &amp; Bergmann). In people, the rare genetic disease <b>fatal familial insomnia</b> damages parts of the thalamus and gradually destroys the ability to sleep.</p></div>
       </div>
     </div>
   </section>
 
   <!-- =================== 6. DEPRIVATION =================== -->
   <section class="s" id="dep" style="--sc:var(--s6)" data-title="Deprivation">
-    <p class="kicker">Part 6</p>
+    <p class="kicker">Part 8</p>
     <h2 class="sec">Sleep deprivation</h2>
     <p class="lede">Drag to stay awake longer, starting from a 7 AM wake-up. Then look at the quieter danger: <b>chronic short sleep</b>, which adds up night after night while you barely notice it.</p>
     <div class="tabs" role="tablist" id="depTabs">
@@ -392,10 +455,10 @@
     <div class="dpp" data-p="acute">
       <div class="stage">
         <div class="box">
-          <div class="ctrl" style="margin-top:0"><span>Hours awake</span><input type="range" id="hrs" min="0" max="40" step="1" value="16" aria-label="Hours awake"><b id="hrsOut" style="font-size:1.3rem">16 h</b></div>
+          <div class="ctrl" style="margin-top:0"><span>Hours awake</span><input type="range" id="hrs" min="0" max="72" step="1" value="16" aria-label="Hours awake"><b id="hrsOut" style="font-size:1.3rem">16 h</b></div>
           <div class="row" style="gap:28px;align-items:flex-end;margin:4px 0 8px">
             <div><p class="sub">Clock time</p><div class="big-num" id="hrsClock">11 PM</div></div>
-            <div><p class="sub">Driving impairment equal to</p><div class="big-num" id="bac">—</div></div>
+            <div><p class="sub">Impairment equal to</p><div class="big-num" id="bac">—</div></div>
           </div>
           <div class="meters">
             <span>Attention lapses</span><div class="m"><i id="dLapse"></i></div>
@@ -414,7 +477,7 @@
         </div>
         <div class="box">
           <div class="stname">The sleep debt you don't feel</div>
-          <p>Volunteers were allowed 8, 6 or 4 hours in bed every night for two weeks (Van Dongen et al., 2003). Attention lapses in the <b>6-hour group kept climbing</b> until they matched people who had gone one to two full nights without any sleep.</p>
+          <p>Volunteers were allowed 8, 6 or 4 hours in bed every night for two weeks (Van Dongen et al., 2003). Attention lapses in the <b>6-hour group kept climbing</b> until, after two weeks, they matched people who had skipped a full night of sleep; the 4-hour group matched two nights.</p>
           <div class="callout">But switch to <b>how sleepy they felt</b>: their ratings leveled off after a few days. People who are chronically short on sleep <b>underestimate how impaired they are</b>.</div>
         </div>
       </div>
@@ -424,7 +487,7 @@
 
   <!-- =================== 7. DISORDERS =================== -->
   <section class="s" id="dis" style="--sc:var(--s7)" data-title="Disorders">
-    <p class="kicker">Part 7</p>
+    <p class="kicker">Part 9</p>
     <h2 class="sec">Sleep disorders</h2>
     <p class="lede">Pick a disorder to see how its night differs from a healthy one (faint line) and what is going on in the brain.</p>
     <div class="dlist" id="dList"></div>
@@ -439,7 +502,7 @@
 
   <!-- =================== 8. REVIEW =================== -->
   <section class="s" id="review" style="--sc:var(--s8)" data-title="Review">
-    <p class="kicker">Part 8</p>
+    <p class="kicker">Part 10</p>
     <h2 class="sec">Quick review</h2>
     <p class="lede">Have the room call out an answer before you click.</p>
     <div class="quiz">
@@ -454,11 +517,20 @@
 
   <footer class="foot">
     <p class="embed"><span>Embed:</span>
-      <code id="embedCode">&lt;iframe src="https://nelurad.github.io/neurosims/sleep/" width="100%" height="5200" style="border:0" title="The Sleeping Brain"&gt;&lt;/iframe&gt;</code>
+      <code id="embedCode">&lt;iframe src="https://nelurad.github.io/neurosims/sleep/" width="100%" height="6600" style="border:0" title="The Sleeping Brain"&gt;&lt;/iframe&gt;</code>
       <button id="copyBtn">Copy</button></p>
     <p style="margin-bottom:2px">References</p>
     <ul class="refs">
       <li>Berry, R. B., et al. (2020). <i>The AASM Manual for the Scoring of Sleep and Associated Events</i> (v2.6). American Academy of Sleep Medicine.</li>
+      <li>Luck, S. J. (2014). <i>An Introduction to the Event-Related Potential Technique</i> (2nd ed.). MIT Press.</li>
+      <li>Nunez, P. L., &amp; Srinivasan, R. (2006). <i>Electric Fields of the Brain: The Neurophysics of EEG</i> (2nd ed.). Oxford University Press.</li>
+      <li>Berson, D. M., Dunn, F. A., &amp; Takao, M. (2002). Phototransduction by retinal ganglion cells that set the circadian clock. <i>Science</i>, 295, 1070–1073.</li>
+      <li>Hattar, S., Liao, H.-W., Takao, M., Berson, D. M., &amp; Yau, K.-W. (2002). Melanopsin-containing retinal ganglion cells: architecture, projections, and intrinsic photosensitivity. <i>Science</i>, 295, 1065–1070.</li>
+      <li>Gooley, J. J., et al. (2011). Exposure to room light before bedtime suppresses melatonin onset and shortens melatonin duration in humans. <i>Journal of Clinical Endocrinology &amp; Metabolism</i>, 96, E463–E472.</li>
+      <li>Chang, A.-M., Aeschbach, D., Duffy, J. F., &amp; Czeisler, C. A. (2015). Evening use of light-emitting eReaders negatively affects sleep, circadian timing, and next-morning alertness. <i>PNAS</i>, 112, 1232–1237.</li>
+      <li>Daan, S., Beersma, D. G. M., &amp; Borbély, A. A. (1984). Timing of human sleep: recovery process gated by a circadian pacemaker. <i>American Journal of Physiology</i>, 246, R161–R183.</li>
+      <li>Lee, A. K., &amp; Wilson, M. A. (2002). Memory of sequential experience in the hippocampus during slow wave sleep. <i>Neuron</i>, 36, 1183–1194.</li>
+      <li>Waters, F., Chiu, V., Atkinson, A., &amp; Blom, J. D. (2018). Severe sleep deprivation causes hallucinations and a gradual progression toward psychosis with increasing time awake. <i>Frontiers in Psychiatry</i>, 9, 303.</li>
       <li>Borbély, A. A. (1982). A two process model of sleep regulation. <i>Human Neurobiology</i>, 1, 195–204.</li>
       <li>Saper, C. B., Fuller, P. M., Pedersen, N. P., Lu, J., &amp; Scammell, T. E. (2010). Sleep state switching. <i>Neuron</i>, 68, 1023–1042.</li>
       <li>Xie, L., et al. (2013). Sleep drives metabolite clearance from the adult brain. <i>Science</i>, 342, 373–377.</li>
@@ -474,9 +546,9 @@
       <li>Dawson, D., &amp; Reid, K. (1997). Fatigue, alcohol and performance impairment. <i>Nature</i>, 388, 235.</li>
       <li>Williamson, A. M., &amp; Feyer, A.-M. (2000). Moderate sleep deprivation produces impairments in cognitive and motor performance equivalent to legally prescribed levels of alcohol intoxication. <i>Occupational and Environmental Medicine</i>, 57, 649–655.</li>
       <li>Yoo, S.-S., et al. (2007). The human emotional brain without sleep: a prefrontal amygdala disconnect. <i>Current Biology</i>, 17, R877–R878.</li>
-      <li>Van Dongen, H. P. A., et al. (2003). The cumulative cost of additional wakefulness. <i>Sleep</i>, 26, 117–126.</li>
-      <li>Benjafield, A. V., et al. (2019). Estimation of the global prevalence and burden of obstructive sleep apnoea. <i>Lancet Respiratory Medicine</i>, 7, 687–698.</li>
-      <li>Postuma, R. B., et al. (2019). Risk and predictors of dementia and parkinsonism in idiopathic REM sleep behaviour disorder. <i>Brain</i>, 142, 744–759.</li>
+      <li>Van Dongen, H. P. A., et al. (2003). The cumulative cost of additional wakefulness: dose-response effects on neurobehavioral functions and sleep physiology from chronic sleep restriction and total sleep deprivation. <i>Sleep</i>, 26, 117–126.</li>
+      <li>Benjafield, A. V., et al. (2019). Estimation of the global prevalence and burden of obstructive sleep apnoea: a literature-based analysis. <i>Lancet Respiratory Medicine</i>, 7, 687–698.</li>
+      <li>Postuma, R. B., et al. (2019). Risk and predictors of dementia and parkinsonism in idiopathic REM sleep behaviour disorder: a multicentre study. <i>Brain</i>, 142, 744–759.</li>
       <li>Sharpless, B. A., &amp; Barber, J. P. (2011). Lifetime prevalence rates of sleep paralysis: a systematic review. <i>Sleep Medicine Reviews</i>, 15, 311–315.</li>
     </ul>
     <p>Part of <a href="../">NeuroSims</a>, made by Nelu Radpour (Florida State University). Content licensed CC BY 4.0; code licensed MIT. Free to use and adapt with credit.</p>
@@ -523,7 +595,7 @@ const ST={
   N1:{name:'N1 · Drifting off',chip:'N1',wave:'<b>Theta</b> waves, 4–7 Hz, plus sharp <b>vertex waves</b>',eyes:'Slow, rolling movements',mus:'Lower',f:.42,a:.42,w:.15,
      note:'The lightest stage, a few minutes long, about <b>5%</b> of the night. Easy to wake; you may feel a falling "hypnic jerk".'},
   N2:{name:'N2 · Spindles & K-complexes',chip:'N2',wave:'Theta, plus <b>sleep spindles</b> (11–16 Hz bursts) and <b>K-complexes</b>',eyes:'Still',mus:'Low',f:.4,a:.55,w:.45,
-     note:'About <b>half</b> of the night. Spindles come from the <b>thalamus</b> and help store memories; K-complexes help keep you asleep through noises.'},
+     note:'About <b>half</b> of the night. Spindles come from the <b>thalamus</b> and help store memories; K-complexes are thought to help keep you asleep through noises.'},
   N3:{name:'N3 · Deep, slow-wave sleep',chip:'N3',wave:'<b>Delta</b> waves, 0.5–2 Hz, large (&gt;75 µV)',eyes:'Still',mus:'Low',f:.12,a:.95,w:.95,
      note:'Huge groups of neurons switch on and off together. Hardest stage to wake from: you\'d be groggy and confused. <b>Growth hormone</b> peaks here.'},
   R:{name:'REM · Dreaming sleep',chip:'REM',wave:'Low, mixed fast waves (like waking), <b>sawtooth</b> waves',eyes:'<b>Rapid</b> darting movements',mus:'<b>Paralyzed</b> (atonia), small twitches',f:.75,a:.2,w:.5,
@@ -650,7 +722,7 @@ document.addEventListener('keydown',e=>{
   if(e.key==='t'||e.key==='T'){ if(!typing){ $('themeBtn').click(); e.preventDefault(); } return; }
   if(e.key==='f'||e.key==='F'){ if(!typing){ if(document.fullscreenElement) document.exitFullscreen(); else if(document.documentElement.requestFullscreen) document.documentElement.requestFullscreen().catch(()=>{}); e.preventDefault(); } return; }
   if(!document.documentElement.classList.contains('present')||typing) return;
-  if(/^[1-8]$/.test(e.key)){ go(+e.key-1); e.preventDefault(); return; }
+  if(/^[0-9]$/.test(e.key)){ go(e.key==='0'?9:+e.key-1); e.preventDefault(); return; }
   if(['ArrowRight','ArrowDown','PageDown',' '].includes(e.key)){ go(curIndex()+1); e.preventDefault(); }
   else if(['ArrowLeft','ArrowUp','PageUp'].includes(e.key)){ go(curIndex()-1); e.preventDefault(); }
 });
@@ -658,6 +730,200 @@ document.addEventListener('keydown',e=>{
 /* =========================================================
    HERO SKY
    ========================================================= */
+
+/* =========================================================
+   EEG SOURCES (dipoles)
+   ========================================================= */
+const dip={sync:.15,mode:'psp',scr:false,t:0,buf:new Float32Array(400),head:0,acc:0,neur:[]};
+for(let i=0;i<14;i++) dip.neur.push({ph:Math.random(),th:rnd(-Math.PI,Math.PI),spk:0,v:0});
+function dipUI(){ $('syncOut').textContent=Math.round(dip.sync*100)+'%';
+  $('srcPSP').setAttribute('aria-pressed',dip.mode==='psp'); $('srcAP').setAttribute('aria-pressed',dip.mode==='ap'); $('orient').setAttribute('aria-pressed',dip.scr);
+  let t;
+  if(dip.mode==='ap') t='<b>Action potentials</b> last only about 1 ms, and neighboring cells rarely fire at exactly the same instant, so their currents mostly cancel before reaching the scalp. EEG mainly reflects <b>postsynaptic potentials</b>, which last tens of milliseconds and overlap in time.';
+  else if(dip.scr) t='When cells point in every direction, as in many deep brain nuclei, their dipoles cancel even when they are in sync. The cortex shows up on EEG because its pyramidal cells are <b>lined up in parallel</b>, perpendicular to the surface.';
+  else if(dip.sync<.4) t='<b>Out of step:</b> each dipole peaks at a different moment, so most of them cancel. The scalp sees a small, irregular signal, as in an alert, awake brain.';
+  else if(dip.sync<.8) t='<b>Partly in step:</b> a rhythm starts to show through, like alpha waves when you relax with your eyes closed.';
+  else t='<b>In step:</b> the dipoles add up into a large, slow wave. This is what happens in deep N3 sleep, when huge populations of neurons switch on and off together.';
+  $('dipNote').innerHTML=t+' <span style="color:var(--muted)">The skull and scalp also blur the signal, so each electrode reflects activity spread over several square centimeters of cortex.</span>'; }
+$('syncR').addEventListener('input',e=>{ dip.sync=+e.target.value/100; dipUI(); });
+$('srcPSP').addEventListener('click',()=>{ dip.mode='psp'; dipUI(); });
+$('srcAP').addEventListener('click',()=>{ dip.mode='ap'; dipUI(); });
+$('orient').addEventListener('click',()=>{ dip.scr=!dip.scr; dipUI(); });
+dipUI(); watch($('dipole'));
+function stepDipole(dt){ const c=$('dipole'); if(!isVis(c)) return; dip.t+=dt; const f=1.1, N=dip.neur.length; let sum=0;
+  dip.neur.forEach(n=>{ if(dip.mode==='psp') n.v=Math.sin(TAU*(f*dip.t+n.ph*(1-dip.sync)));
+    else { if(n.spk>0) n.spk-=dt; else if(Math.random()<dt*1.4) n.spk=.04; n.v=n.spk>0?1:0; }
+    sum+=n.v*(dip.scr?Math.cos(n.th):1); });
+  const S=sum/N; dip.acc+=dt; while(dip.acc>=.01){ dip.acc-=.01; dip.buf[dip.head]=S; dip.head=(dip.head+1)%dip.buf.length; }
+  let r=0; for(let i=0;i<dip.buf.length;i++) r+=dip.buf[i]*dip.buf[i]; r=Math.sqrt(r/dip.buf.length); $('sumM').style.width=Math.min(100,r*141)+'%';
+  const {ctx,w,h}=setup(c); ctx.clearRect(0,0,w,h); const fs=clamp(w*.018,12,20);
+  // electrode trace
+  const trH=h*.25; ctx.fillStyle=COL.panel2; ctx.fillRect(0,0,w,trH);
+  ctx.fillStyle=COL.ink; ctx.font=`700 ${fs}px ${COL.sans}`; ctx.textAlign='left'; ctx.textBaseline='top'; ctx.fillText('Scalp electrode: the sum of all the cells below',fs*.6,fs*.4);
+  const mid=trH*.62, A=trH*.32; ctx.strokeStyle=COL.grid; ctx.beginPath(); ctx.moveTo(fs*.6,mid); ctx.lineTo(w-fs*.6,mid); ctx.stroke();
+  ctx.strokeStyle=COL.accent; ctx.lineWidth=2.5; ctx.beginPath(); const B=dip.buf, L=B.length;
+  for(let i=0;i<L;i++){ const x=fs*.6+i/(L-1)*(w-fs*1.2), y=mid-B[(dip.head+i)%L]*A; if(i) ctx.lineTo(x,y); else ctx.moveTo(x,y); } ctx.stroke();
+  // tissue layers
+  const lay=[['scalp',.27,.33,'#c98f7a',.35],['skull',.33,.40,'#d8cfb8',.35],['fluid (CSF)',.40,.44,'#6cb6ff',.22],['cortex',.44,1,'#8c8fa8',.16]];
+  lay.forEach(([lab,a,b,col,al])=>{ ctx.fillStyle=alpha(col,al); ctx.fillRect(0,h*a,w,h*(b-a)); ctx.fillStyle=COL.muted; ctx.font=`${fs*.8}px ${COL.sans}`; ctx.textBaseline='middle'; ctx.fillText(lab,fs*.5,h*(a+Math.min(b-a,.06)/2)+ (lab==='cortex'?fs*.4:0)); });
+  // electrode
+  const ex=w*.5; ctx.strokeStyle=COL.ink; ctx.lineWidth=2; ctx.beginPath(); ctx.moveTo(ex,trH); ctx.lineTo(ex,h*.27); ctx.stroke(); ctx.fillStyle=COL.ink; ctx.beginPath(); ctx.ellipse(ex,h*.27,fs*1.1,fs*.38,0,0,TAU); ctx.fill();
+  // neurons
+  const somaY=h*.9, tipY=h*.5, len=somaY-tipY;
+  dip.neur.forEach((n,i)=>{ const x=w*(.1+.84*(i+.5)/N); const v=n.v, av=Math.abs(v);
+    ctx.save(); ctx.translate(x,somaY); if(dip.scr) ctx.rotate(n.th);
+    ctx.strokeStyle=av>.05?alpha(COL.accent,.35+.65*av):COL.muted; ctx.lineWidth=3;
+    ctx.beginPath(); ctx.moveTo(0,0); ctx.lineTo(0,-len); ctx.moveTo(0,-len*.85); ctx.lineTo(-len*.12,-len*1.0); ctx.moveTo(0,-len*.85); ctx.lineTo(len*.12,-len*1.0); ctx.moveTo(0,-len*.6); ctx.lineTo(len*.1,-len*.7); ctx.stroke();
+    ctx.lineWidth=2; ctx.beginPath(); ctx.moveTo(-6,6); ctx.lineTo(-len*.12,len*.12); ctx.moveTo(6,6); ctx.lineTo(len*.12,len*.12); ctx.stroke();
+    ctx.fillStyle=COL.panel; ctx.strokeStyle=COL.ink; ctx.lineWidth=1.5; ctx.beginPath(); ctx.moveTo(-9,8); ctx.lineTo(9,8); ctx.lineTo(0,-12); ctx.closePath(); ctx.fill(); ctx.stroke();
+    if(av>.05){ const al=v*len*.42, ax=10; ctx.strokeStyle=v>0?COL.accent:COL.blue; ctx.fillStyle=ctx.strokeStyle; ctx.lineWidth=3;
+      ctx.beginPath(); ctx.moveTo(ax,-len*.5+al/2); ctx.lineTo(ax,-len*.5-al/2); ctx.stroke();
+      const hy=-len*.5-al/2, d=Math.sign(al)||1; ctx.beginPath(); ctx.moveTo(ax,hy-d*6); ctx.lineTo(ax-5,hy+d*2); ctx.lineTo(ax+5,hy+d*2); ctx.fill(); }
+    ctx.restore(); });
+  ctx.fillStyle=COL.muted; ctx.font=`italic ${fs*.85}px ${COL.serif}`; ctx.textAlign='right'; ctx.textBaseline='bottom'; ctx.fillText(dip.mode==='ap'?'pyramidal neurons: brief spikes':'pyramidal neurons (arrows = dipole currents)',w-fs*.6,h-4); }
+
+/* =========================================================
+   ERP AVERAGING
+   ========================================================= */
+const ERPT=Array.from({length:250},(_,i)=>i*4-200);
+function erpTmpl(odd){ return ERPT.map(t=>-7*Math.exp(-Math.pow((t-100)/22,2))+6*Math.exp(-Math.pow((t-190)/35,2))+(odd?11*Math.exp(-Math.pow((t-360)/75,2)):0)); }
+const erp={n:0,sum:new Float64Array(250),last:[],odd:false,showTrue:false,running:false,timer:0,T:erpTmpl(false)};
+function erpTrial(){ const a=new Float32Array(250); const comps=[[rnd(8.5,11.5),rnd(10,18)],[rnd(4.5,7),rnd(6,10)],[rnd(1.2,3),rnd(6,12)]].map(([f,A])=>({f,A,ph:Math.random()*TAU})); let nz=0; const jit=rnd(-12,12), g=rnd(.8,1.2);
+  for(let i=0;i<250;i++){ const t=ERPT[i]/1000; let v=0; for(const c of comps) v+=c.A*Math.sin(TAU*c.f*t+c.ph); nz=nz*.7+gauss()*3; const k=clamp(Math.round(i-jit/4),0,249); a[i]=v+nz+erp.T[k]*g; } return a; }
+function erpAdd(k){ for(let j=0;j<k;j++){ const tr=erpTrial(); for(let i=0;i<250;i++) erp.sum[i]+=tr[i]; erp.n++; erp.last.push(tr); if(erp.last.length>4) erp.last.shift(); } erpUI(); }
+function erpReset(){ erp.n=0; erp.sum.fill(0); erp.last=[]; erp.running=false; $('erpRun').textContent='Run trials'; erpUI(); }
+function erpUI(){ $('erpN').textContent=erp.n; let t;
+  if(erp.n===0) t='Each time a tone plays, we cut out the EEG from 200 ms before to 800 ms after it (an <b>epoch</b>). Add trials to start averaging.';
+  else if(erp.n<5) t='With only a few trials, the response to the tone is <b>buried</b> in background EEG. You can\'t see it in a single trial.';
+  else if(erp.n<40) t='The background EEG isn\'t time-locked to the tone, so it starts to <b>average out</b>. A shape is emerging.';
+  else t='Noise shrinks with the <b>square root</b> of the number of trials: 100 trials leave about 1/10 of the noise. What remains is the <b>ERP</b>: '+(erp.odd?'N1, P2 and a large <b>P3 (P300)</b>, which appears when a rare tone you\'re listening for is detected.':'the <b>N1</b> (about 100 ms) and <b>P2</b> (about 200 ms) responses of auditory cortex to a tone.');
+  $('erpNote').innerHTML=t; }
+$('erp1').addEventListener('click',()=>erpAdd(1)); $('erp10').addEventListener('click',()=>erpAdd(10)); $('erp100').addEventListener('click',()=>erpAdd(100));
+$('erpReset').addEventListener('click',erpReset);
+$('erpRun').addEventListener('click',()=>{ erp.running=!erp.running; $('erpRun').textContent=erp.running?'Pause':'Run trials'; });
+$('erpOdd').addEventListener('click',()=>{ erp.odd=!erp.odd; $('erpOdd').setAttribute('aria-pressed',erp.odd); erp.T=erpTmpl(erp.odd); erpReset(); });
+$('erpTrue').addEventListener('click',()=>{ erp.showTrue=!erp.showTrue; $('erpTrue').setAttribute('aria-pressed',erp.showTrue); });
+erpUI(); watch($('erp'));
+function stepERP(dt){ const c=$('erp'); if(!isVis(c)) return;
+  if(erp.running){ erp.timer+=dt; while(erp.timer>.12){ erp.timer-=.12; erpAdd(1); if(erp.n>=400){ erp.running=false; $('erpRun').textContent='Run trials'; } } }
+  const {ctx,w,h}=setup(c); ctx.clearRect(0,0,w,h); const fs=clamp(w*.018,12,20), L=fs*3.4, Rr=fs*2.2;
+  // top: continuous EEG made of the last epochs
+  const t0=fs*1.6, t1=h*.38, tm=(t0+t1)/2, tk=(t1-t0)/2/60;
+  ctx.fillStyle=COL.ink; ctx.font=`700 ${fs}px ${COL.sans}`; ctx.textAlign='left'; ctx.textBaseline='top'; ctx.fillText('Continuous EEG, cut into epochs around each tone',L,4);
+  const ep=erp.last, nE=4, ew=(w-L-Rr)/nE;
+  for(let e=0;e<nE;e++){ const x0=L+e*ew; ctx.fillStyle=e%2?alpha(COL.accent,.06):alpha(COL.blue,.06); ctx.fillRect(x0,t0,ew,t1-t0);
+    const tr=ep[ep.length-nE+e]; const sx=x0+ew*.2; ctx.strokeStyle=COL.accent; ctx.lineWidth=2; ctx.setLineDash([4,4]); ctx.beginPath(); ctx.moveTo(sx,t0); ctx.lineTo(sx,t1); ctx.stroke(); ctx.setLineDash([]);
+    ctx.fillStyle=COL.accent; ctx.font=`600 ${fs*.75}px ${COL.sans}`; ctx.textAlign='center'; ctx.textBaseline='top'; ctx.fillText('tone',sx,t1+2);
+    if(!tr) continue; ctx.strokeStyle=COL.trace; ctx.lineWidth=1.5; ctx.beginPath(); for(let i=0;i<250;i++){ const x=x0+i/249*ew, y=clamp(tm-tr[i]*tk,t0,t1); if(i) ctx.lineTo(x,y); else ctx.moveTo(x,y); } ctx.stroke(); }
+  ctx.fillStyle=COL.muted; ctx.font=`${fs*.75}px ${COL.sans}`; ctx.textAlign='right'; ctx.textBaseline='middle'; ctx.fillText('±60 µV',L-6,tm);
+  // bottom: average
+  const b0=h*.5, b1=h-fs*2.2, bm=(b0+b1)/2, bk=(b1-b0)/2/16, X=t=>L+(t+200)/1000*(w-L-Rr);
+  ctx.fillStyle=COL.ink; ctx.font=`700 ${fs}px ${COL.sans}`; ctx.textAlign='left'; ctx.textBaseline='bottom'; ctx.fillText(`Average of ${erp.n} epoch${erp.n===1?'':'s'} (zoomed in 4×)`,L,b0-6);
+  ctx.strokeStyle=COL.grid; ctx.lineWidth=1; ctx.strokeRect(L,b0,w-L-Rr,b1-b0); ctx.beginPath(); ctx.moveTo(L,bm); ctx.lineTo(w-Rr,bm); ctx.stroke();
+  ctx.strokeStyle=COL.accent; ctx.setLineDash([4,4]); ctx.beginPath(); ctx.moveTo(X(0),b0); ctx.lineTo(X(0),b1); ctx.stroke(); ctx.setLineDash([]);
+  ctx.fillStyle=COL.muted; ctx.font=`${fs*.8}px ${COL.sans}`; ctx.textAlign='center'; ctx.textBaseline='top';
+  for(let t=-200;t<=800;t+=200) ctx.fillText(t===0?'0 (tone)':t+' ms',X(t),b1+4);
+  ctx.textAlign='right'; ctx.textBaseline='middle'; ctx.fillText('+16 µV',L-6,b0+fs*.4); ctx.fillText('−16 µV',L-6,b1-fs*.4);
+  ctx.save(); ctx.beginPath(); ctx.rect(L,b0,w-L-Rr,b1-b0); ctx.clip();
+  if(ep.length){ const tr=ep[ep.length-1]; ctx.strokeStyle=alpha('#9aa3c8',.45); ctx.lineWidth=1.2; ctx.beginPath(); for(let i=0;i<250;i++){ const x=X(ERPT[i]),y=bm-tr[i]*bk; if(i) ctx.lineTo(x,y); else ctx.moveTo(x,y); } ctx.stroke(); }
+  if(erp.showTrue){ ctx.strokeStyle=COL.good; ctx.lineWidth=2.5; ctx.setLineDash([7,6]); ctx.beginPath(); for(let i=0;i<250;i++){ const x=X(ERPT[i]),y=bm-erp.T[i]*bk; if(i) ctx.lineTo(x,y); else ctx.moveTo(x,y); } ctx.stroke(); ctx.setLineDash([]); }
+  if(erp.n){ ctx.strokeStyle=COL.accent; ctx.lineWidth=3; ctx.beginPath(); for(let i=0;i<250;i++){ const x=X(ERPT[i]),y=bm-erp.sum[i]/erp.n*bk; if(i) ctx.lineTo(x,y); else ctx.moveTo(x,y); } ctx.stroke(); }
+  ctx.restore();
+  if(erp.n>=40||erp.showTrue){ ctx.fillStyle=COL.ink; ctx.font=`700 ${fs*.9}px ${COL.sans}`; ctx.textAlign='center';
+    [['N1',100,-7,1],['P2',190,6,-1]].concat(erp.odd?[['P3',360,11+(erp.odd?0:0),-1]]:[]).forEach(([lab,t,v,dir])=>{ const val=erp.odd&&lab==='P2'?6+11*Math.exp(-Math.pow((190-360)/75,2)):v; ctx.textBaseline=dir>0?'top':'bottom'; ctx.fillText(lab,X(t),bm-val*bk+dir*8); }); }
+  ctx.fillStyle=COL.muted; ctx.font=`${fs*.75}px ${COL.sans}`; ctx.textAlign='left'; ctx.textBaseline='bottom';
+  ctx.fillText('gray: the latest single trial'+(erp.showTrue?' · green dashed: the true ERP':''),L+6,b1-4); }
+
+/* =========================================================
+   LIGHT, MELANOPSIN & THE CLOCK
+   ========================================================= */
+const LS={
+  sun:{name:'Midday daylight',lux:50000,col:'#ffd36e',spec:l=>.8+.2*Math.exp(-Math.pow((l-490)/110,2))-(l>660?(l-660)/300:0),
+       note:'Bright daylight drives melanopsin hard. The SCN registers "day," and the pineal gland makes almost no melatonin. <b>Morning</b> daylight is the strongest signal for keeping the clock on time.'},
+  phone:{name:'Phone screen at night',lux:40,col:'#7fb2ff',spec:l=>Math.exp(-Math.pow((l-452)/12,2))+.55*Math.exp(-Math.pow((l-560)/55,2)),
+       note:'A screen is far dimmer than daylight, but its light is rich in blue, close to melanopsin\'s peak (about 480 nm). In the evening this light can partly suppress melatonin and push the clock later (Chang et al., 2015).'},
+  shift:{name:'Screen in night-shift mode',lux:30,col:'#ffb36b',spec:l=>.18*Math.exp(-Math.pow((l-452)/12,2))+.7*Math.exp(-Math.pow((l-595)/50,2)),
+       note:'Shifting the screen toward orange removes some of the blue that melanopsin responds to. Studies of whether this actually improves sleep are mixed, so brightness and time on the screen matter too.'},
+  lamp:{name:'Warm, dim lamp',lux:15,col:'#ff9a4a',spec:l=>Math.pow(clamp((l-380)/320,0,1),2.2),
+       note:'Dim, warm light contains little blue and little energy overall, so melanopsin barely responds. This is the kind of evening light that lets melatonin rise normally.'},
+  dark:{name:'Darkness',lux:0,col:'#000000',spec:()=>0,
+       note:'In darkness the SCN signals "night." A chain running from the hypothalamus down the spinal cord and back up through the superior cervical ganglion tells the pineal gland to release melatonin.'}
+};
+const melSens=l=>Math.exp(-Math.pow((l-480)/45,2));
+function melRatio(k){ let a=0,b=0; for(let l=380;l<=730;l+=5){ const v=LS[k].spec(l); a+=v*melSens(l); b+=v; } return b?a/b:0; }
+const SUNR=melRatio('sun');
+function lightState(k){ const drive=LS[k].lux*melRatio(k)/SUNR; const act=Math.log10(1+drive)/Math.log10(1+50000); const sup=clamp((Math.log10(1+drive)-.5)/2,0,1); return {drive,act,sup}; }
+let lightK='phone', nightUse=false;
+const lc=$('lightChips');
+Object.keys(LS).forEach(k=>{ const b=document.createElement('button'); b.className='chip'; b.dataset.k=k; b.textContent=LS[k].name; b.setAttribute('aria-pressed',k===lightK); b.addEventListener('click',()=>{ lightK=k; showLight(); }); lc.appendChild(b); });
+$('nightUse').addEventListener('click',function(){ nightUse=!nightUse; this.setAttribute('aria-pressed',nightUse); drawMel24(); });
+function showLight(){ lc.querySelectorAll('.chip').forEach(b=>b.setAttribute('aria-pressed',b.dataset.k===lightK)); const st=lightState(lightK);
+  $('melM').style.width=(st.act*100)+'%'; $('mltM').style.width=((1-st.sup)*100)+'%'; $('lightNote').innerHTML=LS[lightK].note;
+  buildClock(st); drawSpec(); drawMel24(); }
+function buildClock(st){ const s=$('clockSvg'); s.innerHTML=''; const light=document.documentElement.getAttribute('data-theme')==='light';
+  const ink=COL.ink, mut=COL.muted, chain=1-st.sup, act=st.act;
+  const T=(x,y,t,o)=>{ const e=el('text',Object.assign({x,y,'font-family':COL.sans,'font-size':19,fill:ink,'text-anchor':'middle'},o||{}),s); e.textContent=t; return e; };
+  const path=(d,a,col,id)=>{ el('path',{d,fill:'none',stroke:col,'stroke-width':3+5*a,opacity:.2+.8*a,'stroke-linecap':'round',id},s); };
+  const dots=(id,a,col,n)=>{ if(a<.08||RM) return; const k=Math.max(1,Math.round(n*a)); for(let i=0;i<k;i++){ const c=el('circle',{r:6,fill:col},s); const m=el('animateMotion',{dur:(2.6-1.4*a).toFixed(2)+'s',repeatCount:'indefinite',begin:(i*(2.6-1.4*a)/k).toFixed(2)+'s'},c); el('mpath',{href:'#'+id},m); } };
+  // light rays
+  if(LS[lightK].lux>0) for(let i=0;i<5;i++){ const y=230+i*25; el('line',{x1:0,y1:y,x2:62,y2:280+(y-280)*.3,stroke:LS[lightK].col,'stroke-width':2+4*act,opacity:.35+.65*act,'stroke-linecap':'round'},s); }
+  // eye
+  el('circle',{cx:150,cy:280,r:88,fill:light?'#ffffff':'#1d2550',stroke:mut,'stroke-width':2.5},s);
+  el('ellipse',{cx:74,cy:280,rx:14,ry:34,fill:light?'#e8eef8':'#2b3672',stroke:mut,'stroke-width':1.5},s);
+  el('path',{d:'M 205 212 A 88 88 0 0 1 205 348',fill:'none',stroke:COL.N1,'stroke-width':8,opacity:.6},s);
+  [[218,232],[236,280],[218,328]].forEach(([x,y])=>{ el('circle',{cx:x,cy:y,r:7+5*act,fill:COL.blue,stroke:ink,'stroke-width':1.5},s); });
+  T(150,400,'eye: retina',{fill:mut,'font-size':17}); T(150,425,'ipRGCs with melanopsin (blue dots)',{'font-size':17,'font-weight':700,fill:COL.blue});
+  // optic nerve to chiasm & visual branch
+  el('path',{d:'M 238 285 C 300 300 360 330 430 338',fill:'none',stroke:mut,'stroke-width':10,opacity:.18},s);
+  el('path',{d:'M 445 340 C 500 350 540 372 590 392',fill:'none',stroke:mut,'stroke-width':3,opacity:.45,'stroke-dasharray':'6 6'},s);
+  T(600,418,'to LGN and visual cortex (seeing)',{fill:mut,'font-size':15,'text-anchor':'start'});
+  el('path',{d:'M 412 326 L 448 352 M 448 326 L 412 352',stroke:mut,'stroke-width':6,'stroke-linecap':'round',opacity:.6},s);
+  T(430,380,'optic chiasm',{fill:mut,'font-size':15});
+  // RHT
+  path('M 240 280 C 300 280 370 300 425 300',act,COL.blue,'pRHT'); dots('pRHT',act,COL.blue,5);
+  T(350,212,'retinohypothalamic tract',{'font-size':16,fill:COL.blue,'font-weight':700}); T(350,192,'glutamate + PACAP',{'font-size':14,fill:mut});
+  // SCN
+  el('ellipse',{cx:440,cy:300,rx:30,ry:16,fill:COL.orange,opacity:.35+.65*Math.max(act,.3),stroke:ink,'stroke-width':1.5},s);
+  T(440,262,'SCN',{'font-size':22,'font-weight':700}); T(440,240,act>.25?'"It\'s day"':'"It\'s night"',{'font-size':15,fill:mut,'font-style':'italic'});
+  // chain to pineal
+  const cc=COL.R;
+  path('M 470 292 C 500 270 520 250 548 232',chain,cc,'pA'); el('ellipse',{cx:565,cy:224,rx:26,ry:14,fill:cc,opacity:.25+.6*chain,stroke:ink,'stroke-width':1.2},s); T(565,196,'PVN',{'font-size':17,'font-weight':700});
+  path('M 585 236 C 650 280 680 380 690 470',chain,cc,'pB'); el('rect',{x:672,y:470,width:36,height:56,rx:8,fill:cc,opacity:.2+.5*chain,stroke:ink,'stroke-width':1.2},s); T(690,550,'spinal cord (IML)',{'font-size':16,'font-weight':700});
+  path('M 710 492 C 760 480 800 470 830 450',chain,cc,'pC'); el('circle',{cx:845,cy:442,r:16,fill:cc,opacity:.25+.6*chain,stroke:ink,'stroke-width':1.2},s); T(845,485,'superior cervical',{'font-size':15,'font-weight':700}); T(845,503,'ganglion',{'font-size':15,'font-weight':700});
+  path('M 850 425 C 880 360 870 280 845 225',chain,cc,'pD'); T(845,330,'norepinephrine',{'font-size':14,fill:mut,'text-anchor':'end'});
+  el('ellipse',{cx:838,cy:205,rx:24,ry:17,fill:cc,opacity:.3+.7*chain,stroke:ink,'stroke-width':1.5},s); T(838,170,'pineal gland',{'font-size':18,'font-weight':700});
+  dots('pA',chain,cc,3); dots('pB',chain,cc,3); dots('pC',chain,cc,3); dots('pD',chain,cc,3);
+  // melatonin out
+  el('path',{d:'M 862 196 C 900 170 930 140 975 110',fill:'none',stroke:'none',id:'pM'},s);
+  if(chain>.08 && !RM){ const k=Math.round(1+6*chain); for(let i=0;i<k;i++){ const c=el('circle',{r:5,fill:cc,opacity:.9},s); const m=el('animateMotion',{dur:'2s',repeatCount:'indefinite',begin:(i*2/k).toFixed(2)+'s'},c); el('mpath',{href:'#pM'},m); } }
+  T(995,92,chain>.15?'melatonin into the blood':'melatonin shut off',{'font-size':16,fill:chain>.15?cc:mut,'font-weight':700,'text-anchor':'end'});
+  if(chain<.35){ T(640,330,'light at night shuts this chain off',{'font-size':15,fill:COL.bad,'font-weight':700}); }
+  T(500,40,'Light → retina → SCN → spinal cord → superior cervical ganglion → pineal gland',{'font-size':18,fill:mut}); }
+function drawSpec(){ const c=$('spec'); if(c.offsetParent===null) return; const {ctx,w,h}=setup(c); ctx.clearRect(0,0,w,h);
+  const fs=clamp(w*.03,11,17), L=8, Rr=8, T=fs*.4, B=fs*2.4; const X=l=>L+(l-380)/350*(w-L-Rr), Y=v=>T+(1-v)*(h-T-B);
+  for(let l=380;l<730;l+=2){ ctx.fillStyle=wlColor(l); ctx.fillRect(X(l),h-B+4,X(l+2)-X(l)+.5,fs*.6); }
+  ctx.fillStyle=COL.muted; ctx.font=`${fs*.8}px ${COL.sans}`; ctx.textAlign='center'; ctx.textBaseline='top';
+  [400,480,550,650,700].forEach(l=>ctx.fillText(l+(l===400?' nm':''),X(l),h-B+fs*.8));
+  let mx=0; for(let l=380;l<=730;l+=5) mx=Math.max(mx,LS[lightK].spec(l));
+  if(mx>0){ ctx.fillStyle=alpha(LS[lightK].col,.45); ctx.beginPath(); ctx.moveTo(X(380),Y(0)); for(let l=380;l<=730;l+=5) ctx.lineTo(X(l),Y(LS[lightK].spec(l)/mx)); ctx.lineTo(X(730),Y(0)); ctx.fill(); }
+  else { ctx.fillStyle=COL.muted; ctx.font=`italic ${fs}px ${COL.serif}`; ctx.fillText('no light',w/2,h*.35); }
+  ctx.strokeStyle=COL.blue; ctx.lineWidth=2.5; ctx.setLineDash([6,5]); ctx.beginPath(); for(let l=380;l<=730;l+=5){ const x=X(l),y=Y(melSens(l)); if(l>380) ctx.lineTo(x,y); else ctx.moveTo(x,y); } ctx.stroke(); ctx.setLineDash([]);
+  ctx.fillStyle=COL.blue; ctx.font=`700 ${fs*.85}px ${COL.sans}`; ctx.textAlign='left'; ctx.textBaseline='top'; ctx.fillText('melanopsin (peak ≈ 480 nm)',X(500),Y(.95)); }
+function wlColor(l){ let r=0,g=0,b=0; if(l<440){ r=-(l-440)/60; b=1; } else if(l<490){ g=(l-440)/50; b=1; } else if(l<510){ g=1; b=-(l-510)/20; } else if(l<580){ r=(l-510)/70; g=1; } else if(l<645){ r=1; g=-(l-645)/65; } else r=1; return `rgb(${Math.round(r*255)},${Math.round(g*255)},${Math.round(b*255)})`; }
+function melCurve(hh,shift){ const x=hh-shift; const up=1/(1+Math.exp(-(x-10.6)/.7)), dn=1/(1+Math.exp((x-19)/.9)); return 3+60*up*dn; }
+function drawMel24(){ const c=$('mel24'); if(c.offsetParent===null) return; const {ctx,w,h}=setup(c); ctx.clearRect(0,0,w,h);
+  const fs=clamp(w*.016,12,19), L=fs*3.6, Rr=fs, T=fs*1.6, B=fs*2; const X=hh=>L+hh/24*(w-L-Rr), Y=v=>T+(1-v/70)*(h-T-B);
+  const st=lightState(lightK); const use=nightUse&&LS[lightK].lux>0; const sup=use?st.sup:0, shift=use?st.sup*1.5:0;
+  ctx.fillStyle=alpha(COL.N3,.14); ctx.fillRect(X(11),T,X(19)-X(11),h-T-B); ctx.fillStyle=COL.muted; ctx.font=`${fs*.8}px ${COL.sans}`; ctx.textAlign='center'; ctx.textBaseline='bottom'; ctx.fillText('usual sleep 11 PM–7 AM',(X(11)+X(19))/2,h-B-3);
+  if(use){ ctx.fillStyle=alpha(LS[lightK].col,.28); ctx.fillRect(X(9),T,X(12)-X(9),h-T-B); ctx.fillStyle=COL.ink; ctx.textBaseline='bottom'; ctx.fillText('light on',(X(9)+X(12))/2,h-B-3); }
+  for(let hh=0;hh<=24;hh+=3){ ctx.fillStyle=COL.muted; ctx.textBaseline='top'; ctx.fillText(fmtClock((12+hh)*60),X(hh),h-B+4); ctx.strokeStyle=COL.grid; ctx.beginPath(); ctx.moveTo(X(hh),T); ctx.lineTo(X(hh),h-B); ctx.stroke(); }
+  ctx.save(); ctx.translate(fs*.9,T+(h-T-B)/2); ctx.rotate(-Math.PI/2); ctx.textBaseline='middle'; ctx.fillText('melatonin',0,0); ctx.restore();
+  const line=(f,col,lw,dash)=>{ ctx.strokeStyle=col; ctx.lineWidth=lw; ctx.setLineDash(dash||[]); ctx.beginPath(); for(let hh=0;hh<=24;hh+=.05){ const x=X(hh),y=Y(f(hh)); if(hh) ctx.lineTo(x,y); else ctx.moveTo(x,y); } ctx.stroke(); ctx.setLineDash([]); };
+  if(use) line(hh=>melCurve(hh,0),COL.muted,2,[6,6]);
+  line(hh=>{ let v=melCurve(hh,shift); const win=hh<9?0:hh<12?1:Math.exp(-(hh-12)/.5); return 3+(v-3)*(1-sup*win); },COL.R,3.5);
+  ctx.fillStyle=COL.R; ctx.font=`700 ${fs*.85}px ${COL.sans}`; ctx.textAlign='left'; ctx.textBaseline='bottom'; ctx.fillText('onset ~2 h before bedtime',X(8.2+shift),Y(16)); ctx.textAlign='center'; ctx.fillText('peak in the middle of the night',X(15),Y(64));
+  $('melSum').innerHTML=use?(sup<.05?'Melatonin is barely affected by this light.':`Melatonin is suppressed during the light, and after several evenings like this the rhythm shifts about <b>${shift.toFixed(1)} h later</b> (schematic).`):'Without evening light: melatonin rises about 2 hours before usual bedtime.'; }
+showLight();
 
 /* =========================================================
    1. BRAIN WAVES
@@ -739,10 +1005,10 @@ const PRESETS={
   young:{label:'Young adult',segs:YOUNG,note:'Four to five cycles of about 90 minutes. Deep N3 is packed into the first half of the night; REM periods get longer toward morning.'},
   baby:{label:'Newborn',segs:(()=>{ const s=[]; for(let k=0;k<3;k++){ s.push(['R',25],['N2',4],['N3',22],['R',24],['N2',4],['N3',21]); s.push(['W',k<2?30:12]); } return s; })(),
     note:'Newborns sleep 14–17 hours a day in short bouts, waking to feed. About <b>half</b> of their sleep is REM ("active sleep"), often entered straight from waking, and cycles last only ~50–60 minutes. (Infant NREM isn\'t yet divided into adult N1–N3; it is simplified here.)'},
-  old:{label:'Older adult',segs:[['W',22],['N1',8],['N2',28],['N3',14],['N2',10],['R',12], ['W',8],['N1',5],['N2',36],['N3',6],['N2',10],['R',15], ['W',14],['N1',5],['N2',40],['R',18], ['W',10],['N1',6],['N2',38],['W',6],['R',20], ['W',12],['N1',5],['N2',32],['R',14],['W',200]],
+  old:{label:'Older adult',segs:[['W',22],['N1',8],['N2',30],['N3',14],['N2',10],['R',10], ['W',8],['N1',5],['N2',39],['N3',6],['N2',10],['R',12], ['W',14],['N1',5],['N2',45],['R',13], ['W',10],['N1',6],['N2',43],['W',6],['R',15], ['W',12],['N1',5],['N2',36],['R',10],['W',200]],
     note:'Much less deep N3 sleep, more awakenings during the night, and an earlier wake-up. The need for sleep doesn\'t drop much with age, but sleep gets lighter and more broken.'},
-  rec:{label:'After an all-nighter',segs:[['W',3],['N1',2],['N2',8],['N3',62],['N2',8],['R',10], ['N2',10],['N3',50],['N2',8],['R',20], ['N2',20],['N3',30],['N2',10],['R',32], ['N2',28],['N3',8],['R',42], ['N2',36],['R',48],['N2',20],['R',8]],
-    note:'Recovery sleep: you fall asleep within minutes, <b>deep N3 rebounds first</b>, and extra REM shows up later. Lost sleep is not repaid hour for hour; the brain prioritizes deep sleep.'}
+  rec:{label:'After an all-nighter',segs:[['W',3],['N1',2],['N2',8],['N3',65],['N2',10],['R',8], ['N2',15],['N3',50],['N2',12],['R',14], ['N2',25],['N3',30],['N2',15],['R',18], ['N2',35],['N3',12],['N2',15],['R',22], ['N2',60],['R',20],['N2',41]],
+    note:'Recovery sleep: you fall asleep within minutes, <b>deep N3 rebounds</b> and takes up much more of the night, while REM is squeezed and tends to catch up on later nights. Lost sleep is not repaid hour for hour; the brain prioritizes deep sleep.'}
 };
 const nightNotes=(s,m,cyc)=>{
   if(s==='W') return m<20?'Lying in bed, drifting toward sleep. Healthy adults usually fall asleep within 10–20 minutes.':'A brief awakening. Everyone has several each night and usually forgets them by morning.';
@@ -778,7 +1044,7 @@ const tChips=[['allnighter','Pull an all-nighter (night 1)'],['coffee','Coffee a
 tChips.forEach(([k,lab])=>{ const b=document.createElement('button'); b.className='chip'; b.textContent=lab; b.setAttribute('aria-pressed','false'); b.addEventListener('click',()=>{ two[k]=!two[k]; b.setAttribute('aria-pressed',two[k]); simTwo(); drawTwo(); readTwo(); }); $('twoChips').appendChild(b); });
 let TW=[]; const DT=.05;
 function clockAt(t){ return (t+7)%24; }
-function Cline(t){ const h=clockAt(t); return .55+.25*Math.cos(TAU*(h-17)/24); }
+function Cline(t){ const h=clockAt(t); return .52+.22*Math.cos(TAU*(h-19)/24); }
 function asleepAt(t){ const b=two.bed-7; // hours after 7 AM day 1
   if(!two.allnighter && t>=b && t<24) return true; if(t>=b+24 && t<48) return true;
   if(two.nap && t>=7 && t<7+1/3) return true; return false; }
@@ -828,7 +1094,7 @@ const NODES={
   scn:{x:438,y:412,lab:[300,470,'end'],name:'SCN',full:'Suprachiasmatic nucleus (SCN)',chem:'The master clock',info:'Sits right above the optic chiasm and gets light information from the eyes. It sets the ~24-hour rhythm, tells the sleep and wake centers <b>when</b>, and signals the pineal gland to make melatonin at night.',g:'clock'},
   vlpo:{x:462,y:384,lab:[300,415,'end'],name:'VLPO',full:'Ventrolateral preoptic nucleus (VLPO)',chem:'GABA & galanin',info:'The <b>sleep switch</b>. Turns on at sleep onset and inhibits all the arousal centers at once. <b>Adenosine</b>, which builds up while you\'re awake, helps switch it on.',g:'sleep'},
   bf:{x:410,y:356,lab:[300,345,'end'],name:'Basal forebrain',full:'Basal forebrain',chem:'Acetylcholine',info:'Activates the cortex during waking and REM. Adenosine builds up here during long waking and dampens it, which is part of why you feel sleep pressure.',g:'wake'},
-  orx:{x:500,y:376,lab:[420,296,'end'],name:'Orexin',full:'Orexin (hypocretin) neurons, lateral hypothalamus',chem:'Orexin',info:'The <b>stabilizer</b>: excites all the arousal centers and keeps the switch from flipping at the wrong time. These neurons are lost in <b>narcolepsy</b>.',g:'wake'},
+  orx:{x:500,y:376,lab:[420,296,'end'],name:'Orexin',full:'Orexin (hypocretin) neurons, lateral hypothalamus',chem:'Orexin',info:'The <b>stabilizer</b>: excites all the arousal centers and keeps the switch from flipping at the wrong time. These neurons are lost in <b>narcolepsy type 1</b>.',g:'wake'},
   tmn:{x:528,y:400,lab:[470,520,'middle'],name:'TMN',full:'Tuberomammillary nucleus (TMN)',chem:'Histamine',info:'Histamine keeps the cortex awake. That\'s why older antihistamines (like Benadryl) make you drowsy.',g:'wake'},
   thal:{x:548,y:328,lab:[548,276,'middle'],name:'Thalamus',full:'Thalamus',chem:'Glutamate',info:'Relays senses to the cortex. In NREM sleep its neurons switch to rhythmic bursts that make <b>sleep spindles</b> and block sounds and sensations from reaching the cortex.',g:'relay'},
   pin:{x:622,y:350,lab:[700,320,'start'],name:'Pineal gland',full:'Pineal gland',chem:'Melatonin',info:'Releases <b>melatonin</b> when the SCN signals darkness. Melatonin tells the body "it\'s night" but doesn\'t knock you out. Bright screens at night delay it.',g:'clock'},
@@ -836,8 +1102,8 @@ const NODES={
   raphe:{x:590,y:478,lab:[860,412,'start'],name:'Raphe',full:'Raphe nuclei',chem:'Serotonin',info:'Active when you\'re awake, quieter in NREM, almost silent in REM.',g:'wake'},
   lc:{x:648,y:470,lab:[860,452,'start'],name:'Locus coeruleus',full:'Locus coeruleus',chem:'Norepinephrine',info:'Drives alertness and attention. Goes completely <b>silent in REM</b>, which may be why dreams feel emotional without real stress chemistry.',g:'wake'},
   sld:{x:626,y:524,lab:[860,520,'start'],name:'SLD (REM-on)',full:'Sublaterodorsal nucleus (SLD), pons',chem:'Glutamate',info:'The <b>REM switch</b>. Turns REM on and sends a signal down through the medulla that shuts off your muscles (atonia).',g:'rem'},
-  med:{x:606,y:610,lab:[860,600,'start'],name:'Medulla',full:'Ventromedial medulla',chem:'GABA & glycine',info:'Relays the REM paralysis signal to the spinal cord, where it inhibits the motor neurons. Damage here causes <b>REM sleep behavior disorder</b>.',g:'rem'},
-  cord:{x:616,y:695,lab:[860,690,'start'],name:'Motor neurons',full:'Spinal cord motor neurons',chem:'',info:'The final step for any movement. In REM they are actively inhibited, so you lie still while you dream. Only the eyes and breathing muscles are spared.',g:'out'},
+  med:{x:606,y:610,lab:[860,600,'start'],name:'Medulla',full:'Ventromedial medulla',chem:'GABA & glycine',info:'Relays the REM paralysis signal to the spinal cord, where it inhibits the motor neurons. Damage to this pons–medulla pathway causes <b>REM sleep behavior disorder</b>.',g:'rem'},
+  cord:{x:616,y:695,lab:[860,690,'start'],name:'Motor neurons',full:'Spinal cord motor neurons',chem:'',info:'The final step for any movement. In REM they are actively inhibited, so you lie still while you dream. Only the eye muscles and the diaphragm (the main breathing muscle) keep working.',g:'out'},
   ctx:{x:520,y:150,lab:[520,128,'middle'],name:'Cortex',full:'Cerebral cortex',chem:'',info:'Awake and in REM: fast, desynchronized activity. In deep NREM: big slow waves as neurons switch on and off together.',g:'out'}
 };
 const ACT={
@@ -847,13 +1113,13 @@ const ACT={
 };
 const EDGES=[ // from,to,type (+ excite, - inhibit), when (state list)
   ['vlpo','tmn','-',['nrem','rem']],['vlpo','lc','-',['nrem']],['vlpo','raphe','-',['nrem']],['vlpo','orx','-',['nrem','rem']],['vlpo','ppt','-',['nrem']],
-  ['tmn','vlpo','-',['wake']],['lc','vlpo','-',['wake']],['raphe','vlpo','-',['wake']],
+  ['lc','vlpo','-',['wake']],['raphe','vlpo','-',['wake']],
   ['orx','tmn','+',['wake']],['orx','lc','+',['wake']],['orx','bf','+',['wake']],
   ['bf','ctx','+',['wake','rem']],['tmn','ctx','+',['wake']],['ppt','thal','+',['wake','rem']],['thal','ctx','+',['wake','rem']],['lc','ctx','+',['wake']],
   ['sld','med','+',['rem']],['med','cord','-',['rem']]
 ];
 const STATES={
-  wake:{t:'Awake',k:'W',x:'Arousal centers in the brainstem and hypothalamus flood the cortex with <b>norepinephrine, serotonin, histamine and acetylcholine</b>, and inhibit the VLPO. <b>Orexin</b> holds the switch on "wake".'},
+  wake:{t:'Awake',k:'W',x:'Arousal centers in the brainstem and hypothalamus flood the cortex with <b>norepinephrine, serotonin, histamine and acetylcholine</b>, and norepinephrine and serotonin inhibit the VLPO. <b>Orexin</b> holds the switch on "wake".'},
   nrem:{t:'NREM sleep',k:'N3',x:'The <b>VLPO</b> turns on and shuts the arousal centers off with GABA. The thalamus starts firing in bursts (spindles), and the cortex slips into big, synchronized <b>slow waves</b>.'},
   rem:{t:'REM sleep',k:'R',x:'Acetylcholine centers switch back on, but norepinephrine and serotonin go <b>silent</b>. The <b>SLD</b> in the pons turns on REM and, via the medulla, <b>paralyzes your muscles</b>. The cortex looks awake: you dream.'}
 };
@@ -920,7 +1186,7 @@ drawBrain();
    5. FUNCTIONS
    ========================================================= */
 function tabs(boxId,panelSel,onShow){ const box=$(boxId); box.querySelectorAll('.tab').forEach(t=>t.addEventListener('click',()=>{ box.querySelectorAll('.tab').forEach(x=>x.setAttribute('aria-selected',x===t)); document.querySelectorAll(panelSel).forEach(p=>p.hidden=p.dataset.p!==t.dataset.p); if(onShow) onShow(t.dataset.p); redrawAll(); })); }
-tabs('fnTabs','.fnp'); tabs('depTabs','.dpp');
+tabs('fnTabs','.fnp'); tabs('depTabs','.dpp'); tabs('sigTabs','.sgp');
 
 // --- glymphatic
 const glym={asleep:false,waste:.35,cells:[],parts:[],flow:[]};
@@ -1006,15 +1272,15 @@ function stepShy(dt){ const c=$('shy'); if(!isVis(c)) return; const {ctx,w,h}=se
 const MILES=[
   [0,'<b>0–16 h:</b> a normal waking day. Sleep pressure builds, but the body clock keeps you alert.'],
   [16,'<b>16 h:</b> reaction time and attention start to slip, especially on boring tasks.'],
-  [17,'<b>17–19 h:</b> driving and reaction-time performance as impaired as a blood alcohol level of <b>0.05%</b> (Williamson &amp; Feyer, 2000).'],
-  [20,'<b>~20 h:</b> <b>microsleeps</b>: seconds-long lapses when parts of the brain briefly go "offline", even with eyes open.'],
+  [17,'<b>17–19 h:</b> performance on some reaction-time and coordination tests as impaired as a blood alcohol level of <b>0.05%</b> (Williamson &amp; Feyer, 2000).'],
+  [20,'<b>~20 h and later:</b> <b>microsleeps</b>, seconds-long dozes often with drooping eyelids, become more frequent. Even while you look awake, small groups of neurons can briefly go "offline" (local sleep).'],
   [24,'<b>24 h:</b> impairment comparable to <b>0.10%</b> blood alcohol, above the U.S. legal driving limit of 0.08% (Dawson &amp; Reid, 1997).'],
   [35,'<b>~35 h:</b> the <b>amygdala</b> reacts about <b>60% more</b> to upsetting images, and its link to the calming prefrontal cortex weakens (Yoo et al., 2007).'],
-  [40,'<b>Beyond:</b> attention collapses and some people start to hallucinate. The best-known record is 11 days (Randy Gardner, 1964).']
+  [48,'<b>2–3 days:</b> many people see distortions and then hallucinations, and thinking becomes disorganized (Waters et al., 2018). The best-known record is 11 days (Randy Gardner, 1964).']
 ];
 $('miles').innerHTML=MILES.map(m=>`<li data-h="${m[0]}">${m[1]}</li>`).join('');
 function upDep(){ const h=+$('hrs').value; $('hrsOut').textContent=h+' h'; $('hrsClock').textContent=fmtClock((7+h)*60);
-  let bac='—'; if(h>=17&&h<24) bac='≈ '+(0.05+(h-17)/7*.05).toFixed(2)+'% BAC'; else if(h>=24&&h<=28) bac='≈ 0.10% BAC'; else if(h>28) bac='worse than 0.10%';
+  let bac='—'; if(h>=17&&h<24) bac='≈ '+(0.05+(h-17)/7*.05).toFixed(2)+'% BAC'; else if(h>=24&&h<=28) bac='≈ 0.10% BAC'; else if(h>28) bac='beyond the tested range';
   $('bac').textContent=bac;
   const clk=(7+h)%24; const dd=((clk-5+36)%24)-12; const dip=Math.exp(-Math.pow(dd/2.2,2));
   const base=clamp((h-15)/26,0,1);
@@ -1036,7 +1302,7 @@ function drawChron(){ const c=$('chron'); if(c.offsetParent===null) return; cons
   ctx.fillText('days of restricted sleep',L+(w-L-R)/2,h-fs*1.2);
   ctx.save(); ctx.translate(fs*.9,T+(h-T-B)/2); ctx.rotate(-Math.PI/2); ctx.textBaseline='middle'; ctx.fillText(perf?'attention lapses (worse ↑)':'how sleepy they felt (↑)',0,0); ctx.restore();
   const series=perf?[['8 h in bed',COL.good,d=>2.3+.05*Math.sin(d)],['6 h in bed',COL.orange,d=>2.3+.58*d],['4 h in bed',COL.bad,d=>2.3+1.15*d]]
-                   :[['8 h in bed',COL.good,d=>2+.05*Math.sin(d)],['6 h in bed',COL.orange,d=>2+1.1*(1-Math.exp(-d/2))],['4 h in bed',COL.bad,d=>2+2.2*(1-Math.exp(-d/2.2))]];
+                   :[['8 h in bed',COL.good,d=>2+.05*Math.sin(d)],['6 h in bed',COL.orange,d=>2+1.6*(1-Math.exp(-d/2))],['4 h in bed',COL.bad,d=>2+1.9*(1-Math.exp(-d/2.2))]];
   if(perf){ [[10,'≈ 1 night with no sleep'],[17.5,'≈ 2 nights with no sleep']].forEach(([v,t])=>{ ctx.strokeStyle=COL.muted; ctx.setLineDash([6,6]); ctx.beginPath(); ctx.moveTo(L,Y(v)); ctx.lineTo(w-R,Y(v)); ctx.stroke(); ctx.setLineDash([]); ctx.fillStyle=COL.muted; ctx.textAlign='left'; ctx.textBaseline='bottom'; ctx.font=`${fs*.85}px ${COL.sans}`; ctx.fillText(t,L+8,Y(v)-4); }); }
   series.forEach(([lab,col,f])=>{ ctx.strokeStyle=col; ctx.lineWidth=fs*.3; ctx.beginPath(); for(let d=0;d<=14;d+=.25){ const x=X(d),y=Y(f(d)); if(d) ctx.lineTo(x,y); else ctx.moveTo(x,y); } ctx.stroke();
     ctx.fillStyle=col; ctx.font=`700 ${fs*.9}px ${COL.sans}`; ctx.textAlign='left'; ctx.textBaseline='middle'; ctx.fillText(lab,X(14)+6,Y(f(14))+(perf?0:(lab[0]==='6'?-fs*.2:lab[0]==='4'?fs*.2:0))); }); }
@@ -1058,28 +1324,28 @@ function emgFn(rbd){ const n=healthy; let seed=0; return m=>{ const s=stageAt(n,
 const DIS={
   insomnia:{ic:'',name:'Insomnia',tag:'can\'t fall or stay asleep',
     a:(()=>{ const a=young(); over(a,0,10,'W'); const b=toSlots([['W',62],['N1',8],['N2',22],['N3',22],['N2',8],['R',10],['W',28],['N1',4],['N2',26],['N3',10],['N2',8],['R',16],['W',22],['N1',4],['N2',34],['R',20],['W',34],['N1',6],['N2',30],['R',22],['W',18],['N2',22],['R',10],['W',40]],480); return b; })(),
-    marks:[{m:31,label:'1 h to fall asleep'},{m:145,label:'awake'},{m:235,label:'awake'},{m:330,label:'awake'},{m:440,label:'up too early'}],
+    marks:[{m:31,label:'1 h to fall asleep'},{m:145,label:'awake'},{m:235,label:'awake'},{m:330,label:'awake'},{m:452,label:'up too early'}],
     what:'Trouble falling asleep, staying asleep, or waking too early, at least 3 nights a week for 3 months, even with plenty of time to sleep, and it affects the next day.',
     brain:'A <b>hyperaroused</b> brain: faster EEG, higher metabolism and more stress hormones at night. Worrying about sleep keeps the arousal system switched on.',
     who:'About 10% of adults have chronic insomnia, and about 1 in 3 have some symptoms.',
     treat:'<b>CBT-I</b> (cognitive behavioral therapy for insomnia) is the first-line treatment: a fixed wake time, using the bed only for sleep, sleep restriction, and tackling worried thoughts. Its benefits outlast sleeping pills.'},
   osa:{ic:'',name:'Sleep apnea',tag:'breathing stops, brain wakes',a:osa.a,extra:{label:['Oxygen','80–100%'],fn:m=>o2Map(o2(m)),ghost:()=>o2Map(.965),color:'#ff6b7d'},
-    what:'The throat collapses during sleep and breathing stops or gets shallow for 10+ seconds. Oxygen drops and the brain briefly wakes to reopen the airway, often dozens of times an hour, with no memory of it.',
-    brain:'Every mini-awakening fragments sleep, so <b>deep N3 and REM are lost</b>. Repeated oxygen drops strain the heart and brain. Result: loud snoring, gasping and heavy daytime sleepiness.',
-    who:'Very common: an estimated ~1 billion people worldwide (Benjafield et al., 2019), most undiagnosed. Risks: excess weight, male sex, age, alcohol.',
+    what:'The throat collapses during sleep and breathing stops or gets shallow for 10+ seconds. Oxygen drops and the brain briefly wakes to reopen the airway, from 5 to more than 30 times an hour, with no memory of it.',
+    brain:'Every mini-awakening fragments sleep, so <b>deep N3 and REM are reduced</b>. Repeated oxygen drops strain the heart and brain. Result: loud snoring, gasping and heavy daytime sleepiness.',
+    who:'Very common: nearly 1 billion adults aged 30–69 worldwide (Benjafield et al., 2019), most undiagnosed. Risks: excess weight, male sex, age, alcohol.',
     treat:'<b>CPAP</b> (gentle air pressure that splints the airway open), weight loss, oral appliances, side-sleeping, and nerve-stimulation implants.'},
   narco:{ic:'',name:'Narcolepsy',tag:'sleep attacks, cataplexy',
     a:toSlots([['W',4],['R',14],['N2',18],['N3',26],['W',10],['N1',6],['N2',20],['R',14],['W',8],['N1',8],['N2',24],['R',18],['W',14],['N1',6],['N2',18],['N3',10],['R',22],['W',12],['N1',8],['N2',28],['R',24],['W',16],['N2',26],['R',20],['W',10],['N2',20],['R',16],['W',20]],480),
     marks:[{m:10,label:'REM within minutes'}],
     what:'Overwhelming daytime sleepiness with sudden sleep attacks. Type 1 adds <b>cataplexy</b>: strong emotion (like laughing) suddenly makes muscles go limp while the person stays fully awake.',
-    brain:'Loss of the hypothalamic <b>orexin (hypocretin)</b> neurons, probably autoimmune. With nothing stabilizing the flip-flop switch, pieces of REM break into waking. People often enter <b>REM within minutes</b> of falling asleep (marked), and night sleep is broken.',
+    brain:'In type 1, loss of the hypothalamic <b>orexin (hypocretin)</b> neurons, probably autoimmune. With nothing stabilizing the flip-flop switch, pieces of REM break into waking. People often enter <b>REM within minutes</b> of falling asleep (marked), and night sleep is broken.',
     who:'About 1 in 2,000 people. It usually starts in the teens or twenties and often goes undiagnosed for years.',
     treat:'Scheduled naps, wake-promoting medications, and sodium oxybate for sleepiness and cataplexy. Try the orexin switch in section 4.'},
   rbd:{ic:'',name:'REM behavior disorder',tag:'acting out dreams',a:young(),extra:{label:['Muscle','tone'],fn:emgFn(true),ghost:emgFn(false),color:'#e594ff'},
-    marks:[{m:95,label:'acts out'},{m:248,label:'acts out'},{m:330,label:'acts out'},{m:415,label:'acts out'}],
+    marks:[{m:84,label:'acts out'},{m:248,label:'acts out'},{m:330,label:'acts out'},{m:415,label:'acts out'}],
     what:'The paralysis of REM fails, so people <b>act out their dreams</b>: punching, kicking, shouting, sometimes injuring themselves or a bed partner. Look at the muscle trace during REM.',
     brain:'Damage to the brainstem pathway (SLD → medulla → spinal cord) that switches off motor neurons in REM. Often an <b>early warning sign</b>: most people with isolated RBD develop Parkinson\'s disease or a related synuclein disease within about 10–15 years (Postuma et al., 2019).',
-    who:'About 1% of older adults, mostly men over 50.',
+    who:'About 1% of older adults. Clinics see mostly men over 50, but community studies find it in women nearly as often.',
     treat:'Make the bedroom safe; melatonin or clonazepam; regular follow-up with a neurologist.'},
   walk:{ic:'',name:'Sleepwalking & night terrors',tag:'arousals out of deep sleep',
     a:(()=>{ const a=young(); over(a,52,55,'W'); over(a,128,130,'W'); return a; })(),
@@ -1093,7 +1359,7 @@ const DIS={
     marks:[{m:339,label:'paralysis on waking'}],
     what:'Waking up <b>unable to move</b> for seconds to a few minutes, often with a sense of a presence, pressure on the chest, or vivid hallucinations.',
     brain:'The mind wakes up but REM\'s <b>muscle paralysis and dream imagery</b> carry on for a moment: REM and waking overlap at a REM-to-wake transition (marked). Frightening but harmless. It likely explains many "night visitor" legends around the world.',
-    who:'About 8% of people have it at least once (Sharpless &amp; Barber, 2011), more with sleep deprivation, irregular schedules, and in narcolepsy.',
+    who:'About 8% of people have it at least once, and about 28% of students (Sharpless &amp; Barber, 2011); more with sleep deprivation, irregular schedules, and in narcolepsy.',
     treat:'Regular sleep. Knowing what it is takes away much of the fear; focusing on moving a finger or toe can help end an episode.'},
   rls:{ic:'',name:'Restless legs',tag:'urge to move at night',
     a:toSlots([['W',48],['N1',8],['N2',18],['N3',24],['N2',10],['R',10],['W',6],['N1',4],['N2',24],['N3',20],['N2',10],['R',16],['W',4],['N2',36],['N3',8],['N2',14],['R',22],['N1',3],['N2',48],['R',26],['W',3],['N2',50],['R',28],['W',40]],480),
@@ -1102,7 +1368,7 @@ const DIS={
     what:'An irresistible urge to move the legs, with creepy-crawly feelings that are worse in the evening and at rest and relieved by moving. Most people with it also have <b>periodic limb movements</b> every 20–40 seconds during sleep.',
     brain:'Linked to <b>low iron</b> in the brain and changes in <b>dopamine</b> signaling.',
     who:'Roughly 5–10% of adults in Europe and North America; more common in pregnancy and with iron deficiency.',
-    treat:'Check iron levels and replace iron if low. Avoid triggers such as caffeine, alcohol and some antihistamines and antidepressants. Medications target α2δ calcium channels or dopamine.'},
+    treat:'Check iron levels and replace iron if low. Avoid triggers such as caffeine, alcohol and some antihistamines and antidepressants. First-line drugs now target α2δ calcium channels (gabapentin, pregabalin); dopamine drugs are used less because over time they can make symptoms worse.'},
   dspd:{ic:'',name:'Delayed sleep phase',tag:'the night-owl teen',
     a:toSlots([['W',238],['N1',4],['N2',12],['N3',38],['N2',10],['R',10],['N2',22],['N3',28],['N2',12],['R',16],['N2',26],['N3',8],['N2',14],['R',24],['N2',12]],480),
     marks:[{m:238,label:'finally asleep'},{m:466,label:'alarm'}],
@@ -1129,6 +1395,9 @@ showDis();
    8. QUIZ
    ========================================================= */
 const QZ=[
+  {q:'Scalp EEG mainly records…',o:['Action potentials of single neurons','Summed postsynaptic potentials of many aligned cortical neurons','Blood flow changes','Activity of the cerebellum'],a:1,why:'<b>Summed postsynaptic potentials</b> of large groups of pyramidal neurons that are lined up and active together. Single neurons and brief action potentials are far too small to see from the scalp.'},
+  {q:'How do researchers get an ERP from EEG?',o:['Filter one trial at 10 Hz','Average many EEG epochs time-locked to a stimulus','Record from one neuron','Use fMRI'],a:1,why:'<b>Averaging time-locked epochs.</b> Background EEG isn\'t locked to the stimulus, so it averages out; the event-related response remains.'},
+  {q:'Which retinal cells mainly tell the SCN that it is light outside?',o:['Rods','Cones','ipRGCs containing melanopsin','Bipolar cells'],a:2,why:'<b>Intrinsically photosensitive retinal ganglion cells (ipRGCs)</b> contain melanopsin, which is most sensitive to blue light (about 480 nm). They signal the SCN through the retinohypothalamic tract.'},
   {q:'Sleep spindles and K-complexes are the signature of which stage?',o:['N1','N2','N3','REM'],a:1,why:'<b>N2.</b> Spindles are bursts from the thalamus; K-complexes are big single waves. N2 fills about half the night.'},
   {q:'Big, slow delta waves (0.5–2 Hz) mean the person is in…',o:['REM','N1','N3 (deep sleep)','Awake with eyes closed'],a:2,why:'<b>N3, slow-wave sleep.</b> Huge groups of neurons fire in sync, so the waves are large and slow.'},
   {q:'In which stage are your muscles paralyzed while your brain looks awake?',o:['N1','N2','N3','REM'],a:3,why:'<b>REM.</b> The SLD in the pons switches on REM and, via the medulla, inhibits motor neurons (atonia).'},
@@ -1136,9 +1405,9 @@ const QZ=[
   {q:'Caffeine keeps you awake by blocking receptors for…',o:['Melatonin','Adenosine','Orexin','Serotonin'],a:1,why:'<b>Adenosine.</b> Caffeine hides sleep pressure but doesn\'t remove it, which is why you crash later.'},
   {q:'Narcolepsy type 1 is caused by losing neurons that make…',o:['Dopamine','Melatonin','Orexin (hypocretin)','GABA'],a:2,why:'<b>Orexin.</b> Without it, the sleep-wake switch is unstable and REM breaks into waking (cataplexy, sleep attacks).'},
   {q:'Someone punches and kicks while dreaming, mostly late at night. The likely problem?',o:['Sleepwalking','REM sleep behavior disorder','Sleep apnea','Insomnia'],a:1,why:'<b>REM sleep behavior disorder:</b> the paralysis of REM fails. Sleepwalking comes out of N3, early in the night.'},
-  {q:'After 24 hours awake, your driving is about as impaired as a blood alcohol level of…',o:['0.01%','0.03%','0.10%','0.30%'],a:2,why:'<b>About 0.10%</b>, above the U.S. legal limit of 0.08% (Dawson &amp; Reid, 1997).'},
+  {q:'After 24 hours awake, your hand–eye coordination is about as impaired as at a blood alcohol level of…',o:['0.01%','0.03%','0.10%','0.30%'],a:2,why:'<b>About 0.10%</b>, above the U.S. legal limit of 0.08% (Dawson &amp; Reid, 1997).'},
   {q:'Which area acts as the brain\'s master clock?',o:['VLPO','Pineal gland','Suprachiasmatic nucleus (SCN)','Locus coeruleus'],a:2,why:'<b>The SCN</b>, in the hypothalamus above the optic chiasm. It gets light input from the eyes and times melatonin release.'},
-  {q:'After two weeks of 6 hours of sleep a night, people…',o:['Adapted fully','Performed as badly as after 1–2 nights without sleep, but felt only a bit sleepy','Felt terrible but performed fine','Performed better'],a:1,why:'<b>Impaired but unaware</b> (Van Dongen et al., 2003). Chronic sleep debt is easy to underestimate.'}
+  {q:'After two weeks of 6 hours of sleep a night, people…',o:['Adapted fully','Performed as badly as after a full night without sleep, but felt only a bit sleepy','Felt terrible but performed fine','Performed better'],a:1,why:'<b>Impaired but unaware</b> (Van Dongen et al., 2003). Chronic sleep debt is easy to underestimate.'}
 ];
 let qi=0; const answered={};
 function showQ(){ const q=QZ[qi]; $('qText').textContent=`${qi+1}. ${q.q}`; $('qCount').textContent=`Question ${qi+1} of ${QZ.length}`;
@@ -1154,16 +1423,16 @@ showQ();
 /* =========================================================
    LOOP & REDRAW
    ========================================================= */
-function redrawAll(){ readCols(); if(N) drawHyp($('hyp'),N,{total:480,bed:23,play:playM,cycles:preset!=='baby'}); drawTwo(); drawBrain(); drawDis(); drawChron(); showStageInfo(mystery?mysteryAns:curStage,mystery); if(N) setPreset(preset); }
+function redrawAll(){ readCols(); if(typeof showLight==='function') showLight(); if(N) drawHyp($('hyp'),N,{total:480,bed:23,play:playM,cycles:preset!=='baby'}); drawTwo(); drawBrain(); drawDis(); drawChron(); showStageInfo(mystery?mysteryAns:curStage,mystery); if(N) setPreset(preset); }
 let prev=performance.now();
 function loop(now){ const dt=Math.min(.05,(now-prev)/1000); prev=now;
   if(isVis($('eeg'))){ eeg.advance(dt); eeg.draw(); }
   if(isVis($('hyp'))){ if(playing){ playM+=dt*480/32; if(playM>=480){ playM=480; playing=false; $('playBtn').textContent='Play the night'; } updateNight(); }
     drawHyp($('hyp'),N,{total:480,bed:23,play:playM,cycles:preset!=='baby'}); eeg2.advance(dt); eeg2.draw(); }
   if(narco && isVis(brain)){ narcoTimer-=dt; if(narcoTimer<=0){ narcoTimer=rnd(1.8,3.2); const opts=['wake','nrem','rem'].filter(s=>s!==shownState()); narcoFlip=Math.random()<.65?opts[Math.floor(Math.random()*opts.length)]:null; drawBrain(); } }
-  stepGlym(dt,now); stepReplay(dt,now); stepShy(dt);
+  stepGlym(dt,now); stepReplay(dt,now); stepShy(dt); stepDipole(dt); stepERP(dt);
   requestAnimationFrame(loop); }
-window.addEventListener('resize',()=>{ drawTwo(); drawDis(); drawChron(); });
+window.addEventListener('resize',()=>{ drawTwo(); drawDis(); drawChron(); drawSpec(); drawMel24(); });
 if(store.get('sleepTheme')==='light') setTheme(true); else redrawAll();
 requestAnimationFrame(loop);
 
