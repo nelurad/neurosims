@@ -189,6 +189,35 @@
   @media (max-width:1000px){ .bcards{grid-template-columns:repeat(3,minmax(0,1fr))} }
   @media (max-width:760px){ .dcap{position:static;width:auto;border-radius:0;border:0} .bcards{grid-template-columns:repeat(2,minmax(0,1fr))} }
 
+  /* ---------- stage by stage ---------- */
+  .srow{display:grid;grid-template-columns:minmax(260px,1fr) minmax(0,1.9fr);gap:40px;align-items:center;min-height:66vh;padding:8vh 0;border-top:1px dashed var(--line);opacity:.12;transform:translateY(34px);transition:opacity .9s ease,transform .9s ease}
+  .srow:first-child{border-top:0}
+  .srow.in{opacity:1;transform:none}
+  .srow .step{font:700 .72rem/1 var(--sans);letter-spacing:.14em;text-transform:uppercase;color:var(--k);margin:0 0 8px}
+  .srow h3{font-family:var(--serif);font-weight:600;font-size:clamp(32px,2.8vw,52px);margin:0 0 6px;color:var(--k);line-height:1.05}
+  .srow .hz{font-family:var(--mono);font-size:.8rem;color:var(--muted);margin:0 0 14px}
+  .srow p{margin:0 0 10px}
+  .body3{display:grid;grid-template-columns:auto 1fr;gap:5px 14px;font-size:.88rem;margin:14px 0 0;padding:10px 14px;border-radius:10px;background:var(--panel);border:1px solid var(--line)}
+  .body3 dt{color:var(--muted)} .body3 dd{margin:0}
+  .depth{display:flex;align-items:center;gap:10px;margin:14px 0 0;font-size:.75rem;color:var(--muted)}
+  .depth span{display:flex;gap:4px;flex:1;max-width:220px} .depth i{flex:1;height:8px;border-radius:4px;background:var(--line)} .depth i.on{background:var(--k)}
+  .srow canvas.tr{aspect-ratio:16/6.6}
+  .crowdbox{margin-top:18px}
+  .crowdbox canvas{aspect-ratio:16/6}
+  /* ---------- labs ---------- */
+  .lab2{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:24px;align-items:start}
+  canvas.scene{aspect-ratio:4/3;border-radius:8px}
+  canvas.acto{aspect-ratio:4/3.3}
+  canvas.acto.tall{aspect-ratio:4/4.6}
+  .counters{display:flex;gap:32px;flex-wrap:wrap;margin:14px 4px 4px}
+  .counters div{font-size:.8rem;color:var(--muted)}
+  .counters b{display:block;font-family:var(--serif);font-weight:600;font-size:clamp(30px,2.6vw,48px);line-height:1;color:var(--c)}
+  .gap{height:10vh}
+  #spkEEG{aspect-ratio:16/4.6}
+  .zoom{aspect-ratio:16/7}
+  @media (max-width:1000px){ .srow,.lab2{grid-template-columns:minmax(0,1fr)} .srow{min-height:auto;gap:18px} }
+  @media (prefers-reduced-motion: reduce){ .srow{transform:none;transition:none;opacity:1} }
+  html.present .srow{min-height:calc(100vh - 80px)}
   .foot{margin-top:50px;padding-top:14px;border-top:1.5px dashed var(--line);font-size:.72rem;color:var(--muted)}
   .foot p{margin:0 0 8px}
   .embed{display:flex;gap:8px;align-items:flex-start;flex-wrap:wrap}
@@ -277,7 +306,7 @@
       <div class="ctrl" style="margin:6px 8px 4px"><button class="btn primary" id="dPlay">Fall asleep</button><input type="range" id="dScrub" min="0" max="100" step="0.25" value="0" aria-label="Time since lights out"><button class="chip" id="dModeC" aria-pressed="true">First cycle</button><button class="chip" id="dModeN" aria-pressed="false">Whole night</button></div>
       <canvas id="driftEEG" style="aspect-ratio:16/2.4" aria-label="Brain waves, eye movements and muscle tone of the sleeper right now"></canvas>
     </div>
-    <p class="note">Dreams can happen in any stage, but REM dreams are the most vivid and story-like. In this picture REM sits at the same height as N1 because its brain waves look like light sleep or waking, the way classic hypnograms draw it. Flip the trail upside down and you get the hypnogram in Part 5.</p>
+    <p class="note">Dreams can happen in any stage, but REM dreams are the most vivid and story-like. In this picture REM sits at the same height as Stage 1 because its brain waves look like light sleep or waking, the way classic hypnograms draw it. Flip the trail upside down and you get the hypnogram in Part 5.</p>
   </section>
 
   <!-- =================== EEG vs ERP =================== -->
@@ -351,14 +380,67 @@
         <div class="callout" id="stNote"></div>
       </div>
     </div>
-    <p class="note">The traces are simulated from the textbook features of each stage (AASM scoring rules): beta 13–30 Hz, alpha 8–13 Hz, theta 4–7 Hz, delta 0.5–4 Hz (N3 is scored on slow waves of 0.5–2 Hz and over 75 µV), sleep spindles 11–16 Hz. 10-second window; grid lines are 1 second apart.</p>
+    <p class="note">The traces are simulated from the textbook features of each stage (AASM scoring rules): beta 13–30 Hz, alpha 8–13 Hz, theta 4–7 Hz, delta 0.5–4 Hz (Stage 3 is scored on slow waves of 0.5–2 Hz and over 75 µV), sleep spindles 11–16 Hz. 10-second window; grid lines are 1 second apart.</p>
+  </section>
+
+  <!-- =================== STAGE BY STAGE =================== -->
+  <section class="s" id="closer" style="--sc:var(--s1)" data-title="Stage by stage">
+    <p class="kicker">Part 5</p>
+    <h2 class="sec">Going down: the stages one at a time</h2>
+    <p class="lede">Sleep comes in two kinds: <b>REM sleep</b> and <b>non-REM sleep</b>. Your textbook numbers the non-REM stages <b>Stage 1, Stage 2 and Stage 3</b>. (Sleep labs write the same stages as N1, N2 and N3, and some older books split Stage 3 into "Stages 3 and 4.") <b>Scroll down</b> to fall asleep one stage at a time. Every trace below uses the <b>same scale</b>, so you can compare how big the waves get.</p>
+    <div id="descent"></div>
+    <p class="note">Simulated recordings built from the textbook definitions of each stage. Top line: EEG (brain waves). Middle: EOG (eye movements). Bottom: EMG (chin muscle). Grid lines are 1 second apart; the scale bar is 100 µV.</p>
+  </section>
+
+  <!-- =================== SPINDLES & K =================== -->
+  <section class="s" id="spk" style="--sc:var(--s1)" data-title="Spindles &amp; K">
+    <p class="kicker">Part 6</p>
+    <h2 class="sec">Sleep spindles and K-complexes, up close</h2>
+    <p class="lede">These two landmarks of Stage 2 aren't random squiggles. Each one is the footprint of a specific event in the brain. Watch a live Stage 2 recording, then <b>make some noise in the bedroom</b> and see how the sleeping brain responds.</p>
+    <div class="box flush">
+      <canvas id="spkEEG" aria-label="Live Stage 2 EEG with sleep spindles and K-complexes"></canvas>
+      <div class="ctrl" style="margin:6px 8px 4px">
+        <button class="btn primary" id="spkQuiet">A car drives past</button>
+        <button class="btn" id="spkLoud">A door slams</button>
+        <button class="chip" id="spkPause" aria-pressed="false">Pause</button>
+      </div>
+    </div>
+    <div class="stage even" style="margin-top:18px;align-items:center">
+      <div class="box"><p class="sub">Inside the brain right now</p>
+        <svg id="loopSvg" viewBox="0 0 520 380" role="img" aria-label="Loop between the thalamus, the thalamic reticular nucleus and the cortex, with a sound coming in from the ear"></svg></div>
+      <div class="callout" id="spkTxt" style="font-size:1.05rem">Stage 2 sleep. The thalamus is quietly passing a trickle of sensory information to the cortex. Press a button above to make a noise.</div>
+    </div>
+    <div class="gap"></div>
+    <div class="stage even">
+      <div class="box">
+        <p class="sub">Landmark 1</p>
+        <div class="stname" style="color:var(--N2)">Sleep spindle</div>
+        <canvas class="zoom" id="spinZoom" aria-label="Close-up of a sleep spindle"></canvas>
+        <dl class="kv" style="margin-top:12px">
+          <dt>What it looks like</dt><dd>A short burst of fast waves, <b>12–14 per second</b>, that grows and then fades over about <b>½ to 2 seconds</b>, like thread wound on a spindle.</dd>
+          <dt>Where it comes from</dt><dd>The <b>thalamus</b>. Inhibitory cells in the thalamic reticular nucleus keep silencing the thalamic relay cells. Each time the silencing wears off, the relay cells fire a burst into the cortex. That loop repeats about 13 times a second.</dd>
+          <dt>What it's for</dt><dd>While the thalamus is busy spindling, it passes less outside information to the cortex, which helps keep you asleep. Spindles are also linked to <b>memory</b>: people who make more spindles after learning something tend to remember it better the next day.</dd>
+        </dl>
+      </div>
+      <div class="box">
+        <p class="sub">Landmark 2</p>
+        <div class="stname" style="color:var(--N2)">K-complex</div>
+        <canvas class="zoom" id="kZoom" aria-label="Close-up of a K-complex"></canvas>
+        <dl class="kv" style="margin-top:12px">
+          <dt>What it looks like</dt><dd>One big, sharp wave followed by a slower swing the other way, lasting about <b>half a second to a second</b>. It's one of the largest waves a healthy sleeping brain makes.</dd>
+          <dt>When it happens</dt><dd>On its own a few times a minute in Stage 2, and also right after a <b>sound or touch</b>, often without waking you.</dd>
+          <dt>What it is</dt><dd>For a moment, a large patch of cortex falls almost <b>silent</b> (a "down state"), then fires again all together. That shared silence and restart is what makes the wave so big.</dd>
+          <dt>What it's for</dt><dd>It's thought to <b>protect sleep</b>: the brain notices the noise, "decides" it doesn't matter, and stays asleep. K-complexes are also forerunners of the big slow waves of Stage 3.</dd>
+        </dl>
+      </div>
+    </div>
   </section>
 
   <!-- =================== 2. A NIGHT =================== -->
   <section class="s" id="night" style="--sc:var(--s2)" data-title="Cycles">
-    <p class="kicker">Part 5</p>
+    <p class="kicker">Part 7</p>
     <h2 class="sec">A night of sleep: the cycles</h2>
-    <p class="lede">A <b>hypnogram</b> plots sleep stage across the night. Press play or drag across the night. Notice two patterns: <b>deep N3 is front-loaded</b> into the first half of the night, and <b>REM periods get longer toward morning</b>. Then compare a newborn, an older adult, and a recovery night after an all-nighter.</p>
+    <p class="lede">A <b>hypnogram</b> plots sleep stage across the night. Press play or drag across the night. Notice two patterns: <b>deep Stage 3 is front-loaded</b> into the first half of the night, and <b>REM periods get longer toward morning</b>. Then compare a newborn, an older adult, and a recovery night after an all-nighter.</p>
     <div class="chips" id="presetChips"></div>
     <div class="stage">
       <div class="box flush">
@@ -384,7 +466,7 @@
 
   <!-- =================== LIGHT & CLOCK =================== -->
   <section class="s" id="clock" style="--sc:var(--s3)" data-title="Light">
-    <p class="kicker">Part 6</p>
+    <p class="kicker">Part 8</p>
     <h2 class="sec">Light, melanopsin and the body clock</h2>
     <p class="lede">Your master clock, the <b>suprachiasmatic nucleus (SCN)</b>, keeps a roughly 24-hour rhythm on its own, but light resets it every day. That light signal comes mainly from a small set of retinal cells that contain the pigment <b>melanopsin</b>, which is most sensitive to <b>blue light</b>. Choose a light source and follow the signal from the eye to the pineal gland.</p>
     <div class="chips" id="lightChips"></div>
@@ -406,9 +488,52 @@
     <p class="note">Schematic. Melanopsin's peak sensitivity is about 480 nm (Berson et al., 2002; Hattar et al., 2002). Daylight is roughly 10,000–100,000 lux; indoor light is usually a few hundred lux or less. The melatonin curve and the effects of evening light illustrate findings by Gooley et al. (2011) and Chang et al. (2015); they are not exact values.</p>
   </section>
 
+  <!-- =================== HAMSTER LAB =================== -->
+  <section class="s" id="wheel" style="--sc:var(--s3)" data-title="Hamster lab">
+    <p class="kicker">Part 9</p>
+    <h2 class="sec">The running-wheel experiment</h2>
+    <p class="lede">How do we know the body has its own clock? Put a hamster in a cage with a running wheel, let a computer record every turn of the wheel, and take control of the lights. The record is called an <b>actogram</b>. Each row is one day, from midnight to midnight, and the black marks show when the hamster was running. Pick an experiment and press <b>Play</b>.</p>
+    <div class="chips" id="hamExp"></div>
+    <div class="lab2">
+      <div class="box flush"><canvas class="scene" id="hamScene" aria-label="Animated hamster cage with a running wheel and the room lights"></canvas></div>
+      <div class="box flush"><canvas class="acto" id="hamActo" aria-label="Actogram building up day by day"></canvas></div>
+    </div>
+    <div class="ctrl">
+      <button class="btn primary" id="hamPlay">Play</button>
+      <button class="btn" id="hamRestart">Restart</button>
+      <button class="btn" id="hamSkip">Skip to the end</button>
+      <span>Speed</span><input type="range" id="hamSpeed" min="0.3" max="5" step="0.1" value="1.2" aria-label="Days per second"><b id="hamSpeedV">1.2 days/s</b>
+    </div>
+    <div class="ctrl" id="hamTauRow" style="display:none"><span>The hamster's own clock period (τ)</span><input type="range" id="hamTau" min="23.5" max="25" step="0.05" value="24.3"><b id="hamTauV">24.3 h</b></div>
+    <div class="callout" id="hamTxt"></div>
+    <p class="note">Simulated record. Pale rows = lights on, blue = lights off, grey = constant dim light. Hamsters are nocturnal, so they run in the dark. Real hamster clocks run very close to 24 hours; in constant light, nocturnal animals' clocks tend to run a little longer than 24 hours.</p>
+  </section>
+
+  <!-- =================== BUNKER =================== -->
+  <section class="s" id="bunker" style="--sc:var(--s3)" data-title="Bunker study">
+    <p class="kicker">Part 10</p>
+    <h2 class="sec">Living without clocks: the human isolation study</h2>
+    <p class="lede">Humans have done the same experiment on themselves. In the 1960s, Jürgen Aschoff and Rütger Wever built an underground apartment in Germany where volunteers lived alone for weeks with <b>no windows, no clocks and no schedule</b>. They slept whenever they felt like it and switched the lights on and off themselves. Our simulated volunteer follows the record in your textbook: normal life for 5 days, then <b>77 days cut off from all time cues</b>, then time cues come back. Bars show when the volunteer was <b>asleep</b>.</p>
+    <div class="lab2">
+      <div class="box flush"><canvas class="scene" id="bunScene" aria-label="Animated underground room with a volunteer sleeping or awake"></canvas>
+        <div class="counters"><div><b id="bunDays">0</b>days without time cues</div><div><b id="bunNights">0</b>nights of sleep</div></div>
+      </div>
+      <div class="box flush"><canvas class="acto tall" id="bunActo" aria-label="Sleep-wake record over 100 days"></canvas></div>
+    </div>
+    <div class="ctrl">
+      <button class="btn primary" id="bunPlay">Play</button>
+      <button class="btn" id="bunRestart">Restart</button>
+      <button class="btn" id="bunSkip">Skip to the end</button>
+      <span>Speed</span><input type="range" id="bunSpeed" min="0.5" max="10" step="0.5" value="4" aria-label="Days per second"><b id="bunSpeedV">4 days/s</b>
+    </div>
+    <div class="ctrl"><span>The volunteer's own clock period (τ)</span><input type="range" id="bunTau" min="24" max="25.6" step="0.01" value="24.97"><b id="bunTauV">24.97 h</b></div>
+    <div class="callout" id="bunTxt"></div>
+    <p class="note">Simulation. With τ = 24.97 h, the volunteer fits <b>74 sleeps into 77 days</b>, the result shown in your textbook. Aschoff and Wever's volunteers free-ran with periods of about 25 hours. Later studies that kept the lighting dim and tightly controlled (Czeisler et al., 1999) found the human clock's own period is closer to <b>24.2 hours</b> on average; the evening light the bunker volunteers switched on themselves was nudging their clocks later.</p>
+  </section>
+
   <!-- =================== 3. TWO PROCESS =================== -->
   <section class="s" id="sleepy" style="--sc:var(--s3)" data-title="Sleepiness">
-    <p class="kicker">Part 7</p>
+    <p class="kicker">Part 11</p>
     <h2 class="sec">Why you get sleepy: two forces</h2>
     <p class="lede"><b>Sleep pressure</b> (Process S) builds every hour you are awake as <b>adenosine</b> accumulates, and drains while you sleep. Your <b>body clock</b> (Process C, run by the SCN) pushes alertness up and down over 24 hours. You fall asleep easily when pressure rises above the clock's alerting signal. Try an all-nighter, a coffee, or a nap, and drag across the two days.</p>
     <div class="chips" id="twoChips"></div>
@@ -441,7 +566,7 @@
 
   <!-- =================== 4. CIRCUIT =================== -->
   <section class="s" id="switch" style="--sc:var(--s4)" data-title="Switch">
-    <p class="kicker">Part 8</p>
+    <p class="kicker">Part 12</p>
     <h2 class="sec">Sleep in the brain: the flip-flop switch</h2>
     <p class="lede">Wake-promoting centers in the brainstem and hypothalamus and the sleep-promoting <b>VLPO</b> inhibit each other, like a seesaw that is either up or down, so you switch between states quickly instead of drifting. <b>Orexin</b> holds the switch steady. A separate switch in the <b>pons</b> turns on REM and paralyzes your muscles. Pick a state, then click any region.</p>
     <div class="chips" id="circChips"></div>
@@ -462,7 +587,7 @@
 
   <!-- =================== 5. FUNCTIONS =================== -->
   <section class="s" id="why" style="--sc:var(--s5)" data-title="Why sleep?">
-    <p class="kicker">Part 9</p>
+    <p class="kicker">Part 13</p>
     <h2 class="sec">What is sleep for?</h2>
     <p class="lede">Every animal studied sleeps, even though sleeping leaves it defenseless. So sleep must do something that cannot be done while awake. Scientists have found several jobs, and they likely all matter.</p>
     <div class="tabs" role="tablist" id="fnTabs">
@@ -509,7 +634,7 @@
     </div>
     <div class="fnp" data-p="body" hidden>
       <div class="cards">
-        <div class="card"><h4>Growth &amp; repair</h4><p>The biggest pulse of <b>growth hormone</b> each day comes during the first deep N3 period of the night.</p></div>
+        <div class="card"><h4>Growth &amp; repair</h4><p>The biggest pulse of <b>growth hormone</b> each day comes during the first deep Stage 3 period of the night.</p></div>
         <div class="card"><h4>Immune defense</h4><p>When volunteers were exposed to a cold virus, people who slept under 6 hours (measured with a wrist tracker) were about <b>4× more likely</b> to get sick than those sleeping over 7 (Prather et al., 2015).</p></div>
         <div class="card"><h4>Emotional reset</h4><p>REM sleep is when the brain replays emotional memories with stress chemicals such as norepinephrine switched off. It may take the sting out of hard experiences ("overnight therapy"; Walker &amp; van der Helm, 2009).</p></div>
         <div class="card"><h4>Saving energy</h4><p>Metabolism and body temperature fall during NREM sleep. The saving is modest (~10%), so energy alone can't explain why we sleep.</p></div>
@@ -521,7 +646,7 @@
 
   <!-- =================== 6. DEPRIVATION =================== -->
   <section class="s" id="dep" style="--sc:var(--s6)" data-title="Sleep loss">
-    <p class="kicker">Part 10</p>
+    <p class="kicker">Part 14</p>
     <h2 class="sec">Sleep deprivation</h2>
     <p class="lede">Drag to stay awake longer, starting from a 7 AM wake-up. Then look at the quieter danger: <b>chronic short sleep</b>, which adds up night after night while you barely notice it.</p>
     <div class="tabs" role="tablist" id="depTabs">
@@ -563,7 +688,7 @@
 
   <!-- =================== 7. DISORDERS =================== -->
   <section class="s" id="dis" style="--sc:var(--s7)" data-title="Disorders">
-    <p class="kicker">Part 11</p>
+    <p class="kicker">Part 15</p>
     <h2 class="sec">Sleep disorders</h2>
     <p class="lede">Pick a disorder to see how its night differs from a healthy one (faint line) and what is going on in the brain.</p>
     <div class="dlist" id="dList"></div>
@@ -578,7 +703,7 @@
 
   <!-- =================== 8. REVIEW =================== -->
   <section class="s" id="review" style="--sc:var(--s8)" data-title="Review">
-    <p class="kicker">Part 12</p>
+    <p class="kicker">Part 16</p>
     <h2 class="sec">Quick review</h2>
     <p class="lede">Have the room call out an answer before you click.</p>
     <div class="quiz">
@@ -668,11 +793,11 @@ const ST={
      note:'Many neurons are busy with different things, so their signals cancel out: <b>low amplitude, high frequency</b>.'},
   Wr:{name:'Awake & relaxed',chip:'Relaxed, eyes closed',wave:'<b>Alpha</b> waves, 8–12 Hz, strongest at the back of the head',eyes:'Closed, still',mus:'Relaxed',f:.6,a:.32,w:.05,
      note:'Close your eyes and relax and the visual cortex idles in a rhythm: <b>alpha waves</b>. Open your eyes and they disappear.'},
-  N1:{name:'N1 · Drifting off',chip:'N1',wave:'<b>Theta</b> waves, 4–7 Hz, plus sharp <b>vertex waves</b>',eyes:'Slow, rolling movements',mus:'Lower',f:.42,a:.42,w:.15,
+  N1:{name:'Stage 1 · Drifting off',chip:'Stage 1',wave:'Smaller, irregular waves (mostly <b>theta</b>, 4–7 Hz) as alpha fades, plus sharp <b>vertex spikes</b>',eyes:'Slow, rolling movements',mus:'Lower',f:.42,a:.42,w:.15,
      note:'The lightest stage, a few minutes long, about <b>5%</b> of the night. Easy to wake; you may feel a falling "hypnic jerk".'},
-  N2:{name:'N2 · Spindles & K-complexes',chip:'N2',wave:'Theta, plus <b>sleep spindles</b> (11–16 Hz bursts) and <b>K-complexes</b>',eyes:'Still',mus:'Low',f:.4,a:.55,w:.45,
+  N2:{name:'Stage 2 · Spindles & K-complexes',chip:'Stage 2',wave:'Theta, plus <b>sleep spindles</b> (12–14 Hz bursts) and <b>K-complexes</b>',eyes:'Still',mus:'Low',f:.4,a:.55,w:.45,
      note:'About <b>half</b> of the night. Spindles come from the <b>thalamus</b> and help store memories; K-complexes are thought to help keep you asleep through noises.'},
-  N3:{name:'N3 · Deep, slow-wave sleep',chip:'N3',wave:'<b>Delta</b> waves, 0.5–2 Hz, large (&gt;75 µV)',eyes:'Still',mus:'Low',f:.12,a:.95,w:.95,
+  N3:{name:'Stage 3 · Slow-wave sleep (SWS)',chip:'Stage 3 (SWS)',wave:'Large, slow <b>delta</b> waves, about 1 per second',eyes:'Still',mus:'Low',f:.12,a:.95,w:.95,
      note:'Huge groups of neurons switch on and off together. Hardest stage to wake from: you\'d be groggy and confused. <b>Growth hormone</b> peaks here.'},
   R:{name:'REM · Dreaming sleep',chip:'REM',wave:'Low, mixed fast waves (like waking), <b>sawtooth</b> waves',eyes:'<b>Rapid</b> darting movements',mus:'<b>Paralyzed</b> (atonia), small twitches',f:.75,a:.2,w:.5,
      note:'"Paradoxical sleep": the brain looks <b>awake</b>, but the body is switched off, so you can\'t act out your vivid dreams. About <b>20–25%</b> of the night.'}
@@ -820,7 +945,7 @@ function dipUI(){ $('syncOut').textContent=Math.round(dip.sync*100)+'%';
   else if(dip.scr) t='When cells point in every direction, as in many deep brain nuclei, their dipoles cancel even when they are in sync. The cortex shows up on EEG because its pyramidal cells are <b>lined up in parallel</b>, perpendicular to the surface.';
   else if(dip.sync<.4) t='<b>Out of step:</b> each dipole peaks at a different moment, so most of them cancel. The scalp sees a small, irregular signal, as in an alert, awake brain.';
   else if(dip.sync<.8) t='<b>Partly in step:</b> a rhythm starts to show through, like alpha waves when you relax with your eyes closed.';
-  else t='<b>In step:</b> the dipoles add up into a large, slow wave. This is what happens in deep N3 sleep, when huge populations of neurons switch on and off together.';
+  else t='<b>In step:</b> the dipoles add up into a large, slow wave. This is what happens in deep Stage 3 sleep, when huge populations of neurons switch on and off together.';
   $('dipNote').innerHTML=t+' <span style="color:var(--muted)">The skull and scalp also blur the signal, so each electrode reflects activity spread over several square centimeters of cortex.</span>'; }
 $('syncR').addEventListener('input',e=>{ dip.sync=+e.target.value/100; dipUI(); });
 $('srcPSP').addEventListener('click',()=>{ dip.mode='psp'; dipUI(); });
@@ -1039,7 +1164,7 @@ function over(a,m0,m1,s){ for(let i=Math.round(m0*RES);i<Math.round(m1*RES)&&i<a
 function toNight(a){ const out=[]; let s=a[0],st=0; for(let i=1;i<=a.length;i++){ if(i===a.length||a[i]!==s){ out.push({s,t0:st/RES,t1:i/RES}); if(i<a.length){ s=a[i]; st=i; } } } return out; }
 function stageAt(n,m){ for(const g of n) if(m>=g.t0&&m<g.t1) return g.s; return n[n.length-1].s; }
 function fmtClock(min,withMin){ let m=((Math.round(min)%1440)+1440)%1440; const H=Math.floor(m/60), M=m%60; const ap=H<12?'AM':'PM'; let h=H%12; if(!h) h=12; return withMin?`${h}:${String(M).padStart(2,'0')} ${ap}`:`${h} ${ap}`; }
-const SNAME={W:'Awake',R:'REM',N1:'N1',N2:'N2',N3:'N3'};
+const SNAME={W:'Awake',R:'REM',N1:'Stage 1',N2:'Stage 2',N3:'Stage 3'};
 
 function drawHyp(c,n,o){ const {ctx,w,h}=setup(c); ctx.clearRect(0,0,w,h);
   const fs=clamp(w*.017,12,21), L=fs*4.4, R=fs*1.2, T=fs*(o.marks&&o.marks.length?2.9:1.2), B=fs*1.9;
@@ -1079,19 +1204,19 @@ function drawHyp(c,n,o){ const {ctx,w,h}=setup(c); ctx.clearRect(0,0,w,h);
    ========================================================= */
 const YOUNG=[['W',10],['N1',5],['N2',15],['N3',40],['N2',10],['R',8], ['W',1],['N1',2],['N2',20],['N3',32],['N2',12],['R',18], ['N2',35],['N3',12],['N2',15],['W',2],['R',22], ['N1',2],['N2',50],['R',28], ['W',2],['N1',3],['N2',55],['R',32], ['N1',3],['N2',42],['W',4]];
 const PRESETS={
-  young:{label:'Young adult',segs:YOUNG,note:'Four to five cycles of about 90 minutes. Deep N3 is packed into the first half of the night; REM periods get longer toward morning.'},
+  young:{label:'Young adult',segs:YOUNG,note:'Four to five cycles of about 90 minutes. Deep Stage 3 is packed into the first half of the night; REM periods get longer toward morning.'},
   baby:{label:'Newborn',segs:(()=>{ const s=[]; for(let k=0;k<3;k++){ s.push(['R',25],['N2',4],['N3',22],['R',24],['N2',4],['N3',21]); s.push(['W',k<2?30:12]); } return s; })(),
-    note:'Newborns sleep 14–17 hours a day in short bouts, waking to feed. About <b>half</b> of their sleep is REM ("active sleep"), often entered straight from waking, and cycles last only ~50–60 minutes. (Infant NREM isn\'t yet divided into adult N1–N3; it is simplified here.)'},
+    note:'Newborns sleep 14–17 hours a day in short bouts, waking to feed. About <b>half</b> of their sleep is REM ("active sleep"), often entered straight from waking, and cycles last only ~50–60 minutes. (Infant NREM isn\'t yet divided into adult Stages 1–3; it is simplified here.)'},
   old:{label:'Older adult',segs:[['W',22],['N1',8],['N2',30],['N3',14],['N2',10],['R',10], ['W',8],['N1',5],['N2',39],['N3',6],['N2',10],['R',12], ['W',14],['N1',5],['N2',45],['R',13], ['W',10],['N1',6],['N2',43],['W',6],['R',15], ['W',12],['N1',5],['N2',36],['R',10],['W',200]],
-    note:'Much less deep N3 sleep, more awakenings during the night, and an earlier wake-up. The need for sleep doesn\'t drop much with age, but sleep gets lighter and more broken.'},
+    note:'Much less deep Stage 3 sleep, more awakenings during the night, and an earlier wake-up. The need for sleep doesn\'t drop much with age, but sleep gets lighter and more broken.'},
   rec:{label:'After an all-nighter',segs:[['W',3],['N1',2],['N2',8],['N3',65],['N2',10],['R',8], ['N2',15],['N3',50],['N2',12],['R',14], ['N2',25],['N3',30],['N2',15],['R',18], ['N2',35],['N3',12],['N2',15],['R',22], ['N2',60],['R',20],['N2',41]],
-    note:'Recovery sleep: you fall asleep within minutes, <b>deep N3 rebounds</b> and takes up much more of the night, while REM is squeezed and tends to catch up on later nights. Lost sleep is not repaid hour for hour; the brain prioritizes deep sleep.'}
+    note:'Recovery sleep: you fall asleep within minutes, <b>deep Stage 3 rebounds</b> and takes up much more of the night, while REM is squeezed and tends to catch up on later nights. Lost sleep is not repaid hour for hour; the brain prioritizes deep sleep.'}
 };
 const nightNotes=(s,m,cyc)=>{
   if(s==='W') return m<20?'Lying in bed, drifting toward sleep. Healthy adults usually fall asleep within 10–20 minutes.':'A brief awakening. Everyone has several each night and usually forgets them by morning.';
   if(s==='N1') return 'Light sleep: the doorway into each cycle. Easy to wake.';
-  if(s==='N2') return 'N2: spindles and K-complexes. You spend more time here than in any other stage.';
-  if(s==='N3') return m<240?'Deep slow-wave sleep, concentrated in the <b>first half</b> of the night. Growth hormone is released, and if woken now you\'d feel groggy ("sleep inertia").':'A little N3 late in the night. Most deep sleep is already done.';
+  if(s==='N2') return 'Stage 2: spindles and K-complexes. You spend more time here than in any other stage.';
+  if(s==='N3') return m<240?'Deep slow-wave sleep, concentrated in the <b>first half</b> of the night. Growth hormone is released, and if woken now you\'d feel groggy ("sleep inertia").':'A little Stage 3 late in the night. Most deep sleep is already done.';
   if(s==='R') return m>240?'A long REM period near morning: the longest, most vivid dreams. This is why you often wake up from a dream.':'A short early REM period. Muscles are paralyzed, eyes dart, and dreams begin.';
   return ''; };
 const eeg2=new EEG($('eeg2'),{stage:'W',win:6,compact:true,labels:false,rate:4}); watch($('hyp'));
@@ -1408,7 +1533,7 @@ const DIS={
     treat:'<b>CBT-I</b> (cognitive behavioral therapy for insomnia) is the first-line treatment: a fixed wake time, using the bed only for sleep, sleep restriction, and tackling worried thoughts. Its benefits outlast sleeping pills.'},
   osa:{ic:'',name:'Sleep apnea',tag:'breathing stops, brain wakes',a:osa.a,extra:{label:['Oxygen','80–100%'],fn:m=>o2Map(o2(m)),ghost:()=>o2Map(.965),color:'#ff6b7d'},
     what:'The throat collapses during sleep and breathing stops or gets shallow for 10+ seconds. Oxygen drops and the brain briefly wakes to reopen the airway, from 5 to more than 30 times an hour, with no memory of it.',
-    brain:'Every mini-awakening fragments sleep, so <b>deep N3 and REM are reduced</b>. Repeated oxygen drops strain the heart and brain. Result: loud snoring, gasping and heavy daytime sleepiness.',
+    brain:'Every mini-awakening fragments sleep, so <b>deep Stage 3 and REM are reduced</b>. Repeated oxygen drops strain the heart and brain. Result: loud snoring, gasping and heavy daytime sleepiness.',
     who:'Very common: nearly 1 billion adults aged 30–69 worldwide (Benjafield et al., 2019), most undiagnosed. Risks: excess weight, male sex, age, alcohol.',
     treat:'<b>CPAP</b> (gentle air pressure that splints the airway open), weight loss, oral appliances, side-sleeping, and nerve-stimulation implants.'},
   narco:{ic:'',name:'Narcolepsy',tag:'sleep attacks, cataplexy',
@@ -1427,10 +1552,10 @@ const DIS={
   walk:{ic:'',name:'Sleepwalking & night terrors',tag:'arousals out of deep sleep',
     a:(()=>{ const a=young(); over(a,52,55,'W'); over(a,128,130,'W'); return a; })(),
     marks:[{m:53,label:'sleepwalking'},{m:129,label:'night terror'}],
-    what:'Partial awakenings out of <b>deep N3 sleep</b>. Parts of the brain that control movement wake up while memory and judgment stay asleep. Sleepwalkers can walk, talk or even eat; in a night terror, the person sits up screaming in terror, can\'t be comforted, and remembers nothing.',
-    brain:'These are NREM parasomnias, not acted-out dreams. Because N3 is front-loaded, they happen in the <b>first third of the night</b>, unlike REM behavior disorder.',
+    what:'Partial awakenings out of <b>deep Stage 3 sleep</b>. Parts of the brain that control movement wake up while memory and judgment stay asleep. Sleepwalkers can walk, talk or even eat; in a night terror, the person sits up screaming in terror, can\'t be comforted, and remembers nothing.',
+    brain:'These are NREM parasomnias, not acted-out dreams. Because Stage 3 is front-loaded, they happen in the <b>first third of the night</b>, unlike REM behavior disorder.',
     who:'Much more common in children, and most outgrow it. Sleep deprivation, fever, stress and noise make episodes more likely.',
-    treat:'Safety first. Keep a regular sleep schedule (sleep debt deepens N3). Gently guide the person back to bed rather than forcefully waking them.'},
+    treat:'Safety first. Keep a regular sleep schedule (sleep debt deepens Stage 3). Gently guide the person back to bed rather than forcefully waking them.'},
   para:{ic:'',name:'Sleep paralysis',tag:'awake but can\'t move',
     a:(()=>{ const a=young(); over(a,339,341,'W'); return a; })(),
     marks:[{m:339,label:'paralysis on waking'}],
@@ -1476,13 +1601,13 @@ const QZ=[
   {q:'Scalp EEG mainly records…',o:['Action potentials of single neurons','Summed postsynaptic potentials of many aligned cortical neurons','Blood flow changes','Activity of the cerebellum'],a:1,why:'<b>Summed postsynaptic potentials</b> of large groups of pyramidal neurons that are lined up and active together. Single neurons and brief action potentials are far too small to see from the scalp.'},
   {q:'How do researchers get an ERP from EEG?',o:['Filter one trial at 10 Hz','Average many EEG epochs time-locked to a stimulus','Record from one neuron','Use fMRI'],a:1,why:'<b>Averaging time-locked epochs.</b> Background EEG isn\'t locked to the stimulus, so it averages out; the event-related response remains.'},
   {q:'Which retinal cells mainly tell the SCN that it is light outside?',o:['Rods','Cones','ipRGCs containing melanopsin','Bipolar cells'],a:2,why:'<b>Intrinsically photosensitive retinal ganglion cells (ipRGCs)</b> contain melanopsin, which is most sensitive to blue light (about 480 nm). They signal the SCN through the retinohypothalamic tract.'},
-  {q:'Sleep spindles and K-complexes are the signature of which stage?',o:['N1','N2','N3','REM'],a:1,why:'<b>N2.</b> Spindles are bursts from the thalamus; K-complexes are big single waves. N2 fills about half the night.'},
-  {q:'Big, slow delta waves (0.5–2 Hz) mean the person is in…',o:['REM','N1','N3 (deep sleep)','Awake with eyes closed'],a:2,why:'<b>N3, slow-wave sleep.</b> Huge groups of neurons fire in sync, so the waves are large and slow.'},
-  {q:'In which stage are your muscles paralyzed while your brain looks awake?',o:['N1','N2','N3','REM'],a:3,why:'<b>REM.</b> The SLD in the pons switches on REM and, via the medulla, inhibits motor neurons (atonia).'},
-  {q:'As the night goes on, REM periods get ___ and deep N3 gets ___.',o:['longer · shorter','shorter · longer','longer · longer','they stay the same'],a:0,why:'<b>REM gets longer, N3 gets shorter.</b> Deep sleep is front-loaded; the longest dreams come toward morning.'},
+  {q:'Sleep spindles and K-complexes are the signature of which stage?',o:['Stage 1','Stage 2','Stage 3','REM'],a:1,why:'<b>Stage 2.</b> Spindles are bursts from the thalamus; K-complexes are big single waves. Stage 2 fills about half the night.'},
+  {q:'Big, slow delta waves (0.5–2 Hz) mean the person is in…',o:['REM','Stage 1','Stage 3 (slow-wave sleep)','Awake with eyes closed'],a:2,why:'<b>Stage 3, slow-wave sleep.</b> Huge groups of neurons fire in sync, so the waves are large and slow.'},
+  {q:'In which stage are your muscles paralyzed while your brain looks awake?',o:['Stage 1','Stage 2','Stage 3','REM'],a:3,why:'<b>REM.</b> The SLD in the pons switches on REM and, via the medulla, inhibits motor neurons (atonia).'},
+  {q:'As the night goes on, REM periods get ___ and deep Stage 3 gets ___.',o:['longer · shorter','shorter · longer','longer · longer','they stay the same'],a:0,why:'<b>REM gets longer, Stage 3 gets shorter.</b> Deep sleep is front-loaded; the longest dreams come toward morning.'},
   {q:'Caffeine keeps you awake by blocking receptors for…',o:['Melatonin','Adenosine','Orexin','Serotonin'],a:1,why:'<b>Adenosine.</b> Caffeine hides sleep pressure but doesn\'t remove it, which is why you crash later.'},
   {q:'Narcolepsy type 1 is caused by losing neurons that make…',o:['Dopamine','Melatonin','Orexin (hypocretin)','GABA'],a:2,why:'<b>Orexin.</b> Without it, the sleep-wake switch is unstable and REM breaks into waking (cataplexy, sleep attacks).'},
-  {q:'Someone punches and kicks while dreaming, mostly late at night. The likely problem?',o:['Sleepwalking','REM sleep behavior disorder','Sleep apnea','Insomnia'],a:1,why:'<b>REM sleep behavior disorder:</b> the paralysis of REM fails. Sleepwalking comes out of N3, early in the night.'},
+  {q:'Someone punches and kicks while dreaming, mostly late at night. The likely problem?',o:['Sleepwalking','REM sleep behavior disorder','Sleep apnea','Insomnia'],a:1,why:'<b>REM sleep behavior disorder:</b> the paralysis of REM fails. Sleepwalking comes out of Stage 3, early in the night.'},
   {q:'After 24 hours awake, your hand–eye coordination is about as impaired as at a blood alcohol level of…',o:['0.01%','0.03%','0.10%','0.30%'],a:2,why:'<b>About 0.10%</b>, above the U.S. legal limit of 0.08% (Dawson &amp; Reid, 1997).'},
   {q:'Which area acts as the brain\'s master clock?',o:['VLPO','Pineal gland','Suprachiasmatic nucleus (SCN)','Locus coeruleus'],a:2,why:'<b>The SCN</b>, in the hypothalamus above the optic chiasm. It gets light input from the eyes and times melatonin release.'},
   {q:'After two weeks of 6 hours of sleep a night, people…',o:['Adapted fully','Performed as badly as after a full night without sleep, but felt only a bit sleepy','Felt terrible but performed fine','Performed better'],a:1,why:'<b>Impaired but unaware</b> (Van Dongen et al., 2003). Chronic sleep debt is easy to underestimate.'}
@@ -1518,12 +1643,12 @@ const BANDS=[
   whereT:'Back of the head, over the visual cortex',
   note:'The first human brain rhythm ever recorded, by Hans Berger in the 1920s. Try it: close your eyes, and your visual cortex settles into this idle rhythm.'},
  {k:'the',name:'Theta',lo:4,hi:8,rep:6,act:'Drowsy, light sleep',sync:.65,where:'mid',
-  when:'<b>Drowsy</b> and in light sleep (stages N1 and N2). Also a big part of the brain waves during <b>REM dreaming</b>.',
+  when:'<b>Drowsy</b> and in light sleep (Stages 1 and 2). Also a big part of the brain waves during <b>REM dreaming</b>.',
   size:'Medium to large',
   whereT:'Widespread across the scalp',
   note:'Deep inside the brain, the hippocampus has its own theta rhythm during exploring and remembering, studied mostly in animals. It is too deep to see clearly on scalp EEG.'},
  {k:'del',name:'Delta',lo:.5,hi:4,rep:1.5,act:'Deep sleep',sync:.92,where:'frontwide',
-  when:'<b>Deep, dreamless sleep</b> (stage N3). Lots of delta in an awake adult is a sign of a problem, such as a brain injury.',
+  when:'<b>Deep, dreamless sleep</b> (Stage 3). Lots of delta in an awake adult is a sign of a problem, such as a brain injury.',
   size:'The largest: deep-sleep slow waves are over 75 µV',
   whereT:'All over, strongest at the front of the head',
   note:'Huge numbers of neurons switch on and off together, roughly once a second. That teamwork is what makes these waves so big.'}
@@ -1616,9 +1741,9 @@ const DC={W:'#ff8a5c',N1:'#9fe8ff',N2:'#5aacff',N3:'#a29dff',R:'#ee9cff'};
 const DALT={W:.86,N1:.70,R:.70,N2:.54,N3:.37};
 const DTXT={
   W:['Lights out','Eyes closed, but the mind is still busy. As you relax, fast <b>beta</b> waves give way to calm <b>alpha</b> waves.'],
-  N1:['N1 · Drifting off','<b>Theta</b> waves take over. Thoughts turn dreamy and disconnected, and a sudden "falling" jerk can jolt you awake. Lasts just a few minutes.'],
-  N2:['N2 · Light sleep','Now you are truly asleep. Bursts called <b>sleep spindles</b> ripple through, helping to store memories. About half the night is spent here.'],
-  N3:['N3 · Deep sleep','Big, slow <b>delta</b> waves roll through as huge groups of neurons fire together. The hardest stage to wake from; growth hormone is released.'],
+  N1:['Stage 1 · Drifting off','<b>Theta</b> waves take over. Thoughts turn dreamy and disconnected, and a sudden "falling" jerk can jolt you awake. Lasts just a few minutes.'],
+  N2:['Stage 2 · Light sleep','Now you are truly asleep. Bursts called <b>sleep spindles</b> ripple through, helping to store memories. About half the night is spent here.'],
+  N3:['Stage 3 · Deep sleep','Big, slow <b>delta</b> waves roll through as huge groups of neurons fire together. The hardest stage to wake from; growth hormone is released.'],
   Wb:['Awake for a moment','Brief awakenings during the night are normal, especially after REM. Most are so short you won\'t remember them in the morning.'],
   R:['REM · Dreaming','The brain lights up almost as if awake, and vivid, story-like <b>dreams</b> unfold. The eyes dart under the lids, but the body is <b>paralyzed</b> so you can\'t act the dreams out.']
 };
@@ -1689,7 +1814,7 @@ function drawDrift(dt){ const c=$('drift'); const {ctx,w,h}=setup(c); const m=DR
   const xL=w*.1, xR=w*.965, X=mm=>xL+mm/DR.T*(xR-xL);
   // guides & labels
   ctx.setLineDash([2,7]); ctx.lineWidth=1; ctx.font=`700 ${fs}px ${COL.sans}`; ctx.textAlign='left'; ctx.textBaseline='middle';
-  for(const [s,lab,sub] of [['W','Awake',''],['N1','N1','& REM'],['N2','N2',''],['N3','N3','deep']]){ const y=DALT[s]*h; ctx.strokeStyle='rgba(255,255,255,.14)'; ctx.beginPath(); ctx.moveTo(xL,y); ctx.lineTo(xR,y); ctx.stroke();
+  for(const [s,lab,sub] of [['W','Awake',''],['N1','Stage 1','& REM'],['N2','Stage 2',''],['N3','Stage 3','deep']]){ const y=DALT[s]*h; ctx.strokeStyle='rgba(255,255,255,.14)'; ctx.beginPath(); ctx.moveTo(xL,y); ctx.lineTo(xR,y); ctx.stroke();
     ctx.fillStyle=DC[s]; ctx.fillText(lab,w*.012,y-(sub?fs*.5:0)); if(sub){ ctx.fillStyle=s==='N1'?DC.R:'rgba(255,255,255,.7)'; ctx.font=`600 ${fs*.85}px ${COL.sans}`; ctx.fillText(sub,w*.012,y+fs*.6); ctx.font=`700 ${fs}px ${COL.sans}`; } }
   ctx.setLineDash([]);
   // clouds
@@ -1749,14 +1874,454 @@ function stepDrift(dt){ const a=isVis($('drift')), b=isVis($('driftEEG')); if(!a
 /* =========================================================
    LOOP & REDRAW
    ========================================================= */
-function redrawAll(){ readCols(); if(typeof drawBandCards==='function') drawBandCards(); if(typeof showLight==='function') showLight(); if(N) drawHyp($('hyp'),N,{total:480,bed:23,play:playM,cycles:preset!=='baby'}); drawTwo(); drawBrain(); drawDis(); drawChron(); showStageInfo(mystery?mysteryAns:curStage,mystery); if(N) setPreset(preset); }
+/* =========================================================
+   STAGE BY STAGE, SPINDLES & K, HAMSTER LAB, BUNKER
+   ========================================================= */
+const XT={};
+(function(){
+const srng=seed=>{ let a=seed>>>0; return ()=>{ a=(a+0x6D2B79F5)>>>0; let t=a; t=Math.imul(t^(t>>>15),t|1); t^=t+Math.imul(t^(t>>>7),t|61); return ((t^(t>>>14))>>>0)/4294967296; }; };
+const fsz=w=>clamp(w*.021,11,19);
+const hhmm=h=>{ h=((h%24)+24)%24; const H=Math.floor(h), M=Math.floor((h-H)*60); return ((H%12)||12)+':'+String(M).padStart(2,'0')+(H<12?' AM':' PM'); };
+const roundRect=(ctx,x,y,w,h,r)=>{ ctx.beginPath(); ctx.moveTo(x+r,y); ctx.arcTo(x+w,y,x+w,y+h,r); ctx.arcTo(x+w,y+h,x,y+h,r); ctx.arcTo(x,y+h,x,y,r); ctx.arcTo(x,y,x+w,y,r); ctx.closePath(); };
+const isLight=()=>document.documentElement.getAttribute('data-theme')==='light';
+
+/* ---------------- 1. Stage-by-stage traces ---------------- */
+const FS=150, SECS=10, NS=FS*SECS;
+function comps(r,lo,hi,amp,n){ const c=[]; for(let i=0;i<n;i++) c.push([lo+r()*(hi-lo),r()*TAU,amp*(.6+r()*.8)/Math.sqrt(n)]); return c; }
+function genStage(k){
+  const r=srng({W:11,Wr:12,N1:13,N2:14,N3:15,R:16}[k]); const eeg=new Float32Array(NS), eog=new Float32Array(NS), emg=new Float32Array(NS); const marks=[];
+  let C=[]; const add=(lo,hi,a,n)=>C=C.concat(comps(r,lo,hi,a,n));
+  if(k==='W'){ add(15,28,16,7); add(8,12,3,2); }
+  if(k==='Wr'){ add(9.6,10.4,44,2); add(15,25,4,3); }
+  if(k==='N1'){ add(4,7,24,5); add(15,25,3,3); }
+  if(k==='N2'){ add(4,7,18,5); add(1,2,12,2); }
+  if(k==='N3'){ add(.7,1.3,92,3); add(4,7,9,3); }
+  if(k==='R'){ add(4,7,12,4); add(15,28,10,5); }
+  const ev=[];
+  if(k==='N1'){ ev.push(['vx',4.6],['vx',7.9]); marks.push({ch:0,t0:.15,t1:2.6,text:'alpha fading out'},{ch:0,t:4.6,text:'vertex spike'},{ch:0,t:7.9,text:'vertex spike'},{ch:1,t0:1,t1:9,text:'slow, rolling eyes'}); }
+  if(k==='N2'){ ev.push(['sp',1.4,1.1],['kc',5.0],['sp',7.6,1.2]); marks.push({ch:0,t0:1.4,t1:2.5,text:'sleep spindle'},{ch:0,t:5.0,text:'K-complex'},{ch:0,t0:7.6,t1:8.8,text:'sleep spindle'}); }
+  if(k==='N3') marks.push({ch:0,t0:2,t1:7,text:'delta waves: big and slow, about 1 per second'});
+  if(k==='W') marks.push({ch:0,t0:1,t1:9,text:'small, fast, jumbled: desynchronized (beta)'},{ch:1,t:3.1,text:'eyes moving'});
+  if(k==='Wr') marks.push({ch:0,t0:1,t1:6,text:'smooth alpha rhythm, 8–12 Hz'});
+  if(k==='R'){ ev.push(['saw',2.3],['tw',6.8]); marks.push({ch:0,t0:.5,t1:9.5,text:'small and fast: looks like waking'},{ch:1,t0:.9,t1:2,text:'rapid eye movements'},{ch:2,t0:1,t1:9,text:'no muscle tone (atonia)'}); }
+  // eye position (EOG)
+  let eye=0, eyeT=0; const sacc=[];
+  if(k==='W'){ for(let t=.4;t<SECS;t+=.6+r()*.9) sacc.push([t,(r()-.5)*90]); }
+  if(k==='R'){ [1.0,1.3,1.65,5.2,5.45,5.8,6.1,8.3,8.6].forEach(t=>sacc.push([t,(r()<.5?-1:1)*(70+r()*40)])); }
+  const blink=k==='W'?[[6.2,160]]:[];
+  let si=0, rollPh=r()*TAU;
+  for(let i=0;i<NS;i++){ const t=i/FS; let v=0; for(const [f,p,a] of C) v+=a*Math.sin(TAU*f*t+p);
+    if(k==='Wr') v*=.72+.28*Math.sin(TAU*.33*t);
+    if(k==='N1') v+=34*Math.max(0,1-t/2.8)*Math.sin(TAU*10*t);
+    v+=gauss()*2.5;
+    for(const e of ev){ const u=t-e[1];
+      if(e[0]==='sp'&&u>0&&u<e[2]) v+=34*Math.pow(Math.sin(Math.PI*u/e[2]),2)*Math.sin(TAU*13*u);
+      if(e[0]==='kc'&&u>0&&u<.95) v+=150*Math.exp(-Math.pow((u-.16)/.06,2))-80*Math.exp(-Math.pow((u-.48)/.14,2));
+      if(e[0]==='vx'&&u>-.2&&u<.4) v+=75*Math.exp(-Math.pow(u/.05,2))-28*Math.exp(-Math.pow((u-.14)/.07,2));
+      if(e[0]==='saw'&&u>0&&u<1.6){ const ph=(3*u)%1; v+=24*(ph<.8?ph/.8*2-1:1-(ph-.8)/.2*2)*Math.sin(Math.PI*u/1.6); } }
+    eeg[i]=v;
+    while(si<sacc.length&&sacc[si][0]<=t){ eyeT=sacc[si][1]; si++; }
+    eye+=(eyeT-eye)*(k==='R'?.35:.25); let o=eye+gauss()*2;
+    if(k==='N1'){ rollPh+=TAU*.18/FS; o+=55*Math.sin(rollPh); }
+    for(const [bt,ba] of blink){ const u=t-bt; if(u>0&&u<.4) o+=ba*Math.exp(-Math.pow((u-.15)/.07,2)); }
+    eog[i]=o;
+    let m=gauss()*({W:18,Wr:12,N1:9,N2:6,N3:5,R:1.1}[k]);
+    if(k==='R'){ const u=t-6.8; if(u>0&&u<.15) m+=gauss()*22; }
+    emg[i]=m; }
+  return {eeg,eog,emg,marks};
+}
+const DESC=[
+ {k:'W',col:'W',step:'Awake',title:'Awake and alert',hz:'beta activity · faster than 15–20 Hz · small',d:0,
+  text:'<p>When you\'re alert, different parts of your cortex are busy with different things. Their electrical signals don\'t line up, so they mostly cancel out. The EEG becomes a jumble of <b>small, fast</b> waves. This is called a <b>desynchronized EEG</b>, or <b>beta activity</b>.</p>',
+  body:[['Eyes','Moving around, blinking'],['Muscles','Active, ready to move'],['Heart and breathing','Regular waking rhythm']]},
+ {k:'Wr',col:'W',step:'Awake',title:'Relaxed, eyes closed',hz:'alpha rhythm · 8–12 Hz · smooth and regular',d:0,
+  text:'<p>Close your eyes and relax, and a smooth, regular rhythm appears: the <b>alpha rhythm</b>, 8–12 waves per second. Open your eyes or start doing mental math and it disappears again.</p>',
+  body:[['Eyes','Closed, still'],['Muscles','Relaxing'],['Heart and breathing','Starting to slow']]},
+ {k:'N1',col:'N1',step:'Non-REM',title:'Stage 1',hz:'alpha fades · smaller, irregular waves · vertex spikes',d:1,
+  text:'<p>As you get drowsy, alpha shows up less and less. The waves get <b>smaller and more irregular</b>, and sharp waves called <b>vertex spikes</b> appear. This is the doorway into non-REM sleep, and it usually lasts only <b>several minutes</b>.</p>',
+  body:[['Eyes','Roll slowly under the closed lids'],['Muscles','Relaxing further'],['Heart','Slowing down']],
+  call:'Wake someone now and they may insist they weren\'t asleep at all.'},
+ {k:'N2',col:'N2',step:'Non-REM',title:'Stage 2',hz:'sleep spindles (12–14 Hz) · K-complexes',d:2,
+  text:'<p>Two landmarks define Stage 2: <b>sleep spindles</b>, short bursts of 12–14 Hz waves, and <b>K-complexes</b>, single large, sharp waves. People woken from Stages 1 and 2 often deny they were asleep, even though they hadn\'t responded to sounds or signals.</p>',
+  body:[['Eyes','Mostly still'],['Muscles','Low tone'],['Time spent','About half of the whole night']],
+  call:'What are spindles and K-complexes actually doing? See the next section.'},
+ {k:'N3',col:'N3',step:'Non-REM',title:'Stage 3: slow-wave sleep',hz:'delta waves · about 1 per second · very large',d:3,
+  text:'<p>Large, very slow <b>delta waves</b> take over, about one per second. That\'s why Stage 3 is also called <b>slow-wave sleep (SWS)</b>. The waves are big because huge numbers of cortical neurons now fire <b>in sync</b>. The delta waves grow more prominent the deeper you go.</p><p>After about an hour of working down through SWS, you usually drift briefly back up into Stage 2. Then something completely different happens.</p>',
+  body:[['Eyes','Still'],['Muscles','Relaxed but not paralyzed'],['Waking up','Hardest now; you\'d feel groggy']],crowd:true},
+ {k:'R',col:'R',step:'REM',title:'REM sleep',hz:'small, fast waves like waking · rapid eye movements · no muscle tone',d:-1,
+  text:'<p>Suddenly the EEG looks almost <b>awake</b>: small, fast waves again. Under the lids the eyes dart back and forth: the <b>r</b>apid <b>e</b>ye <b>m</b>ovements that give REM its name.</p><p>Meanwhile, brainstem circuits actively <b>inhibit motor neurons</b>, so every other skeletal muscle goes completely limp. This loss of muscle tone is called <b>atonia</b>. An awake-looking brain in a limp body is why REM is also called <b>paradoxical sleep</b>. Breathing and pulse become irregular, as in waking, and this is when the most vivid dreams happen.</p>',
+  body:[['Eyes','Rapid, darting movements'],['Muscles','Limp (atonia), small twitches'],['Breathing and pulse','Irregular, like waking']],
+  call:'A cat sleeping upright like a sphinx can\'t be in REM. In REM it sprawls out limp. The same goes for a student sleeping sitting up in class!'}
+];
+const rows=[];
+(function(){
+  const box=$('descent'); if(!box) return;
+  DESC.forEach(D=>{ const a=document.createElement('article'); a.className='srow'; a.style.setProperty('--k',`var(--${D.col})`);
+    const depth=D.d<0?'<div class="depth">Brain: looks awake · Body: switched off</div>':`<div class="depth">Depth <span>${[0,1,2].map(i=>`<i class="${i<D.d?'on':''}"></i>`).join('')}</span></div>`;
+    a.innerHTML=`<div><p class="step">${D.step}</p><h3>${D.title}</h3><p class="hz">${D.hz}</p>${D.text}<dl class="body3">${D.body.map(([x,y])=>`<dt>${x}</dt><dd>${y}</dd>`).join('')}</dl>${depth}${D.call?`<div class="callout" style="--c:var(--${D.col})">${D.call}</div>`:''}</div>
+      <div><div class="box flush"><canvas class="tr" aria-label="Simulated EEG, EOG and EMG for ${D.title}"></canvas></div>${D.crowd?`<div class="box crowdbox"><p class="sub">Why so big? A crowd analogy</p><div class="chips" style="margin:6px 0 8px"><button class="chip" data-c="0" aria-pressed="true">Everyone saying something different</button><button class="chip" data-c="1" aria-pressed="false">Everyone chanting together</button></div><canvas id="crowd" aria-label="Crowd of people talking; their combined sound is drawn below"></canvas><p style="margin:8px 0 0;font-size:.9rem;color:var(--muted)" id="crowdTxt"></p></div>`:''}</div>`;
+    box.appendChild(a); rows.push({D,el:a,cv:a.querySelector('canvas.tr'),data:genStage(D.k)}); });
+  if('IntersectionObserver' in window){ const io=new IntersectionObserver(es=>es.forEach(e=>{ if(e.isIntersecting){ e.target.classList.add('in'); } }),{threshold:.25}); rows.forEach(r=>io.observe(r.el)); }
+  else rows.forEach(r=>r.el.classList.add('in'));
+  if(document.documentElement.classList.contains('present')||RM) rows.forEach(r=>r.el.classList.add('in'));
+})();
+function drawRow(R){
+  const {ctx,w,h}=setup(R.cv); ctx.clearRect(0,0,w,h); const fs=fsz(w);
+  const L=fs*4.2, Rm=8, top=fs*2.4, bot=fs*1.6, usable=h-top-bot, x0=L, xw=w-L-Rm;
+  const bands=[[0,.6,175],[1,.2,170],[2,.2,40]], names=[['EEG','brain'],['EOG','eyes'],['EMG','chin']], col=COL[R.D.col]||COL.ink;
+  ctx.strokeStyle=COL.grid; ctx.lineWidth=1; for(let s=0;s<=SECS;s++){ const x=x0+s/SECS*xw; ctx.beginPath(); ctx.moveTo(x,top); ctx.lineTo(x,top+usable); ctx.stroke(); }
+  let y=top; const ys=[];
+  for(const [ch,frac,sc] of bands){ const bh=usable*frac, mid=y+bh/2, k=(bh/2)/sc; ys.push([y,bh,mid,k]);
+    ctx.fillStyle=COL.ink; ctx.font=`700 ${fs}px ${COL.sans}`; ctx.textBaseline='middle'; ctx.textAlign='left'; ctx.fillText(names[ch][0],4,mid-fs*.5);
+    ctx.fillStyle=COL.muted; ctx.font=`${fs*.8}px ${COL.sans}`; ctx.fillText(names[ch][1],4,mid+fs*.6);
+    ctx.save(); ctx.beginPath(); ctx.rect(x0,y,xw,bh); ctx.clip();
+    ctx.strokeStyle=ch===0?col:COL.trace; ctx.globalAlpha=ch===0?1:.8; ctx.lineWidth=ch===0?2:1.3; ctx.lineJoin='round'; ctx.beginPath();
+    const buf=[R.data.eeg,R.data.eog,R.data.emg][ch]; for(let i=0;i<NS;i++){ const xx=x0+i/(NS-1)*xw, yy=mid-buf[i]*k; i?ctx.lineTo(xx,yy):ctx.moveTo(xx,yy); } ctx.stroke(); ctx.restore(); ctx.globalAlpha=1;
+    ctx.strokeStyle=COL.grid; ctx.beginPath(); ctx.moveTo(x0,y+bh); ctx.lineTo(w-Rm,y+bh); ctx.stroke(); y+=bh; }
+  // scale bar
+  const [ey,ebh,emid,ek]=ys[0]; ctx.strokeStyle=COL.muted; ctx.lineWidth=2; ctx.beginPath(); ctx.moveTo(x0-7,emid-50*ek); ctx.lineTo(x0-7,emid+50*ek); ctx.stroke();
+  ctx.fillStyle=COL.muted; ctx.font=`${fs*.75}px ${COL.sans}`; ctx.textAlign='right'; ctx.textBaseline='alphabetic'; ctx.fillText('1 s grid · bar = 100 µV',w-Rm,h-3);
+  // marks
+  ctx.font=`700 ${fs*.9}px ${COL.sans}`; ctx.textBaseline='bottom';
+  for(const m of R.data.marks){ const [by,bbh]=ys[m.ch]; const yy=m.ch===0?by-2:by+fs*1.05; ctx.strokeStyle=COL.accent; ctx.fillStyle=COL.accent; ctx.lineWidth=1.6;
+    if(m.t0!==undefined){ const a=x0+m.t0/SECS*xw, b=x0+m.t1/SECS*xw; ctx.beginPath(); ctx.moveTo(a,yy+5); ctx.lineTo(a,yy); ctx.lineTo(b,yy); ctx.lineTo(b,yy+5); ctx.stroke();
+      const tw=ctx.measureText(m.text).width; const tx=clamp((a+b)/2-tw/2,x0,w-Rm-tw); ctx.fillStyle=alpha(COL.bg,.75); ctx.fillRect(tx-3,yy-fs*1.1,tw+6,fs*1.05); ctx.fillStyle=COL.accent; ctx.textAlign='left'; ctx.fillText(m.text,tx,yy-2); }
+    else { const x=x0+m.t/SECS*xw; ctx.beginPath(); ctx.moveTo(x,yy); ctx.lineTo(x,yy+fs*.9); ctx.stroke(); const tw=ctx.measureText(m.text).width; const tx=clamp(x-tw/2,x0,w-Rm-tw); ctx.fillStyle=alpha(COL.bg,.75); ctx.fillRect(tx-3,yy-fs*1.1,tw+6,fs*1.05); ctx.fillStyle=COL.accent; ctx.textAlign='left'; ctx.fillText(m.text,tx,yy-2); } }
+}
+/* crowd */
+const crowd={m:0,target:0,t:0,people:[],buf:new Float32Array(300),head:0,acc:0};
+for(let i=0;i<36;i++) crowd.people.push({f:rnd(1.6,4.2),p:Math.random()*TAU});
+function setCrowd(v){ crowd.target=v; document.querySelectorAll('[data-c]').forEach(b=>b.setAttribute('aria-pressed',+b.dataset.c===v));
+  const t=$('crowdTxt'); if(t) t.innerHTML=v?'<b>Same chant, same rhythm:</b> the voices add up into one big, slow rise and fall you could hear from far away. That\'s the <b>synchronized</b> cortex of Stage 3, and the big delta wave on the EEG.':'<b>Everyone talking about different things:</b> from a distance you hear only a low, fast buzz, because the voices cancel out. That\'s the <b>desynchronized</b> EEG of an awake brain.'; }
+document.querySelectorAll('[data-c]').forEach(b=>b.addEventListener('click',()=>setCrowd(+b.dataset.c))); setCrowd(0);
+function stepCrowd(dt){ const cv=$('crowd'); if(!cv||!isVis(cv)) return; crowd.t+=dt; crowd.m+=(crowd.target-crowd.m)*Math.min(1,dt*1.5);
+  const P=crowd.people, vals=P.map(p=>(1-crowd.m)*Math.sin(TAU*p.f*crowd.t+p.p)+crowd.m*Math.sin(TAU*.9*crowd.t));
+  const sum=vals.reduce((a,b)=>a+b,0)/P.length;
+  crowd.acc+=dt; while(crowd.acc>1/60){ crowd.acc-=1/60; crowd.buf[crowd.head]=sum; crowd.head=(crowd.head+1)%crowd.buf.length; }
+  const {ctx,w,h}=setup(cv); ctx.clearRect(0,0,w,h); const cols=12, rowsN=3, cw=w/cols, faceH=h*.55/rowsN, rad=Math.min(cw,faceH)*.34;
+  P.forEach((p,i)=>{ const cx=(i%cols+.5)*cw, cy=(Math.floor(i/cols)+.5)*faceH; const open=(vals[i]+1)/2;
+    ctx.fillStyle=alpha(COL.N3,.25+.35*open); ctx.beginPath(); ctx.arc(cx,cy,rad,0,TAU); ctx.fill();
+    ctx.fillStyle=COL.ink; ctx.beginPath(); ctx.arc(cx-rad*.35,cy-rad*.2,rad*.09,0,TAU); ctx.arc(cx+rad*.35,cy-rad*.2,rad*.09,0,TAU); ctx.fill();
+    ctx.beginPath(); ctx.ellipse(cx,cy+rad*.38,rad*.32,Math.max(1,rad*.32*open),0,0,TAU); ctx.fill(); });
+  const y0=h*.6, hh=h*.38, mid=y0+hh/2; ctx.strokeStyle=COL.grid; ctx.beginPath(); ctx.moveTo(0,mid); ctx.lineTo(w,mid); ctx.stroke();
+  ctx.fillStyle=COL.muted; ctx.font=`${fsz(w)*.8}px ${COL.sans}`; ctx.textAlign='left'; ctx.textBaseline='top'; ctx.fillText('what you hear from far away (all voices added up)',4,y0-2);
+  ctx.strokeStyle=COL.N3; ctx.lineWidth=2.5; ctx.beginPath(); const B=crowd.buf, n=B.length;
+  for(let i=0;i<n;i++){ const v=B[(crowd.head+i)%n], x=i/(n-1)*w, y=mid-v*hh*.46; i?ctx.lineTo(x,y):ctx.moveTo(x,y); } ctx.stroke(); }
+
+/* ---------------- 2. Spindles & K live ---------------- */
+const SK={fs:120,win:8,t:0,acc:0,paused:false,ev:[],labels:[],arousal:0,spin:0,kc:0,sound:0,bands:null,head:0};
+SK.N=SK.fs*SK.win; SK.buf=new Float32Array(SK.N);
+SK.bands={th:new Band(4,7),de:new Band(.8,2),al:new Band(8.5,11.5),be:new Band(15,25)};
+function skSample(dt){ const t=SK.t; let v; const B=SK.bands;
+  const ar=SK.arousal>0?1:0; v=ar?(26*B.al.step(dt)+8*B.be.step(dt)):(18*B.th.step(dt)+16*B.de.step(dt)); if(!ar){ B.al.step(dt); B.be.step(dt); } else { B.th.step(dt); B.de.step(dt); }
+  v+=gauss()*3;
+  if(!ar){ if(Math.random()<dt*.11) skSpin(t); if(Math.random()<dt*.035) skK(t,false); }
+  let sp=0,kc=0; const keep=[];
+  for(const e of SK.ev){ const u=t-e.t0; if(u<0){ keep.push(e); continue; } const x=u/e.d; if(x>1) continue; keep.push(e);
+    if(e.ty==='sp'){ const env=Math.pow(Math.sin(Math.PI*x),2); v+=e.a*env*Math.sin(TAU*e.f*u); sp=Math.max(sp,env); }
+    if(e.ty==='kc'){ v+=e.a*(Math.exp(-Math.pow((x-.17)/.065,2))-.55*Math.exp(-Math.pow((x-.5)/.15,2))); kc=Math.max(kc,x<.6?1:0); } }
+  SK.ev=keep; SK.spin=sp; SK.kc=kc; return v; }
+function skLab(t,text,col){ SK.labels.push({t,text,col}); }
+function skSpin(t){ SK.ev.push({ty:'sp',t0:t,d:rnd(.7,1.5),a:rnd(30,40),f:rnd(12.3,13.8)}); skLab(t,'spindle'); }
+function skK(t,ev){ SK.ev.push({ty:'kc',t0:t,d:.95,a:rnd(140,170)}); skLab(t,'K-complex'); }
+function skNoise(loud){ const t=SK.t; SK.sound=1; skLab(t,loud?'door slams':'car passes','snd');
+  if(!loud && SK.spin>.35){ $('spkTxt').innerHTML='<b>The sound arrived during a spindle.</b> The thalamus was busy firing its own bursts, so it barely passed the sound on to the cortex. No reaction at all: the spindle shielded sleep.'; return; }
+  SK.ev.push({ty:'kc',t0:t+.3,d:.95,a:rnd(150,175)}); SK.labels.push({t:t+.3,text:'K-complex'});
+  if(loud){ SK.arousalAt=t+1.2; $('spkTxt').innerHTML='<b>A loud bang:</b> first a K-complex, then the brain briefly <b>wakes up</b>, and the EEG switches to faster alpha and beta waves. After a few seconds, if nothing else happens, the sleeper drifts back down into Stage 2.'; }
+  else { if(Math.random()<.75){ SK.ev.push({ty:'sp',t0:t+1.15,d:rnd(.8,1.3),a:rnd(30,38),f:13}); SK.labels.push({t:t+1.15,text:'spindle'}); }
+    $('spkTxt').innerHTML='<b>A quiet sound:</b> the thalamus passes it to the cortex, and a <b>K-complex</b> follows about a third of a second later. The cortex goes briefly silent, then restarts in sync. Often a spindle follows, and the sleeper never wakes up.'; } }
+$('spkQuiet')&&$('spkQuiet').addEventListener('click',()=>skNoise(false));
+$('spkLoud')&&$('spkLoud').addEventListener('click',()=>skNoise(true));
+$('spkPause')&&$('spkPause').addEventListener('click',function(){ SK.paused=!SK.paused; this.setAttribute('aria-pressed',SK.paused); this.textContent=SK.paused?'Resume':'Pause'; });
+function skAdvance(sec){ const dt=1/SK.fs; SK.acc+=Math.min(sec,SK.win); while(SK.acc>=dt){ SK.acc-=dt; SK.t+=dt;
+    if(SK.arousalAt&&SK.t>=SK.arousalAt){ SK.arousal=4; SK.arousalAt=0; SK.labels.push({t:SK.t,text:'brief awakening (alpha)',col:'wake'}); }
+    if(SK.arousal>0){ SK.arousal-=dt; if(SK.arousal<=0){ SK.arousal=0; SK.labels.push({t:SK.t,text:'back to Stage 2'}); } }
+    SK.buf[SK.head]=skSample(dt); SK.head=(SK.head+1)%SK.N; }
+  SK.labels=SK.labels.filter(l=>l.t>SK.t-SK.win-1); SK.sound=Math.max(0,SK.sound-sec*.8); }
+skAdvance(SK.win);
+function skDraw(){ const cv=$('spkEEG'); const {ctx,w,h}=setup(cv); ctx.clearRect(0,0,w,h); const fs=fsz(w);
+  const L=fs*.6, Rm=8, top=fs*2.6, bot=fs*1.4, x0=L, xw=w-L-Rm, mid=top+(h-top-bot)/2, k=((h-top-bot)/2)/170;
+  const t0=SK.t-SK.win; ctx.strokeStyle=COL.grid; ctx.lineWidth=1; for(let s=Math.ceil(t0);s<=SK.t;s++){ const x=x0+(s-t0)/SK.win*xw; ctx.beginPath(); ctx.moveTo(x,top-fs*.6); ctx.lineTo(x,h-bot); ctx.stroke(); }
+  ctx.strokeStyle=SK.arousal>0?COL.W:COL.N2; ctx.lineWidth=2.2; ctx.lineJoin='round'; ctx.beginPath();
+  for(let i=0;i<SK.N;i++){ const v=SK.buf[(SK.head+i)%SK.N], x=x0+i/(SK.N-1)*xw, y=mid-v*k; i?ctx.lineTo(x,y):ctx.moveTo(x,y); } ctx.stroke();
+  let lastX=-1e9, lane=0; ctx.font=`700 ${fs*.95}px ${COL.sans}`; ctx.textBaseline='middle'; ctx.textAlign='left';
+  for(const l of SK.labels){ const x=x0+(l.t-t0)/SK.win*xw; if(x<x0-40||x>w) continue; lane=(x-lastX<fs*8)?(lane+1)%2:0; lastX=x;
+    const ly=fs*.9+lane*fs*1.15, c=l.col==='snd'?COL.orange:l.col==='wake'?COL.W:COL.accent;
+    if(l.col==='snd'){ ctx.strokeStyle=c; ctx.setLineDash([4,4]); ctx.beginPath(); ctx.moveTo(x,ly+fs*.5); ctx.lineTo(x,h-bot); ctx.stroke(); ctx.setLineDash([]); }
+    const tw=ctx.measureText(l.text).width; ctx.fillStyle=alpha(COL.bg,.8); ctx.fillRect(x-3,ly-fs*.6,tw+8,fs*1.2); ctx.fillStyle=c; ctx.fillText(l.text,x+1,ly); }
+  ctx.fillStyle=COL.muted; ctx.font=`${fs*.75}px ${COL.sans}`; ctx.textAlign='right'; ctx.textBaseline='alphabetic'; ctx.fillText('live Stage 2 EEG · 1 s grid',w-Rm,h-3); }
+/* thalamus-cortex loop SVG */
+const LP={};
+(function(){ const s=$('loopSvg'); if(!s) return;
+  LP.cortex=el('path',{d:'M60 120 C 120 30, 400 30, 460 120 L 430 135 C 380 70, 140 70, 90 135 Z','stroke-width':2.5},s);
+  LP.cLab=el('text',{x:260,y:72,'text-anchor':'middle','font-size':20,'font-weight':700},s); LP.cLab.textContent='cortex';
+  LP.trn=el('path',{d:'M175 250 A 90 62 0 0 1 345 250',fill:'none','stroke-width':14,'stroke-linecap':'round'},s);
+  LP.thal=el('ellipse',{cx:260,cy:285,rx:78,ry:46,'stroke-width':2.5},s);
+  LP.tLab=el('text',{x:260,y:291,'text-anchor':'middle','font-size':17,'font-weight':700},s); LP.tLab.textContent='thalamus';
+  LP.rLab=el('text',{x:372,y:226,'font-size':14,'font-weight':700},s); LP.rLab.textContent='reticular nucleus';
+  LP.up=el('path',{d:'M235 240 L 225 128',fill:'none','stroke-width':3},s); LP.down=el('path',{d:'M295 128 L 288 240',fill:'none','stroke-width':3,'stroke-dasharray':'6 5'},s);
+  LP.ear=el('text',{x:18,y:282,'font-size':15,'font-weight':700},s); LP.ear.textContent='sound'; LP.ear2=el('text',{x:18,y:300,'font-size':15,'font-weight':700},s); LP.ear2.textContent='from ear';
+  LP.inA=el('path',{d:'M88 290 L 178 288',fill:'none','stroke-width':3},s);
+  LP.gate=el('rect',{x:120,y:268,width:10,height:42,rx:3},s);
+  LP.gLab=el('text',{x:125,y:330,'text-anchor':'middle','font-size':13,'font-weight':700},s);
+  LP.state=el('text',{x:260,y:368,'text-anchor':'middle','font-size':15,'font-weight':700},s);
+  LP.dots=[0,1,2].map(()=>el('circle',{r:7},s));
+  LP.loop=el('path',{d:'M235 240 L 225 128 M 295 128 L 288 240',fill:'none',stroke:'none'},s);
+  LP.ph=0; })();
+function skLoop(dt){ if(!LP.cortex) return; const sp=SK.spin, kc=SK.kc, ar=SK.arousal>0;
+  LP.cortex.setAttribute('fill',kc?alpha(COL.muted,.15):alpha(ar?COL.W:COL.N2,.18+.25*sp)); LP.cortex.setAttribute('stroke',kc?COL.muted:ar?COL.W:COL.N2);
+  LP.cLab.setAttribute('fill',COL.ink); LP.cLab.textContent=kc?'cortex: silent for a moment (down state)':ar?'cortex: awake for a moment':'cortex';
+  LP.thal.setAttribute('fill',alpha(COL.N2,.15+.5*sp)); LP.thal.setAttribute('stroke',COL.N2); LP.tLab.setAttribute('fill',COL.ink);
+  LP.trn.setAttribute('stroke',alpha(COL.R,.35+.65*sp)); LP.rLab.setAttribute('fill',COL.R);
+  [LP.up,LP.down].forEach(p=>p.setAttribute('stroke',COL.muted));
+  LP.inA.setAttribute('stroke',SK.sound>0?COL.orange:alpha(COL.muted,.6)); LP.ear.setAttribute('fill',SK.sound>0?COL.orange:COL.muted); LP.ear2.setAttribute('fill',SK.sound>0?COL.orange:COL.muted); LP.inA.setAttribute('stroke-width',3+5*SK.sound);
+  LP.gate.setAttribute('fill',COL.bad); LP.gate.setAttribute('opacity',sp>.35?1:0); LP.gLab.setAttribute('fill',COL.bad); LP.gLab.textContent=sp>.35?'blocked':'';
+  LP.state.setAttribute('fill',COL.accent); LP.state.textContent=kc?'K-complex':sp>.2?'Spindle: thalamus ⇄ reticular nucleus loop is bursting':ar?'Brief awakening':'Stage 2: quiet';
+  LP.ph+=dt*(sp>.15?1.6:0); const on=sp>.15;
+  LP.dots.forEach((d,i)=>{ d.setAttribute('fill',COL.accent); d.setAttribute('opacity',on?sp:0); if(!on) return;
+    const k=(LP.ph+i/3)%1; let x,y; if(k<.5){ const u=k/.5; x=235+(225-235)*u; y=240+(128-240)*u; } else { const u=(k-.5)/.5; x=295+(288-295)*u; y=128+(240-128)*u; } d.setAttribute('cx',x); d.setAttribute('cy',y); }); }
+function drawZooms(){
+  const z1=$('spinZoom'), z2=$('kZoom'); if(!z1) return;
+  [[z1,'sp'],[z2,'kc']].forEach(([cv,ty])=>{ const {ctx,w,h}=setup(cv); ctx.clearRect(0,0,w,h); const fs=fsz(w); const mid=h*.55, x0=fs, xw=w-2*fs, T=2.4, k=(h*.38)/170;
+    ctx.strokeStyle=COL.grid; for(let s=0;s<=T;s+=.5){ const x=x0+s/T*xw; ctx.beginPath(); ctx.moveTo(x,h*.15); ctx.lineTo(x,h*.95); ctx.stroke(); }
+    const r=srng(ty==='sp'?3:4); const C=comps(r,4,7,10,4); ctx.strokeStyle=COL.N2; ctx.lineWidth=2.4; ctx.beginPath();
+    for(let i=0;i<=600;i++){ const t=i/600*T; let v=0; for(const [f,p,a] of C) v+=a*Math.sin(TAU*f*t+p);
+      if(ty==='sp'){ const u=t-.6; if(u>0&&u<1.2) v+=60*Math.pow(Math.sin(Math.PI*u/1.2),2)*Math.sin(TAU*13*u); }
+      else { const u=(t-.7)/.95; if(u>0&&u<1) v+=165*(Math.exp(-Math.pow((u-.17)/.065,2))-.55*Math.exp(-Math.pow((u-.5)/.15,2))); }
+      const x=x0+t/T*xw, y=mid-v*k; i?ctx.lineTo(x,y):ctx.moveTo(x,y); } ctx.stroke();
+    ctx.strokeStyle=COL.accent; ctx.fillStyle=COL.accent; ctx.lineWidth=1.6; ctx.font=`700 ${fs*.9}px ${COL.sans}`; ctx.textAlign='center'; ctx.textBaseline='bottom';
+    if(ty==='sp'){ const a=x0+.6/T*xw, b=x0+1.8/T*xw, yy=h*.16; ctx.beginPath(); ctx.moveTo(a,yy+6); ctx.lineTo(a,yy); ctx.lineTo(b,yy); ctx.lineTo(b,yy+6); ctx.stroke(); ctx.fillText('½–2 seconds · 12–14 waves per second',(a+b)/2,yy-3);
+      ctx.textBaseline='top'; ctx.fillStyle=COL.muted; ctx.font=`${fs*.8}px ${COL.sans}`; ctx.fillText('grows, peaks, then fades',(a+b)/2,h*.86); }
+    else { const xp=x0+(.7+.17*.95)/T*xw, xt=x0+(.7+.5*.95)/T*xw; ctx.textBaseline='bottom'; ctx.fillText('one big sharp wave…',xp,h*.14);
+      ctx.textBaseline='top'; ctx.fillText('…then a slower swing back',xt+fs*3,mid+60*k+4);
+      ctx.fillStyle=COL.muted; ctx.font=`${fs*.8}px ${COL.sans}`; ctx.textAlign='left'; ctx.fillText('about ½–1 second in all',x0,h*.86); } }); }
+
+/* ---------------- 3. Hamster lab ---------------- */
+const HX={ld:{label:'Light–dark cycle',days:21},shift:{label:'Shift the lights 6 h later',days:26},free:{label:'Constant dim light',days:32},lesion:{label:'Destroy the SCN',days:26}};
+const HAM={exp:'ld',tau:24.3,T:0,playing:false,speed:1.2,sched:null,ang:0,lv:1,lastRun:0,bob:0};
+function hamBuild(){ const r=srng(HAM.exp==='free'?Math.round(HAM.tau*100):7); const D=HX[HAM.exp].days; const darks=[], bouts=[], onsets=[]; let on=17.7; const ev=[];
+  for(let d=0;d<D;d++){ let dk, dim=false, arr=false;
+    if(HAM.exp==='shift'){ dk=d<12?[[0,6],[18,24]]:d===12?[[0,6]]:[[0,12]]; }
+    else if(HAM.exp==='free'&&d>=6){ dk=[]; dim=true; } else dk=[[0,6],[18,24]];
+    darks.push({dk,dim});
+    const j=(r()-.5)*.35;
+    if(HAM.exp==='shift'&&d>=12) on=Math.min(23.7,on+2.1);
+    else if(HAM.exp==='free'&&d>=6) on=17.7+(HAM.tau-24)*(d-5);
+    else on=17.7;
+    if(HAM.exp==='lesion'&&d>=12) arr=true;
+    if(arr){ for(let i=0;i<13;i++){ const s=d*24+r()*24; bouts.push([s,s+.1+r()*.55]); } onsets.push(null); continue; }
+    const st=d*24+on+j; onsets.push(st); const A=HAM.exp==='free'&&d>=6?9:10; let t=st;
+    while(t<st+A){ const len=(.25+r()*1.1)*(t-st<A*.6?1:.6); bouts.push([t,Math.min(t+len,st+A)]); t+=len+.05+r()*.45; } }
+  if(HAM.exp==='shift') ev.push([12,'lights now go off at midnight, on at noon']);
+  if(HAM.exp==='free') ev.push([6,'constant dim light from here on']);
+  if(HAM.exp==='lesion') ev.push([12,'SCN destroyed']);
+  if(HAM.exp==='ld') ev.push([0,'lights off 6 PM to 6 AM']);
+  bouts.sort((a,b)=>a[0]-b[0]); HAM.sched={darks,bouts,onsets,ev,D}; }
+function hamDark(T){ const S=HAM.sched, d=Math.floor(T/24); if(d>=S.D) return {dark:true,dim:false}; const h=T-d*24, x=S.darks[d]; if(x.dim) return {dark:false,dim:true}; return {dark:x.dk.some(([a,b])=>h>=a&&h<b),dim:false}; }
+function hamRunning(T){ for(const [a,b] of HAM.sched.bouts){ if(a>T) return false; if(T<b) return true; } return false; }
+function hamText(){ const d=Math.floor(HAM.T/24)+1, e=HAM.exp, done=HAM.T>=HAM.sched.D*24; let t;
+  if(e==='ld') t='The lights go off at <b>6 PM</b> and on at <b>6 AM</b>. Hamsters are <b>nocturnal</b>: this one starts running <b>shortly before</b> lights-off and keeps going through most of the dark. Day after day, its activity lines up in a neat column. Its clock is <b>entrained</b> (locked) to the light.';
+  if(e==='shift') t=d<=12?'A normal light–dark cycle for now: lights off at 6 PM. <b>Watch what happens on day 13.</b>':'From day 13 the lights go off at <b>midnight</b> and on at <b>noon</b>: 6 hours later than before. The hamster\'s running doesn\'t jump right away. It slides later over a few days until it lines up with the new darkness. That\'s a <b>phase shift</b>, and it\'s what your own clock goes through with jet lag. It also proves that light is what sets the clock.';
+  if(e==='free'){ const m=Math.round((HAM.tau-24)*60); t=d<=6?'Normal light–dark cycle for the first 6 days. Then the room will stay <b>dimly lit all the time</b>, with no hint about time of day.':`No light cues anymore, yet the hamster still runs once per "day". Each day it starts about <b>${Math.abs(m)} minutes ${m>=0?'later':'earlier'}</b>, because its clock runs on its own period, <b>τ = ${HAM.tau.toFixed(2)} h</b>. This <b>free-running</b> rhythm shows the clock is <b>endogenous</b>: it lives inside the animal. Drag τ to see the slope change.`; }
+  if(e==='lesion') t=d<=12?'A normal light–dark cycle for now. On day 13, the hamster\'s <b>suprachiasmatic nucleus (SCN)</b> will be destroyed.':'Without its SCN the hamster still runs about as much, but at <b>random times</b>, even though the lights still go on and off. It\'s become <b>arrhythmic</b>. The SCN is the master clock that turns the light signal into a daily rhythm.';
+  $('hamTxt').innerHTML=t+(done?' <b>Experiment finished.</b> Press Restart or pick another experiment.':''); }
+function hamScene(){ const cv=$('hamScene'); const {ctx,w,h}=setup(cv); const fs=fsz(w); const L=hamDark(HAM.T); const lv=HAM.lv;
+  const day=[239,230,212], night=[20,26,52], mix=a=>`rgb(${day.map((c,i)=>Math.round(night[i]+(c-night[i])*a)).join(',')})`;
+  ctx.fillStyle=mix(lv); ctx.fillRect(0,0,w,h);
+  // lamp
+  const lx=w*.5, ly=h*.07; ctx.strokeStyle='#555'; ctx.lineWidth=2; ctx.beginPath(); ctx.moveTo(lx,0); ctx.lineTo(lx,ly); ctx.stroke();
+  ctx.fillStyle='#444'; ctx.beginPath(); ctx.moveTo(lx-w*.05,ly+h*.04); ctx.lineTo(lx+w*.05,ly+h*.04); ctx.lineTo(lx+w*.02,ly); ctx.lineTo(lx-w*.02,ly); ctx.closePath(); ctx.fill();
+  if(lv>.05){ const g=ctx.createRadialGradient(lx,ly+h*.05,2,lx,ly+h*.05,h*.5*lv+10); g.addColorStop(0,`rgba(255,230,140,${.85*lv})`); g.addColorStop(1,'rgba(255,230,140,0)'); ctx.fillStyle=g; ctx.fillRect(0,0,w,h); }
+  ctx.fillStyle=lv>.5?'#ffe27a':lv>.2?'#c9b56a':'#333'; ctx.beginPath(); ctx.arc(lx,ly+h*.05,w*.017,0,TAU); ctx.fill();
+  // status panel
+  const d=Math.min(Math.floor(HAM.T/24),HAM.sched.D-1)+1, hr=HAM.T%24;
+  const txtCol=lv>.45?'#1d2230':'#f2f3f8';
+  ctx.fillStyle=lv>.45?'rgba(255,255,255,.7)':'rgba(0,0,0,.35)'; roundRect(ctx,w*.03,h*.03,w*.3,h*.17,8); ctx.fill();
+  ctx.fillStyle=txtCol; ctx.textAlign='left'; ctx.textBaseline='top'; ctx.font=`700 ${fs*1.5}px ${COL.sans}`; ctx.fillText('Day '+d,w*.05,h*.045);
+  ctx.font=`${fs*1.1}px ${COL.mono||'monospace'}`; ctx.fillText(hhmm(hr),w*.05,h*.045+fs*1.8);
+  const badge=L.dim?'DIM LIGHT':L.dark?'LIGHTS OFF':'LIGHTS ON'; ctx.font=`700 ${fs}px ${COL.sans}`; const bw=ctx.measureText(badge).width+fs*1.4;
+  ctx.fillStyle=L.dim?'#8a877c':L.dark?'#1f3a8a':'#f2b600'; roundRect(ctx,w*.97-bw,h*.04,bw,fs*1.8,fs*.9); ctx.fill(); ctx.fillStyle=L.dark||L.dim?'#fff':'#222'; ctx.textAlign='center'; ctx.textBaseline='middle'; ctx.fillText(badge,w*.97-bw/2,h*.04+fs*.9);
+  if(HAM.exp==='lesion'&&HAM.T>=12*24){ ctx.fillStyle='#c92a42'; const t='SCN destroyed'; const tw=ctx.measureText(t).width+fs*1.4; roundRect(ctx,w*.97-tw,h*.04+fs*2.3,tw,fs*1.8,fs*.9); ctx.fill(); ctx.fillStyle='#fff'; ctx.fillText(t,w*.97-tw/2,h*.04+fs*3.2); }
+  // cage
+  const cx0=w*.06, cx1=w*.94, cy0=h*.3, cy1=h*.93;
+  ctx.fillStyle=lv>.4?'rgba(200,225,240,.25)':'rgba(120,150,190,.12)'; ctx.fillRect(cx0,cy0,cx1-cx0,cy1-cy0);
+  ctx.fillStyle=lv>.4?'#d9b98a':'#5c4a35'; ctx.fillRect(cx0,cy1-h*.07,cx1-cx0,h*.07);
+  // nest
+  const nx=w*.24, ny=cy1-h*.07; ctx.fillStyle=lv>.4?'#c9a26a':'#4e3d2b'; ctx.beginPath(); ctx.ellipse(nx,ny,w*.12,h*.06,0,Math.PI,TAU); ctx.fill();
+  // bottle
+  ctx.fillStyle='rgba(160,200,230,.6)'; roundRect(ctx,cx0+w*.02,cy0+h*.05,w*.04,h*.2,6); ctx.fill(); ctx.strokeStyle='#888'; ctx.beginPath(); ctx.moveTo(cx0+w*.04,cy0+h*.25); ctx.lineTo(cx0+w*.05,cy0+h*.32); ctx.stroke();
+  // wheel
+  const wx=w*.68, wy=h*.6, wr=h*.25; ctx.strokeStyle='#888'; ctx.lineWidth=3; ctx.beginPath(); ctx.moveTo(wx,wy); ctx.lineTo(wx-wr*.6,cy1-h*.07); ctx.moveTo(wx,wy); ctx.lineTo(wx+wr*.6,cy1-h*.07); ctx.stroke();
+  ctx.strokeStyle='#c0392b'; ctx.lineWidth=w*.012; ctx.beginPath(); ctx.arc(wx,wy,wr,0,TAU); ctx.stroke();
+  ctx.lineWidth=1.5; ctx.strokeStyle='rgba(192,57,43,.7)'; for(let i=0;i<10;i++){ const a=HAM.ang+i*TAU/10; ctx.beginPath(); ctx.moveTo(wx,wy); ctx.lineTo(wx+Math.cos(a)*wr,wy+Math.sin(a)*wr); ctx.stroke(); }
+  for(let i=0;i<36;i++){ const a=HAM.ang+i*TAU/36; ctx.beginPath(); ctx.moveTo(wx+Math.cos(a)*wr*.93,wy+Math.sin(a)*wr*.93); ctx.lineTo(wx+Math.cos(a)*wr*1.03,wy+Math.sin(a)*wr*1.03); ctx.stroke(); }
+  ctx.fillStyle='#c0392b'; ctx.beginPath(); ctx.arc(wx,wy,w*.012,0,TAU); ctx.fill();
+  // sensor
+  ctx.fillStyle='#333'; ctx.fillRect(wx+wr*.7,cy1-h*.12,w*.04,h*.04); ctx.fillStyle=HAM.lastRun?'#3ddc84':'#555'; ctx.beginPath(); ctx.arc(wx+wr*.7+w*.03,cy1-h*.1,w*.006,0,TAU); ctx.fill();
+  // bars
+  ctx.strokeStyle=lv>.4?'rgba(90,90,90,.55)':'rgba(170,180,210,.35)'; ctx.lineWidth=1.2; for(let x=cx0;x<=cx1;x+=w*.025){ ctx.beginPath(); ctx.moveTo(x,cy0); ctx.lineTo(x,cy0+h*.05); ctx.stroke(); }
+  ctx.lineWidth=2.5; ctx.strokeRect(cx0,cy0,cx1-cx0,cy1-cy0);
+  // hamster
+  const run=HAM.lastRun; const s=w*.052;
+  const body=lv>.4?'#d9a15e':'#8a6a46', belly=lv>.4?'#f3dcbc':'#a99272';
+  if(run){ const hx=wx, hy=wy+wr-s*1.05+Math.sin(HAM.bob*2)*s*.08;
+    ctx.save(); ctx.translate(hx,hy);
+    ctx.strokeStyle=body; ctx.lineWidth=s*.22; ctx.lineCap='round'; for(const [ox,ph] of [[-.6,0],[.55,Math.PI]]){ const k=Math.sin(HAM.bob+ph); ctx.beginPath(); ctx.moveTo(ox*s,s*.35); ctx.lineTo(ox*s+k*s*.35,s*.8); ctx.stroke(); }
+    ctx.fillStyle=body; ctx.beginPath(); ctx.ellipse(0,0,s*1.15,s*.7,-.08,0,TAU); ctx.fill();
+    ctx.fillStyle=belly; ctx.beginPath(); ctx.ellipse(-s*.1,s*.25,s*.7,s*.35,0,0,TAU); ctx.fill();
+    ctx.fillStyle=body; ctx.beginPath(); ctx.arc(-s*1.05,-s*.15,s*.5,0,TAU); ctx.fill();
+    ctx.fillStyle='#e7a0a0'; ctx.beginPath(); ctx.arc(-s*.95,-s*.62,s*.18,0,TAU); ctx.fill();
+    ctx.fillStyle='#111'; ctx.beginPath(); ctx.arc(-s*1.2,-s*.22,s*.08,0,TAU); ctx.fill(); ctx.fillStyle='#e58'; ctx.beginPath(); ctx.arc(-s*1.52,-s*.08,s*.07,0,TAU); ctx.fill();
+    ctx.restore();
+  } else { const hx=nx, hy=ny-s*.25;
+    ctx.fillStyle=body; ctx.beginPath(); ctx.ellipse(hx,hy,s*1.0,s*.62,0,0,TAU); ctx.fill();
+    ctx.fillStyle=belly; ctx.beginPath(); ctx.ellipse(hx-s*.55,hy+s*.1,s*.35,s*.3,0,0,TAU); ctx.fill();
+    ctx.strokeStyle='#111'; ctx.lineWidth=1.5; ctx.beginPath(); ctx.arc(hx-s*.62,hy-s*.12,s*.1,.2,Math.PI-.2); ctx.stroke();
+    ctx.fillStyle='#e7a0a0'; ctx.beginPath(); ctx.arc(hx-s*.3,hy-s*.55,s*.16,0,TAU); ctx.fill();
+    ctx.fillStyle=lv>.45?'#5a5f6c':'#cfd3ff'; ctx.font=`700 ${fs*1.1}px ${COL.sans}`; ctx.textAlign='left'; ctx.textBaseline='alphabetic'; const zt=(performance.now()/900)%1;
+    ctx.globalAlpha=1-zt; ctx.fillText('z',hx+s*.6,hy-s*(.8+zt*1.2)); ctx.globalAlpha=Math.max(0,.7-zt); ctx.fillText('z',hx+s*1.1,hy-s*(1.4+zt*1.4)); ctx.globalAlpha=1; }
+  ctx.fillStyle=txtCol; ctx.font=`${fs*.95}px ${COL.sans}`; ctx.textAlign='left'; ctx.textBaseline='alphabetic'; ctx.fillText(run?'running on the wheel':'resting in the nest',cx0+6,cy0-6);
+  // darkness
+  if(lv<1){ ctx.fillStyle=`rgba(5,8,30,${(1-lv)*.38})`; ctx.fillRect(0,0,w,h); } }
+function actoAxes(ctx,w,h,fs,L,T,Rr,labels){ ctx.fillStyle=COL.muted; ctx.font=`${fs*.85}px ${COL.sans}`; ctx.textBaseline='bottom'; ctx.textAlign='center';
+  labels.forEach(([hr,t])=>ctx.fillText(t,L+hr/24*(w-L-Rr),T-4)); }
+function hamActo(){ const cv=$('hamActo'); const {ctx,w,h}=setup(cv); ctx.clearRect(0,0,w,h); const fs=fsz(w); const S=HAM.sched, D=S.D;
+  const L=fs*3.4, Rr=fs*.6, T=fs*2, B=fs*.6, rh=(h-T-B)/D, X=hr=>L+hr/24*(w-L-Rr);
+  actoAxes(ctx,w,h,fs,L,T,Rr,[[0,'midnight'],[6,'6 AM'],[12,'noon'],[18,'6 PM'],[24,'midnight']]);
+  const lit=isLight()?'#fff3c4':'rgba(255,224,138,.4)', dk=isLight()?'rgba(40,80,170,.55)':'rgba(60,110,235,.6)', dimc=isLight()?'rgba(140,135,120,.35)':'rgba(150,150,150,.28)';
+  const curD=Math.floor(HAM.T/24), curH=HAM.T-curD*24;
+  for(let d=0;d<D;d++){ const y=T+d*rh;
+    if(d>curD){ ctx.strokeStyle=COL.grid; ctx.strokeRect(L,y,w-L-Rr,rh); continue; }
+    const x=S.darks[d]; ctx.fillStyle=x.dim?dimc:lit; ctx.fillRect(L,y,w-L-Rr,rh-1);
+    if(!x.dim){ ctx.fillStyle=dk; for(const [a,b] of x.dk) ctx.fillRect(X(a),y,X(b)-X(a),rh-1); }
+    if(d%5===0){ ctx.fillStyle=COL.muted; ctx.font=`${fs*.8}px ${COL.sans}`; ctx.textAlign='right'; ctx.textBaseline='middle'; ctx.fillText('day '+(d+1),L-5,y+rh/2); } }
+  ctx.fillStyle=COL.ink;
+  for(const [a,b] of S.bouts){ if(a>HAM.T) break; const e=Math.min(b,HAM.T); let s=a; while(s<e){ const d=Math.floor(s/24), end=Math.min(e,(d+1)*24); const y=T+d*rh; ctx.fillRect(X(s-d*24),y+rh*.12,Math.max(1.2,X(end-d*24)-X(s-d*24)),rh*.76); s=end; } }
+  if(curD<D){ const y=T+curD*rh; ctx.strokeStyle=COL.bad; ctx.lineWidth=2; ctx.beginPath(); ctx.moveTo(X(curH),y-3); ctx.lineTo(X(curH),y+rh+3); ctx.stroke(); }
+  ctx.font=`700 ${fs*.85}px ${COL.sans}`; ctx.textAlign='left'; ctx.textBaseline='bottom';
+  for(const [d,t] of S.ev){ if(d>curD) continue; const y=T+d*rh; ctx.strokeStyle=COL.accent; ctx.lineWidth=2; ctx.setLineDash([5,4]); ctx.beginPath(); ctx.moveTo(L,y); ctx.lineTo(w-Rr,y); ctx.stroke(); ctx.setLineDash([]);
+    const tw=ctx.measureText(t).width; ctx.fillStyle=alpha(COL.bg,.85); ctx.fillRect(L+4,y-fs*1.15,tw+8,fs*1.1); ctx.fillStyle=COL.accent; ctx.fillText(t,L+8,y-2); }
+  // annotations
+  const lab=(x,y,t)=>{ ctx.font=`700 ${fs*.85}px ${COL.sans}`; const tw=ctx.measureText(t).width; const tx=clamp(x,L+2,w-Rr-tw-6); ctx.fillStyle=alpha(COL.bg,.88); ctx.fillRect(tx-3,y-fs*.65,tw+6,fs*1.3); ctx.fillStyle=COL.accent; ctx.textBaseline='middle'; ctx.fillText(t,tx,y); };
+  if(HAM.exp==='free'&&curD>12){ ctx.strokeStyle=COL.accent; ctx.lineWidth=2.5; ctx.setLineDash([7,5]); ctx.beginPath(); let px=null;
+    for(let d=6;d<=Math.min(curD,D-1);d++){ const o=S.onsets[d]; if(o==null) continue; const hh=o-d*24; const x=X(((hh%24)+24)%24), y=T+(d+.5)*rh; if(px===null||Math.abs(x-px)>(w-L)*.5) ctx.moveTo(x,y); else ctx.lineTo(x,y); px=x; } ctx.stroke(); ctx.setLineDash([]);
+    const m=Math.round((HAM.tau-24)*60); lab(X(19)+fs,T+Math.min(curD,D-1)*rh*.75,`starts ${Math.abs(m)} min ${m>=0?'later':'earlier'} each day`); }
+  if(HAM.exp==='shift'&&curD>15){ const y0=T+12*rh, y1=T+15*rh; ctx.strokeStyle=COL.accent; ctx.lineWidth=2; ctx.beginPath(); ctx.moveTo(w-Rr-fs*.4,y0); ctx.lineTo(w-Rr,y0); ctx.lineTo(w-Rr,y1); ctx.lineTo(w-Rr-fs*.4,y1); ctx.stroke(); lab(X(1),(y0+y1)/2+rh*2.2,'phase shift: catches up over ~3 days'); }
+  if(HAM.exp==='ld'&&curD>4) lab(X(9.5),T+3.5*rh,'starts just before lights-off →');
+  if(HAM.exp==='lesion'&&curD>16) lab(X(7),T+19*rh,'no rhythm left: arrhythmic'); }
+function hamReset(){ HAM.T=0; HAM.playing=false; $('hamPlay').textContent='Play'; hamBuild(); hamText(); hamScene(); hamActo(); }
+(function(){ if(!$('hamExp')) return;
+  for(const k in HX){ const b=document.createElement('button'); b.className='chip'; b.dataset.k=k; b.textContent=HX[k].label; b.setAttribute('aria-pressed',k===HAM.exp);
+    b.addEventListener('click',()=>{ HAM.exp=k; $('hamExp').querySelectorAll('.chip').forEach(x=>x.setAttribute('aria-pressed',x.dataset.k===k)); $('hamTauRow').style.display=k==='free'?'':'none'; hamReset(); HAM.playing=true; $('hamPlay').textContent='Pause'; }); $('hamExp').appendChild(b); }
+  $('hamPlay').addEventListener('click',()=>{ if(HAM.T>=HAM.sched.D*24) hamReset(); HAM.playing=!HAM.playing; $('hamPlay').textContent=HAM.playing?'Pause':'Play'; });
+  $('hamRestart').addEventListener('click',()=>{ hamReset(); HAM.playing=true; $('hamPlay').textContent='Pause'; });
+  $('hamSkip').addEventListener('click',()=>{ HAM.T=HAM.sched.D*24-.01; HAM.playing=false; $('hamPlay').textContent='Play'; hamText(); hamActo(); hamScene(); });
+  $('hamSpeed').addEventListener('input',e=>{ HAM.speed=+e.target.value; $('hamSpeedV').textContent=HAM.speed.toFixed(1)+' days/s'; });
+  $('hamTau').addEventListener('input',e=>{ HAM.tau=+e.target.value; $('hamTauV').textContent=HAM.tau.toFixed(2)+' h'; const T=HAM.T; hamBuild(); HAM.T=Math.min(T,HAM.sched.D*24-.01); hamText(); hamActo(); });
+  watch($('hamScene')); watch($('hamActo')); hamReset(); })();
+let hamTxtDay=-1;
+function stepHam(dt){ const cv=$('hamScene'); if(!cv) return; const vis=isVis(cv)||isVis($('hamActo')); if(!vis) return;
+  if(HAM.playing){ HAM.T+=dt*HAM.speed*24; if(HAM.T>=HAM.sched.D*24){ HAM.T=HAM.sched.D*24-.01; HAM.playing=false; $('hamPlay').textContent='Play'; hamText(); } }
+  const L=hamDark(HAM.T); const tgt=L.dim?.35:L.dark?0:1; HAM.lv+=(tgt-HAM.lv)*Math.min(1,dt*6);
+  HAM.lastRun=hamRunning(HAM.T); if(HAM.lastRun){ HAM.ang+=dt*9; HAM.bob+=dt*22; }
+  const d=Math.floor(HAM.T/24); if(d!==hamTxtDay){ hamTxtDay=d; hamText(); }
+  hamScene(); hamActo(); }
+
+/* ---------------- 4. Bunker ---------------- */
+const BUN={T:0,playing:false,speed:4,tau:24.97,D:100,iso0:5,iso1:82,sleeps:[],lv:1,nights:0};
+function bunBuild(){ const S=[]; const r=srng(21);
+  for(let d=0;d<5;d++){ const s=d*24+23.4+(r()-.5)*.6; S.push([s,s+7.9+(r()-.5)*.6,'cue']); }
+  let O=S[4][0]+BUN.tau, n=0; const end=BUN.iso1*24;
+  while(O<end){ const j=(r()-.5)*.8; S.push([O+j,O+j+8.2+(r()-.5)*1.2,'iso']); n++; O+=BUN.tau; }
+  BUN.isoNights=n;
+  // re-entrainment with cues back
+  let last=S[S.length-1][0];
+  while(true){ let c=last+24; const ph=((c%24)+24)%24; let diff=((23.4-ph)+36)%24-12; c+=clamp(diff,-1.6,1.6); if(c>=BUN.D*24) break; S.push([c,c+7.9+(r()-.5)*.6,'cue2']); last=c; }
+  BUN.sleeps=S; }
+function bunAsleep(T){ for(const s of BUN.sleeps){ if(s[0]>T) return false; if(T<s[1]) return true; } return false; }
+function bunPhase(T){ const d=T/24; return d<BUN.iso0?'cue':d<BUN.iso1?'iso':'cue2'; }
+function bunText(){ const ph=bunPhase(BUN.T), done=BUN.T>=BUN.D*24-.02, m=Math.round((BUN.tau-24)*60); let t;
+  if(ph==='cue') t='<b>Days 1–5, normal life:</b> clocks, daylight and meals at regular times keep sleep locked to the 24-hour day, roughly 11:30 PM to 7:30 AM.';
+  else if(ph==='iso') t=`<b>Isolated from time cues:</b> no clock, no sunlight, no schedule. The volunteer sleeps when tired and switches off the lamp. Their internal "day" lasts about <b>τ = ${BUN.tau.toFixed(2)} h</b>, so bedtime drifts about <b>${m} minutes later</b> every day. The rhythm doesn't disappear. It <b>free-runs</b> at its own pace and slowly falls out of step with the real day.`;
+  else t='<b>Time cues are back:</b> clocks, daylight and a schedule pull the rhythm back into step with the 24-hour day over several days. The clock is re-entrained.';
+  if(done) t+=` <b>Result: ${BUN.isoNights} nights of sleep in 77 days</b>${BUN.isoNights===74?', just like the volunteer in your textbook':''}. Over the whole isolation period the volunteer "lost" ${77-BUN.isoNights} day${77-BUN.isoNights===1?'':'s'} without noticing.`;
+  $('bunTxt').innerHTML=t; }
+function bunScene(){ const cv=$('bunScene'); const {ctx,w,h}=setup(cv); const fs=fsz(w); const asleep=bunAsleep(BUN.T), ph=bunPhase(BUN.T), lv=BUN.lv;
+  const day=[226,220,205], night=[22,24,40]; ctx.fillStyle=`rgb(${day.map((c,i)=>Math.round(night[i]+(c-night[i])*lv)).join(',')})`; ctx.fillRect(0,0,w,h);
+  ctx.fillStyle=`rgba(120,110,95,${.25+.2*lv})`; ctx.fillRect(0,h*.82,w,h*.18);
+  // concrete texture/label
+  ctx.fillStyle=lv>.4?'rgba(0,0,0,.35)':'rgba(255,255,255,.35)'; ctx.font=`${fs*.8}px ${COL.sans}`; ctx.textAlign='right'; ctx.textBaseline='bottom'; ctx.fillText('underground · no windows',w*.97,h*.8);
+  // wall clock
+  const ckx=w*.5, cky=h*.2, cr=h*.09; ctx.fillStyle='#f6f3ea'; ctx.beginPath(); ctx.arc(ckx,cky,cr,0,TAU); ctx.fill(); ctx.strokeStyle='#444'; ctx.lineWidth=3; ctx.stroke();
+  if(ph==='iso'){ ctx.fillStyle='#2b2b2b'; ctx.beginPath(); ctx.arc(ckx,cky,cr+2,0,TAU); ctx.fill(); ctx.fillStyle='#fff'; ctx.font=`700 ${fs*.9}px ${COL.sans}`; ctx.textAlign='center'; ctx.textBaseline='middle'; ctx.fillText('NO',ckx,cky-fs*.5); ctx.fillText('CLOCKS',ckx,cky+fs*.5); }
+  else { const hr=BUN.T%24; ctx.strokeStyle='#222'; ctx.lineCap='round'; const a1=(hr%12)/12*TAU-Math.PI/2, a2=(hr%1)*TAU-Math.PI/2; ctx.lineWidth=4; ctx.beginPath(); ctx.moveTo(ckx,cky); ctx.lineTo(ckx+Math.cos(a1)*cr*.5,cky+Math.sin(a1)*cr*.5); ctx.stroke(); ctx.lineWidth=2.5; ctx.beginPath(); ctx.moveTo(ckx,cky); ctx.lineTo(ckx+Math.cos(a2)*cr*.8,cky+Math.sin(a2)*cr*.8); ctx.stroke(); }
+  // status
+  ctx.fillStyle=lv>.45?'rgba(255,255,255,.75)':'rgba(0,0,0,.4)'; roundRect(ctx,w*.03,h*.03,w*.33,h*.2,8); ctx.fill(); const tc=lv>.45?'#1d2230':'#f2f3f8';
+  ctx.fillStyle=tc; ctx.textAlign='left'; ctx.textBaseline='top'; ctx.font=`700 ${fs*1.4}px ${COL.sans}`; ctx.fillText('Day '+(Math.min(BUN.D,Math.floor(BUN.T/24)+1)),w*.05,h*.045);
+  ctx.font=`${fs*.85}px ${COL.sans}`; ctx.fillText(ph==='iso'?'real time (hidden): '+hhmm(BUN.T%24):hhmm(BUN.T%24),w*.05,h*.045+fs*1.75);
+  const cue=ph==='iso'?'TIME CUES: OFF':'TIME CUES: ON'; ctx.font=`700 ${fs*.9}px ${COL.sans}`; const bw=ctx.measureText(cue).width+fs*1.4; ctx.fillStyle=ph==='iso'?'#c92a42':'#16864f'; roundRect(ctx,w*.97-bw,h*.04,bw,fs*1.8,fs*.9); ctx.fill(); ctx.fillStyle='#fff'; ctx.textAlign='center'; ctx.textBaseline='middle'; ctx.fillText(cue,w*.97-bw/2,h*.04+fs*.9);
+  // bed
+  const bx=w*.05, by=h*.62, bw2=w*.42, bh=h*.12; ctx.fillStyle='#6b4f3a'; ctx.fillRect(bx,by+bh,bw2,h*.05); ctx.fillRect(bx,by-h*.08,w*.02,bh+h*.13);
+  ctx.fillStyle=lv>.4?'#e8e3f0':'#59597a'; roundRect(ctx,bx+w*.02,by,bw2-w*.02,bh,8); ctx.fill(); ctx.fillStyle='#fff'; roundRect(ctx,bx+w*.03,by-h*.02,w*.08,h*.05,8); ctx.fill();
+  // desk, lamp
+  const dx=w*.6, dy=h*.6; ctx.fillStyle='#7a5a40'; ctx.fillRect(dx,dy,w*.34,h*.03); ctx.fillRect(dx+w*.02,dy,w*.02,h*.22); ctx.fillRect(dx+w*.3,dy,w*.02,h*.22);
+  const lmx=dx+w*.28, lmy=dy-h*.13; ctx.strokeStyle='#333'; ctx.lineWidth=3; ctx.beginPath(); ctx.moveTo(lmx,dy); ctx.lineTo(lmx,lmy); ctx.lineTo(lmx-w*.04,lmy-h*.02); ctx.stroke();
+  ctx.fillStyle='#333'; ctx.beginPath(); ctx.moveTo(lmx-w*.08,lmy+h*.03); ctx.lineTo(lmx-w*.01,lmy+h*.03); ctx.lineTo(lmx-w*.03,lmy-h*.035); ctx.lineTo(lmx-w*.06,lmy-h*.035); ctx.closePath(); ctx.fill();
+  if(lv>.05){ const g=ctx.createRadialGradient(lmx-w*.045,lmy+h*.05,2,lmx-w*.045,lmy+h*.05,h*.45*lv+5); g.addColorStop(0,`rgba(255,225,140,${.8*lv})`); g.addColorStop(1,'rgba(255,225,140,0)'); ctx.fillStyle=g; ctx.fillRect(0,0,w,h); }
+  // person
+  const skin='#c99a74', shirt=lv>.4?'#3d6fb0':'#2a3f66';
+  if(asleep){ const px=bx+w*.08, py=by+h*.005; ctx.fillStyle=skin; ctx.beginPath(); ctx.arc(px,py,h*.035,0,TAU); ctx.fill();
+    ctx.fillStyle=lv>.4?'#9b8fd0':'#46446e'; roundRect(ctx,px+h*.03,py-h*.03,bw2*.72,h*.07,10); ctx.fill();
+    ctx.fillStyle=lv>.45?'#5a5f6c':'#cfd3ff'; ctx.font=`700 ${fs*1.2}px ${COL.sans}`; ctx.textAlign='left'; ctx.textBaseline='alphabetic'; const zt=(performance.now()/900)%1; ctx.globalAlpha=1-zt; ctx.fillText('z',px+h*.02,py-h*(.06+zt*.08)); ctx.globalAlpha=Math.max(0,.7-zt); ctx.fillText('Z',px+h*.06,py-h*(.11+zt*.09)); ctx.globalAlpha=1; }
+  else { const px=dx+w*.12, py=dy-h*.16; ctx.fillStyle='#555'; ctx.fillRect(px-w*.035,dy+h*.02,w*.07,h*.02); ctx.fillRect(px-w*.03,dy+h*.04,w*.01,h*.16);
+    ctx.fillStyle=shirt; roundRect(ctx,px-w*.035,py,w*.07,h*.16,10); ctx.fill(); ctx.fillStyle=skin; ctx.beginPath(); ctx.arc(px,py-h*.035,h*.04,0,TAU); ctx.fill();
+    ctx.fillStyle='#f4efe2'; ctx.fillRect(px+w*.04,dy-h*.02,w*.07,h*.02); }
+  ctx.fillStyle=lv>.45?'#1d2230':'#f2f3f8'; ctx.font=`${fs*.95}px ${COL.sans}`; ctx.textAlign='left'; ctx.textBaseline='alphabetic'; ctx.fillText(asleep?'asleep (lamp off)':'awake (lamp on)',w*.05,h*.95);
+  if(lv<1){ ctx.fillStyle=`rgba(5,8,30,${(1-lv)*.35})`; ctx.fillRect(0,0,w,h); } }
+function bunActo(){ const cv=$('bunActo'); const {ctx,w,h}=setup(cv); ctx.clearRect(0,0,w,h); const fs=fsz(w); const D=BUN.D;
+  const L=fs*3, Rr=fs*.6, T=fs*2, B=fs*.6, rh=(h-T-B)/D, X=hr=>L+hr/24*(w-L-Rr); const curD=Math.floor(BUN.T/24), curH=BUN.T-curD*24;
+  actoAxes(ctx,w,h,fs,L,T,Rr,[[0,'midnight'],[12,'noon'],[24,'midnight']]);
+  const isoC=isLight()?'rgba(242,182,0,.22)':'rgba(242,182,0,.14)';
+  for(let d=0;d<D;d++){ const y=T+d*rh; if(d>curD) continue; if(d>=BUN.iso0&&d<BUN.iso1){ ctx.fillStyle=isoC; ctx.fillRect(L,y,w-L-Rr,rh); }
+    if((d+1)%5===0||d===0){ ctx.fillStyle=COL.muted; ctx.font=`${fs*.75}px ${COL.sans}`; ctx.textAlign='right'; ctx.textBaseline='middle'; ctx.fillText(String(d+1),L-5,y+rh/2); } }
+  ctx.strokeStyle=COL.grid; ctx.lineWidth=1; [0,12,24].forEach(hr=>{ ctx.beginPath(); ctx.moveTo(X(hr),T); ctx.lineTo(X(hr),h-B); ctx.stroke(); });
+  ctx.fillStyle=COL.blue;
+  for(const [a,b] of BUN.sleeps){ if(a>BUN.T) break; const e=Math.min(b,BUN.T); let s=a; while(s<e){ const d=Math.floor(s/24), end=Math.min(e,(d+1)*24); if(d>=D) break; const y=T+d*rh; ctx.fillRect(X(s-d*24),y+rh*.1,Math.max(1.2,X(end-d*24)-X(s-d*24)),Math.max(1.5,rh*.8)); s=end; } }
+  if(curD<D){ const y=T+curD*rh; ctx.strokeStyle=COL.bad; ctx.lineWidth=2; ctx.beginPath(); ctx.moveTo(X(curH),y-3); ctx.lineTo(X(curH),y+rh+3); ctx.stroke(); }
+  const ev=(d,t)=>{ if(d>curD) return; const y=T+d*rh; ctx.strokeStyle=COL.accent; ctx.lineWidth=2; ctx.setLineDash([5,4]); ctx.beginPath(); ctx.moveTo(L,y); ctx.lineTo(w-Rr,y); ctx.stroke(); ctx.setLineDash([]);
+    ctx.font=`700 ${fs*.85}px ${COL.sans}`; const tw=ctx.measureText(t).width; ctx.fillStyle=alpha(COL.bg,.88); ctx.fillRect(w-Rr-tw-10,y-fs*1.15,tw+8,fs*1.1); ctx.fillStyle=COL.accent; ctx.textAlign='left'; ctx.textBaseline='bottom'; ctx.fillText(t,w-Rr-tw-6,y-2); };
+  ev(BUN.iso0,'cut off from time cues'); ev(BUN.iso1,'time cues return'); }
+function bunReset(){ BUN.T=0; BUN.playing=false; $('bunPlay').textContent='Play'; bunBuild(); bunText(); bunScene(); bunActo(); bunCount(); }
+function bunCount(){ const days=clamp((BUN.T-BUN.iso0*24)/24,0,BUN.iso1-BUN.iso0); let n=0; for(const s of BUN.sleeps) if(s[2]==='iso'&&s[0]<=BUN.T) n++; $('bunDays').textContent=Math.floor(days); $('bunNights').textContent=n; }
+(function(){ if(!$('bunPlay')) return;
+  $('bunPlay').addEventListener('click',()=>{ if(BUN.T>=BUN.D*24-.02) bunReset(); BUN.playing=!BUN.playing; $('bunPlay').textContent=BUN.playing?'Pause':'Play'; });
+  $('bunRestart').addEventListener('click',()=>{ bunReset(); BUN.playing=true; $('bunPlay').textContent='Pause'; });
+  $('bunSkip').addEventListener('click',()=>{ BUN.T=BUN.D*24-.01; BUN.playing=false; $('bunPlay').textContent='Play'; bunText(); bunActo(); bunScene(); bunCount(); });
+  $('bunSpeed').addEventListener('input',e=>{ BUN.speed=+e.target.value; $('bunSpeedV').textContent=BUN.speed+' days/s'; });
+  $('bunTau').addEventListener('input',e=>{ BUN.tau=+e.target.value; $('bunTauV').textContent=BUN.tau.toFixed(2)+' h'; const T=BUN.T; bunBuild(); BUN.T=T; bunText(); bunActo(); bunCount(); });
+  watch($('bunScene')); watch($('bunActo')); bunReset(); })();
+let bunPh='';
+function stepBun(dt){ const cv=$('bunScene'); if(!cv) return; if(!(isVis(cv)||isVis($('bunActo')))) return;
+  if(BUN.playing){ BUN.T+=dt*BUN.speed*24; if(BUN.T>=BUN.D*24-.01){ BUN.T=BUN.D*24-.01; BUN.playing=false; $('bunPlay').textContent='Play'; bunText(); } }
+  const asleep=bunAsleep(BUN.T); BUN.lv+=((asleep?0:1)-BUN.lv)*Math.min(1,dt*6);
+  const ph=bunPhase(BUN.T); if(ph!==bunPh){ bunPh=ph; bunText(); }
+  bunScene(); bunActo(); bunCount(); }
+
+/* ---------------- hooks ---------------- */
+XT.redraw=()=>{ rows.forEach(drawRow); drawZooms(); if(HAM.sched){ hamScene(); hamActo(); } if(BUN.sleeps.length){ bunScene(); bunActo(); } };
+XT.step=dt=>{ stepCrowd(dt); if($('spkEEG')&&isVis($('spkEEG'))){ if(!SK.paused){ skAdvance(dt); } skDraw(); skLoop(dt); } stepHam(dt); stepBun(dt); };
+watch($('spkEEG'));
+let rz; window.addEventListener('resize',()=>{ clearTimeout(rz); rz=setTimeout(XT.redraw,120); });
+})();
+
+function redrawAll(){ readCols(); if(typeof drawBandCards==='function') drawBandCards(); if(typeof showLight==='function') showLight(); if(N) drawHyp($('hyp'),N,{total:480,bed:23,play:playM,cycles:preset!=='baby'}); drawTwo(); drawBrain(); drawDis(); drawChron(); showStageInfo(mystery?mysteryAns:curStage,mystery); if(N) setPreset(preset); XT.redraw(); }
 let prev=performance.now();
 function loop(now){ const dt=Math.min(.05,(now-prev)/1000); prev=now;
   if(isVis($('eeg'))){ eeg.advance(dt); eeg.draw(); }
   if(isVis($('hyp'))){ if(playing){ playM+=dt*480/32; if(playM>=480){ playM=480; playing=false; $('playBtn').textContent='Play the night'; } updateNight(); }
     drawHyp($('hyp'),N,{total:480,bed:23,play:playM,cycles:preset!=='baby'}); eeg2.advance(dt); eeg2.draw(); }
   if(narco && isVis(brain)){ narcoTimer-=dt; if(narcoTimer<=0){ narcoTimer=rnd(1.8,3.2); const opts=['wake','nrem','rem'].filter(s=>s!==shownState()); narcoFlip=Math.random()<.65?opts[Math.floor(Math.random()*opts.length)]:null; drawBrain(); } }
-  stepGlym(dt,now); stepReplay(dt,now); stepShy(dt); stepDipole(dt); stepERP(dt); stepBasics(dt); stepDrift(dt);
+  stepGlym(dt,now); stepReplay(dt,now); stepShy(dt); stepDipole(dt); stepERP(dt); stepBasics(dt); stepDrift(dt); XT.step(dt);
   requestAnimationFrame(loop); }
 window.addEventListener('resize',()=>{ drawBandCards(); DR.cache=null; drawTwo(); drawDis(); drawChron(); drawSpec(); drawMel24(); });
 if(store.get('sleepTheme')==='light') setTheme(true); else redrawAll();
