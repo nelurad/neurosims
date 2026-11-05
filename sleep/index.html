@@ -8,30 +8,29 @@
 <meta name="description" content="An interactive tour of sleep: brain waves of each stage, a night of sleep cycles, the two-process model, the brain's sleep-wake switch, what sleep is for, sleep deprivation, and sleep disorders. Built for projecting in class.">
 <style>
   :root{
-    --hand:"Segoe Print","Ink Free","Noteworthy","Chalkboard SE","Bradley Hand","Comic Sans MS",cursive;
+    --serif:"Iowan Old Style","Palatino Linotype",Palatino,"Book Antiqua",Georgia,"Times New Roman",serif; --hand:var(--serif);
     --sans:system-ui,-apple-system,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif;
     --mono:ui-monospace,"SF Mono",Menlo,Consolas,monospace;
     /* night theme (default) */
-    --bg:#0b1030; --bg2:#10184a; --panel:#141d52; --panel2:#1a2563; --line:#2c3a80; --grid:rgba(160,175,255,.14);
-    --ink:#f4f6ff; --muted:#b4bde8; --accent:#ffd36e; --trace:#f4f6ff;
+    --bg:#0f1430; --bg2:#141a3b; --band:#131938; --panel:#171e44; --panel2:#1d2550; --line:#2d3766; --grid:rgba(160,175,255,.14);
+    --ink:#f2f3f8; --muted:#aab1cf; --accent:#e9c46a; --trace:#f4f6ff;
     --W:#ff8a5c; --R:#e594ff; --N1:#9fe8ff; --N2:#5aacff; --N3:#8f8cff;
     --good:#5fe0a0; --bad:#ff6b7d; --blue:#6cb6ff; --orange:#ffb04a;
-    --c:#ffd36e;
-    --s1:#5aacff; --s2:#e594ff; --s3:#ffb04a; --s4:#5fe0a0; --s5:#9fe8ff; --s6:#ff6b7d; --s7:#ffd36e; --s8:#ff8a5c; 
+    --c:#e9c46a;
+    --s1:var(--accent); --s2:var(--accent); --s3:var(--accent); --s4:var(--accent); --s5:var(--accent); --s6:var(--accent); --s7:var(--accent); --s8:var(--accent);
   }
   :root[data-theme="light"]{
-    --bg:#fffdf8; --bg2:#f6f1e6; --panel:#ffffff; --panel2:#faf6ee; --line:#ddd6c8; --grid:rgba(60,50,30,.12);
-    --ink:#1f2330; --muted:#5d6270; --accent:#a15c00; --trace:#1f2330;
+    --bg:#fcfbf8; --bg2:#f4f1ea; --band:#f3f0e8; --panel:#ffffff; --panel2:#f8f6f1; --line:#d9d4c8; --grid:rgba(60,50,30,.12);
+    --ink:#1d2230; --muted:#5a5f6c; --accent:#1f4e8c; --trace:#1f2330;
     --W:#d9480f; --R:#8b3fc4; --N1:#2a9fd0; --N2:#1f5fc4; --N3:#1c2a7a;
     --good:#16864f; --bad:#c92a42; --blue:#1f6fc4; --orange:#c76a00;
-    --c:#a15c00;
-    --s1:#1f5fc4; --s2:#8b3fc4; --s3:#c76a00; --s4:#16864f; --s5:#0e7490; --s6:#c92a42; --s7:#a15c00; --s8:#d9480f; 
+    --c:#1f4e8c;
+    --s1:var(--accent); --s2:var(--accent); --s3:var(--accent); --s4:var(--accent); --s5:var(--accent); --s6:var(--accent); --s7:var(--accent); --s8:var(--accent);
   }
   *{box-sizing:border-box}
   html{-webkit-text-size-adjust:100%;scroll-behavior:smooth;font-size:clamp(17px,1.2vw,23px)}
   html.present{font-size:clamp(19px,1.42vw,28px)}
   html,body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--sans);line-height:1.45;-webkit-font-smoothing:antialiased}
-  body{background:radial-gradient(1200px 600px at 80% -10%,var(--bg2),transparent 70%),var(--bg);background-attachment:fixed}
   .wrap{margin:0 auto;padding:16px 24px 40px;max-width:1500px}
   a{color:var(--blue)}
   .back{font-size:.8rem;color:var(--muted);text-decoration:none}
@@ -42,26 +41,24 @@
   b,strong{font-weight:700}
 
   /* ---------- hero ---------- */
-  .hero{position:relative;min-height:62vh;display:flex;flex-direction:column;justify-content:center;padding:24px 0 10px}
-  .hero canvas#sky{position:absolute;inset:0;width:100%;height:100%;z-index:0;pointer-events:none}
+  .hero{position:relative;min-height:52vh;display:flex;flex-direction:column;justify-content:center;padding:24px 0 10px}
   .hero > *:not(canvas){position:relative;z-index:1}
-  .hero h1{font-family:var(--hand);font-weight:normal;font-size:clamp(44px,6vw,104px);line-height:1.05;margin:0 0 .2em;letter-spacing:-.01em}
-  .hero h1 .z{color:var(--accent)}
+  .hero h1{font-family:var(--serif);font-weight:600;font-size:clamp(46px,5.2vw,92px);line-height:1.04;margin:0 0 .3em;letter-spacing:-.015em}
   .hero p.big{font-size:1.25rem;max-width:40em;margin:0 0 .6em}
   .hero .hint{color:var(--muted);font-size:.85rem}
   .kbd{display:inline-block;border:1.5px solid var(--line);border-bottom-width:3px;border-radius:6px;padding:0 .4em;font-family:var(--mono);font-size:.85em;color:var(--ink);background:var(--panel)}
-  .facts3{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px;margin:18px 0 6px;max-width:1100px}
-  .facts3 div{background:color-mix(in srgb,var(--panel) 85%,transparent);border:1.5px solid var(--line);border-radius:14px;padding:12px 16px}
-  .facts3 b{display:block;font-size:1.9rem;color:var(--accent);font-family:var(--hand);font-weight:normal;line-height:1.1}
+  .facts3{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:32px;margin:26px 0 10px;max-width:1100px}
+  .facts3 div{border-top:2px solid var(--line);padding:12px 0 0;color:var(--muted);font-size:.95rem}
+  .facts3 b{display:block;font-size:2.1rem;color:var(--ink);font-family:var(--serif);font-weight:600;line-height:1.1;margin-bottom:4px}
 
   /* ---------- nav ---------- */
   .pipe{position:sticky;top:0;z-index:20;background:color-mix(in srgb,var(--bg) 92%,transparent);backdrop-filter:blur(6px);border-bottom:1.5px solid var(--line);margin:0 -24px;padding:8px 24px;display:flex;gap:10px;align-items:center}
   .pipe ol{list-style:none;margin:0;padding:0;display:flex;gap:4px;overflow-x:auto;scrollbar-width:none;flex:1}
   .pipe ol::-webkit-scrollbar{display:none}
   .pipe a{display:flex;align-items:center;gap:5px;text-decoration:none;color:var(--muted);font-size:.74rem;padding:5px 9px;border-radius:999px;white-space:nowrap;border:1.5px solid transparent}
-  .pipe a .i{font-size:1.05em}
+  .pipe a .i{font-family:var(--mono);font-size:.85em;opacity:.7}
   .pipe a:hover{color:var(--ink);border-color:var(--line)}
-  .pipe a.on{color:#0b1030;background:var(--sc,var(--accent))}
+  .pipe a.on{color:#0f1430;background:var(--accent)}
   :root[data-theme="light"] .pipe a.on{color:#fff}
   .tools{display:flex;gap:6px;flex:none}
   .tbtn{font:inherit;font-size:.78rem;background:var(--panel);color:var(--ink);border:1.5px solid var(--line);border-radius:999px;padding:5px 12px;cursor:pointer;white-space:nowrap}
@@ -69,23 +66,26 @@
   .tbtn[aria-pressed="true"]{border-color:var(--accent);box-shadow:inset 0 0 0 1.5px var(--accent)}
 
   /* ---------- sections ---------- */
-  section.s{margin-top:46px;scroll-margin-top:64px;--c:var(--sc)}
-  html.present section.s{min-height:calc(100vh - 60px);margin-top:0;padding:22px 0 26px;display:flex;flex-direction:column;justify-content:center;border-bottom:1.5px dashed var(--line)}
+  section.s{margin:0;padding:84px 0 76px;scroll-margin-top:52px;--c:var(--sc);position:relative;border-top:1px solid var(--line)}
+  section.s.alt{background:var(--band);box-shadow:0 0 0 100vmax var(--band);clip-path:inset(0 -100vmax)}
+  .kicker{font:700 .72rem/1 var(--sans);letter-spacing:.16em;text-transform:uppercase;color:var(--accent);margin:0 0 14px;display:flex;align-items:center;gap:12px}
+  .kicker::before{content:"";width:36px;height:2px;background:var(--accent)}
+  html.present section.s{min-height:calc(100vh - 60px);margin-top:0;padding:22px 0 26px;display:flex;flex-direction:column;justify-content:center;}
   html.present{scroll-snap-type:y proximity}
   html.present section.s, html.present .hero{scroll-snap-align:start}
   html.present .hero{min-height:calc(100vh - 20px)}
-  h2.sec{font-family:var(--hand);font-weight:normal;font-size:clamp(30px,2.7vw,54px);margin:0 0 4px;line-height:1.15;color:var(--c)}
+  h2.sec{font-family:var(--serif);font-weight:600;font-size:clamp(32px,2.9vw,56px);margin:0 0 12px;line-height:1.1;color:var(--ink);letter-spacing:-.01em}
   h2.sec .n{display:inline-block;width:1.4em;height:1.4em;line-height:1.4em;text-align:center;border-radius:50%;background:var(--c);color:#0b1030;font-size:.62em;margin-right:10px;vertical-align:.22em;font-family:var(--sans);font-weight:700}
   :root[data-theme="light"] h2.sec .n{color:#fff}
-  .lede{margin:0 0 14px;max-width:62em;color:var(--muted);font-size:1.02rem}
+  .lede{margin:0 0 26px;max-width:58em;color:var(--muted);font-size:1.02rem}
   .lede b{color:var(--ink)}
   .stage{display:grid;grid-template-columns:minmax(0,1.65fr) minmax(300px,1fr);gap:22px;align-items:start}
   .stage.even{grid-template-columns:minmax(0,1fr) minmax(0,1fr)}
-  .box{background:var(--panel);border:1.5px solid var(--line);border-radius:16px;padding:14px 16px}
+  .box{background:var(--panel);border:1.5px solid var(--line);border-radius:10px;padding:16px 18px}
   .box.flush{padding:8px}
   .sub{font-size:.7rem;color:var(--muted);text-transform:uppercase;letter-spacing:.08em;font-weight:700;margin:0 0 4px}
   .chips{display:flex;flex-wrap:wrap;gap:8px;margin:0 0 12px}
-  .chip{font:inherit;font-size:.92rem;background:var(--panel);border:2px solid var(--line);border-radius:999px;padding:6px 16px;cursor:pointer;color:var(--ink);display:inline-flex;align-items:center;gap:8px}
+  .chip{font:inherit;font-size:.9rem;background:var(--panel);border:1.5px solid var(--line);border-radius:6px;padding:6px 16px;cursor:pointer;color:var(--ink);display:inline-flex;align-items:center;gap:8px}
   .chip .dot{width:.8em;height:.8em;border-radius:50%;background:var(--k,var(--muted));flex:none}
   .chip:hover{border-color:var(--k,var(--accent))}
   .chip[aria-pressed="true"]{border-color:var(--k,var(--accent));background:color-mix(in srgb,var(--k,var(--accent)) 22%,var(--panel))}
@@ -98,7 +98,7 @@
   .ctrl{display:flex;flex-wrap:wrap;gap:8px 14px;align-items:center;margin:10px 0;font-size:.9rem;color:var(--muted)}
   .ctrl input[type=range]{flex:1;min-width:180px;accent-color:var(--c);height:28px}
   .ctrl b{color:var(--ink)}
-  .stname{font-family:var(--hand);font-size:clamp(28px,2.4vw,46px);line-height:1.1;margin:2px 0 6px}
+  .stname{font-family:var(--serif);font-weight:600;font-size:clamp(26px,2.1vw,40px);line-height:1.15;margin:2px 0 8px}
   .meters{display:grid;grid-template-columns:auto 1fr;gap:8px 12px;font-size:.88rem;align-items:center;margin:10px 0}
   .meters .m{height:14px;border-radius:7px;background:var(--panel2);border:1px solid var(--line);overflow:hidden}
   .meters .m i{display:block;height:100%;width:0;background:var(--c);transition:width .5s}
@@ -110,14 +110,14 @@
   .legend span{display:inline-flex;align-items:center;gap:6px}
   .legend i{display:inline-block;width:22px;height:6px;border-radius:3px;background:currentColor}
   .tabs{display:flex;flex-wrap:wrap;gap:4px;border-bottom:2px solid var(--line);margin:0 0 12px}
-  .tab{font:inherit;font-family:var(--hand);font-size:clamp(18px,1.45vw,27px);background:transparent;border:0;border-bottom:4px solid transparent;margin-bottom:-2px;padding:4px 14px 2px;cursor:pointer;color:var(--muted)}
+  .tab{font:inherit;font-family:var(--sans);font-weight:600;font-size:.92rem;background:transparent;border:0;border-bottom:4px solid transparent;margin-bottom:-2px;padding:4px 14px 2px;cursor:pointer;color:var(--muted)}
   .tab[aria-selected="true"]{color:var(--ink);border-bottom-color:var(--c)}
   .tab:hover{color:var(--ink)}
   .cards{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:14px}
   .card{background:var(--panel);border:1.5px solid var(--line);border-radius:14px;padding:12px 16px;font-size:.92rem}
-  .card h4{font-family:var(--hand);font-weight:normal;font-size:1.3rem;margin:0 0 4px;color:var(--c)}
+  .card h4{font-family:var(--serif);font-weight:600;font-size:1.2rem;margin:0 0 6px;color:var(--ink)}
   .card p{margin:0}
-  .big-num{font-family:var(--hand);font-size:clamp(34px,3vw,58px);line-height:1;color:var(--c)}
+  .big-num{font-family:var(--serif);font-weight:600;font-size:clamp(34px,3vw,58px);line-height:1;color:var(--c)}
   .mileList{list-style:none;margin:8px 0 0;padding:0;display:grid;gap:6px}
   .mileList li{padding:8px 12px;border-radius:10px;border:1.5px solid var(--line);font-size:.9rem;color:var(--muted);background:var(--panel);transition:all .3s;opacity:.45}
   .mileList li.on{opacity:1;color:var(--ink);border-color:var(--c);box-shadow:inset 5px 0 0 var(--c)}
@@ -164,7 +164,7 @@
   html.present #hyp{max-height:36vh}
   html.present #eeg2{max-height:15vh}
   html.present .lede{font-size:.88rem;margin-bottom:8px}
-  html.present h2.sec{font-size:clamp(28px,2.3vw,46px)}
+  html.present h2.sec{font-size:clamp(28px,2.3vw,46px)} html.present section.s{padding:28px 0 24px}
   html.present .tools .lbl{display:none}
   html.present .stage{gap:16px}
 
@@ -184,12 +184,12 @@
 <div class="wrap">
 
   <header class="hero" id="top">
-    <canvas id="sky" aria-hidden="true"></canvas>
     <a class="back" href="../">← All NeuroSims</a>
-    <h1>The Sleeping Brain <span class="z">z<small>z</small></span></h1>
+    <p class="kicker" style="margin-top:28px">NeuroSims · Sleep and brain rhythms</p>
+    <h1>The Sleeping Brain</h1>
     <p class="big">You spend about a third of your life asleep, but your brain is far from off. Every night it cycles through distinct states, each with its own brain waves, chemistry and jobs.</p>
     <div class="facts3">
-      <div><b>~90 min</b>one sleep cycle, repeated 4–6 times a night</div>
+      <div><b>~90 min</b>length of one sleep cycle, repeated 4–6 times a night</div>
       <div><b>~25 years</b>of an average lifetime spent asleep</div>
       <div><b>7–9 h</b>what most adults need; about 1 in 3 U.S. adults gets less than 7</div>
     </div>
@@ -199,22 +199,23 @@
   <nav class="pipe" aria-label="Sections">
     <ol id="navList"></ol>
     <div class="tools">
-      <button class="tbtn" id="themeBtn" aria-pressed="false" title="Switch theme (T)">☀️ <span class="lbl">Bright room</span></button>
-      <button class="tbtn" id="presentBtn" aria-pressed="false" title="Present mode (P)">🖥 <span class="lbl">Present</span></button>
+      <button class="tbtn" id="themeBtn" aria-pressed="false" title="Switch theme (T)">Light theme</button>
+      <button class="tbtn" id="presentBtn" aria-pressed="false" title="Present mode (P)">Present</button>
     </div>
   </nav>
 
   <!-- =================== 1. BRAIN WAVES =================== -->
-  <section class="s" id="waves" style="--sc:var(--s1)" data-title="Brain waves" data-icon="〰️">
-    <h2 class="sec"><span class="n">1</span>Brain waves: what an EEG sees</h2>
+  <section class="s" id="waves" style="--sc:var(--s1)" data-title="Brain waves">
+    <p class="kicker">Part 1</p>
+    <h2 class="sec">Brain waves: what an EEG sees</h2>
     <p class="lede">Sleep is defined by three signals recorded at once: <b>EEG</b> (brain waves from the scalp), <b>EOG</b> (eye movements) and <b>EMG</b> (chin muscle tone). Pick a state and watch how all three change. As you fall deeper asleep, the brain waves get <b>slower and bigger</b>, because more neurons fire together in sync.</p>
     <div class="chips" id="stageChips"></div>
     <div class="stage">
       <div class="box flush">
         <canvas id="eeg" style="aspect-ratio:16/9.2" aria-label="Scrolling EEG, EOG and EMG traces for the selected stage"></canvas>
         <div class="ctrl" style="margin:6px 8px 4px">
-          <button class="chip" id="labelsBtn" aria-pressed="true">🏷️ Label features</button>
-          <button class="chip" id="mysteryBtn" aria-pressed="false">🎲 Mystery stage</button>
+          <button class="chip" id="labelsBtn" aria-pressed="true">Label features</button>
+          <button class="chip" id="mysteryBtn" aria-pressed="false">Mystery stage</button>
           <button class="btn primary" id="revealBtn" hidden>Reveal the answer</button>
           <span id="mysteryMsg"></span>
         </div>
@@ -239,15 +240,16 @@
   </section>
 
   <!-- =================== 2. A NIGHT =================== -->
-  <section class="s" id="night" style="--sc:var(--s2)" data-title="Cycles" data-icon="🌙">
-    <h2 class="sec"><span class="n">2</span>A night of sleep: the cycles</h2>
+  <section class="s" id="night" style="--sc:var(--s2)" data-title="Cycles">
+    <p class="kicker">Part 2</p>
+    <h2 class="sec">A night of sleep: the cycles</h2>
     <p class="lede">A <b>hypnogram</b> plots sleep stage across the night. Press play or drag across the night. Notice two patterns: <b>deep N3 is front-loaded</b> into the first half of the night, and <b>REM periods get longer toward morning</b>. Then compare a newborn, an older adult, and a recovery night after an all-nighter.</p>
     <div class="chips" id="presetChips"></div>
     <div class="stage">
       <div class="box flush">
         <canvas id="hyp" style="aspect-ratio:16/7" aria-label="Hypnogram of one night of sleep"></canvas>
         <div class="ctrl" style="margin:4px 8px">
-          <button class="btn primary" id="playBtn">▶ Play the night</button>
+          <button class="btn primary" id="playBtn">Play the night</button>
           <input type="range" id="scrub" min="0" max="480" step="1" value="0" aria-label="Time of night">
           <b id="clock" style="font-size:1.3rem;min-width:5.5em;text-align:right">11:00 PM</b>
         </div>
@@ -266,8 +268,9 @@
   </section>
 
   <!-- =================== 3. TWO PROCESS =================== -->
-  <section class="s" id="sleepy" style="--sc:var(--s3)" data-title="Sleepiness" data-icon="⏰">
-    <h2 class="sec"><span class="n">3</span>Why you get sleepy: two forces</h2>
+  <section class="s" id="sleepy" style="--sc:var(--s3)" data-title="Sleepiness">
+    <p class="kicker">Part 3</p>
+    <h2 class="sec">Why you get sleepy: two forces</h2>
     <p class="lede"><b>Sleep pressure</b> (Process S) builds every hour you are awake as <b>adenosine</b> accumulates, and drains while you sleep. Your <b>body clock</b> (Process C, run by the SCN) pushes alertness up and down over 24 hours. You fall asleep easily when pressure rises above the clock's alerting signal. Try an all-nighter, a coffee, or a nap, and drag across the two days.</p>
     <div class="chips" id="twoChips"></div>
     <div class="stage">
@@ -298,8 +301,9 @@
   </section>
 
   <!-- =================== 4. CIRCUIT =================== -->
-  <section class="s" id="switch" style="--sc:var(--s4)" data-title="Sleep switch" data-icon="🧠">
-    <h2 class="sec"><span class="n">4</span>Sleep in the brain: the flip-flop switch</h2>
+  <section class="s" id="switch" style="--sc:var(--s4)" data-title="Sleep switch">
+    <p class="kicker">Part 4</p>
+    <h2 class="sec">Sleep in the brain: the flip-flop switch</h2>
     <p class="lede">Wake-promoting centers in the brainstem and hypothalamus and the sleep-promoting <b>VLPO</b> inhibit each other, like a seesaw that is either up or down, so you switch between states quickly instead of drifting. <b>Orexin</b> holds the switch steady. A separate switch in the <b>pons</b> turns on REM and paralyzes your muscles. Pick a state, then click any region.</p>
     <div class="chips" id="circChips"></div>
     <div class="stage">
@@ -318,19 +322,20 @@
   </section>
 
   <!-- =================== 5. FUNCTIONS =================== -->
-  <section class="s" id="why" style="--sc:var(--s5)" data-title="Why sleep?" data-icon="✨">
-    <h2 class="sec"><span class="n">5</span>What is sleep for?</h2>
+  <section class="s" id="why" style="--sc:var(--s5)" data-title="Why sleep?">
+    <p class="kicker">Part 5</p>
+    <h2 class="sec">What is sleep for?</h2>
     <p class="lede">Every animal studied sleeps, even though sleeping leaves it defenseless. So sleep must do something that cannot be done while awake. Scientists have found several jobs, and they likely all matter.</p>
     <div class="tabs" role="tablist" id="fnTabs">
-      <button class="tab" role="tab" aria-selected="true" data-p="clean">🧹 Clean-up</button>
-      <button class="tab" role="tab" aria-selected="false" data-p="mem">📚 Memory</button>
-      <button class="tab" role="tab" aria-selected="false" data-p="syn">⚖️ Synapse reset</button>
-      <button class="tab" role="tab" aria-selected="false" data-p="body">💪 Body &amp; mood</button>
+      <button class="tab" role="tab" aria-selected="true" data-p="clean">Clean-up</button>
+      <button class="tab" role="tab" aria-selected="false" data-p="mem">Memory</button>
+      <button class="tab" role="tab" aria-selected="false" data-p="syn">Synapse reset</button>
+      <button class="tab" role="tab" aria-selected="false" data-p="body">Body &amp; mood</button>
     </div>
     <div class="fnp" data-p="clean">
       <div class="stage">
         <div class="box flush"><canvas id="glym" style="aspect-ratio:16/8" aria-label="Brain cells with waste being cleared by fluid flow"></canvas>
-          <div class="ctrl" style="margin:4px 8px"><button class="chip" id="gAwake" aria-pressed="true">☀️ Awake</button><button class="chip" id="gSleep" aria-pressed="false">🌙 Asleep</button><span>Waste in the brain</span><div class="meters" style="flex:1;margin:0;grid-template-columns:1fr"><div class="m"><i id="gWaste" style="background:var(--orange)"></i></div></div></div>
+          <div class="ctrl" style="margin:4px 8px"><button class="chip" id="gAwake" aria-pressed="true">Awake</button><button class="chip" id="gSleep" aria-pressed="false">Asleep</button><span>Waste in the brain</span><div class="meters" style="flex:1;margin:0;grid-template-columns:1fr"><div class="m"><i id="gWaste" style="background:var(--orange)"></i></div></div></div>
         </div>
         <div class="box">
           <div class="stname">The glymphatic system</div>
@@ -342,7 +347,7 @@
     <div class="fnp" data-p="mem" hidden>
       <div class="stage">
         <div class="box flush"><canvas id="replay" style="aspect-ratio:16/8" aria-label="Place cells firing during running and replaying during sleep"></canvas>
-          <div class="ctrl" style="margin:4px 8px"><button class="chip" id="rDay" aria-pressed="true">🐀 Daytime: run the track</button><button class="chip" id="rNight" aria-pressed="false">😴 Sleep: replay</button></div>
+          <div class="ctrl" style="margin:4px 8px"><button class="chip" id="rDay" aria-pressed="true">Daytime: run the track</button><button class="chip" id="rNight" aria-pressed="false">Sleep: replay</button></div>
         </div>
         <div class="box">
           <div class="stname">Replaying the day</div>
@@ -354,7 +359,7 @@
     <div class="fnp" data-p="syn" hidden>
       <div class="stage">
         <div class="box flush"><canvas id="shy" style="aspect-ratio:16/8" aria-label="Synapse strengths growing during the day and scaled down during sleep"></canvas>
-          <div class="ctrl" style="margin:4px 8px"><button class="btn primary" id="sDay">☀️ Live a day (learn)</button><button class="btn" id="sNight">🌙 Sleep</button><button class="btn" id="sReset">Reset</button></div>
+          <div class="ctrl" style="margin:4px 8px"><button class="btn primary" id="sDay">Live a day (learn)</button><button class="btn" id="sNight">Sleep</button><button class="btn" id="sReset">Reset</button></div>
         </div>
         <div class="box">
           <div class="stname">The synaptic homeostasis idea</div>
@@ -365,23 +370,24 @@
     </div>
     <div class="fnp" data-p="body" hidden>
       <div class="cards">
-        <div class="card"><h4>📈 Growth &amp; repair</h4><p>The biggest pulse of <b>growth hormone</b> each day comes during the first deep N3 period of the night.</p></div>
-        <div class="card"><h4>🛡️ Immune defense</h4><p>When volunteers were exposed to a cold virus, people who slept under 6 hours were about <b>4× more likely</b> to get sick than those sleeping over 7 (Prather et al., 2015).</p></div>
-        <div class="card"><h4>💭 Emotional reset</h4><p>REM sleep is when the brain replays emotional memories with stress chemicals such as norepinephrine switched off. It may take the sting out of hard experiences ("overnight therapy"; Walker &amp; van der Helm, 2009).</p></div>
-        <div class="card"><h4>🔋 Saving energy</h4><p>Metabolism and body temperature fall during NREM sleep. The saving is modest (~10%), so energy alone can't explain why we sleep.</p></div>
-        <div class="card"><h4>🍩 Appetite &amp; metabolism</h4><p>After two nights of only 4 hours, the fullness hormone <b>leptin</b> dropped 18%, the hunger hormone <b>ghrelin</b> rose 28%, and cravings for high-carb foods went up (Spiegel et al., 2004).</p></div>
-        <div class="card"><h4>🐀 It's essential</h4><p>Rats kept completely awake died within about 2–3 weeks (Rechtschaffen &amp; Bergmann). In people, the rare genetic disease <b>fatal familial insomnia</b> destroys the thalamus and with it the ability to sleep.</p></div>
+        <div class="card"><h4>Growth &amp; repair</h4><p>The biggest pulse of <b>growth hormone</b> each day comes during the first deep N3 period of the night.</p></div>
+        <div class="card"><h4>Immune defense</h4><p>When volunteers were exposed to a cold virus, people who slept under 6 hours were about <b>4× more likely</b> to get sick than those sleeping over 7 (Prather et al., 2015).</p></div>
+        <div class="card"><h4>Emotional reset</h4><p>REM sleep is when the brain replays emotional memories with stress chemicals such as norepinephrine switched off. It may take the sting out of hard experiences ("overnight therapy"; Walker &amp; van der Helm, 2009).</p></div>
+        <div class="card"><h4>Saving energy</h4><p>Metabolism and body temperature fall during NREM sleep. The saving is modest (~10%), so energy alone can't explain why we sleep.</p></div>
+        <div class="card"><h4>Appetite &amp; metabolism</h4><p>After two nights of only 4 hours, the fullness hormone <b>leptin</b> dropped 18%, the hunger hormone <b>ghrelin</b> rose 28%, and cravings for high-carb foods went up (Spiegel et al., 2004).</p></div>
+        <div class="card"><h4>It's essential</h4><p>Rats kept completely awake died within about 2–3 weeks (Rechtschaffen &amp; Bergmann). In people, the rare genetic disease <b>fatal familial insomnia</b> destroys the thalamus and with it the ability to sleep.</p></div>
       </div>
     </div>
   </section>
 
   <!-- =================== 6. DEPRIVATION =================== -->
-  <section class="s" id="dep" style="--sc:var(--s6)" data-title="Deprivation" data-icon="🥱">
-    <h2 class="sec"><span class="n">6</span>Sleep deprivation</h2>
+  <section class="s" id="dep" style="--sc:var(--s6)" data-title="Deprivation">
+    <p class="kicker">Part 6</p>
+    <h2 class="sec">Sleep deprivation</h2>
     <p class="lede">Drag to stay awake longer, starting from a 7 AM wake-up. Then look at the quieter danger: <b>chronic short sleep</b>, which adds up night after night while you barely notice it.</p>
     <div class="tabs" role="tablist" id="depTabs">
-      <button class="tab" role="tab" aria-selected="true" data-p="acute">⏳ Pulling an all-nighter</button>
-      <button class="tab" role="tab" aria-selected="false" data-p="chronic">📅 Two weeks of short sleep</button>
+      <button class="tab" role="tab" aria-selected="true" data-p="acute">Pulling an all-nighter</button>
+      <button class="tab" role="tab" aria-selected="false" data-p="chronic">Two weeks of short sleep</button>
     </div>
     <div class="dpp" data-p="acute">
       <div class="stage">
@@ -404,7 +410,7 @@
     <div class="dpp" data-p="chronic" hidden>
       <div class="stage">
         <div class="box flush"><canvas id="chron" style="aspect-ratio:16/8.2" aria-label="Attention lapses over 14 days of restricted sleep"></canvas>
-          <div class="ctrl" style="margin:4px 8px"><button class="chip" id="cPerf" aria-pressed="true">🎯 How they performed</button><button class="chip" id="cFeel" aria-pressed="false">😪 How sleepy they felt</button></div>
+          <div class="ctrl" style="margin:4px 8px"><button class="chip" id="cPerf" aria-pressed="true">How they performed</button><button class="chip" id="cFeel" aria-pressed="false">How sleepy they felt</button></div>
         </div>
         <div class="box">
           <div class="stname">The sleep debt you don't feel</div>
@@ -417,8 +423,9 @@
   </section>
 
   <!-- =================== 7. DISORDERS =================== -->
-  <section class="s" id="dis" style="--sc:var(--s7)" data-title="Disorders" data-icon="🩺">
-    <h2 class="sec"><span class="n">7</span>Sleep disorders</h2>
+  <section class="s" id="dis" style="--sc:var(--s7)" data-title="Disorders">
+    <p class="kicker">Part 7</p>
+    <h2 class="sec">Sleep disorders</h2>
     <p class="lede">Pick a disorder to see how its night differs from a healthy one (faint line) and what is going on in the brain.</p>
     <div class="dlist" id="dList"></div>
     <div class="stage">
@@ -431,8 +438,9 @@
   </section>
 
   <!-- =================== 8. REVIEW =================== -->
-  <section class="s" id="review" style="--sc:var(--s8)" data-title="Review" data-icon="⭐">
-    <h2 class="sec"><span class="n">8</span>Quick review</h2>
+  <section class="s" id="review" style="--sc:var(--s8)" data-title="Review">
+    <p class="kicker">Part 8</p>
+    <h2 class="sec">Quick review</h2>
     <p class="lede">Have the room call out an answer before you click.</p>
     <div class="quiz">
       <div class="qcard">
@@ -492,7 +500,7 @@ const RM=matchMedia('(prefers-reduced-motion: reduce)').matches;
 let COL={};
 function readCols(){ const cs=getComputedStyle(document.documentElement); const g=n=>cs.getPropertyValue(n).trim();
   COL={W:g('--W'),Wr:g('--W'),R:g('--R'),N1:g('--N1'),N2:g('--N2'),N3:g('--N3'),ink:g('--ink'),muted:g('--muted'),line:g('--line'),grid:g('--grid'),
-    panel:g('--panel'),panel2:g('--panel2'),bg:g('--bg'),accent:g('--accent'),trace:g('--trace'),good:g('--good'),bad:g('--bad'),blue:g('--blue'),orange:g('--orange'),sans:g('--sans'),hand:g('--hand')}; }
+    panel:g('--panel'),panel2:g('--panel2'),bg:g('--bg'),accent:g('--accent'),trace:g('--trace'),good:g('--good'),bad:g('--bad'),blue:g('--blue'),orange:g('--orange'),sans:g('--sans'),hand:g('--hand'),serif:g('--serif')}; }
 readCols();
 function alpha(c,a){ // works for #rrggbb
   if(c[0]!=='#') return c; const n=parseInt(c.slice(1),16); return `rgba(${n>>16},${(n>>8)&255},${n&255},${a})`; }
@@ -621,14 +629,15 @@ class EEG{
    ========================================================= */
 const sections=[...document.querySelectorAll('section.s')];
 const navList=$('navList');
-sections.forEach((s,i)=>{ const li=document.createElement('li'); li.innerHTML=`<a href="#${s.id}" style="--sc:${s.style.getPropertyValue('--sc')}"><span class="i">${s.dataset.icon}</span>${i+1}. ${s.dataset.title}</a>`; navList.appendChild(li); });
+sections.forEach((s,i)=>{ const li=document.createElement('li'); li.innerHTML=`<a href="#${s.id}"><span class="i">${String(i+1).padStart(2,'0')}</span>${s.dataset.title}</a>`; navList.appendChild(li); });
 const navLinks=[...navList.querySelectorAll('a')];
+sections.forEach((s,i)=>{ if(i%2===0) s.classList.add('alt'); });
 function curIndex(){ let best=-1; const y=window.innerHeight*.35; sections.forEach((s,i)=>{ if(s.getBoundingClientRect().top<=y) best=i; }); return best; }
 function markNav(){ const i=curIndex(); navLinks.forEach((a,j)=>a.classList.toggle('on',i===j)); }
 window.addEventListener('scroll',markNav,{passive:true}); markNav();
 
 function setTheme(light){ if(light) document.documentElement.setAttribute('data-theme','light'); else document.documentElement.removeAttribute('data-theme');
-  $('themeBtn').setAttribute('aria-pressed',light); $('themeBtn').innerHTML=light?'🌙 <span class="lbl">Dark room</span>':'☀️ <span class="lbl">Bright room</span>';
+  $('themeBtn').setAttribute('aria-pressed',light); $('themeBtn').innerHTML=light?'Dark theme':'Light theme';
   store.set('sleepTheme',light?'light':'dark'); readCols(); redrawAll(); }
 $('themeBtn').addEventListener('click',()=>setTheme(document.documentElement.getAttribute('data-theme')!=='light'));
 function setPresent(on){ document.documentElement.classList.toggle('present',on); $('presentBtn').setAttribute('aria-pressed',on); setTimeout(redrawAll,60); }
@@ -649,18 +658,6 @@ document.addEventListener('keydown',e=>{
 /* =========================================================
    HERO SKY
    ========================================================= */
-const sky=$('sky'); watch(sky);
-const stars=[]; for(let i=0;i<140;i++) stars.push({x:Math.random(),y:Math.random(),r:rnd(.5,1.8),p:Math.random()*TAU,s:rnd(.4,1.4)});
-function drawSky(now){ const {ctx,w,h}=setup(sky); ctx.clearRect(0,0,w,h);
-  const light=document.documentElement.getAttribute('data-theme')==='light';
-  for(const s of stars){ const a=light?.0:.35+.55*(.5+.5*Math.sin(s.p+now/1000*s.s)); if(a<=0) continue; ctx.fillStyle=`rgba(255,255,255,${a})`; ctx.beginPath(); ctx.arc(s.x*w,s.y*h,s.r,0,TAU); ctx.fill(); }
-  const mx=w*.86, my=h*.24, mr=Math.min(w,h)*.12;
-  ctx.fillStyle=light?'#ffd36e':'#fff1c2'; ctx.shadowColor=light?'rgba(255,190,60,.5)':'rgba(255,240,190,.6)'; ctx.shadowBlur=40;
-  ctx.beginPath(); ctx.arc(mx,my,mr,0,TAU); ctx.fill(); ctx.shadowBlur=0;
-  ctx.globalCompositeOperation='destination-out'; ctx.beginPath(); ctx.arc(mx+mr*.5,my-mr*.25,mr*.88,0,TAU); ctx.fill(); ctx.globalCompositeOperation='source-over';
-  // a drifting delta wave
-  ctx.strokeStyle=alpha(COL.N3,.55); ctx.lineWidth=3; ctx.beginPath();
-  for(let x=0;x<=w;x+=4){ const y=h*.9+Math.sin(x/90+now/900)*h*.035+Math.sin(x/37+now/600)*h*.01; if(x) ctx.lineTo(x,y); else ctx.moveTo(x,y); } ctx.stroke(); }
 
 /* =========================================================
    1. BRAIN WAVES
@@ -671,7 +668,7 @@ const chipBox=$('stageChips');
 ORDER.forEach(k=>{ const b=document.createElement('button'); b.className='chip'; b.dataset.k=k; b.style.setProperty('--k',`var(--${k==='Wr'?'W':k})`);
   b.innerHTML=`<span class="dot"></span>${ST[k].chip}`; b.setAttribute('aria-pressed',k==='W'); b.addEventListener('click',()=>pickStage(k)); chipBox.appendChild(b); });
 function showStageInfo(k,hidden){
-  $('stName').innerHTML=hidden?'❓ Which stage is this?':ST[k].name; $('stName').style.color=hidden?COL.ink:COL[k];
+  $('stName').innerHTML=hidden?'Which stage is this?':ST[k].name; $('stName').style.color=hidden?COL.ink:COL[k];
   $('stWave').innerHTML=hidden?'?':ST[k].wave; $('stEyes').innerHTML=hidden?'?':ST[k].eyes; $('stMus').innerHTML=hidden?'?':ST[k].mus;
   $('mFreq').style.width=(hidden?0:ST[k].f*100)+'%'; $('mAmp').style.width=(hidden?0:ST[k].a*100)+'%'; $('mWake').style.width=(hidden?0:ST[k].w*100)+'%';
   ['mFreq','mAmp','mWake'].forEach(id=>$(id).style.background=COL[k]);
@@ -702,7 +699,7 @@ function fmtClock(min,withMin){ let m=((Math.round(min)%1440)+1440)%1440; const 
 const SNAME={W:'Awake',R:'REM',N1:'N1',N2:'N2',N3:'N3'};
 
 function drawHyp(c,n,o){ const {ctx,w,h}=setup(c); ctx.clearRect(0,0,w,h);
-  const fs=clamp(w*.017,12,21), L=fs*4.4, R=fs*1.2, T=fs*(o.marks&&o.marks.length?2.6:1.2), B=fs*1.9;
+  const fs=clamp(w*.017,12,21), L=fs*4.4, R=fs*1.2, T=fs*(o.marks&&o.marks.length?2.9:1.2), B=fs*1.9;
   const exH=o.extra?h*.24:0; const H=h-T-B-exH-(o.extra?fs*.6:0);
   const X=m=>L+m/o.total*(w-L-R), Y=s=>T+YROW[s]/4*H;
   ctx.textBaseline='middle';
@@ -719,7 +716,12 @@ function drawHyp(c,n,o){ const {ctx,w,h}=setup(c); ctx.clearRect(0,0,w,h);
   line(n,s=>COL[s],fs*.42,1);
   if(o.cycles){ let k=0; ctx.font=`${fs*.8}px ${COL.sans}`; ctx.fillStyle=COL.R; ctx.textAlign='center';
     for(let i=0;i<n.length;i++){ const g=n[i]; if(g.s==='R' && g.t1-g.t0>=4){ k++; ctx.fillText('cycle '+k,X((g.t0+g.t1)/2),Y('R')-fs*.95); } } }
-  if(o.marks){ ctx.font=`${fs*1.25}px ${COL.sans}`; ctx.textAlign='center'; for(const mk of o.marks){ const x=X(mk.m); ctx.fillText(mk.icon,x,T-fs*1.25); ctx.strokeStyle=alpha(COL.accent,.6); ctx.setLineDash([3,4]); ctx.lineWidth=1.2; ctx.beginPath(); ctx.moveTo(x,T-fs*.5); ctx.lineTo(x,T+H); ctx.stroke(); ctx.setLineDash([]); } }
+  if(o.marks){ ctx.font=`600 ${fs*.78}px ${COL.sans}`; ctx.textBaseline='alphabetic'; let lastR=-1e9, lane=0;
+    for(const mk of o.marks){ const x=X(mk.m); const tw=ctx.measureText(mk.label).width; let tx=clamp(x-tw/2,L,w-R-tw);
+      lane=(tx<lastR+6)?(lane+1)%2:0; lastR=tx+tw; const ly=T-fs*.55-lane*fs*.95;
+      ctx.fillStyle=COL.accent; ctx.textAlign='left'; ctx.fillText(mk.label,tx,ly);
+      ctx.strokeStyle=alpha(COL.accent,.7); ctx.setLineDash([3,4]); ctx.lineWidth=1.2; ctx.beginPath(); ctx.moveTo(x,ly+3); ctx.lineTo(x,T+H); ctx.stroke(); ctx.setLineDash([]); }
+    ctx.textBaseline='middle'; }
   if(o.extra){ const y0=h-B-exH+fs*.2, y1=h-B+fs*.1; const ex=o.extra;
     ctx.fillStyle=COL.muted; ctx.font=`700 ${fs*.8}px ${COL.sans}`; ctx.textAlign='right'; ctx.fillText(ex.label[0],L-fs*.6,y0+(y1-y0)*.35); ctx.font=`${fs*.72}px ${COL.sans}`; ctx.fillText(ex.label[1],L-fs*.6,y0+(y1-y0)*.35+fs);
     ctx.strokeStyle=COL.grid; ctx.strokeRect(L,y0,w-L-R,y1-y0);
@@ -734,12 +736,12 @@ function drawHyp(c,n,o){ const {ctx,w,h}=setup(c); ctx.clearRect(0,0,w,h);
    ========================================================= */
 const YOUNG=[['W',10],['N1',5],['N2',15],['N3',40],['N2',10],['R',8], ['W',1],['N1',2],['N2',20],['N3',32],['N2',12],['R',18], ['N2',35],['N3',12],['N2',15],['W',2],['R',22], ['N1',2],['N2',50],['R',28], ['W',2],['N1',3],['N2',55],['R',32], ['N1',3],['N2',42],['W',4]];
 const PRESETS={
-  young:{label:'🧑 Young adult',segs:YOUNG,note:'Four to five cycles of about 90 minutes. Deep N3 is packed into the first half of the night; REM periods get longer toward morning.'},
-  baby:{label:'👶 Newborn',segs:(()=>{ const s=[]; for(let k=0;k<3;k++){ s.push(['R',25],['N2',4],['N3',22],['R',24],['N2',4],['N3',21]); s.push(['W',k<2?30:12]); } return s; })(),
+  young:{label:'Young adult',segs:YOUNG,note:'Four to five cycles of about 90 minutes. Deep N3 is packed into the first half of the night; REM periods get longer toward morning.'},
+  baby:{label:'Newborn',segs:(()=>{ const s=[]; for(let k=0;k<3;k++){ s.push(['R',25],['N2',4],['N3',22],['R',24],['N2',4],['N3',21]); s.push(['W',k<2?30:12]); } return s; })(),
     note:'Newborns sleep 14–17 hours a day in short bouts, waking to feed. About <b>half</b> of their sleep is REM ("active sleep"), often entered straight from waking, and cycles last only ~50–60 minutes. (Infant NREM isn\'t yet divided into adult N1–N3; it is simplified here.)'},
-  old:{label:'👵 Older adult',segs:[['W',22],['N1',8],['N2',28],['N3',14],['N2',10],['R',12], ['W',8],['N1',5],['N2',36],['N3',6],['N2',10],['R',15], ['W',14],['N1',5],['N2',40],['R',18], ['W',10],['N1',6],['N2',38],['W',6],['R',20], ['W',12],['N1',5],['N2',32],['R',14],['W',200]],
+  old:{label:'Older adult',segs:[['W',22],['N1',8],['N2',28],['N3',14],['N2',10],['R',12], ['W',8],['N1',5],['N2',36],['N3',6],['N2',10],['R',15], ['W',14],['N1',5],['N2',40],['R',18], ['W',10],['N1',6],['N2',38],['W',6],['R',20], ['W',12],['N1',5],['N2',32],['R',14],['W',200]],
     note:'Much less deep N3 sleep, more awakenings during the night, and an earlier wake-up. The need for sleep doesn\'t drop much with age, but sleep gets lighter and more broken.'},
-  rec:{label:'🔁 After an all-nighter',segs:[['W',3],['N1',2],['N2',8],['N3',62],['N2',8],['R',10], ['N2',10],['N3',50],['N2',8],['R',20], ['N2',20],['N3',30],['N2',10],['R',32], ['N2',28],['N3',8],['R',42], ['N2',36],['R',48],['N2',20],['R',8]],
+  rec:{label:'After an all-nighter',segs:[['W',3],['N1',2],['N2',8],['N3',62],['N2',8],['R',10], ['N2',10],['N3',50],['N2',8],['R',20], ['N2',20],['N3',30],['N2',10],['R',32], ['N2',28],['N3',8],['R',42], ['N2',36],['R',48],['N2',20],['R',8]],
     note:'Recovery sleep: you fall asleep within minutes, <b>deep N3 rebounds first</b>, and extra REM shows up later. Lost sleep is not repaid hour for hour; the brain prioritizes deep sleep.'}
 };
 const nightNotes=(s,m,cyc)=>{
@@ -762,9 +764,9 @@ function updateNight(){ const m=Math.min(playM,479.9), s=stageAt(N,m); $('scrub'
   $('nStage').textContent=s==='R'?'REM sleep':s==='W'?'Awake':SNAME[s]+(s==='N3'?' · deep sleep':s==='N1'?' · light sleep':'');
   $('nStage').style.color=COL[s]; $('nCycle').textContent=s==='W'&&m<15?'Not asleep yet':`Sleep cycle ${cycleOf(m)}`; $('nNote').innerHTML=nightNotes(s,m);
   eeg2.setStage(s==='W'?'Wr':s); }
-$('scrub').addEventListener('input',e=>{ playM=+e.target.value; playing=false; $('playBtn').textContent='▶ Play the night'; updateNight(); });
-$('playBtn').addEventListener('click',()=>{ playing=!playing; if(playing&&playM>=479) playM=0; $('playBtn').textContent=playing?'⏸ Pause':'▶ Play the night'; });
-(function(){ const c=$('hyp'); let drag=false; const at=e=>{ const r=c.getBoundingClientRect(); const fs=clamp(r.width*.017,12,21); const L=fs*4.4, R=fs*1.2; playM=clamp((e.clientX-r.left-L)/(r.width-L-R)*480,0,480); playing=false; $('playBtn').textContent='▶ Play the night'; updateNight(); };
+$('scrub').addEventListener('input',e=>{ playM=+e.target.value; playing=false; $('playBtn').textContent='Play the night'; updateNight(); });
+$('playBtn').addEventListener('click',()=>{ playing=!playing; if(playing&&playM>=479) playM=0; $('playBtn').textContent=playing?'Pause':'Play the night'; });
+(function(){ const c=$('hyp'); let drag=false; const at=e=>{ const r=c.getBoundingClientRect(); const fs=clamp(r.width*.017,12,21); const L=fs*4.4, R=fs*1.2; playM=clamp((e.clientX-r.left-L)/(r.width-L-R)*480,0,480); playing=false; $('playBtn').textContent='Play the night'; updateNight(); };
   c.addEventListener('pointerdown',e=>{ drag=true; c.setPointerCapture(e.pointerId); at(e); }); c.addEventListener('pointermove',e=>{ if(drag) at(e); }); c.addEventListener('pointerup',()=>drag=false); })();
 setPreset('young');
 
@@ -772,7 +774,7 @@ setPreset('young');
    3. TWO-PROCESS MODEL
    ========================================================= */
 const two={allnighter:false,coffee:false,nap:false,bed:23,cursor:8};
-const tChips=[['allnighter','🌃 Pull an all-nighter (night 1)'],['coffee','☕ Coffee at 3 PM'],['nap','😴 20-min nap at 2 PM']];
+const tChips=[['allnighter','Pull an all-nighter (night 1)'],['coffee','Coffee at 3 PM'],['nap','20-min nap at 2 PM']];
 tChips.forEach(([k,lab])=>{ const b=document.createElement('button'); b.className='chip'; b.textContent=lab; b.setAttribute('aria-pressed','false'); b.addEventListener('click',()=>{ two[k]=!two[k]; b.setAttribute('aria-pressed',two[k]); simTwo(); drawTwo(); readTwo(); }); $('twoChips').appendChild(b); });
 let TW=[]; const DT=.05;
 function clockAt(t){ return (t+7)%24; }
@@ -785,7 +787,7 @@ function simTwo(){ TW=[]; let S=.18; for(let t=0;t<=48+1e-9;t+=DT){ const sl=asl
 function drawTwo(){ const c=$('two'); const {ctx,w,h}=setup(c); ctx.clearRect(0,0,w,h);
   const fs=clamp(w*.017,12,21), L=fs*1.2, R=fs*1.2, T=fs*1.6, B=fs*2.2; const X=t=>L+t/48*(w-L-R), Y=v=>T+(1-v)*(h-T-B);
   // night bands
-  let inS=false, s0=0; for(const p of TW){ if(p.sl&&!inS){ inS=true; s0=p.t; } if((!p.sl||p.t>=48)&&inS){ inS=false; ctx.fillStyle=alpha(COL.N3,.18); ctx.fillRect(X(s0),T,X(p.t)-X(s0),h-T-B); if(p.t-s0>1){ ctx.fillStyle=COL.muted; ctx.font=`${fs}px ${COL.sans}`; ctx.textAlign='center'; ctx.fillText('😴 asleep',(X(s0)+X(p.t))/2,T+fs); } } }
+  let inS=false, s0=0; for(const p of TW){ if(p.sl&&!inS){ inS=true; s0=p.t; } if((!p.sl||p.t>=48)&&inS){ inS=false; ctx.fillStyle=alpha(COL.N3,.18); ctx.fillRect(X(s0),T,X(p.t)-X(s0),h-T-B); if(p.t-s0>1){ ctx.fillStyle=COL.muted; ctx.font=`${fs}px ${COL.sans}`; ctx.textAlign='center'; ctx.fillText('asleep',(X(s0)+X(p.t))/2,T+fs); } } }
   // gate
   ctx.fillStyle=alpha(COL.R,.28); for(let i=1;i<TW.length;i++){ const a=TW[i-1],b=TW[i]; const S=two.coffee?a.F:a.S; if(!a.sl && S>a.C){ ctx.beginPath(); ctx.moveTo(X(a.t),Y(a.C)); ctx.lineTo(X(a.t),Y(S)); ctx.lineTo(X(b.t),Y(two.coffee?b.F:b.S)); ctx.lineTo(X(b.t),Y(b.C)); ctx.fill(); } }
   // grid hours
@@ -794,7 +796,7 @@ function drawTwo(){ const c=$('two'); const {ctx,w,h}=setup(c); ctx.clearRect(0,
   ctx.fillText('day 1',X(5),h-fs*.45); ctx.fillText('day 2',X(29),h-fs*.45);
   const path=(key,col,lw,dash)=>{ ctx.strokeStyle=col; ctx.lineWidth=lw; ctx.setLineDash(dash||[]); ctx.beginPath(); TW.forEach((p,i)=>{ const x=X(p.t), y=Y(p[key]); if(i) ctx.lineTo(x,y); else ctx.moveTo(x,y); }); ctx.stroke(); ctx.setLineDash([]); };
   path('C',COL.orange,fs*.28); path('S',COL.blue,fs*.3); if(two.coffee) path('F',COL.blue,fs*.22,[8,7]);
-  if(two.coffee){ ctx.font=`${fs*1.3}px ${COL.sans}`; ctx.fillText('☕',X(8),Y(TW[Math.round(8/DT)].S)-fs*1.3); }
+  if(two.coffee){ const cx=X(8), cy=Y(TW[Math.round(8/DT)].S); ctx.fillStyle=COL.ink; ctx.beginPath(); ctx.arc(cx,cy,fs*.32,0,TAU); ctx.fill(); ctx.font=`600 ${fs*.8}px ${COL.sans}`; ctx.textAlign='center'; ctx.fillText('coffee',cx,cy-fs*1.1); }
   // cursor
   const p=TW[Math.round(two.cursor/DT)]; const x=X(p.t); ctx.strokeStyle=COL.accent; ctx.lineWidth=2.5; ctx.beginPath(); ctx.moveTo(x,T-fs*.5); ctx.lineTo(x,h-B); ctx.stroke();
   [['S',COL.blue],['C',COL.orange]].forEach(([k,col])=>{ ctx.fillStyle=col; ctx.beginPath(); ctx.arc(x,Y(p[k]),fs*.42,0,TAU); ctx.fill(); });
@@ -802,13 +804,13 @@ function drawTwo(){ const c=$('two'); const {ctx,w,h}=setup(c); ctx.clearRect(0,
 function readTwo(){ const p=TW[Math.round(two.cursor/DT)]; const S=two.coffee?p.F:p.S, gap=S-p.C;
   const clk=fmtClock(((p.t+7)%24)*60,true); $('tTime').textContent=`${clk}, day ${p.t<17?1:p.t<41?2:3}`;
   $('tS').style.width=(p.S*100)+'%'; $('tC').style.width=(p.C*100)+'%';
-  let v; if(p.sl) v='😴 <b>Asleep:</b> sleep pressure drains away as adenosine is cleared.';
-  else if(gap>.35) v='🚨 <b>Fighting to stay awake.</b> Microsleeps are likely; this is when drowsy-driving crashes peak.';
-  else if(gap>.15) v='😵 <b>Very sleepy.</b> Pressure is far above the clock\'s alerting signal.';
-  else if(gap>0) v='🥱 <b>Sleepy:</b> the sleep gate is open. You\'d fall asleep quickly.';
-  else if(gap>-.15) v='🙂 <b>Awake</b>, but you could nap.';
-  else v='⚡ <b>Alert.</b> The body clock\'s alerting signal is well above sleep pressure.';
-  if(two.coffee && !p.sl && p.t>8 && p.t<20 && p.S-p.F>.04) v+=' <br>☕ Caffeine is hiding about '+Math.round((p.S-p.F)*100)+' points of pressure, but the adenosine is still there.';
+  let v; if(p.sl) v='<b>Asleep:</b> sleep pressure drains away as adenosine is cleared.';
+  else if(gap>.35) v='<b>Fighting to stay awake.</b> Microsleeps are likely; this is when drowsy-driving crashes peak.';
+  else if(gap>.15) v='<b>Very sleepy.</b> Pressure is far above the clock\'s alerting signal.';
+  else if(gap>0) v='<b>Sleepy:</b> the sleep gate is open. You\'d fall asleep quickly.';
+  else if(gap>-.15) v='<b>Awake</b>, but you could nap.';
+  else v='<b>Alert.</b> The body clock\'s alerting signal is well above sleep pressure.';
+  if(two.coffee && !p.sl && p.t>8 && p.t<20 && p.S-p.F>.04) v+=' <br>Caffeine is hiding about '+Math.round((p.S-p.F)*100)+' points of pressure, but the adenosine is still there.';
   $('tVerdict').innerHTML=v; }
 $('bedRange').addEventListener('input',e=>{ two.bed=+e.target.value; $('bedOut').textContent=fmtClock(two.bed*60,true); simTwo(); drawTwo(); readTwo(); });
 (function(){ const c=$('two'); let drag=false; const at=e=>{ const r=c.getBoundingClientRect(); const fs=clamp(r.width*.017,12,21); two.cursor=clamp((e.clientX-r.left-fs*1.2)/(r.width-fs*2.4)*48,0,48); drawTwo(); readTwo(); };
@@ -856,9 +858,9 @@ const STATES={
   rem:{t:'REM sleep',k:'R',x:'Acetylcholine centers switch back on, but norepinephrine and serotonin go <b>silent</b>. The <b>SLD</b> in the pons turns on REM and, via the medulla, <b>paralyzes your muscles</b>. The cortex looks awake: you dream.'}
 };
 let cState='wake', narco=false, caffeine=false, narcoTimer=0, narcoFlip=null;
-[['wake','☀️ Awake','W'],['nrem','🌙 NREM','N3'],['rem','💭 REM','R']].forEach(([k,lab,col])=>{ const b=document.createElement('button'); b.className='chip'; b.dataset.k=k; b.style.setProperty('--k',`var(--${col})`); b.innerHTML=`<span class="dot"></span>${lab}`; b.setAttribute('aria-pressed',k==='wake'); b.addEventListener('click',()=>{ cState=k; narcoFlip=null; drawBrain(); }); $('circChips').appendChild(b); });
-const nb=document.createElement('button'); nb.className='chip ghost'; nb.textContent='⚠️ Narcolepsy: remove orexin'; nb.setAttribute('aria-pressed','false'); nb.addEventListener('click',()=>{ narco=!narco; nb.setAttribute('aria-pressed',narco); narcoFlip=null; drawBrain(); }); $('circChips').appendChild(nb);
-const cb=document.createElement('button'); cb.className='chip ghost'; cb.textContent='☕ Caffeine'; cb.setAttribute('aria-pressed','false'); cb.addEventListener('click',()=>{ caffeine=!caffeine; cb.setAttribute('aria-pressed',caffeine); drawBrain(); }); $('circChips').appendChild(cb);
+[['wake','Awake','W'],['nrem','NREM','N3'],['rem','REM','R']].forEach(([k,lab,col])=>{ const b=document.createElement('button'); b.className='chip'; b.dataset.k=k; b.style.setProperty('--k',`var(--${col})`); b.innerHTML=`<span class="dot"></span>${lab}`; b.setAttribute('aria-pressed',k==='wake'); b.addEventListener('click',()=>{ cState=k; narcoFlip=null; drawBrain(); }); $('circChips').appendChild(b); });
+const nb=document.createElement('button'); nb.className='chip ghost'; nb.textContent='Narcolepsy: remove orexin'; nb.setAttribute('aria-pressed','false'); nb.addEventListener('click',()=>{ narco=!narco; nb.setAttribute('aria-pressed',narco); narcoFlip=null; drawBrain(); }); $('circChips').appendChild(nb);
+const cb=document.createElement('button'); cb.className='chip ghost'; cb.textContent='Caffeine'; cb.setAttribute('aria-pressed','false'); cb.addEventListener('click',()=>{ caffeine=!caffeine; cb.setAttribute('aria-pressed',caffeine); drawBrain(); }); $('circChips').appendChild(cb);
 const brain=$('brain'); let selNode=null;
 function shownState(){ return narcoFlip||cState; }
 function drawBrain(){ brain.innerHTML=''; const st=shownState(); const A=Object.assign({},ACT[st]);
@@ -899,9 +901,9 @@ function drawBrain(){ brain.innerHTML=''; const st=shownState(); const A=Object.
   const ct=el('text',{x:520,y:128,'font-family':COL.sans,'font-size':24,'font-weight':700,fill:COL.ink,'text-anchor':'middle',class:'node',tabindex:0},brain); ct.textContent='Cortex: '+(st==='nrem'?'slow waves':'active');
   ct.addEventListener('click',()=>{ selNode='ctx'; $('cInfo').innerHTML=`<b>${NODES.ctx.full}</b><br>${NODES.ctx.info}`; });
   // panel
-  const S=STATES[st]; $('cTitle').textContent=(narcoFlip?'⚡ Sudden switch: ':'')+S.t; $('cTitle').style.color=COL[S.k];
+  const S=STATES[st]; $('cTitle').textContent=(narcoFlip?'Sudden switch: ':'')+S.t; $('cTitle').style.color=COL[S.k];
   let txt=S.x; if(narco) txt+=' <br><b style="color:var(--bad)">Without orexin</b>, nothing holds the seesaw steady: it flips at random, causing <b>sleep attacks</b> by day and broken sleep at night. If REM pieces break into waking, muscles suddenly go limp (<b>cataplexy</b>).';
-  if(caffeine) txt+=' <br>☕ <b>Caffeine</b> blocks adenosine receptors, so adenosine can\'t help switch the VLPO on'+(st==='wake'?'. You stay awake even with high sleep pressure.':', making sleep lighter.');
+  if(caffeine) txt+=' <br><b>Caffeine</b> blocks adenosine receptors, so adenosine can\'t help switch the VLPO on'+(st==='wake'?'. You stay awake even with high sleep pressure.':', making sleep lighter.');
   $('cText').innerHTML=txt; drawSeesaw(st); }
 function drawSeesaw(st){ const s=$('seesaw'); s.innerHTML=''; const ang=st==='wake'?-13:13; const cx=200,cy=96;
   el('path',{d:`M${cx-22},${cy+44} L${cx},${cy+4} L${cx+22},${cy+44} Z`,fill:COL.muted},s);
@@ -951,6 +953,11 @@ const rep={mode:'day',t:0,spikes:[],rat:0,ripT:0};
 function setRep(m){ rep.mode=m; rep.spikes=[]; rep.t=0; $('rDay').setAttribute('aria-pressed',m==='day'); $('rNight').setAttribute('aria-pressed',m==='night'); }
 $('rDay').addEventListener('click',()=>setRep('day')); $('rNight').addEventListener('click',()=>setRep('night'));
 const PC=['#ff7a45','#e0a800','#2fbf7f','#3d8ef0','#c770ef']; watch($('replay'));
+function drawRat(ctx,x,y,fs,curled){ const r=fs*.9; ctx.save(); ctx.translate(x,y); ctx.fillStyle=COL.muted; ctx.strokeStyle=COL.muted; ctx.lineWidth=2;
+  if(curled){ ctx.beginPath(); ctx.ellipse(0,0,r*1.3,r*.8,0,0,TAU); ctx.fill(); ctx.beginPath(); ctx.arc(-r*.2,r*.1,r*1.5,.3,2.6); ctx.stroke(); }
+  else { ctx.beginPath(); ctx.ellipse(0,0,r*1.4,r*.75,0,0,TAU); ctx.fill(); ctx.beginPath(); ctx.ellipse(r*1.45,-r*.1,r*.6,r*.45,0,0,TAU); ctx.fill();
+    ctx.beginPath(); ctx.arc(r*1.3,-r*.6,r*.25,0,TAU); ctx.fill(); ctx.beginPath(); ctx.moveTo(-r*1.3,0); ctx.quadraticCurveTo(-r*2.4,-r*.2,-r*2.6,r*.5); ctx.stroke(); }
+  ctx.restore(); }
 function stepReplay(dt,now){ const c=$('replay'); if(!isVis(c)) return; const {ctx,w,h}=setup(c); ctx.clearRect(0,0,w,h);
   const fs=clamp(w*.02,13,22); rep.t+=dt;
   const trackY=h*.25, x0=w*.08, x1=w*.92;
@@ -960,8 +967,8 @@ function stepReplay(dt,now){ const c=$('replay'); if(!isVis(c)) return; const {c
   const winS=rep.mode==='day'?8:2; // raster window seconds
   if(rep.mode==='day'){ rep.rat=(rep.t/6)%1; const rx=x0+rep.rat*(x1-x0); const field=Math.floor(rep.rat*5); const centre=(field+.5)/5; const near=1-Math.abs(rep.rat-centre)*10;
     if(near>0 && Math.random()<dt*25*near) rep.spikes.push({t:rep.t,c:field});
-    ctx.font=`${fs*2}px ${COL.sans}`; ctx.textAlign='center'; ctx.textBaseline='middle'; ctx.save(); ctx.translate(rx,trackY-fs*1.2); ctx.scale(-1,1); ctx.fillText('🐀',0,0); ctx.restore(); }
-  else { ctx.font=`${fs*2}px ${COL.sans}`; ctx.textAlign='center'; ctx.textBaseline='middle'; ctx.fillText('🐀💤',w*.5,trackY-fs*1.4);
+    drawRat(ctx,rx,trackY-fs*.9,fs,false); }
+  else { drawRat(ctx,w*.5,trackY-fs*.9,fs,true); ctx.fillStyle=COL.muted; ctx.font=`italic ${fs*.85}px ${COL.serif}`; ctx.textAlign='left'; ctx.textBaseline='middle'; ctx.fillText('asleep in its nest',w*.5+fs*2.2,trackY-fs*1.6);
     if(rep.t>rep.ripT){ rep.ripT=rep.t+rnd(1.2,2); const st=rep.t; for(let i=0;i<5;i++) for(let k=0;k<3;k++) rep.spikes.push({t:st+i*.03+k*.008,c:i,rip:true}); } }
   rep.spikes=rep.spikes.filter(s=>s.t>rep.t-winS);
   const ry0=h*.48, ry1=h*.92; const X=t=>x0+(t-(rep.t-winS))/winS*(x1-x0);
@@ -980,18 +987,18 @@ $('sReset').addEventListener('click',()=>{ syn.w=SYN0.slice(); syn.target=null; 
 watch($('shy'));
 function stepShy(dt){ const c=$('shy'); if(!isVis(c)) return; const {ctx,w,h}=setup(c); ctx.clearRect(0,0,w,h);
   if(syn.target) syn.w=syn.w.map((v,i)=>v+(syn.target[i]-v)*Math.min(1,dt*2));
-  const fs=clamp(w*.02,13,22), n=syn.w.length, L=w*.06, R=w*.24, T=fs*2.4, B=fs*2.2, bw=(w-L-R)/n;
+  const fs=clamp(w*.02,13,22), n=syn.w.length, L=w*.06, R=w*.24, T=fs*2.4, B=fs*3, bw=(w-L-R)/n;
   ctx.strokeStyle=COL.grid; ctx.beginPath(); ctx.moveTo(L,h-B); ctx.lineTo(w-R,h-B); ctx.stroke();
   syn.w.forEach((v,i)=>{ const x=L+i*bw+bw*.18, bh=v*(h-T-B); ctx.fillStyle=IMPORTANT.includes(i)?COL.accent:COL.N2; ctx.beginPath(); if(ctx.roundRect) ctx.roundRect(x,h-B-bh,bw*.64,bh,6); else ctx.rect(x,h-B-bh,bw*.64,bh); ctx.fill();
-    ctx.fillStyle=COL.muted; ctx.font=`${fs*.8}px ${COL.sans}`; ctx.textAlign='center'; ctx.textBaseline='top'; ctx.fillText(IMPORTANT.includes(i)?'⭐':'',x+bw*.32,h-B+4); });
+    ctx.fillStyle=COL.muted; ctx.font=`${fs*.8}px ${COL.sans}`; ctx.textAlign='center'; ctx.textBaseline='top'; ctx.fillText(IMPORTANT.includes(i)?'often used':'',x+bw*.32,h-B+4); });
   const tot=syn.w.reduce((a,b)=>a+b,0)/n; ctx.fillStyle=COL.ink; ctx.font=`700 ${fs}px ${COL.sans}`; ctx.textAlign='left'; ctx.textBaseline='top';
-  ctx.fillText('Synapse strength',L,4); ctx.font=`${fs*.8}px ${COL.sans}`; ctx.fillStyle=COL.muted; ctx.fillText('⭐ = used a lot today',L,4+fs*1.2);
+  ctx.fillText('Synapse strength',L,4); ctx.font=`${fs*.8}px ${COL.sans}`; ctx.fillStyle=COL.muted; ctx.fillText('highlighted = used often today',L,4+fs*1.2);
   // energy gauge
   const gx=w-R+fs, gw=R-fs*2, gh=h-T-B; ctx.strokeStyle=COL.line; ctx.lineWidth=2; ctx.strokeRect(gx,T,gw,gh);
   ctx.fillStyle=tot>.45?COL.bad:COL.good; ctx.fillRect(gx+2,T+gh*(1-Math.min(1,tot/.7)),gw-4,gh*Math.min(1,tot/.7)-2);
   ctx.fillStyle=COL.ink; ctx.font=`700 ${fs*.8}px ${COL.sans}`; ctx.textAlign='center'; ctx.fillText('energy & space',gx+gw/2,h-B+4); ctx.fillText('used',gx+gw/2,h-B+4+fs);
   ctx.fillStyle=COL.muted; ctx.font=`${fs*.85}px ${COL.sans}`; ctx.textAlign='left';
-  ctx.fillText(syn.phase==='day'?'Awake and learning: synapses strengthen, costs rise':syn.phase==='night'?'Sleep: everything scales down; ⭐ synapses still stand out':'Press "Live a day"',L,h-fs*1.1); }
+  ctx.fillText(syn.phase==='day'?'Awake and learning: synapses strengthen, costs rise':syn.phase==='night'?'Sleep: everything scales down; the often-used synapses still stand out':'Press "Live a day"',L,h-fs*1.1); }
 
 /* =========================================================
    6. DEPRIVATION
@@ -1049,56 +1056,56 @@ const o2Map=v=>clamp((v-.78)/.22,0,1);
 function emgFn(rbd){ const n=healthy; let seed=0; return m=>{ const s=stageAt(n,m); const j=Math.abs(Math.sin(m*91.7)+Math.sin(m*37.3))*.5;
   if(s==='W') return .7+.15*j; if(s==='R') return rbd?(j>.55?.75+.2*j:.12+.3*j):.05+.03*j; if(s==='N3') return .28+.05*j; return .33+.06*j; }; }
 const DIS={
-  insomnia:{ic:'😩',name:'Insomnia',tag:'can\'t fall or stay asleep',
+  insomnia:{ic:'',name:'Insomnia',tag:'can\'t fall or stay asleep',
     a:(()=>{ const a=young(); over(a,0,10,'W'); const b=toSlots([['W',62],['N1',8],['N2',22],['N3',22],['N2',8],['R',10],['W',28],['N1',4],['N2',26],['N3',10],['N2',8],['R',16],['W',22],['N1',4],['N2',34],['R',20],['W',34],['N1',6],['N2',30],['R',22],['W',18],['N2',22],['R',10],['W',40]],480); return b; })(),
-    marks:[{m:31,icon:'⏱️'},{m:145,icon:'👀'},{m:235,icon:'👀'},{m:330,icon:'👀'},{m:455,icon:'⏰'}],
+    marks:[{m:31,label:'1 h to fall asleep'},{m:145,label:'awake'},{m:235,label:'awake'},{m:330,label:'awake'},{m:440,label:'up too early'}],
     what:'Trouble falling asleep, staying asleep, or waking too early, at least 3 nights a week for 3 months, even with plenty of time to sleep, and it affects the next day.',
     brain:'A <b>hyperaroused</b> brain: faster EEG, higher metabolism and more stress hormones at night. Worrying about sleep keeps the arousal system switched on.',
     who:'About 10% of adults have chronic insomnia, and about 1 in 3 have some symptoms.',
     treat:'<b>CBT-I</b> (cognitive behavioral therapy for insomnia) is the first-line treatment: a fixed wake time, using the bed only for sleep, sleep restriction, and tackling worried thoughts. Its benefits outlast sleeping pills.'},
-  osa:{ic:'😮‍💨',name:'Sleep apnea',tag:'breathing stops, brain wakes',a:osa.a,extra:{label:['Oxygen','80–100%'],fn:m=>o2Map(o2(m)),ghost:()=>o2Map(.965),color:'#ff6b7d'},
+  osa:{ic:'',name:'Sleep apnea',tag:'breathing stops, brain wakes',a:osa.a,extra:{label:['Oxygen','80–100%'],fn:m=>o2Map(o2(m)),ghost:()=>o2Map(.965),color:'#ff6b7d'},
     what:'The throat collapses during sleep and breathing stops or gets shallow for 10+ seconds. Oxygen drops and the brain briefly wakes to reopen the airway, often dozens of times an hour, with no memory of it.',
     brain:'Every mini-awakening fragments sleep, so <b>deep N3 and REM are lost</b>. Repeated oxygen drops strain the heart and brain. Result: loud snoring, gasping and heavy daytime sleepiness.',
     who:'Very common: an estimated ~1 billion people worldwide (Benjafield et al., 2019), most undiagnosed. Risks: excess weight, male sex, age, alcohol.',
     treat:'<b>CPAP</b> (gentle air pressure that splints the airway open), weight loss, oral appliances, side-sleeping, and nerve-stimulation implants.'},
-  narco:{ic:'⚡',name:'Narcolepsy',tag:'sleep attacks, cataplexy',
+  narco:{ic:'',name:'Narcolepsy',tag:'sleep attacks, cataplexy',
     a:toSlots([['W',4],['R',14],['N2',18],['N3',26],['W',10],['N1',6],['N2',20],['R',14],['W',8],['N1',8],['N2',24],['R',18],['W',14],['N1',6],['N2',18],['N3',10],['R',22],['W',12],['N1',8],['N2',28],['R',24],['W',16],['N2',26],['R',20],['W',10],['N2',20],['R',16],['W',20]],480),
-    marks:[{m:6,icon:'⚡'}],
+    marks:[{m:10,label:'REM within minutes'}],
     what:'Overwhelming daytime sleepiness with sudden sleep attacks. Type 1 adds <b>cataplexy</b>: strong emotion (like laughing) suddenly makes muscles go limp while the person stays fully awake.',
-    brain:'Loss of the hypothalamic <b>orexin (hypocretin)</b> neurons, probably autoimmune. With nothing stabilizing the flip-flop switch, pieces of REM break into waking. People often enter <b>REM within minutes</b> of falling asleep (⚡), and night sleep is broken.',
+    brain:'Loss of the hypothalamic <b>orexin (hypocretin)</b> neurons, probably autoimmune. With nothing stabilizing the flip-flop switch, pieces of REM break into waking. People often enter <b>REM within minutes</b> of falling asleep (marked), and night sleep is broken.',
     who:'About 1 in 2,000 people. It usually starts in the teens or twenties and often goes undiagnosed for years.',
     treat:'Scheduled naps, wake-promoting medications, and sodium oxybate for sleepiness and cataplexy. Try the orexin switch in section 4.'},
-  rbd:{ic:'🥊',name:'REM behavior disorder',tag:'acting out dreams',a:young(),extra:{label:['Muscle','tone'],fn:emgFn(true),ghost:emgFn(false),color:'#e594ff'},
-    marks:[{m:95,icon:'🥊'},{m:248,icon:'🥊'},{m:330,icon:'🥊'},{m:415,icon:'🥊'}],
+  rbd:{ic:'',name:'REM behavior disorder',tag:'acting out dreams',a:young(),extra:{label:['Muscle','tone'],fn:emgFn(true),ghost:emgFn(false),color:'#e594ff'},
+    marks:[{m:95,label:'acts out'},{m:248,label:'acts out'},{m:330,label:'acts out'},{m:415,label:'acts out'}],
     what:'The paralysis of REM fails, so people <b>act out their dreams</b>: punching, kicking, shouting, sometimes injuring themselves or a bed partner. Look at the muscle trace during REM.',
     brain:'Damage to the brainstem pathway (SLD → medulla → spinal cord) that switches off motor neurons in REM. Often an <b>early warning sign</b>: most people with isolated RBD develop Parkinson\'s disease or a related synuclein disease within about 10–15 years (Postuma et al., 2019).',
     who:'About 1% of older adults, mostly men over 50.',
     treat:'Make the bedroom safe; melatonin or clonazepam; regular follow-up with a neurologist.'},
-  walk:{ic:'🚶',name:'Sleepwalking & night terrors',tag:'arousals out of deep sleep',
+  walk:{ic:'',name:'Sleepwalking & night terrors',tag:'arousals out of deep sleep',
     a:(()=>{ const a=young(); over(a,52,55,'W'); over(a,128,130,'W'); return a; })(),
-    marks:[{m:53,icon:'🚶'},{m:129,icon:'😱'}],
+    marks:[{m:53,label:'sleepwalking'},{m:129,label:'night terror'}],
     what:'Partial awakenings out of <b>deep N3 sleep</b>. Parts of the brain that control movement wake up while memory and judgment stay asleep. Sleepwalkers can walk, talk or even eat; in a night terror, the person sits up screaming in terror, can\'t be comforted, and remembers nothing.',
     brain:'These are NREM parasomnias, not acted-out dreams. Because N3 is front-loaded, they happen in the <b>first third of the night</b>, unlike REM behavior disorder.',
     who:'Much more common in children, and most outgrow it. Sleep deprivation, fever, stress and noise make episodes more likely.',
     treat:'Safety first. Keep a regular sleep schedule (sleep debt deepens N3). Gently guide the person back to bed rather than forcefully waking them.'},
-  para:{ic:'👻',name:'Sleep paralysis',tag:'awake but can\'t move',
+  para:{ic:'',name:'Sleep paralysis',tag:'awake but can\'t move',
     a:(()=>{ const a=young(); over(a,339,341,'W'); return a; })(),
-    marks:[{m:339,icon:'👻'}],
+    marks:[{m:339,label:'paralysis on waking'}],
     what:'Waking up <b>unable to move</b> for seconds to a few minutes, often with a sense of a presence, pressure on the chest, or vivid hallucinations.',
-    brain:'The mind wakes up but REM\'s <b>muscle paralysis and dream imagery</b> carry on for a moment: REM and waking overlap at a REM-to-wake transition (👻). Frightening but harmless. It likely explains many "night visitor" legends around the world.',
+    brain:'The mind wakes up but REM\'s <b>muscle paralysis and dream imagery</b> carry on for a moment: REM and waking overlap at a REM-to-wake transition (marked). Frightening but harmless. It likely explains many "night visitor" legends around the world.',
     who:'About 8% of people have it at least once (Sharpless &amp; Barber, 2011), more with sleep deprivation, irregular schedules, and in narcolepsy.',
     treat:'Regular sleep. Knowing what it is takes away much of the fear; focusing on moving a finger or toe can help end an episode.'},
-  rls:{ic:'🦵',name:'Restless legs',tag:'urge to move at night',
+  rls:{ic:'',name:'Restless legs',tag:'urge to move at night',
     a:toSlots([['W',48],['N1',8],['N2',18],['N3',24],['N2',10],['R',10],['W',6],['N1',4],['N2',24],['N3',20],['N2',10],['R',16],['W',4],['N2',36],['N3',8],['N2',14],['R',22],['N1',3],['N2',48],['R',26],['W',3],['N2',50],['R',28],['W',40]],480),
     extra:{label:['Legs','moving'],fn:m=>{ const s=stageAt(toNight(DIS_RLS_SLOTS()),m); if((s==='N1'||s==='N2')&&m<320){ return (m*2.1)%1<.12?.85:.05; } return s==='W'&&m<48?((m*1.3)%1<.3?.9:.2):.05; },color:'#ffb04a'},
-    marks:[{m:24,icon:'🦵'}],
+    marks:[{m:24,label:'urge to move'}],
     what:'An irresistible urge to move the legs, with creepy-crawly feelings that are worse in the evening and at rest and relieved by moving. Most people with it also have <b>periodic limb movements</b> every 20–40 seconds during sleep.',
     brain:'Linked to <b>low iron</b> in the brain and changes in <b>dopamine</b> signaling.',
     who:'Roughly 5–10% of adults in Europe and North America; more common in pregnancy and with iron deficiency.',
     treat:'Check iron levels and replace iron if low. Avoid triggers such as caffeine, alcohol and some antihistamines and antidepressants. Medications target α2δ calcium channels or dopamine.'},
-  dspd:{ic:'🦉',name:'Delayed sleep phase',tag:'the night-owl teen',
+  dspd:{ic:'',name:'Delayed sleep phase',tag:'the night-owl teen',
     a:toSlots([['W',238],['N1',4],['N2',12],['N3',38],['N2',10],['R',10],['N2',22],['N3',28],['N2',12],['R',16],['N2',26],['N3',8],['N2',14],['R',24],['N2',12]],480),
-    marks:[{m:238,icon:'🦉'},{m:478,icon:'⏰'}],
+    marks:[{m:238,label:'finally asleep'},{m:466,label:'alarm'}],
     what:'The body clock runs <b>late</b>: you can\'t fall asleep until 2–3 AM, and the alarm for an 8 AM class cuts sleep short. The sleep itself is normal if you can sleep in.',
     brain:'The SCN clock and melatonin are shifted later. <b>Puberty</b> naturally shifts the clock later, and evening light from screens pushes it further. Cutting sleep at 7 AM removes mostly the <b>REM-rich</b> last part of the night.',
     who:'Common in teens and young adults.',
@@ -1107,12 +1114,12 @@ const DIS={
 function DIS_RLS_SLOTS(){ return DIS.rls.a; }
 let rlsNight=null;
 const dl=$('dList'); let dSel='insomnia';
-Object.keys(DIS).forEach(k=>{ const d=DIS[k]; const b=document.createElement('button'); b.className='dbtn'; b.dataset.k=k; b.setAttribute('aria-pressed',k===dSel); b.innerHTML=`<span class="ic">${d.ic}</span><span>${d.name}<small>${d.tag}</small></span>`; b.addEventListener('click',()=>{ dSel=k; showDis(); }); dl.appendChild(b); });
+Object.keys(DIS).forEach(k=>{ const d=DIS[k]; const b=document.createElement('button'); b.className='dbtn'; b.dataset.k=k; b.setAttribute('aria-pressed',k===dSel); b.innerHTML=`<span>${d.name}<small>${d.tag}</small></span>`; b.addEventListener('click',()=>{ dSel=k; showDis(); }); dl.appendChild(b); });
 const disNights={}; Object.keys(DIS).forEach(k=>disNights[k]=toNight(DIS[k].a));
 // cache RLS night for the extra function
 (function(){ const n=disNights.rls; DIS.rls.extra.fn=m=>{ const s=stageAt(n,m); if((s==='N1'||s==='N2')&&m<330) return (m*2.1)%1<.14?.85:.06; if(s==='W'&&m<48) return (m*1.3)%1<.35?.9:.25; return .05; }; })();
 function showDis(){ const d=DIS[dSel]; dl.querySelectorAll('.dbtn').forEach(b=>b.setAttribute('aria-pressed',b.dataset.k===dSel));
-  $('dName').innerHTML=`${d.ic} ${d.name}`; $('dName').style.color='var(--c)';
+  $('dName').textContent=d.name; $('dName').style.color='var(--c)';
   $('dInfo').innerHTML=`<div><h5>What happens</h5><p>${d.what}</p></div><div><h5>In the brain</h5><p>${d.brain}</p></div><div><h5>Who gets it</h5><p>${d.who}</p></div><div><h5>Treatment</h5><p>${d.treat}</p></div>`;
   drawDis(); }
 function drawDis(){ const d=DIS[dSel]; const c=$('dhyp'); if(c.offsetParent===null) return; drawHyp(c,disNights[dSel],{total:480,bed:23,ghost:healthy,marks:d.marks||[],extra:d.extra||null}); }
@@ -1139,7 +1146,7 @@ function showQ(){ const q=QZ[qi]; $('qText').textContent=`${qi+1}. ${q.q}`; $('q
   markQ(); $('qPrev').disabled=qi===0; $('qNext').textContent=qi===QZ.length-1?'Start over ↺':'Next question →'; }
 function markQ(){ const q=QZ[qi], pick=answered[qi]; const bs=[...$('qOpts').children];
   bs.forEach((b,i)=>{ b.classList.remove('right','wrong'); if(pick!==undefined){ if(i===q.a) b.classList.add('right'); else if(i===pick) b.classList.add('wrong'); } });
-  $('qWhy').innerHTML=pick===undefined?'':(pick===q.a?'✅ ':'❌ ')+q.why; }
+  $('qWhy').innerHTML=pick===undefined?'':(pick===q.a?'<b>Correct.</b> ':'<b>Not quite.</b> ')+q.why; }
 $('qPrev').addEventListener('click',()=>{ if(qi>0){ qi--; showQ(); } });
 $('qNext').addEventListener('click',()=>{ if(qi<QZ.length-1) qi++; else { qi=0; for(const k in answered) delete answered[k]; } showQ(); });
 showQ();
@@ -1150,9 +1157,8 @@ showQ();
 function redrawAll(){ readCols(); if(N) drawHyp($('hyp'),N,{total:480,bed:23,play:playM,cycles:preset!=='baby'}); drawTwo(); drawBrain(); drawDis(); drawChron(); showStageInfo(mystery?mysteryAns:curStage,mystery); if(N) setPreset(preset); }
 let prev=performance.now();
 function loop(now){ const dt=Math.min(.05,(now-prev)/1000); prev=now;
-  if(isVis(sky)) drawSky(now);
   if(isVis($('eeg'))){ eeg.advance(dt); eeg.draw(); }
-  if(isVis($('hyp'))){ if(playing){ playM+=dt*480/32; if(playM>=480){ playM=480; playing=false; $('playBtn').textContent='▶ Play the night'; } updateNight(); }
+  if(isVis($('hyp'))){ if(playing){ playM+=dt*480/32; if(playM>=480){ playM=480; playing=false; $('playBtn').textContent='Play the night'; } updateNight(); }
     drawHyp($('hyp'),N,{total:480,bed:23,play:playM,cycles:preset!=='baby'}); eeg2.advance(dt); eeg2.draw(); }
   if(narco && isVis(brain)){ narcoTimer-=dt; if(narcoTimer<=0){ narcoTimer=rnd(1.8,3.2); const opts=['wake','nrem','rem'].filter(s=>s!==shownState()); narcoFlip=Math.random()<.65?opts[Math.floor(Math.random()*opts.length)]:null; drawBrain(); } }
   stepGlym(dt,now); stepReplay(dt,now); stepShy(dt);
