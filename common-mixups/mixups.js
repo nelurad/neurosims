@@ -937,7 +937,7 @@ function plotFrame(svg,lo,hi,yLabel){
   const D={x:[10,1000,'<b>Drug X:</b> TI = 1,000 ÷ 10 = <b>100</b>. A huge gap between the helpful dose and the lethal one, so it\'s much safer.'],
     y:[10,40,'<b>Drug Y:</b> TI = 40 ÷ 10 = <b>4</b>. The <i>same ED50</i>, but the lethal dose is close by. A small mistake can be fatal. Same potency doesn\'t mean same safety.'],
     barb:[30,150,'<b>Barbiturate-like:</b> a narrow therapeutic index. The calming dose isn\'t far from the dose that shuts down breathing, which is why overdoses were common in the 1950s.'],
-    benzo:[5,5000,'<b>Benzodiazepine-like:</b> a very wide therapeutic index on its own, which is why benzos replaced barbiturates. (Mixing with alcohol changes that: see topic 16.)']};
+    benzo:[5,5000,'<b>Benzodiazepine-like:</b> a very wide therapeutic index on its own, which is why benzos replaced barbiturates. (Mixing with alcohol changes that: see the last topic.)']};
   let e=10,l=1000;
   function draw(){eP.setAttribute('d',F.curve(e,100,2));lP.setAttribute('d',F.curve(l,100,2.5));
     shade.setAttribute('x',F.x(e));shade.setAttribute('width',Math.max(0,F.x(l)-F.x(e)));
@@ -1019,4 +1019,282 @@ function plotFrame(svg,lo,hi,yLabel){
 
 /* embed copy */
 $('copyBtn').addEventListener('click',()=>{const t=$('embedCode').textContent;if(navigator.clipboard)navigator.clipboard.writeText(t).then(()=>{$('copyBtn').textContent='Copied';setTimeout(()=>$('copyBtn').textContent='Copy',1500);},()=>{});});
+
+/* ============ generic click-to-sort ============ */
+function makeSorter(chipsId,binsId,txtId,BINS,ITEMS,hint){
+  const chipsBox=$(chipsId), binsBox=$(binsId), txt=$(txtId); let sel=null;
+  BINS.forEach(([k,n,d])=>{const b=document.createElement('button');b.className='bin';b.innerHTML='<span class="bn">'+n+'</span><span class="bd">'+d+'</span>';binsBox.appendChild(b);
+    b.addEventListener('click',()=>{ if(!sel){txt.innerHTML='Pick an item first.';return;}
+      const [label,ans,why]=sel.item;
+      if(ans===k){const s=document.createElement('span');s.className='got';s.innerHTML=label;b.appendChild(s);sel.btn.remove();
+        txt.innerHTML='<b style="color:#2a8a4c">Right.</b> '+why; sel=null;
+        if(!chipsBox.children.length) txt.innerHTML+=' <b>All sorted!</b>';}
+      else{txt.innerHTML='<b style="color:#c8343f">Not quite.</b> '+hint;
+        sel.btn.classList.add('bad');const bb=sel.btn;setTimeout(()=>bb.classList.remove('bad'),600);}
+    });});
+  shuffle(ITEMS).forEach(item=>{const b=document.createElement('button');b.className='chip';b.innerHTML=item[0];b.setAttribute('aria-pressed','false');chipsBox.appendChild(b);
+    b.addEventListener('click',()=>{[...chipsBox.children].forEach(x=>x.setAttribute('aria-pressed','false'));b.setAttribute('aria-pressed','true');sel={btn:b,item};txt.innerHTML='Now click the box it belongs in.';});});
+}
+
+/* ============ Vagus ============ */
+{
+  const svg=$('vagSvg');
+  S('path',{d:'M110,152 Q200,128 290,152 L302,404 Q200,422 98,404 Z',fill:'#fbefe4',stroke:'#c9a58a','stroke-width':2},svg);
+  S('rect',{x:182,y:108,width:36,height:40,fill:'#fbefe4',stroke:'#c9a58a','stroke-width':2},svg);
+  S('circle',{cx:200,cy:68,r:48,fill:'#fbefe4',stroke:'#c9a58a','stroke-width':2},svg);
+  S('rect',{x:183,y:140,width:34,height:16,fill:'#fbefe4'},svg);
+  S('ellipse',{cx:200,cy:60,rx:33,ry:23,fill:'#f3d9e0',stroke:'#c98f99','stroke-width':1.3},svg);
+  const med=S('rect',{x:195,y:80,width:11,height:34,rx:4,fill:'#8fcf9f',stroke:'#4f8a64','stroke-width':1.2},svg);
+  T(254,96,'brainstem',{'font-size':12,'font-weight':700,fill:'#4f8a64'},svg);T(254,110,'(medulla)',{'font-size':11.5,fill:'#4f8a64'},svg);
+  S('line',{x1:252,y1:100,x2:208,y2:96,stroke:'#4f8a64'},svg);
+  S('ellipse',{cx:160,cy:206,rx:31,ry:48,fill:'#f6d3d8',stroke:'#c98f99'},svg);
+  S('ellipse',{cx:242,cy:206,rx:31,ry:48,fill:'#f6d3d8',stroke:'#c98f99'},svg);
+  const hg=S('g',{transform:'translate(210,238) scale(.5)'},svg);
+  const heart=S('path',{d:'M0,-12 C-18,-36 -50,-10 0,28 C50,-10 18,-36 0,-12 Z',fill:'#e0475b',stroke:'#8f1f2e','stroke-width':3,class:'heart'},hg);
+  heart.style.animation='beat .8s infinite';
+  S('path',{d:'M220,272 C252,260 274,286 260,306 C247,324 214,320 212,300 C226,300 236,292 220,272 Z',fill:'#f2c49b',stroke:'#b07a3e','stroke-width':1.5},svg);
+  const gut=S('path',{d:'M158,336 C170,318 232,318 242,334 C252,352 158,348 166,366 C174,384 236,384 240,366',fill:'none',stroke:'#e2a07a','stroke-width':11,'stroke-linecap':'round'},svg);
+  const P={
+    lungs:['M201,114 L200,150 C196,170 186,184 170,196','M201,114 L200,150 C204,170 220,184 234,196'],
+    heart:['M201,114 L200,150 C198,180 200,200 203,214 C205,222 207,228 209,234'],
+    stomach:['M201,114 L200,150 C198,180 200,200 203,214 C208,248 228,266 236,286'],
+    gut:['M201,114 L200,150 C198,180 200,200 203,214 C196,258 190,298 196,340']};
+  const paths=[];Object.values(P).flat().forEach(d=>paths.push(S('path',{d,fill:'none',stroke:'#d4a017','stroke-width':3.5,'stroke-linecap':'round'},svg)));
+  T(140,140,'vagus nerve',{'font-size':12.5,'font-weight':700,fill:'#9a7410','text-anchor':'end'},svg);S('line',{x1:142,y1:137,x2:196,y2:160,stroke:'#9a7410'},svg);
+  const lab=(y,t,x2,y2)=>{T(318,y+4,t,{'font-size':13,'font-weight':700},svg);S('line',{x1:315,y1:y,x2,y2,stroke:'#8a8378'},svg);};
+  lab(180,'lungs',268,190);lab(240,'heart',228,238);lab(296,'stomach',262,296);lab(352,'intestines',242,358);
+  const card=(y,title)=>{S('rect',{x:440,y,width:300,height:64,rx:12,fill:'#fff',stroke:'#e2ddd2','stroke-width':1.5},svg);
+    T(456,y+24,title,{'font-size':12.5,fill:C.muted,'font-weight':700},svg);return T(456,y+48,'',{'font-size':15,'font-weight':700},svg);};
+  T(440,60,'What the vagus is doing',{'font-size':16,'font-family':C.hand},svg);
+  const v1=card(80,'HEART'), v2=card(156,'LUNGS / AIRWAYS'), v3=card(232,'STOMACH & GUT'), v4=card(308,'BRAINSTEM HEARS');
+  const idle=()=>{v1.textContent='75 beats per minute';v2.textContent='normal';v3.textContent='normal';v4.textContent='—';};
+  idle();
+  const bubbles=S('g',{opacity:0},svg);
+  [[96,182,'stretched'],[70,250,'pressure OK'],[150,276,"I'm full"]].forEach(([x,y,t])=>{S('rect',{x:x-44,y:y-14,width:88,height:22,rx:11,fill:'#fff',stroke:C.teal},bubbles);T(x,y+1,t,{'text-anchor':'middle','font-size':11.5,fill:C.teal,'font-weight':700},bubbles);});
+  let busy=false;
+  function send(dir,done){busy=true;const dots=paths.map(p=>S('circle',{r:5,fill:dir>0?C.purple:C.teal,stroke:'#fff','stroke-width':1.2},svg));
+    tween(1500,k=>{dots.forEach((d,i)=>{const q=along(paths[i],dir>0?ease(k):1-ease(k));d.setAttribute('cx',q.x);d.setAttribute('cy',q.y);});},()=>{dots.forEach(d=>d.remove());busy=false;done();});}
+  $('vagOut').addEventListener('click',()=>{ if(busy)return; bubbles.setAttribute('opacity',0);idle();
+    $('vagTxt').innerHTML='Parasympathetic commands travel <b>down</b> the vagus from the medulla...';
+    send(1,()=>{heart.style.animation='beat 1.25s infinite';v1.textContent='slows to about 60 bpm';v2.textContent='airways narrow a little';v3.textContent='more churning and digestive juices';v4.textContent='—';
+      gut.setAttribute('stroke','#d9774a');setTimeout(()=>gut.setAttribute('stroke','#e2a07a'),1600);
+      $('vagTxt').innerHTML='<b>Rest and digest.</b> The vagus slows the heart (Loewi\'s "vagus substance" was ACh released by this nerve), narrows the airways a little, and speeds up digestion.';});});
+  $('vagIn').addEventListener('click',()=>{ if(busy)return; heart.style.animation='beat .8s infinite'; idle(); bubbles.setAttribute('opacity',1);
+    $('vagTxt').innerHTML='Sensory signals travel <b>up</b> the vagus from the organs...';
+    send(-1,()=>{med.setAttribute('fill','#f2c94c');setTimeout(()=>med.setAttribute('fill','#8fcf9f'),1200);
+      v4.textContent='lungs full, blood pressure, stomach full';
+      $('vagTxt').innerHTML='<b>Most vagus fibers are actually sensory.</b> They tell the brainstem how stretched the lungs are, what blood pressure is doing, and how full the stomach is, so it can adjust breathing, heart rate and appetite.';});});
+  const CN=[['I','Olfactory','S','smell'],['II','Optic','S','vision'],['III','Oculomotor','M','most eye movements, pupil',1],['IV','Trochlear','M','one eye muscle'],
+    ['V','Trigeminal','B','face touch, chewing'],['VI','Abducens','M','moves eye outward'],['VII','Facial','B','facial expression, taste, tears & saliva',1],['VIII','Vestibulocochlear','S','hearing, balance'],
+    ['IX','Glossopharyngeal','B','taste, swallowing, saliva',1],['X','Vagus','B','throat, heart, lungs, gut',1],['XI','Accessory','M','neck & shoulder muscles'],['XII','Hypoglossal','M','tongue movement']];
+  CN.forEach(([n,name,t,job,para])=>{const d=document.createElement('div');if(n==='X')d.className='vg';
+    d.innerHTML='<b>'+n+'. '+name+(para?' <span style="color:#d4508a">♥</span>':'')+'</b><i>'+t+'</i> · '+job;$('cnGrid').appendChild(d);});
+}
+
+/* ============ Gray & white matter ============ */
+{
+  const svg=$('gwSvg');
+  const GR='#a9a39b', WH='#f6f2ea';
+  const hemL='M196,62 C160,40 92,52 80,120 C72,170 90,215 140,228 C170,236 192,226 196,214 Z';
+  const hemR='M204,62 C240,40 308,52 320,120 C328,170 310,215 260,228 C230,236 208,226 204,214 Z';
+  [[hemL,140],[hemR,260]].forEach(([d,cx])=>{S('path',{d,fill:GR,stroke:'#7d776f','stroke-width':1.5},svg);
+    S('path',{d,fill:WH,transform:`translate(${cx},142) scale(.8) translate(${-cx},-142)`},svg);});
+  S('rect',{x:186,y:132,width:28,height:16,fill:WH},svg);
+  [[160,170],[240,170]].forEach(([x,y])=>S('ellipse',{cx:x,cy:y,rx:16,ry:20,fill:GR,opacity:.85},svg));
+  S('ellipse',{cx:200,cy:180,rx:14,ry:14,fill:GR,opacity:.85},svg);
+  T(200,16,'Brain slice: gray OUTSIDE',{'text-anchor':'middle','font-size':14,'font-weight':700},svg);
+  T(92,38,'gray matter (cortex)',{'font-size':12.5,'font-weight':700,fill:'#6b655d'},svg);S('line',{x1:120,y1:42,x2:120,y2:66,stroke:'#6b655d'},svg);
+  T(250,38,'white matter',{'font-size':12.5,'font-weight':700,fill:'#8a7a4a'},svg);S('line',{x1:270,y1:42,x2:258,y2:96,stroke:'#8a7a4a'},svg);
+  S('ellipse',{cx:560,cy:150,rx:122,ry:96,fill:WH,stroke:'#7d776f','stroke-width':1.5},svg);
+  S('path',{d:'M560,108 C540,86 503,82 497,104 C491,126 518,142 530,152 C514,168 494,196 506,220 C519,240 545,212 560,196 C575,212 601,240 614,220 C626,196 606,168 590,152 C602,142 629,126 623,104 C617,82 580,86 560,108 Z',fill:GR,stroke:'#7d776f'},svg);
+  S('circle',{cx:560,cy:152,r:4,fill:'#9fd3f0'},svg);
+  T(560,16,'Spinal cord: flipped, white OUTSIDE',{'text-anchor':'middle','font-size':14,'font-weight':700},svg);
+  T(672,42,'white matter',{'font-size':12.5,'font-weight':700,fill:'#8a7a4a'},svg);S('line',{x1:690,y1:46,x2:652,y2:90,stroke:'#8a7a4a'},svg);
+  T(410,40,'gray "butterfly"',{'font-size':12.5,'font-weight':700,fill:'#6b655d'},svg);S('line',{x1:470,y1:44,x2:510,y2:100,stroke:'#6b655d'},svg);
+  const zg=S('g',{opacity:0},svg); const defs=S('defs',null,svg);
+  const inset=(id,x,y,kind,label)=>{const cp=S('clipPath',{id},defs);S('circle',{cx:x,cy:y,r:44},cp);
+    S('circle',{cx:x,cy:y,r:46,fill:'#fff',stroke:'#2a2a2a','stroke-width':2.5},zg);const g=S('g',{'clip-path':`url(#${id})`},zg);
+    if(kind==='gray'){const r=rng(x);for(let i=0;i<7;i++){const cx=x-34+r()*68, cy=y-30+r()*60;
+        for(let j=0;j<3;j++){const a=r()*6.28;S('line',{x1:cx,y1:cy,x2:cx+Math.cos(a)*16,y2:cy+Math.sin(a)*16,stroke:'#6b655d','stroke-width':1.6},g);}
+        S('circle',{cx,cy,r:5.5,fill:'#7a6f66'},g);}}
+    else{[-24,0,24].forEach(dy=>{S('line',{x1:x-50,y1:y+dy,x2:x+50,y2:y+dy,stroke:'#6b655d','stroke-width':1.5},g);
+        for(let k=-50;k<50;k+=26)S('rect',{x:x+k+(dy?8:0),y:y+dy-5,width:22,height:10,rx:5,fill:'#fffbe8',stroke:'#c9b37a'},g);});}
+    T(x,y+64,label,{'text-anchor':'middle','font-size':12,'font-weight':700},zg);};
+  inset('zg1',110,350,'gray','cell bodies');inset('zg2',290,350,'white','myelinated axons');
+  inset('zg3',470,350,'white','myelinated axons');inset('zg4',650,350,'gray','cell bodies');
+  [[96,150,110,304],[236,120,290,304],[452,170,470,304],[600,200,650,304]].forEach(([x1,y1,x2,y2])=>S('line',{x1,y1,x2,y2,stroke:'#2a2a2a','stroke-dasharray':'3 3'},zg));
+  zg.setAttribute('opacity',1);
+}
+{
+  const svg=$('msRace'); const N=10, X0=96, SEG=44, GAP=8;
+  const order=shuffle([...Array(N).keys()]);
+  const mkAxon=(y,label)=>{T(20,y-26,label,{'font-size':13,'font-weight':700},svg);
+    S('circle',{cx:62,cy:y,r:16,fill:'#fdebd3',stroke:'#b07a3e','stroke-width':1.5},svg);
+    S('line',{x1:78,y1:y,x2:X0+N*(SEG+GAP)+10,y2:y,stroke:'#8a7a6a','stroke-width':3},svg);
+    const segs=[...Array(N)].map((_,i)=>S('rect',{x:X0+i*(SEG+GAP),y:y-9,width:SEG,height:18,rx:9,fill:'#fffbe8',stroke:'#c9b37a','stroke-width':1.4},svg));
+    const tgt=S('circle',{cx:X0+N*(SEG+GAP)+24,cy:y,r:13,fill:'#f0e9dc',stroke:'#8a7a6a','stroke-width':1.5},svg);
+    const dot=S('circle',{cx:62,cy:y,r:7,fill:C.gold,stroke:'#7a5a00','stroke-width':1.2,opacity:0},svg);
+    const res=T(X0+N*(SEG+GAP)+44,y+5,'',{'font-size':12.5,'font-weight':700},svg);
+    return {y,segs,tgt,dot,res};};
+  const A=mkAxon(62,'Healthy axon'), B=mkAxon(170,'MS axon (myelin damaged)');
+  let dmg=[];
+  function setDmg(){const v=+$('msDmg').value;$('msDmgV').textContent=v+'%';const n=Math.round(v/100*N);const s=new Set(order.slice(0,n));
+    dmg=[...Array(N)].map((_,i)=>s.has(i));
+    B.segs.forEach((r,i)=>{r.setAttribute('fill',dmg[i]?'none':'#fffbe8');r.setAttribute('stroke',dmg[i]?C.red:'#c9b37a');r.setAttribute('stroke-dasharray',dmg[i]?'4 4':'none');});
+    $('msTxt').innerHTML='Dashed red = myelin stripped away by the immune attack. Press <b>Send a signal</b>.';[A,B].forEach(x=>x.res.textContent='');}
+  $('msDmg').addEventListener('input',setDmg); setDmg();
+  let busy=false;
+  function plan(d){const steps=[];let run=0,blocked=false;const fast=110, slow=650;
+    for(let i=0;i<N;i++){ if(d[i]){run++; if(run>=3){blocked=i;break;} steps.push([i,slow]);} else {run=0;steps.push([i,fast]);} }
+    return {steps,blocked};}
+  function go(ax,d,done){const {steps,blocked}=plan(d);ax.dot.setAttribute('opacity',1);let t=0;
+    const x=i=>X0+i*(SEG+GAP)+SEG+GAP/2;
+    const next=(k,from)=>{ if(k>=steps.length){ if(blocked!==false){ax.dot.setAttribute('fill','#999');ax.res.textContent='failed';ax.res.setAttribute('fill',C.red);done(t,true);}
+        else{ax.dot.setAttribute('opacity',0);ax.tgt.setAttribute('fill','#c8f0d2');setTimeout(()=>ax.tgt.setAttribute('fill','#f0e9dc'),900);ax.res.textContent='arrived';ax.res.setAttribute('fill',C.green);done(t,false);} return;}
+      const [i,ms]=steps[k]; t+=ms; const to=x(i);
+      tween(REDUCE?1:ms,kk=>ax.dot.setAttribute('cx',from+(to-from)*kk),()=>next(k+1,to));};
+    ax.dot.setAttribute('cx',62);ax.dot.setAttribute('fill',C.gold);next(0,62);}
+  $('msGo').addEventListener('click',()=>{ if(busy)return; busy=true; let ta=0;
+    go(A,Array(N).fill(false),t=>{ta=t;});
+    go(B,dmg,(t,fail)=>{busy=false;
+      if(fail)$('msTxt').innerHTML='<b>The MS signal died out.</b> Across a long bare stretch, the current leaks out before it can reach the next node. That\'s a <b>conduction block</b>, which can cause sudden weakness, numbness or vision loss.';
+      else if(t>ta*1.05)$('msTxt').innerHTML='<b>Both arrived, but the MS axon took about '+(t/ta).toFixed(1)+'× as long.</b> Where myelin is gone, the signal has to creep along the bare membrane instead of jumping from node to node.';
+      else $('msTxt').innerHTML='<b>Tie.</b> With the myelin intact, the signal jumps from node to node (saltatory conduction) and arrives fast.';});});
+}
+
+/* ============ Planes ============ */
+{
+  const svg=$('plSvg'); const defs=S('defs',null,svg);
+  const PA='#cfe0f5', PB='#f8d9e7', ST='#8c8070';
+  const SIDE={x0:58,x1:364,y0:44,y1:266}, FRONT={x0:436,x1:684,y0:44,y1:296};
+  const sideShapes=[['path',{d:'M72,190 C56,120 110,58 210,52 C300,46 362,92 362,152 C364,190 342,214 302,222 L250,226 C236,238 226,248 222,262 L200,262 C198,246 190,232 170,228 C120,226 82,218 72,190 Z'}],
+    ['ellipse',{cx:304,cy:240,rx:44,ry:24}],['rect',{x:206,y:222,width:24,height:44,rx:4}]];
+  const frontShapes=[['path',{d:'M556,62 C520,40 452,52 440,120 C432,170 450,215 500,228 C530,236 552,226 556,214 Z'}],
+    ['path',{d:'M564,62 C600,40 668,52 680,120 C688,170 670,215 620,228 C590,236 568,226 564,214 Z'}],
+    ['rect',{x:540,y:150,width:40,height:14,rx:5}],['ellipse',{cx:560,cy:186,rx:26,ry:16}],['rect',{x:548,y:220,width:24,height:74,rx:5}]];
+  const views={};
+  function build(key,shapes,box){const cA=S('clipPath',{id:'pl'+key+'A'},defs), cB=S('clipPath',{id:'pl'+key+'B'},defs);
+    const rA=S('rect',{},cA), rB=S('rect',{},cB);
+    const gA=S('g',{'clip-path':`url(#pl${key}A)`},svg), gB=S('g',{'clip-path':`url(#pl${key}B)`},svg);
+    const hit=[];shapes.forEach(([tag,a])=>{S(tag,Object.assign({fill:PA,stroke:ST,'stroke-width':1.6},a),gA);S(tag,Object.assign({fill:PB,stroke:ST,'stroke-width':1.6},a),gB);hit.push(S(tag,Object.assign({fill:'none',stroke:'none'},a),svg));});
+    const line=S('line',{stroke:C.red,'stroke-width':3,'stroke-dasharray':'9 6'},svg);
+    const face=S('g',{opacity:0},svg);
+    views[key]={box,rA,rB,line,face,hit,gA};}
+  build('s',sideShapes,SIDE); build('f',frontShapes,FRONT);
+  [['s',SIDE],['f',FRONT]].forEach(([k,b])=>{const v=views[k];
+    T((b.x0+b.x1)/2,b.y0-4,'you are looking straight at the cut surface',{'text-anchor':'middle','font-size':12,fill:C.red,'font-weight':700},v.face);});
+  T(210,300,'Side view',{'text-anchor':'middle','font-size':14,'font-weight':700},svg);T(210,316,'(front of the head on the left)',{'text-anchor':'middle','font-size':11.5,fill:C.muted},svg);
+  T(560,316,'Front view',{'text-anchor':'middle','font-size':14,'font-weight':700},svg);
+  const fis=S('g',{opacity:0},svg);
+  S('line',{x1:560,y1:58,x2:560,y2:148,stroke:'#2a2a2a','stroke-width':2.5},fis);
+  T(700,22,'longitudinal fissure',{'text-anchor':'end','font-size':12.5,'font-weight':700},fis);S('line',{x1:640,y1:26,x2:563,y2:70,stroke:'#2a2a2a'},fis);
+  T(756,258,'corpus callosum',{'text-anchor':'end','font-size':12.5,'font-weight':700,fill:'#8a6d1d'},fis);S('line',{x1:664,y1:250,x2:580,y2:162,stroke:'#8a6d1d'},fis);
+  T(756,274,'(floor of the fissure)',{'text-anchor':'end','font-size':11.5,fill:'#8a6d1d'},fis);
+  let mode='mid';
+  function frac(v,vertical,pos){let a=0,b=0;const bx=v.box,pt=svg.createSVGPoint();
+    for(let x=bx.x0;x<bx.x1;x+=4)for(let y=bx.y0;y<bx.y1;y+=4){pt.x=x;pt.y=y;
+      if(v.hit.some(h=>h.isPointInFill?h.isPointInFill(pt):false)){((vertical?x:y)<pos)?a++:b++;}}
+    const t=a+b||1;return [Math.round(a/t*100),100-Math.round(a/t*100)];}
+  function cut(v,vertical,p){const b=v.box;v.face.setAttribute('opacity',0);v.line.setAttribute('opacity',1);
+    if(vertical){const x=b.x0+(b.x1-b.x0)*p;v.rA.setAttribute('x',b.x0-5);v.rA.setAttribute('y',b.y0-5);v.rA.setAttribute('width',x-b.x0+5);v.rA.setAttribute('height',b.y1-b.y0+10);
+      v.rB.setAttribute('x',x);v.rB.setAttribute('y',b.y0-5);v.rB.setAttribute('width',b.x1-x+5);v.rB.setAttribute('height',b.y1-b.y0+10);
+      v.line.setAttribute('x1',x);v.line.setAttribute('x2',x);v.line.setAttribute('y1',b.y0-6);v.line.setAttribute('y2',b.y1+4);return x;}
+    const y=b.y0+(b.y1-b.y0)*p;v.rA.setAttribute('x',b.x0-5);v.rA.setAttribute('y',b.y0-5);v.rA.setAttribute('width',b.x1-b.x0+10);v.rA.setAttribute('height',y-b.y0+5);
+    v.rB.setAttribute('x',b.x0-5);v.rB.setAttribute('y',y);v.rB.setAttribute('width',b.x1-b.x0+10);v.rB.setAttribute('height',b.y1-y+5);
+    v.line.setAttribute('x1',b.x0-6);v.line.setAttribute('x2',b.x1+6);v.line.setAttribute('y1',y);v.line.setAttribute('y2',y);return y;}
+  function flat(v){const b=v.box;v.rA.setAttribute('x',b.x0-5);v.rA.setAttribute('y',b.y0-5);v.rA.setAttribute('width',b.x1-b.x0+10);v.rA.setAttribute('height',b.y1-b.y0+10);
+    v.rB.setAttribute('width',0);v.line.setAttribute('opacity',0);v.face.setAttribute('opacity',1);}
+  function draw(){const sl=$('plPos'); if(mode==='mid'){sl.value=50;sl.disabled=true;}else sl.disabled=false;
+    const p=(+sl.value)/100; $('plPosV').textContent=mode==='mid'?'center':sl.value+'%';
+    const S_=views.s,F=views.f; let s='';
+    if(mode==='mid'||mode==='sag'){flat(S_);const x=cut(F,true,p);const [a,b]=frac(F,true,x);
+      const isMid=mode==='mid'||Math.abs(+sl.value-50)<=2;
+      s=isMid?'<b>Midsagittal:</b> the cut runs exactly down the middle, through the longitudinal fissure and the corpus callosum. Left and right halves are <b>mirror images</b> (about 50/50). The midline view in the next topic is this cut.'
+        :'<b>Sagittal, off-center:</b> still separates <b>left from right</b>, but now the pieces are about <b>'+a+'%</b> and <b>'+b+'%</b>, and they aren\'t mirror images. Any cut parallel to the midline is sagittal; only the one right in the middle is midsagittal.';}
+    else if(mode==='cor'){flat(F);const x=cut(S_,true,p);const [a,b]=frac(S_,true,x);
+      s='<b>Coronal:</b> separates <b>front</b> (about '+a+'%) from <b>back</b> (about '+b+'%). Each coronal slice shows both hemispheres side by side, which is why it\'s great for comparing left and right.';}
+    else{const y=cut(S_,false,p);const [a,b]=frac(S_,false,y);cut(F,false,p);
+      s='<b>Horizontal:</b> separates <b>top</b> (about '+a+'%) from <b>bottom</b> (about '+b+'%). You can cut at any height, so the pieces are rarely equal, and they never match: the top piece is all cerebrum, while the bottom holds the brainstem and cerebellum.';}
+    $('plTxt').innerHTML=s;}
+  pressGroup([...document.querySelectorAll('[data-pl]')],b=>{mode=b.dataset.pl; if(mode==='sag'&&+$('plPos').value===50)$('plPos').value=30; draw();});
+  $('plPos').addEventListener('input',draw);
+  $('plFis').addEventListener('click',e=>{const on=e.currentTarget.getAttribute('aria-pressed')!=='true';e.currentTarget.setAttribute('aria-pressed',on);fis.setAttribute('opacity',on?1:0);});
+  draw();
+}
+
+/* ============ Interventions sorter ============ */
+makeSorter('ivChips','ivBins','ivTxt',
+  [['si','Somatic intervention','change the body directly'],['bi','Behavioral intervention','change experience or training'],['sm','Somatic outcome','measure the body'],['bm','Behavioral outcome','measure what they do']],
+  [['Give a rat caffeine','si','A drug acts directly on the body, so it\'s a somatic intervention.'],
+   ['Remove (lesion) part of the hippocampus','si','A lesion changes the brain itself: somatic.'],
+   ['Stimulate the cortex with TMS','si','Brain stimulation changes the body directly: somatic.'],
+   ['Eight weeks of meditation training','bi','Training changes experience, not the body directly: behavioral intervention (even though it may change the brain later).'],
+   ['Put a monkey in a stressful social situation','bi','Changing the situation is a behavioral intervention.'],
+   ['Score on a memory test','bm','A test score is what the person does: behavioral outcome.'],
+   ['Time a mouse spends exploring a new object','bm','Exploring is behavior: behavioral outcome.'],
+   ['Blood pressure','sm','Blood pressure is a body measure, not a behavior. It\'s a common trap.'],
+   ['Brain activity in an fMRI scan','sm','Brain activity is measured from the body: somatic outcome.'],
+   ['Cortisol (stress hormone) in saliva','sm','Hormone levels are a body measure: somatic outcome.']],
+  'Ask: is this something we <i>do to</i> them, or something we <i>measure</i>? Then: is it about the <b>body</b> (somatic) or about <b>behavior and experience</b>?');
+
+/* ============ Synapse mixing board ============ */
+{
+  const svg=$('kbSvg');
+  S('rect',{x:20,y:16,width:640,height:44,fill:'#fdebd3',stroke:'#b07a3e'},svg);T(30,34,'sending neuron',{'font-size':12,fill:C.muted},svg);
+  S('rect',{x:20,y:214,width:640,height:44,fill:'#e3eefb',stroke:'#3c7ea6'},svg);T(30,250,'receiving neuron',{'font-size':12,fill:C.muted},svg);
+  const TR=[140,340,540].map(x=>{const g=S('g',{},svg);S('rect',{x:x-12,y:52,width:24,height:16,rx:5,fill:C.teal,stroke:'#0d5c60'},g);
+    const blk=S('rect',{x:x-14,y:64,width:28,height:8,rx:3,fill:C.red,opacity:0},g);return {x,blk};});
+  T(140,86,'reuptake transporter',{'text-anchor':'middle','font-size':11,fill:C.teal},svg);
+  const ENZ=[[236,128,0],[450,150,0],[600,120,0],[110,150,1],[350,118,1],[520,170,1]].map(([x,y,extra])=>{const g=S('g',{transform:`translate(${x},${y})`,opacity:extra?0:1},svg);
+    S('path',{d:'M0,0 L14,-8 A16,16 0 1,0 14,8 Z',fill:C.gold,stroke:'#a87b00'},g);const blk=S('rect',{x:4,y:-5,width:14,height:10,rx:2,fill:C.red,opacity:0},g);return {g,blk,x,y,extra};});
+  T(240,162,'enzyme',{'text-anchor':'middle','font-size':11,fill:'#7a5a00'},svg);
+  const REC=[90,210,330,450,570].map(x=>{const r=S('rect',{x:x-13,y:202,width:26,height:13,rx:3,fill:'#9db7d8',stroke:'#3c7ea6'},svg);
+    const drug=S('path',{d:`M${x-8},200 L${x+8},200 L${x},187 Z`,fill:C.green,stroke:'#1d5e33',opacity:0},svg);return {x,r,drug,act:0};});
+  S('rect',{x:690,y:20,width:30,height:236,rx:8,fill:'#fff',stroke:'#bbb'},svg);
+  const meter=S('rect',{x:695,width:20,rx:5,fill:C.green},svg);
+  const base=S('line',{x1:684,x2:726,stroke:'#2a2a2a','stroke-width':2,'stroke-dasharray':'4 3'},svg);
+  const baseT=T(681,0,'normal',{'font-size':11,fill:C.muted,'text-anchor':'end'},svg);
+  T(705,276,'signal',{'text-anchor':'middle','font-size':12,'font-weight':700,fill:C.green},svg);
+  const g=S('g',{},svg); const r=rng(21); let ps=[], last=0, avg=.4, cl='normal', rc='none', run=false;
+  const DRUG={none:[],ag:[1,2,3],part:[1,2,3],ant:[0,1,2,3,4].filter(i=>i!==2)};
+  function style(){TR.forEach(t=>t.blk.setAttribute('opacity',cl==='reup'?1:0));
+    ENZ.forEach(e=>{e.g.setAttribute('opacity',e.extra?(cl==='boost'?1:0):1);e.blk.setAttribute('opacity',cl==='noenz'?1:0);});
+    REC.forEach((q,i)=>{q.drug.setAttribute('opacity',DRUG[rc].includes(i)?1:0);q.drug.setAttribute('fill',rc==='ant'?'#7a8f80':C.green);});
+    const CT={normal:'<b>Normal cleanup:</b> transporters pull transmitter back into the sending neuron, and enzymes break some down.',
+      reup:'<b>Reuptake blocked</b> (like an SSRI or cocaine): the transporters are plugged, so transmitter <b>stays in the cleft longer</b> and keeps hitting receptors. Signal goes <b>up</b>. The enzymes don\'t speed up to compensate.',
+      boost:'<b>Enzyme sped up:</b> more transmitter gets destroyed before it reaches a receptor, so the signal goes <b>down</b>. (That\'s why "increasing breakdown increases transmission" is false.)',
+      noenz:'<b>Enzyme blocked</b> (like an MAO inhibitor, or donepezil for ACh): transmitter survives longer, so the signal goes <b>up</b>.'};
+    const RT={none:'',ag:' <b>Agonist:</b> the drug binds <i>and</i> activates receptors, acting like extra transmitter.',
+      part:' <b>Partial agonist:</b> binds and activates receptors only partway (pale green), and while it sits there, the real transmitter can\'t use those receptors.',
+      ant:' <b>Antagonist:</b> it binds tightly (high affinity) but activates nothing (zero efficacy). It just sits in the lock, so the transmitter can\'t get in and the signal drops. Haloperidol does this at D2 receptors.'};
+    $('kbTxt').innerHTML=CT[cl]+RT[rc];}
+  function frame(now){ if(!run)return;
+    if(now-last>170){last=now;const x=50+r()*600;ps.push({x,y:64,vx:(r()-.5)*1.2,vy:.5+r()*.6,c:S('circle',{cx:x,cy:64,r:4.5,fill:C.purple},g)});}
+    const pRe=cl==='reup'?0:.006, pEn=cl==='noenz'?0:cl==='boost'?.034:.006;
+    const enz=ENZ.filter(e=>!e.extra||cl==='boost');
+    let live=0;
+    ps=ps.filter(p=>{
+      if(p.die){p.k+=.07;const k=Math.min(1,p.k);p.c.setAttribute('cx',p.sx+(p.die[0]-p.sx)*k);p.c.setAttribute('cy',p.sy+(p.die[1]-p.sy)*k);p.c.setAttribute('r',4.5*(1-k*.7));
+        if(k>=1){p.c.remove();return false;}return true;}
+      p.x+=p.vx+(r()-.5)*1.5;p.y+=p.vy+(r()-.5)*1.5;
+      if(p.y>196){p.y=196;p.vy=-Math.abs(p.vy);} if(p.y<64){p.y=64;p.vy=Math.abs(p.vy);} if(p.x<25||p.x>655)p.vx*=-1;
+      const u=r();
+      if(u<pRe){const t=TR.reduce((a,b)=>Math.abs(b.x-p.x)<Math.abs(a.x-p.x)?b:a);p.die=[t.x,58];}
+      else if(u<pRe+pEn){const e=enz.reduce((a,b)=>Math.hypot(b.x-p.x,b.y-p.y)<Math.hypot(a.x-p.x,a.y-p.y)?b:a);p.die=[e.x+6,e.y];}
+      if(p.die){p.sx=p.x;p.sy=p.y;p.k=0;return true;}
+      live++; p.c.setAttribute('cx',p.x);p.c.setAttribute('cy',p.y);return true;});
+    const avail=Math.min(1,live/20);
+    let tot=0;REC.forEach((q,i)=>{let a=avail; if(DRUG[rc].includes(i))a=rc==='ag'?1:rc==='part'?.4:0;
+      q.act=q.act*.9+a*.1; tot+=q.act;
+      q.r.setAttribute('fill',q.act>.6?C.green:q.act>.25?'#9fd8ae':'#9db7d8');});
+    const sig=tot/REC.length; avg=avg*.95+sig*.05;
+    const h=Math.min(1,avg)*226; meter.setAttribute('y',252-h);meter.setAttribute('height',h);
+    requestAnimationFrame(frame);}
+  const by=252-.38*226; base.setAttribute('y1',by);base.setAttribute('y2',by);baseT.setAttribute('y',by+4);
+  pressGroup([...document.querySelectorAll('[data-kc]')],b=>{cl=b.dataset.kc;style();});
+  pressGroup([...document.querySelectorAll('[data-kr]')],b=>{rc=b.dataset.kr;style();});
+  style();
+  onVisible(svg,()=>{if(!run){run=true;requestAnimationFrame(frame);}},()=>{run=false;});
+}
+
 })();

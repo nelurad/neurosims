@@ -63,6 +63,7 @@
   .tg:hover{border-color:var(--ink)}
   .tg[aria-pressed="true"]{background:var(--ink);color:#fff;border-color:var(--ink)}
   .tg.good{background:#e3f4e8;border-color:var(--green)}
+  .chip.bad{background:#fbe3e4;border-color:var(--red)}
   .tg.bad{background:#fbe3e4;border-color:var(--red)}
   .readout{font-size:15.5px;margin:10px 0 0;min-height:2.7em;line-height:1.45}
   .readout b{color:var(--ink)}
@@ -80,6 +81,7 @@
   .chip.placed{cursor:default;opacity:.95}
   .bins{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px;margin-top:8px}
   .bin{font:inherit;text-align:left;background:#fbfaf6;border:2px dashed #c9c3b6;border-radius:10px;padding:10px;min-height:130px;cursor:pointer;color:var(--ink)}
+  .bin{display:flex;flex-direction:column;justify-content:flex-start;align-items:stretch}
   .bin:hover{border-color:var(--ink)}
   .bin .bn{display:block;font-family:var(--hand);font-size:20px;line-height:1.1}
   .bin .bd{display:block;font-size:13.5px;color:var(--muted);margin-bottom:6px}
@@ -114,6 +116,13 @@
   @keyframes beat{0%,100%{transform:scale(1)}12%{transform:scale(1.13)}24%{transform:scale(.97)}36%{transform:scale(1.06)}}
   :focus-visible{outline:2px solid #3d6fa8;outline-offset:2px}
 
+  .bins.bins4{grid-template-columns:repeat(4,minmax(0,1fr))}
+  .cn{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:8px}
+  .cn div{background:#fff;border:1.5px solid var(--line);border-radius:10px;padding:7px 10px;font-size:13.5px;line-height:1.3}
+  .cn div b{display:block;font-size:14.5px}
+  .cn div i{font-style:normal;font-family:var(--mono);font-size:12px;color:var(--muted)}
+  .cn div.vg{border-color:var(--purple,#7b4fb3);background:#f6f0fd;box-shadow:0 2px 0 #7b4fb3}
+  @media (max-width:760px){.bins.bins4{grid-template-columns:repeat(2,minmax(0,1fr))}}
   .foot{margin-top:34px;padding-top:14px;border-top:1px dashed #c9c3b6;font-size:12.5px;color:var(--muted)}
   .foot p{margin:0 0 8px}
   .embed{display:flex;gap:8px;align-items:flex-start;flex-wrap:wrap}
@@ -139,23 +148,28 @@
       <h2>Exam 1: The nervous system and brain</h2>
       <ol>
         <li><a href="#divisions">Afferent, efferent, and who controls breathing</a></li>
+        <li><a href="#vagus">The vagus nerve: the wanderer</a></li>
         <li><a href="#neurontypes">Bipolar vs. pseudounipolar neurons</a></li>
+        <li><a href="#myelin">Gray matter, white matter, and what multiple sclerosis breaks</a></li>
+        <li><a href="#planes">Slicing the brain: planes and the longitudinal fissure</a></li>
         <li><a href="#midsag">Finding structures on the midline view</a></li>
         <li><a href="#circuits">Basal ganglia, cerebellum, or limbic system?</a></li>
         <li><a href="#language">Broca's and Wernicke's areas</a></li>
         <li><a href="#methods">Choosing a brain method, and Nissl vs. Golgi stains</a></li>
+        <li><a href="#interventions">Somatic or behavioral? Interventions and outcomes</a></li>
         <li><a href="#spine">The spinal cord, top to bottom</a></li>
       </ol>
     </div>
     <div>
       <h2>Exam 2: Signals, synapses and drugs</h2>
-      <ol start="8">
+      <ol start="12">
         <li><a href="#resting">Potassium and the resting potential</a></li>
         <li><a href="#ap">Refractory periods and one-way travel</a></li>
         <li><a href="#release">The order of synaptic release (and gas transmitters)</a></li>
         <li><a href="#receptors">Ionotropic vs. metabotropic receptors</a></li>
         <li><a href="#ach">Acetylcholine: one transmitter, opposite effects</a></li>
         <li><a href="#families">Transmitter families and which drug hits which</a></li>
+        <li><a href="#knobs">Turning a synapse up or down</a></li>
         <li><a href="#dopamine">Dopamine pathways and antipsychotics</a></li>
         <li><a href="#doseresponse">Reading a dose-response curve</a></li>
         <li><a href="#tolerance">Tolerance traps and alcohol's two phases</a></li>
@@ -195,8 +209,33 @@
     <p class="remember"><b>Remember it:</b> SAME = Sensory Afferent, Motor Efferent. "Autonomic" describes <i>which body parts</i> a pathway controls (organs, glands, heart). It doesn't just mean "happens without thinking." Breathing uses skeletal muscle, so its motor neurons are somatic, even when it runs on autopilot.</p>
   </section>
 
+  <section class="topic" id="vagus">
+    <div class="thead"><span class="num">2</span><h3>The vagus nerve: the wanderer</h3></div>
+    <p class="lede">There are 12 pairs of <b>cranial nerves</b>. They leave the brain directly instead of the spinal cord. Most of them stay in the head and neck. One of them doesn't: the <b>vagus</b> ("wandering") nerve travels all the way down into the chest and belly.</p>
+    <div class="mix">
+      <div class="wrong"><span class="lab">The mix-up</span><p>The vagus is the only cranial nerve that carries both sensory and motor fibers.</p><p>The vagus is the only cranial nerve involved in autonomic control.</p><p>The vagus nerve comes out of the spinal cord.</p></div>
+      <div class="right"><span class="lab">Actually</span><p>Several cranial nerves are mixed (sensory + motor), like the trigeminal and facial nerves.</p><p>Three other cranial nerves also carry parasympathetic fibers, but only to the head. What makes the vagus special is <b>how far it reaches</b>: it carries parasympathetic commands to the heart, lungs and gut, and brings <b>sensory information from those organs</b> back up.</p><p>It leaves the <b>brainstem</b> (medulla), like the other cranial nerves below the midbrain.</p></div>
+    </div>
+    <div class="viz">
+      <h4>Follow the wanderer</h4>
+      <p class="sub">Send signals down the vagus to the organs, or let the organs report back up.</p>
+      <svg id="vagSvg" viewBox="0 0 760 430" role="img" aria-label="Body outline showing the vagus nerve leaving the brainstem and branching to the heart, lungs, stomach and intestines."></svg>
+      <div class="controls">
+        <button class="tg" id="vagOut">Brain to organs (parasympathetic)</button>
+        <button class="tg" id="vagIn">Organs to brain (sensory)</button>
+      </div>
+      <p class="readout" id="vagTxt" aria-live="polite">The vagus leaves the medulla and wanders down through the neck to the chest and abdomen.</p>
+    </div>
+    <div class="viz">
+      <h4>The 12 cranial nerves at a glance</h4>
+      <p class="sub"><b>S</b> = sensory, <b>M</b> = motor, <b>B</b> = both. A heart marks the ones that carry parasympathetic fibers.</p>
+      <div class="cn" id="cnGrid"></div>
+    </div>
+    <p class="remember"><b>Remember it:</b> <b>Vagus = vagabond</b>, the wanderer. It's the cranial nerve that leaves the head, carrying "rest and digest" commands down to the organs and organ sensations back up to the brainstem.</p>
+  </section>
+
   <section class="topic" id="neurontypes">
-    <div class="thead"><span class="num">2</span><h3>Bipolar vs. pseudounipolar neurons</h3></div>
+    <div class="thead"><span class="num">3</span><h3>Bipolar vs. pseudounipolar neurons</h3></div>
     <p class="lede">Neurons are named by how many processes leave the <b>cell body</b>. Count only where each branch leaves the cell body, not how many branches there are farther out.</p>
     <div class="mix">
       <div class="wrong"><span class="lab">The mix-up</span><p>A pseudounipolar neuron has two long branches, so it must be bipolar.</p><p>Neurons are classified by how many dendritic spines or synapses they have.</p></div>
@@ -211,8 +250,57 @@
     <p class="see">Go deeper: <a href="../neuron-types/">Types of Neurons</a></p>
   </section>
 
+  <section class="topic" id="myelin">
+    <div class="thead"><span class="num">4</span><h3>Gray matter, white matter, and what multiple sclerosis breaks</h3></div>
+    <p class="lede">Slice a brain and you see two colors. <b>Gray matter</b> is where neurons' <b>cell bodies, dendrites and synapses</b> are, so it's where information is processed. <b>White matter</b> is bundles of <b>myelinated axons</b>, the cables that carry signals between regions. Myelin is mostly fat, which is why it looks white.</p>
+    <div class="mix">
+      <div class="wrong"><span class="lab">The mix-up</span><p>Gray matter is made mostly of myelinated axons.</p><p>White matter does the brain's processing; gray matter just connects regions.</p><p>Multiple sclerosis damages neurons' ability to integrate (add up) their inputs.</p></div>
+      <div class="right"><span class="lab">Actually</span><p><b>Gray = cell bodies</b> (processing). <b>White = myelinated axons</b> (wiring).</p><p>In <b>multiple sclerosis (MS)</b>, the immune system attacks the <b>myelin</b> in the brain and spinal cord. Without myelin, signals slow down or fail, so MS is a problem of <b>conduction</b>, not integration.</p></div>
+    </div>
+    <div class="viz">
+      <h4>Where's the gray, where's the white?</h4>
+      <p class="sub">In the brain, gray is on the <b>outside</b> (the cortex). In the spinal cord, it's flipped. The circles zoom in to show what each one is made of.</p>
+      <svg id="gwSvg" viewBox="0 0 760 425" role="img" aria-label="A coronal slice of the brain with gray cortex outside and white matter inside, next to a spinal cord cross-section with white matter outside and a gray butterfly inside."></svg>
+    </div>
+    <div class="viz">
+      <h4>Race the signal: healthy axon vs. MS</h4>
+      <p class="sub">Set how much myelin MS has destroyed, then send a signal down both axons.</p>
+      <svg id="msRace" viewBox="0 0 760 230" role="img" aria-label="Two axons; a signal jumps quickly along the healthy myelinated axon and slows or stops where myelin is damaged in the MS axon."></svg>
+      <div class="controls">
+        <button class="tg" id="msGo">Send a signal</button>
+        <label class="slider">Myelin damage <input type="range" id="msDmg" min="0" max="100" value="45"><output id="msDmgV">45%</output></label>
+      </div>
+      <p class="readout" id="msTxt" aria-live="polite"></p>
+    </div>
+    <p class="remember"><b>Remember it:</b> Gray matter = the <b>computers</b> (cell bodies). White matter = the <b>cables</b> (myelinated axons). MS strips the insulation off the cables, so messages arrive late or not at all.</p>
+  </section>
+
+  <section class="topic" id="planes">
+    <div class="thead"><span class="num">5</span><h3>Slicing the brain: planes and the longitudinal fissure</h3></div>
+    <p class="lede">There are three ways to slice a brain. A <b>sagittal</b> cut separates left from right. A <b>coronal</b> cut separates front from back. A <b>horizontal</b> cut separates top from bottom. Only one special cut, the <b>midsagittal</b>, gives two matching halves.</p>
+    <div class="mix">
+      <div class="wrong"><span class="lab">The mix-up</span><p>A horizontal plane always divides the brain into two equal, matching halves.</p><p>The longitudinal fissure separates the frontal lobe from the temporal (or parietal) lobe.</p><p>The thalamus sits right under the longitudinal fissure and connects the two hemispheres.</p></div>
+      <div class="right"><span class="lab">Actually</span><p>A horizontal cut can be made at <b>any height</b>, so the pieces usually aren't equal, and top and bottom never match. Only the <b>midsagittal</b> plane, right down the middle, makes mirror-image halves.</p><p>The <b>longitudinal fissure</b> is the deep groove between the <b>left and right hemispheres</b>. At its floor lies the <b>corpus callosum</b>, the band of axons that connects the two sides.</p></div>
+    </div>
+    <div class="viz">
+      <h4>Slice it yourself</h4>
+      <p class="sub">Pick a plane and drag the slider to move the cut. The two pieces are shown in different colors.</p>
+      <svg id="plSvg" viewBox="0 0 760 330" role="img" aria-label="Side view and front view of a brain with a movable cutting plane; the two resulting pieces are colored differently."></svg>
+      <div class="controls" role="group" aria-label="Plane">
+        <button class="tg" data-pl="mid" aria-pressed="true">Midsagittal</button>
+        <button class="tg" data-pl="sag" aria-pressed="false">Sagittal (off-center)</button>
+        <button class="tg" data-pl="cor" aria-pressed="false">Coronal</button>
+        <button class="tg" data-pl="hor" aria-pressed="false">Horizontal</button>
+        <label class="slider">Move the cut <input type="range" id="plPos" min="8" max="92" value="50"><output id="plPosV"></output></label>
+        <button class="tg" id="plFis" aria-pressed="false">Show the longitudinal fissure</button>
+      </div>
+      <p class="readout" id="plTxt" aria-live="polite"></p>
+    </div>
+    <p class="remember"><b>Remember it:</b> <b>S</b>agittal <b>s</b>plits left from right (like an arrow, <i>sagitta</i>, shot between the eyes). <b>C</b>oronal is where a <b>c</b>rown sits, front vs. back. <b>H</b>orizontal is the <b>h</b>orizon, top vs. bottom. The longitudinal fissure runs the <b>long</b> way, front to back, between the hemispheres.</p>
+  </section>
+
   <section class="topic" id="midsag">
-    <div class="thead"><span class="num">3</span><h3>Finding structures on the midline view</h3></div>
+    <div class="thead"><span class="num">6</span><h3>Finding structures on the midline view</h3></div>
     <p class="lede">The midsagittal view is the brain sliced down the middle, so you're looking at the inside face of one half. The front of the brain is on the left in this drawing. The most-missed labels were the <b>lateral ventricle</b>, <b>corpus callosum</b>, <b>thalamus</b> and <b>hypothalamus</b>.</p>
     <div class="mix">
       <div class="wrong"><span class="lab">The mix-up</span><p>Mixing up the corpus callosum with the lateral ventricle just under it.</p><p>Mixing up the thalamus with the hypothalamus.</p></div>
@@ -235,7 +323,7 @@
   </section>
 
   <section class="topic" id="circuits">
-    <div class="thead"><span class="num">4</span><h3>Basal ganglia, cerebellum, or limbic system?</h3></div>
+    <div class="thead"><span class="num">7</span><h3>Basal ganglia, cerebellum, or limbic system?</h3></div>
     <p class="lede">Two of these three systems help with movement, so it's easy to blame the wrong one. Ask what kind of problem you're seeing: trouble <b>starting or stopping</b> movement, <b>clumsy</b> movement, or problems with <b>feelings and memory</b>.</p>
     <div class="mix">
       <div class="wrong"><span class="lab">The mix-up</span><p>Parkinson's disease is a cerebellum problem because it affects movement.</p></div>
@@ -255,7 +343,7 @@
   </section>
 
   <section class="topic" id="language">
-    <div class="thead"><span class="num">5</span><h3>Broca's and Wernicke's areas</h3></div>
+    <div class="thead"><span class="num">8</span><h3>Broca's and Wernicke's areas</h3></div>
     <p class="lede">Language uses a whole network of areas, but two of them stand out. <b>Broca's area</b> in the frontal lobe is key for <b>producing</b> speech. <b>Wernicke's area</b> in the temporal lobe is key for <b>understanding</b> it.</p>
     <div class="mix">
       <div class="wrong"><span class="lab">The mix-up</span><p>Speaking should light up Wernicke's area most, because you have to understand words before you can say them.</p><p>Both areas light up equally no matter what you're doing.</p></div>
@@ -275,7 +363,7 @@
   </section>
 
   <section class="topic" id="methods">
-    <div class="thead"><span class="num">6</span><h3>Choosing a brain method, and Nissl vs. Golgi stains</h3></div>
+    <div class="thead"><span class="num">9</span><h3>Choosing a brain method, and Nissl vs. Golgi stains</h3></div>
     <p class="lede">Every method trades off two things: <b>where</b> (spatial resolution) and <b>when</b> (temporal resolution). The first question to ask is whether you need a picture of the brain's <b>structure</b> or a measure of its <b>activity</b>.</p>
     <div class="mix">
       <div class="wrong"><span class="lab">The mix-up</span><p>To check whether the hippocampus has shrunk, use fMRI or EEG. Those are "brain scans" too.</p><p>A Golgi stain shows how densely packed cells are, and a Nissl stain shows a neuron's branches.</p></div>
@@ -303,8 +391,25 @@
     <p class="remember"><b>Remember it:</b> <b>N</b>issl = <b>N</b>umbers (count cell bodies). <b>G</b>olgi = the <b>G</b>orgeous whole neuron. For methods: "Structure? MRI. Exactly where it's active? fMRI. Exactly when? EEG. Is it <i>needed</i>? TMS."</p>
   </section>
 
+  <section class="topic" id="interventions">
+    <div class="thead"><span class="num">10</span><h3>Somatic or behavioral? Interventions and outcomes</h3></div>
+    <p class="lede">Biological psychology experiments change one thing (the <b>intervention</b>) and measure another (the <b>outcome</b>). Each can be <b>somatic</b>, meaning about the body, or <b>behavioral</b>, meaning about what the person or animal does or experiences.</p>
+    <div class="mix">
+      <div class="wrong"><span class="lab">The mix-up</span><p>Measuring blood pressure counts as a behavioral outcome, because the person "did" something.</p><p>Any study that uses a drug is a behavioral study.</p></div>
+      <div class="right"><span class="lab">Actually</span><p><b>Somatic intervention</b>: change the body directly, like a drug, a lesion, brain stimulation or a hormone.</p><p><b>Behavioral intervention</b>: change experience, like training, a stressful situation or an enriched cage.</p><p><b>Behavioral outcome</b>: what the organism <i>does</i>, like a memory score or time spent exploring. Heart rate, blood pressure and brain activity are <b>somatic</b> measures.</p></div>
+    </div>
+    <div class="viz">
+      <h4>Sort them</h4>
+      <p class="sub">Click an item, then click the box it belongs in. Wrong answers bounce back.</p>
+      <div class="chips" id="ivChips"></div>
+      <div class="bins bins4" id="ivBins"></div>
+      <p class="readout" id="ivTxt" aria-live="polite"></p>
+    </div>
+    <p class="remember"><b>Remember it:</b> <b>Somatic = soma = body.</b> If you could measure it with a needle, a cuff or a scanner, it's somatic. If you'd measure it with a stopwatch, a score or by watching what they do, it's behavioral. Example: <i>give caffeine</i> (somatic intervention) → <i>memory test score</i> (behavioral outcome).</p>
+  </section>
+
   <section class="topic" id="spine">
-    <div class="thead"><span class="num">7</span><h3>The spinal cord, top to bottom</h3></div>
+    <div class="thead"><span class="num">11</span><h3>The spinal cord, top to bottom</h3></div>
     <p class="lede">The five regions follow your body from the neck down: <b>cervical → thoracic → lumbar → sacral → coccygeal</b>.</p>
     <div class="mix">
       <div class="wrong"><span class="lab">The mix-up</span><p>Lumbar comes before thoracic, or the order starts at the tailbone.</p></div>
@@ -328,7 +433,7 @@
   <div class="exam-band"><h2>Exam 2</h2><p>How neurons fire, how synapses talk, and how drugs change both</p></div>
 
   <section class="topic" id="resting">
-    <div class="thead"><span class="num">8</span><h3>Potassium and the resting potential</h3></div>
+    <div class="thead"><span class="num">12</span><h3>Potassium and the resting potential</h3></div>
     <p class="lede">At rest, K⁺ is much more concentrated <b>inside</b> the neuron. K⁺ leaks out down that gradient and takes positive charge with it, which leaves the inside around <b>−70 mV</b>. If you change the K⁺ outside the cell, you change how hard it pushes out.</p>
     <div class="mix">
       <div class="wrong"><span class="lab">The mix-up</span><p>If extra K⁺ builds up outside (hyperkalemia), more K⁺ leaks out and the cell hyperpolarizes.</p><p>The Na⁺/K⁺ pump instantly fixes it, so nothing changes.</p><p>At rest the inside is positive because there's so much K⁺ in there.</p></div>
@@ -345,7 +450,7 @@
   </section>
 
   <section class="topic" id="ap">
-    <div class="thead"><span class="num">9</span><h3>Refractory periods and one-way travel</h3></div>
+    <div class="thead"><span class="num">13</span><h3>Refractory periods and one-way travel</h3></div>
     <p class="lede">An action potential has two refractory periods. Right after a spike, <b>Na⁺ channels are inactivated</b> and can't reopen at any stimulus strength (the <b>absolute</b> refractory period). After that, the membrane is still a bit hyperpolarized, so a <b>bigger-than-normal</b> stimulus is needed (the <b>relative</b> refractory period). This is also why the signal only moves forward.</p>
     <div class="mix">
       <div class="wrong"><span class="lab">The mix-up</span><p>The axon hillock blocks signals from coming back, or Na⁺ ions can only flow toward the terminal.</p><p>The Na⁺/K⁺ pump causes repolarization.</p><p>In saltatory conduction, ions jump from node to node.</p></div>
@@ -383,7 +488,7 @@
   </section>
 
   <section class="topic" id="release">
-    <div class="thead"><span class="num">10</span><h3>The order of synaptic release (and gas transmitters)</h3></div>
+    <div class="thead"><span class="num">14</span><h3>The order of synaptic release (and gas transmitters)</h3></div>
     <p class="lede">Calcium is the trigger. Without Ca²⁺ coming into the terminal, vesicles don't fuse and no transmitter is released.</p>
     <div class="mix">
       <div class="wrong"><span class="lab">The mix-up</span><p>The action potential arrives, vesicles fuse, and then Ca²⁺ channels open.</p><p>Gas transmitters like nitric oxide work like the others, just smaller.</p></div>
@@ -423,7 +528,7 @@
   </section>
 
   <section class="topic" id="receptors">
-    <div class="thead"><span class="num">11</span><h3>Ionotropic vs. metabotropic receptors</h3></div>
+    <div class="thead"><span class="num">15</span><h3>Ionotropic vs. metabotropic receptors</h3></div>
     <p class="lede"><b>Ionotropic</b> receptors <i>are</i> ion channels: transmitter binds, the channel opens, and the effect is <b>fast and brief</b>. <b>Metabotropic</b> receptors aren't channels. They start a G-protein chain reaction inside the cell, so the effect is <b>slower and longer-lasting</b>.</p>
     <div class="mix">
       <div class="wrong"><span class="lab">The mix-up</span><p>The nicotinic receptor at the muscle is metabotropic.</p><p>GABA-A makes an IPSP by letting Na⁺ in.</p></div>
@@ -440,7 +545,7 @@
   </section>
 
   <section class="topic" id="ach">
-    <div class="thead"><span class="num">12</span><h3>Acetylcholine: one transmitter, opposite effects</h3></div>
+    <div class="thead"><span class="num">16</span><h3>Acetylcholine: one transmitter, opposite effects</h3></div>
     <p class="lede">The same ACh molecule makes skeletal muscle <b>contract</b> but makes the heart <b>slow down</b>. The difference comes from the <b>receptor</b>, not the transmitter.</p>
     <div class="mix">
       <div class="wrong"><span class="lab">The mix-up</span><p>ACh turns into an inhibitory chemical before it reaches the heart.</p><p>Loewi's experiment showed that nerves signal electrically.</p><p>Donepezil works by blocking ACh reuptake.</p><p>Donepezil cures Alzheimer's by replacing lost neurons.</p></div>
@@ -496,7 +601,7 @@
   </section>
 
   <section class="topic" id="families">
-    <div class="thead"><span class="num">13</span><h3>Transmitter families and which drug hits which</h3></div>
+    <div class="thead"><span class="num">17</span><h3>Transmitter families and which drug hits which</h3></div>
     <p class="lede"><b>Monoamines</b> are the big family. <b>Catecholamines</b> (dopamine, norepinephrine, epinephrine) are a branch of it made from <b>tyrosine</b>. <b>Serotonin</b> is also a monoamine, but it's made from <b>tryptophan</b>, so it's not a catecholamine.</p>
     <div class="mix">
       <div class="wrong"><span class="lab">The mix-up</span><p>Serotonin is a catecholamine.</p><p>LSD and psilocybin are dopamine drugs.</p></div>
@@ -516,8 +621,38 @@
     <p class="remember"><b>Remember it:</b> <b>T</b>yrosine → <b>D</b>OPA → <b>D</b>opamine → <b>N</b>orepinephrine → <b>E</b>pinephrine. "<b>T</b>iny <b>D</b>ogs <b>D</b>on't <b>N</b>eed <b>E</b>xercise." Psychedelics → serotonin.</p>
   </section>
 
+  <section class="topic" id="knobs">
+    <div class="thead"><span class="num">18</span><h3>Turning a synapse up or down</h3></div>
+    <p class="lede">After a transmitter is released, three things decide how much signal gets through: how long it stays in the <b>cleft</b>, how fast <b>enzymes</b> destroy it, and what's sitting on the <b>receptors</b>. Most drugs work by changing one of these.</p>
+    <div class="mix">
+      <div class="wrong"><span class="lab">The mix-up</span><p>Blocking the reuptake transporter makes enzymes break down more transmitter, so signaling drops.</p><p>Speeding up the enzymes that break down a transmitter increases signaling.</p><p>An antagonist is a weak agonist: it binds and partly turns the receptor on.</p></div>
+      <div class="right"><span class="lab">Actually</span><p><b>Block reuptake</b> → transmitter stays in the cleft longer → <b>more</b> signaling (SSRIs, cocaine).</p><p><b>More enzyme activity</b> → transmitter destroyed faster → <b>less</b> signaling. <b>Blocking</b> the enzyme (MAO inhibitors, donepezil) gives <b>more</b>.</p><p>An <b>antagonist</b> binds the receptor (it has affinity) but doesn't activate it (zero efficacy), so it <b>blocks</b> the transmitter. A <b>partial agonist</b> is the one that turns the receptor on partway.</p></div>
+    </div>
+    <div class="viz">
+      <h4>The synapse mixing board</h4>
+      <p class="sub">Change one thing at a time and watch the signal meter. Purple dots = transmitter. Green triangles = drug.</p>
+      <svg id="kbSvg" viewBox="0 0 760 290" role="img" aria-label="Synapse with transmitter molecules, reuptake transporters, enzymes and receptors, plus a meter showing the signal in the receiving neuron."></svg>
+      <div class="controls" role="group" aria-label="Cleanup">
+        <span class="sub" style="margin:0 4px 0 0">Cleanup:</span>
+        <button class="tg" data-kc="normal" aria-pressed="true">Normal</button>
+        <button class="tg" data-kc="reup" aria-pressed="false">Block reuptake</button>
+        <button class="tg" data-kc="boost" aria-pressed="false">Speed up the enzyme</button>
+        <button class="tg" data-kc="noenz" aria-pressed="false">Block the enzyme</button>
+      </div>
+      <div class="controls" role="group" aria-label="Drug on the receptors">
+        <span class="sub" style="margin:0 4px 0 0">On the receptors:</span>
+        <button class="tg" data-kr="none" aria-pressed="true">No drug</button>
+        <button class="tg" data-kr="ag" aria-pressed="false">Agonist</button>
+        <button class="tg" data-kr="part" aria-pressed="false">Partial agonist</button>
+        <button class="tg" data-kr="ant" aria-pressed="false">Antagonist</button>
+      </div>
+      <p class="readout" id="kbTxt" aria-live="polite"></p>
+    </div>
+    <p class="remember"><b>Remember it:</b> Anything that makes transmitter <b>stay longer</b> (block reuptake, block the enzyme) turns the signal <b>up</b>. Anything that <b>destroys it faster</b> turns it <b>down</b>. Antagonist = a key that fits the lock but <b>won't turn</b>.</p>
+  </section>
+
   <section class="topic" id="dopamine">
-    <div class="thead"><span class="num">14</span><h3>Dopamine pathways and antipsychotics</h3></div>
+    <div class="thead"><span class="num">19</span><h3>Dopamine pathways and antipsychotics</h3></div>
     <p class="lede">Dopamine neurons in the midbrain send fibers along separate highways, and each highway does a different job. A drug that blocks D2 receptors <i>everywhere</i> hits all of them at once.</p>
     <div class="mix">
       <div class="wrong"><span class="lab">The mix-up</span><p>Haloperidol's tremor and stiffness come from blocking the mesolimbic (reward) pathway.</p><p>Parkinson's disease is caused by losing dopamine in the reward pathway.</p></div>
@@ -546,7 +681,7 @@
   </section>
 
   <section class="topic" id="doseresponse">
-    <div class="thead"><span class="num">15</span><h3>Reading a dose-response curve</h3></div>
+    <div class="thead"><span class="num">20</span><h3>Reading a dose-response curve</h3></div>
     <p class="lede">Two numbers describe most dose-response curves. <b>Potency</b> is how much drug you need, shown by the curve's left-right position (its ED50). <b>Efficacy</b> is how big the effect can get, shown by the curve's maximum height.</p>
     <div class="mix">
       <div class="wrong"><span class="lab">The mix-up</span><p>A drug with a bigger ED50 is more potent.</p><p>Tolerance lowers the curve's maximum, or shifts the curve left.</p><p>Same ED50 means the same safety.</p></div>
@@ -580,7 +715,7 @@
   </section>
 
   <section class="topic" id="tolerance">
-    <div class="thead"><span class="num">16</span><h3>Tolerance traps and alcohol's two phases</h3></div>
+    <div class="thead"><span class="num">21</span><h3>Tolerance traps and alcohol's two phases</h3></div>
     <p class="lede">Tolerance doesn't build evenly for every effect of a drug. With alcohol, early "excitement" comes from <b>switching off the brain's brakes</b>, not from stimulating the brain.</p>
     <div class="mix">
       <div class="wrong"><span class="lab">The mix-up</span><p>Opioid users become tolerant to breathing suppression, so they raise the dose for the high.</p><p>Alcohol is a stimulant at first and becomes a depressant later.</p></div>
