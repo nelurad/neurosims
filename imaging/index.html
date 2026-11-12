@@ -261,8 +261,12 @@
     <p class="lede">Active neurons use energy, and within a few seconds the blood vessels around them deliver extra oxygen-rich blood, more than the neurons use. Oxygen-rich and oxygen-poor hemoglobin affect the MRI signal differently, so the scanner picks up this <b>BOLD</b> (blood-oxygen-level-dependent) signal. Choose a task and run the scan.</p>
     <div class="stage">
       <div class="box">
-        <svg id="fmriSvg" viewBox="0 0 640 440" role="img" aria-label="Lateral view of the left hemisphere with fMRI activation"></svg>
-        <div class="row" id="fmriBtns"></div>
+        <svg id="fmriRig" viewBox="0 0 640 220" role="img" aria-label="A person lying in an MRI scanner doing a task on a screen"></svg>
+        <div style="display:grid;grid-template-columns:minmax(0,1fr) 54px;gap:8px;align-items:center;max-width:430px;margin:6px auto 0">
+          <canvas id="fmriCan" style="aspect-ratio:1/1;border-radius:10px;background:#000" aria-label="fMRI scan: an MRI slice with colored activation"></canvas>
+          <canvas id="fmriBar" style="height:240px;width:54px" aria-label="Color scale"></canvas>
+        </div>
+        <div class="row" id="fmriBtns" style="margin-top:8px"></div>
       </div>
       <div class="box">
         <div class="mlab"><span>BOLD signal in the active region</span><b id="boldOut"></b></div>
@@ -307,14 +311,22 @@
   <section class="s" id="fnirs" data-title="fNIRS">
     <p class="kicker">Part 7 · Function</p>
     <h2 class="sec">Functional near-infrared spectroscopy (fNIRS)</h2>
-    <p class="lede">Near-infrared light (about 700–1000 nm) passes through skin and bone surprisingly well. A <b>source</b> on the scalp shines it in; it scatters around in the tissue, and a <b>detector</b> a few centimeters away catches the light that makes it back out. Oxygen-rich and oxygen-poor hemoglobin absorb these wavelengths differently, so changes in the light reveal changes in blood oxygen in the cortex beneath.</p>
+    <p class="lede">The person wears a cap of small lights and sensors. Near-infrared light (about 700–1000 nm) passes through skin and bone surprisingly well. A <b>source</b> on the scalp shines it in; it scatters around in the tissue, and a <b>detector</b> a few centimeters away catches the light that makes it back out. Oxygen-rich and oxygen-poor hemoglobin absorb these wavelengths differently, so changes in the light reveal changes in blood oxygen in the cortex beneath.</p>
     <div class="stage">
-      <div class="box"><svg id="nirsSvg" viewBox="0 0 640 260" role="img" aria-label="Light path from an fNIRS source to a detector through scalp, skull and cortex"></svg>
-        <div class="ctrl"><span>Source–detector distance</span><input type="range" id="nirsD" min="10" max="50" value="30" aria-label="Source to detector distance"><b id="nirsDOut">3.0 cm</b></div>
-        <div class="row"><button class="chip" id="nirsAct" aria-pressed="false">Make the cortex active</button></div>
+      <div class="box">
+        <svg id="nirsCap" viewBox="0 0 400 260" role="img" aria-label="A person wearing an fNIRS cap with light sources and detectors on the forehead"></svg>
+        <h3 style="margin:10px 0 4px;font-size:1.05rem">Channel map (front of the head)</h3>
+        <div style="display:grid;grid-template-columns:minmax(0,1fr) 64px;gap:8px;align-items:center">
+          <canvas id="nirsMap" style="aspect-ratio:1/0.82;cursor:pointer" aria-label="Map of fNIRS channels colored by change in oxygenated hemoglobin"></canvas>
+          <canvas id="nirsBar" style="height:220px;width:64px" aria-label="Color scale"></canvas>
+        </div>
+        <div class="row" style="margin-top:6px"><button class="chip" id="nirsO" aria-pressed="true">Oxygen-rich (HbO)</button><button class="chip" id="nirsR" aria-pressed="false">Oxygen-poor (HbR)</button><span class="hint">Click a channel to see its signal.</span></div>
       </div>
       <div class="box">
-        <canvas id="nirsCan" style="aspect-ratio:16/9" aria-label="Oxygenated and deoxygenated hemoglobin over time"></canvas>
+        <h3 style="margin:0 0 4px;font-size:1.05rem">The raw recording <span class="hint" id="nirsCh"></span></h3>
+        <canvas id="nirsA" style="aspect-ratio:16/7" aria-label="Hemoglobin changes over a whole session with task blocks shaded"></canvas>
+        <h3 style="margin:12px 0 4px;font-size:1.05rem">Averaged over all task blocks</h3>
+        <canvas id="nirsB" style="aspect-ratio:16/8" aria-label="Average response to the task with error bars"></canvas>
         <div class="callout" id="nirsNote"></div>
         <div class="pc"><div class="pro"><h4>Good for</h4><ul><li>Portable, quiet and cheap; can be worn while moving</li><li>Infants, children, and people who cannot use MRI</li><li>Natural settings: conversation, walking, classrooms</li></ul></div>
         <div class="con"><h4>Limits</h4><ul><li>Only reaches the outer cortex (about 1–2 cm deep)</li><li>Coarse spatial resolution (around 1–3 cm)</li><li>Slow, like fMRI, because it also tracks blood</li></ul></div></div>
@@ -329,7 +341,7 @@
     <p class="lede">When thousands of neighboring neurons are active together, their currents add up. <b>EEG</b> picks up the resulting voltages with electrodes on the scalp (see <a href="../sleep/">The Sleeping Brain</a> for how). Every electric current also makes a <b>magnetic field</b>, and <b>MEG</b> measures those tiny fields with ultrasensitive sensors in a helmet. Show the participant a face or an object.</p>
     <div class="stage">
       <div class="box">
-        <svg id="megSvg" viewBox="0 0 640 440" role="img" aria-label="Right hemisphere with MEG sensors and a fusiform response"></svg>
+        <svg id="megSvg" viewBox="0 0 640 400" role="img" aria-label="A person seated in an MEG scanner looking at a screen, and a map of the magnetic field over the head"></svg>
         <div class="row"><button class="btn primary" id="megFace">Show a face</button><button class="btn primary" id="megObj">Show an object</button></div>
       </div>
       <div class="box">
@@ -774,15 +786,40 @@ function heat(I){ // black-blue-cyan-green-yellow-red-white
 
 /* ================= 5 fMRI ================= */
 (()=>{
-  const svg=$('fmriSvg');
-  const TASKS={listen:{n:'Listen to speech',b:[[300,262,34,1],[350,252,26,.8],[214,214,18,.45]],txt:'Listening activates <b>auditory cortex</b> in the superior temporal gyrus, along the lateral fissure, plus language areas.'},
-    look:{n:'Watch a flickering checkerboard',b:[[536,226,30,1],[516,190,20,.7],[506,256,18,.6]],txt:'A flickering checkerboard drives <b>primary visual cortex</b> at the back of the occipital lobe.'},
-    tap:{n:'Tap right-hand fingers',b:[[296,104,22,1],[336,110,18,.7]],txt:'Finger tapping activates the <b>hand area of motor cortex</b> (precentral gyrus) and the touch area just behind it, in the <b>left</b> hemisphere for the right hand.'},
-    think:{n:'Hold a phone number in mind',b:[[182,128,26,.9],[446,150,26,.8],[204,170,18,.6]],txt:'Working memory recruits <b>prefrontal</b> and <b>parietal</b> cortex.'}};
-  let task='listen',t=99,running=false,amp=0;
-  function draw(){const tk=TASKS[task];const blobs=tk.b.map(([x,y,r,a],i)=>`<circle cx="${x}" cy="${y}" r="${r*1.15}" fill="url(#fb)" opacity="${(a*amp).toFixed(3)}"/>`).join('');
-    svg.innerHTML=brainSVG({over:`<defs><radialGradient id="fb"><stop offset="0" stop-color="#fff6a0"/><stop offset=".35" stop-color="#ffcf30"/><stop offset=".7" stop-color="#ff5a10"/><stop offset="1" stop-color="#d01000" stop-opacity="0"/></radialGradient></defs>${blobs}`})+`<text x="20" y="430" class="svgm">Left hemisphere, front at left</text>`;}
-  const btns=Object.entries(TASKS).map(([k,v])=>{const b=mkBtn($('fmriBtns'),v.n,()=>{task=k;setPressed(btns,b);$('fmriNote').innerHTML=v.txt+' Press Run to see the timing.';draw()});return b});setPressed(btns,btns[0]);
+  const c0=$('fmriCan');
+  $('fmriRig').innerHTML=`<defs><linearGradient id="mrH" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#f4f6f9"/><stop offset="1" stop-color="#cfd6de"/></linearGradient></defs>
+    <line x1="20" y1="204" x2="620" y2="204" stroke="var(--line)" stroke-width="2"/>
+    <rect x="330" y="18" width="220" height="186" rx="34" fill="url(#mrH)" stroke="#94a1ae" stroke-width="2"/>
+    <ellipse cx="400" cy="112" rx="50" ry="62" fill="#2d3540"/><ellipse cx="400" cy="112" rx="38" ry="50" fill="#1b2028"/>
+    <rect x="96" y="132" width="320" height="12" rx="6" fill="#8f9aa6"/><rect x="120" y="144" width="12" height="60" fill="#8f9aa6"/>
+    <rect x="170" y="110" width="200" height="24" rx="12" fill="#6d9bd1"/>
+    <ellipse cx="160" cy="118" rx="16" ry="11" fill="#6d9bd1"/>
+    <circle cx="382" cy="114" r="17" fill="#f0d0b6" stroke="#b58e74"/>
+    <path d="M368,100 C372,86 394,86 400,98 M366,108 L362,124 M402,104 L404,124" fill="none" stroke="#c8d3de" stroke-width="3"/>
+    <rect x="300" y="122" width="16" height="8" rx="3" fill="#ffd34a" stroke="#a88714"/>
+    <path d="M400,112 a50,62 0 0 1 0,0" fill="none"/>
+    <rect x="566" y="70" width="52" height="38" rx="4" fill="#1b2028" stroke="#94a1ae"/><rect x="572" y="76" width="40" height="26" fill="#3b4b62"/>
+    <path d="M590,116 L590,204" stroke="#94a1ae" stroke-width="3"/>
+    <g class="svgm" style="font-size:12px">
+      <text x="440" y="14" text-anchor="middle">scanner: a very strong magnet</text>
+      <text x="566" y="62">task screen</text>
+      <text x="200" y="98" text-anchor="middle">lying still on the table</text>
+      <text x="300" y="160" text-anchor="middle">button box</text><line x1="304" y1="150" x2="306" y2="132" class="lead"/>
+      <text x="260" y="40">head coil</text><line x1="312" y1="44" x2="370" y2="92" class="lead"/>
+    </g>`;
+  const TASKS={listen:{n:'Listen to speech',pos:-0.12,b:[[-0.6,0.06,0.13,1],[0.6,0.06,0.12,.9],[-0.5,-0.18,0.07,.5]],txt:'Listening lights up <b>auditory cortex</b> in both temporal lobes, plus language areas on the left.'},
+    look:{n:'Watch a flickering checkerboard',pos:0.05,b:[[-0.09,0.78,0.13,1],[0.09,0.78,0.13,1],[0,0.66,0.09,.6]],txt:'A flickering checkerboard drives <b>primary visual cortex</b> at the back of the brain.'},
+    tap:{n:'Tap right-hand fingers',pos:0.55,b:[[-0.32,-0.04,0.1,1],[-0.4,0.07,0.07,.6]],txt:'Tapping the right hand activates the <b>hand area of motor cortex</b> on the <b>left</b> side.'},
+    think:{n:'Hold a phone number in mind',pos:0.35,b:[[-0.3,-0.6,0.11,.9],[0.3,-0.6,0.1,.8],[-0.36,0.5,0.1,.75],[0.36,0.5,0.1,.7]],txt:'Working memory recruits <b>prefrontal</b> (front) and <b>parietal</b> (back) cortex on both sides.'}};
+  let task='listen',t=99,running=false,amp=0.85;const cache={};
+  function base(){if(!cache[task]){renderSlice(c0,{plane:'ax',pos:TASKS[task].pos,mod:'t1',res:220,blur:0});const o=document.createElement('canvas');o.width=c0.width;o.height=c0.height;o.getContext('2d').drawImage(c0,0,0);cache[task]=o;}return cache[task];}
+  function draw(){const o=base();const{x,w,h}=fitCanvas(c0);x.drawImage(o,0,0,w,h);const Z=1.28;
+    TASKS[task].b.forEach(([u,v,r,a])=>{const px=(u/Z/2+.5)*w,py=(v/Z/2+.5)*h,R=r/Z/2*w*1.15;const al=clamp(a*amp,0,1);if(al<0.02)return;
+      const g=x.createRadialGradient(px,py,0,px,py,R);g.addColorStop(0,`rgba(255,250,170,${al})`);g.addColorStop(.35,`rgba(255,205,40,${al})`);g.addColorStop(.7,`rgba(255,80,10,${al*.85})`);g.addColorStop(1,'rgba(200,0,0,0)');x.fillStyle=g;x.beginPath();x.arc(px,py,R,0,7);x.fill();});
+    x.fillStyle='#fff';x.font='600 13px system-ui';x.fillText('front',w/2-16,16);x.fillText('L',8,h/2);x.fillText('R',w-16,h/2);x.font='12px system-ui';x.fillStyle='#bbb';x.fillText('slice seen from above',8,h-10);
+    const bc=$('fmriBar');const B=fitCanvas(bc);B.x.clearRect(0,0,B.w,B.h);const gr=B.x.createLinearGradient(0,B.h-20,0,16);gr.addColorStop(0,'#c80000');gr.addColorStop(.5,'#ff8a10');gr.addColorStop(1,'#fff7a0');B.x.fillStyle=gr;B.x.fillRect(6,16,14,B.h-36);
+    B.x.fillStyle=cssv('--muted');B.x.font='11px system-ui';B.x.fillText('more',24,26);B.x.fillText('active',24,40);B.x.fillText('less',24,B.h-24);}
+  const btns=Object.entries(TASKS).map(([k,v])=>{const b=mkBtn($('fmriBtns'),v.n,()=>{task=k;amp=0.85;setPressed(btns,b);$('fmriNote').innerHTML=v.txt+' Press Run to see the timing.';draw()});return b});setPressed(btns,btns[0]);
   // HRF
   const hrf=tt=>{if(tt<=0)return 0;const g=(t,k,th)=>Math.pow(t,k-1)*Math.exp(-t/th);return g(tt,6,1)/g(5,6,1)-g(tt,16,1)/g(15,16,1)/6};
   const DUR=10,TOT=32;
@@ -801,8 +838,8 @@ function heat(I){ // black-blue-cyan-green-yellow-red-white
     x.fillStyle=cssv('--accent');x.fillText('neural activity',X(0)+4,Y(0.9)-6);x.fillStyle=cssv('--accent2');x.fillText('BOLD signal',X(15),Y(0.6));}
   $('boldGo').onclick=()=>{t=0;running=true};
   frameHooks.push(dt=>{if(!running)return;t+=dt*(reduce?4:2.2);const b=bold(t);amp=clamp(b,0,1);$('boldOut').textContent=t<TOT?`t = ${t.toFixed(1)} s`:'';draw();plot();
-    if(t>=TOT){running=false;$('fmriNote').innerHTML=TASKS[task].txt+' Notice the BOLD signal starts rising about 2 s after the task begins, <b>peaks around 5–6 s</b>, lingers after the task stops, and dips below baseline (the undershoot). That lag is why fMRI is slow.';}});
-  redrawHooks.push(()=>{draw();plot()});amp=0;draw();t=TOT;plot();t=99;
+    if(t>=TOT){running=false;amp=0.85;draw();$('fmriNote').innerHTML=TASKS[task].txt+' Notice the BOLD signal starts rising about 2 s after the task begins, <b>peaks around 5–6 s</b>, lingers after the task stops, and dips below baseline (the undershoot). That lag is why fMRI is slow.';}});
+  redrawHooks.push(()=>{Object.keys(cache).forEach(k=>delete cache[k]);draw();plot()});amp=0.85;draw();t=TOT;plot();t=99;
   // subtraction
   const row=$('subRow');const sz=170;
   row.innerHTML=`<div style="text-align:center"><canvas id="sA" style="width:${sz}px;height:${sz}px;border-radius:8px"></canvas><div class="cap">Task (read words)</div></div><div style="font-size:2rem;color:var(--muted)">−</div><div style="text-align:center"><canvas id="sB" style="width:${sz}px;height:${sz}px;border-radius:8px"></canvas><div class="cap">Control (look at #####)</div></div><div style="font-size:2rem;color:var(--muted)">=</div><div style="text-align:center"><canvas id="sC" style="width:${sz}px;height:${sz}px;border-radius:8px"></canvas><div class="cap">Difference</div></div>`;
@@ -839,50 +876,97 @@ function heat(I){ // black-blue-cyan-green-yellow-red-white
 
 /* ================= 7 fNIRS ================= */
 (()=>{
-  const svg=$('nirsSvg');const VS=50; // 1 cm = 50 px vertically
-  const L=[['Scalp',40,65,'#e8c3ad','#a87d66'],['Skull',65,100,'#efe6d2','#b5a888'],['CSF',100,112,'#cfe3ef','#8fb3c7'],['Gray matter (cortex)',112,134,'#c99a92','#9a6f67'],['White matter',134,360,'#f1e6dd','#c8b5a6']];
-  let act=false,photons=[],t=0;const R=rng(5);
-  const geo=()=>{const sep=+$('nirsD').value/10,px=sep*100;return{sep,px,sx:320-px/2,dx:320+px/2,d:sep/2*VS}};
-  function base(){let h='';
-    L.forEach(([n,top,bot,f,st],i)=>{const wavy=i===3||i===4;const tp=i===4?Array.from({length:10},(_,k)=>`${k?'':'M0,'+top} Q${k*64+32},${top+(k%2?-9:12)} ${(k+1)*64},${top}`).join(' '):`M0,${top} Q320,${top-8} 640,${top}`;
-      const bp=i===3?`L640,${bot} `+Array.from({length:10},(_,k)=>`Q${640-k*64-32},${bot+(k%2?-9:12)} ${640-(k+1)*64},${bot}`).join(' '):`L640,${bot} Q320,${bot-8} 0,${bot}`;
-      h+=`<path d="${tp} ${bp} Z" fill="${f}" stroke="${st}" stroke-width="1"/>`;
-      h+=`<text x="10" y="${Math.min((top+bot)/2+4,top+26)}" class="svgm" style="fill:#4a3b33;font-size:11px">${n}</text>`;});
-    h+=`<g transform="translate(600,${40})"><line x1="0" y1="0" x2="0" y2="${VS}" stroke="#4a3b33" stroke-width="2"/><line x1="-5" y1="0" x2="5" y2="0" stroke="#4a3b33" stroke-width="2"/><line x1="-5" y1="${VS}" x2="5" y2="${VS}" stroke="#4a3b33" stroke-width="2"/><text x="-8" y="${VS/2+4}" text-anchor="end" class="svgm" style="fill:#4a3b33">1 cm</text></g>`;
-    return h;}
-  function draw(){const g=geo();$('nirsDOut').textContent=g.sep.toFixed(1)+' cm';const c=g.d/0.75;
-    let h=base();
-    if(act)h+=`<ellipse cx="320" cy="123" rx="${g.px*0.32+20}" ry="12" fill="#e0302a" opacity=".35"/>`;
-    h+=`<path d="M${g.sx},40 C${g.sx+g.px*0.12},${40+c} ${g.dx-g.px*0.12},${40+c} ${g.dx},40" fill="none" stroke="#ff4b2b" stroke-width="${Math.max(8,g.px*0.11)}" stroke-opacity=".22" stroke-linecap="round"/>`;
-    h+=`<g id="phot"></g>`;
-    h+=`<rect x="${g.sx-14}" y="12" width="28" height="26" rx="5" fill="#333"/><circle cx="${g.sx}" cy="34" r="6" fill="#ff3b2b"/><text x="${g.sx}" y="8" text-anchor="middle" class="svgt" style="font-size:12px">source</text>`;
-    h+=`<rect x="${g.dx-14}" y="12" width="28" height="26" rx="5" fill="#333"/><circle cx="${g.dx}" cy="34" r="6" fill="#9ad"/><text x="${g.dx}" y="8" text-anchor="middle" class="svgt" style="font-size:12px">detector</text>`;
-    svg.innerHTML=h;
-    const reach=40+g.d;const what=reach<100?'only the scalp and skull':reach<112?'down to the fluid around the brain':'into the <b>gray matter</b> of the cortex';
-    $('nirsNote').innerHTML=`At ${g.sep.toFixed(1)} cm apart, the detected light travels in a banana-shaped path reaching roughly ${(g.sep/2).toFixed(1)} cm deep: ${what}. ${g.sep<1.5?'Short channels like this are used to measure (and subtract) blood changes in the scalp.':g.sep>4?'Wider spacing reaches deeper, but far less light makes it back, so the signal is noisier.':'Around 3 cm is the usual compromise between depth and signal strength.'}`;}
-  $('nirsD').oninput=()=>{photons=[];draw()};
-  $('nirsAct').onclick=()=>{act=!act;$('nirsAct').setAttribute('aria-pressed',act);draw()};
-  const c=$('nirsCan');let hist=[];
-  function plot(){const{x,w,h}=fitCanvas(c);x.clearRect(0,0,w,h);const m=34;x.strokeStyle=cssv('--line');x.lineWidth=1;x.beginPath();x.moveTo(m,h/2);x.lineTo(w-6,h/2);x.moveTo(m,8);x.lineTo(m,h-20);x.stroke();
-    x.font='12px system-ui';[['oxygen-rich hemoglobin (HbO)','#e0302a','o'],['oxygen-poor hemoglobin (HbR)','#3d6fd6','r']].forEach(([l,col,k],j)=>{x.strokeStyle=col;x.lineWidth=2.5;x.beginPath();hist.forEach((p,i)=>{const px=m+i/300*(w-m-8),py=h/2-p[k]*h*0.38;i?x.lineTo(px,py):x.moveTo(px,py)});x.stroke();x.fillStyle=col;x.fillText(l,m+8,16+j*16)});
-    x.fillStyle=cssv('--muted');x.fillText('time →',w-50,h-6);x.fillText(act?'cortex active':'rest',w-90,16);}
-  let ho=0,hr=0;
-  frameHooks.push(dt=>{if(!isVis(svg))return;t+=dt;const g=geo();
-    if(photons.length<24&&R()<0.5)photons.push({s:0,dep:g.d*(0.55+R()*0.8),j:R()*6,lost:R()<0.35});
-    const el=$('phot');if(!el)return;let hh='';
-    photons=photons.filter(p=>{p.s+=dt*0.45;if(p.s>1)return false;const tt=p.s;const x=lerp(g.sx,g.dx,tt)+Math.sin(tt*30+p.j)*5;const y=40+Math.sin(Math.PI*tt)*p.dep+Math.cos(tt*25+p.j)*4;
-      if(p.lost&&tt>0.5){hh+=`<circle cx="${(x+(tt-0.5)*70).toFixed(1)}" cy="${(y+(tt-0.5)*120).toFixed(1)}" r="3" fill="#ff9a6b" opacity="${(1-(tt-0.5)*2).toFixed(2)}"/>`;return true}
-      hh+=`<circle cx="${x.toFixed(1)}" cy="${y.toFixed(1)}" r="3.2" fill="#ff5a2b"/>`;return true});el.innerHTML=hh;
-    const tgtO=act?0.8:0,tgtR=act?-0.35:0;ho=lerp(ho,tgtO,dt*0.5);hr=lerp(hr,tgtR,dt*0.5);hist.push({o:ho+(R()-0.5)*0.08,r:hr+(R()-0.5)*0.06});if(hist.length>300)hist.shift();plot();});
-  redrawHooks.push(()=>{draw();plot()});draw();
+  // cap illustration
+  const opt=[];for(let r=0;r<3;r++)for(let c=0;c<6;c++){opt.push({x:137+c*24+(r%2?12:0),y:58+r*24,src:(r+c)%2===0})}
+  let lines='';opt.forEach((a,i)=>opt.forEach((b,j)=>{if(j>i&&a.src!==b.src&&Math.hypot(a.x-b.x,a.y-b.y)<30)lines+=`<line x1="${a.x}" y1="${a.y}" x2="${b.x}" y2="${b.y}" stroke="#9aa3ad" stroke-width="2"/>`}));
+  $('nirsCap').innerHTML=`<path d="M120,250 C120,214 150,196 200,196 C250,196 280,214 280,250Z" fill="#6d9bd1"/>
+    <ellipse cx="200" cy="130" rx="78" ry="92" fill="#f2d3bb" stroke="#c19a80" stroke-width="2"/>
+    <path d="M122,118 C118,48 160,24 200,24 C240,24 282,48 278,118 C262,96 236,88 200,88 C164,88 138,96 122,118Z" fill="#3d4450"/>
+    ${opt.map(o=>`<path d="M${o.x},${o.y} C${o.x},${o.y-30} ${200+(o.x-200)*.4},10 ${300+o.x*.2},6" fill="none" stroke="#8a929c" stroke-width="1.4" opacity=".7"/>`).join('')}
+    ${lines}
+    ${opt.map(o=>`<circle cx="${o.x}" cy="${o.y}" r="6.5" fill="${o.src?'#ff4b3b':'#3d7bff'}" stroke="#fff" stroke-width="1.6"/>`).join('')}
+    <circle cx="176" cy="160" r="5" fill="#3b2a1e"/><circle cx="224" cy="160" r="5" fill="#3b2a1e"/><path d="M182,190 Q200,202 218,190" fill="none" stroke="#a5644f" stroke-width="3" stroke-linecap="round"/>
+    <rect x="330" y="2" width="66" height="30" rx="6" fill="var(--panel2)" stroke="var(--line)"/><text x="363" y="21" text-anchor="middle" class="svgm" style="font-size:11px">fNIRS unit</text>
+    <g class="svgm" style="font-size:12px"><text x="10" y="40"><tspan fill="#ff4b3b" font-weight="700">●</tspan> light source</text><text x="10" y="60"><tspan fill="#3d7bff" font-weight="700">●</tspan> detector</text>
+      <text x="288" y="150">each gray line</text><text x="288" y="166">is a <tspan font-weight="700">channel</tspan>:</text><text x="288" y="182">the cortex under</text><text x="288" y="198">a source and</text><text x="288" y="214">a detector</text></g>`;
+  // channels on a frontal map, 10 per side
+  const half=[[0.55,-0.42],[0.27,-0.46],[0.7,-0.13],[0.42,-0.15],[0.14,-0.17],[0.56,0.14],[0.28,0.12],[0.7,0.42],[0.42,0.43],[0.14,0.4]];
+  const CH=[];half.forEach(([x,y],i)=>{CH.push({x:-x,y,v:0});CH.push({x,y,v:0})});
+  const act=[1.25,0.95,0.6,1.1,0.3,0.85,0.7,0.25,0.4,0.1];
+  CH.forEach((c,i)=>{const k=Math.floor(i/2);c.v=act[k]*(i%2?0.88:1)+((k*7+i)%5-2)*0.05;});
+  let sel=2,mode='o';
+  // simulated session for a channel
+  const BL=20,starts=[];for(let s0=20;s0<=380;s0+=40)starts.push(s0);
+  const hrf=tt=>{if(tt<=0)return 0;const g=(t,k,th)=>Math.pow(t,k-1)*Math.exp(-t/th);return g(tt,4,1.6)/g(4.8,4,1.6)};
+  function session(ch){const R=rng(100+ch),dt=0.5,N=Math.round(430/dt),o=new Float32Array(N),r=new Float32Array(N);let n1=0,n2=0;const amp=CH[ch].v;
+    const box=new Float32Array(N);for(let i=0;i<N;i++){const t=i*dt;box[i]=starts.some(s0=>t>=s0&&t<s0+BL)?1:0;}
+    for(let i=0;i<N;i++){let sresp=0;for(let k=0;k<70;k++){const j=i-k;if(j<0)break;sresp+=box[j]*hrf(k*dt)*dt;}sresp/=9.5;
+      n1=n1*0.96+(R()-0.5)*0.12;n2=n2*0.96+(R()-0.5)*0.06;const drift=0.15*Math.sin(i*dt/70);
+      o[i]=amp*sresp+n1+drift+0.04*Math.sin(i*dt*2*Math.PI*1.1);r[i]=-0.3*amp*sresp+n2-drift*0.3;}
+    return{o,r,dt,N};}
+  let S=session(sel);
+  const jet=v=>{const t=clamp(v,0,1);const r=clamp(1.5-Math.abs(4*t-3),0,1),g=clamp(1.5-Math.abs(4*t-2),0,1),b=clamp(1.5-Math.abs(4*t-1),0,1);return`rgb(${Math.round(r*255)},${Math.round(g*255)},${Math.round(b*255)})`};
+  function map(){const c=$('nirsMap');const{x,w,h}=fitCanvas(c);x.clearRect(0,0,w,h);const cx=w/2,cy=h*0.48,S2=Math.min(w*0.46,h*0.55);
+    // head-front surface (two hemispheres)
+    const g=x.createRadialGradient(cx,cy-S2*0.3,S2*0.2,cx,cy,S2*1.2);g.addColorStop(0,'#7b8b99');g.addColorStop(1,'#3f4b58');x.fillStyle=g;
+    x.beginPath();x.moveTo(cx-S2*0.95,cy+S2*0.55);x.bezierCurveTo(cx-S2*1.05,cy-S2*0.2,cx-S2*0.85,cy-S2*0.9,cx,cy-S2*0.92);x.bezierCurveTo(cx+S2*0.85,cy-S2*0.9,cx+S2*1.05,cy-S2*0.2,cx+S2*0.95,cy+S2*0.55);x.bezierCurveTo(cx+S2*0.6,cy+S2*0.75,cx-S2*0.6,cy+S2*0.75,cx-S2*0.95,cy+S2*0.55);x.fill();
+    x.strokeStyle='rgba(255,255,255,.18)';x.lineWidth=2;x.beginPath();x.moveTo(cx,cy-S2*0.9);x.lineTo(cx,cy+S2*0.66);x.stroke();
+    CH.forEach((ch,i)=>{const val=mode==='o'?ch.v/1.4:(-0.3*ch.v)/(-0.45);const col=mode==='o'?jet(0.5+val*0.5):jet(0.5-Math.abs(val)*0.5);
+      const px=cx+ch.x*S2,py=cy+ch.y*S2;x.fillStyle=col;x.beginPath();x.arc(px,py,S2*0.085,0,7);x.fill();
+      if(i===sel){x.strokeStyle='#e86bd8';x.lineWidth=3;x.beginPath();x.arc(px,py,S2*0.085+4,0,7);x.stroke();}});
+    x.fillStyle=cssv('--muted');x.font='12px system-ui';x.textAlign='center';x.fillText('left',cx-S2*0.6,h-6);x.fillText('right',cx+S2*0.6,h-6);x.textAlign='left';
+    const bc=$('nirsBar');const B=fitCanvas(bc);B.x.clearRect(0,0,B.w,B.h);for(let i=0;i<=100;i++){B.x.fillStyle=jet(1-i/100);B.x.fillRect(4,12+i*(B.h-30)/100,14,(B.h-30)/100+1);}
+    B.x.fillStyle=cssv('--muted');B.x.font='11px system-ui';B.x.fillText(mode==='o'?'+ more':'+',22,20);B.x.fillText('0',22,B.h/2);B.x.fillText(mode==='o'?'−':'− less',22,B.h-14);}
+  function axes(x,w,h,m,X,Y,ticksX,lab){x.strokeStyle=cssv('--line');x.lineWidth=1;x.beginPath();x.moveTo(m,6);x.lineTo(m,h-22);x.lineTo(w-4,h-22);x.stroke();x.setLineDash([3,3]);x.beginPath();x.moveTo(m,Y(0));x.lineTo(w-4,Y(0));x.stroke();x.setLineDash([]);
+    x.fillStyle=cssv('--muted');x.font='11px system-ui';ticksX.forEach(t=>x.fillText(String(t),X(t)-6,h-8));x.fillText(lab,w-80,h-8);}
+  function plotA(){const c=$('nirsA');const{x,w,h}=fitCanvas(c);x.clearRect(0,0,w,h);const m=30,X=t=>m+t/430*(w-m-6),Y=v=>h*0.5-v*h*0.28;
+    x.fillStyle=cssv('--panel2');starts.forEach(s0=>x.fillRect(X(s0),6,X(s0+BL)-X(s0),h-28));
+    axes(x,w,h,m,X,Y,[0,100,200,300,400],'time (s)');
+    [['o','#e0302a'],['r','#2f62d0']].forEach(([k,col])=>{x.strokeStyle=col;x.lineWidth=1.4;x.beginPath();for(let i=0;i<S.N;i++){const p=[X(i*S.dt),Y(S[k][i])];i?x.lineTo(...p):x.moveTo(...p)}x.stroke();});
+    x.font='11px system-ui';x.fillStyle='#e0302a';x.fillText('HbO',m+6,16);x.fillStyle='#2f62d0';x.fillText('HbR',m+40,16);x.fillStyle=cssv('--muted');x.fillText('gray = task on',m+76,16);}
+  function plotB(){const c=$('nirsB');const{x,w,h}=fitCanvas(c);x.clearRect(0,0,w,h);const m=30,T0=-5,T1=40,X=t=>m+(t-T0)/(T1-T0)*(w-m-6),Y=v=>h*0.62-v*h*0.36;
+    x.fillStyle=cssv('--panel2');x.fillRect(X(0),6,X(BL)-X(0),h-28);axes(x,w,h,m,X,Y,[-5,0,10,20,30,40],'seconds');
+    [['o','#e0302a'],['r','#2f62d0']].forEach(([k,col])=>{const pts=[];for(let t=T0;t<=T1;t+=1){const vals=starts.map(s0=>{const i=Math.round((s0+t)/S.dt);const b0=Math.round(s0/S.dt);return S[k][i]-S[k][b0];});const mu=vals.reduce((a,b)=>a+b,0)/vals.length;const sd=Math.sqrt(vals.reduce((a,b)=>a+(b-mu)**2,0)/(vals.length-1));pts.push([t,mu,sd/Math.sqrt(vals.length)]);}
+      x.strokeStyle=col;x.globalAlpha=.55;x.lineWidth=1;pts.forEach(([t,mu,se])=>{x.beginPath();x.moveTo(X(t),Y(mu-se));x.lineTo(X(t),Y(mu+se));x.moveTo(X(t)-3,Y(mu-se));x.lineTo(X(t)+3,Y(mu-se));x.moveTo(X(t)-3,Y(mu+se));x.lineTo(X(t)+3,Y(mu+se));x.stroke();});
+      x.globalAlpha=1;x.lineWidth=2.4;x.beginPath();pts.forEach(([t,mu],i)=>{i?x.lineTo(X(t),Y(mu)):x.moveTo(X(t),Y(mu))});x.stroke();});
+    x.fillStyle=cssv('--muted');x.font='11px system-ui';x.fillText('task (20 s)',X(1),18);}
+  function note(){const v=CH[sel].v;$('nirsCh').textContent=`· channel ${sel+1} (${CH[sel].x<0?'left':'right'} forehead)`;
+    $('nirsNote').innerHTML=`During each 20-second task block (gray), oxygen-rich hemoglobin <b style="color:#e0302a">rises</b> and oxygen-poor hemoglobin <b style="color:#2f62d0">dips</b>, a few seconds late, just like the fMRI BOLD signal. The raw trace is noisy (heartbeat, breathing, drift), so researchers <b>average</b> the blocks. ${v>0.8?'This channel sits over strongly active cortex.':v<0.35?'This channel barely responds: the cortex under it is not doing much in this task.':'This channel shows a moderate response.'}`;}
+  function all(){map();plotA();plotB();note();}
+  $('nirsMap').addEventListener('click',e=>{const c=$('nirsMap'),r=c.getBoundingClientRect();const w=r.width,h=r.height,cx=w/2,cy=h*0.48,S2=Math.min(w*0.46,h*0.55);const mx=e.clientX-r.left,my=e.clientY-r.top;
+    let best=-1,bd=1e9;CH.forEach((ch,i)=>{const d=Math.hypot(cx+ch.x*S2-mx,cy+ch.y*S2-my);if(d<bd){bd=d;best=i}});if(bd<S2*0.2){sel=best;S=session(sel);all();}});
+  $('nirsO').onclick=()=>{mode='o';setPressed([$('nirsO'),$('nirsR')],$('nirsO'));map();};$('nirsR').onclick=()=>{mode='r';setPressed([$('nirsO'),$('nirsR')],$('nirsR'));map();};
+  redrawHooks.push(all);all();
 })();
 
 /* ================= 8 MEG ================= */
 (()=>{
-  const svg=$('megSvg');let amp=0,stim=null,t=0;
-  function draw(){const sensors=Array.from({length:23},(_,i)=>{const a=Math.PI*(0.98+i/22*1.1);const x=320+Math.cos(a)*300,y=230+Math.sin(a)*215;return `<circle cx="${x.toFixed(1)}" cy="${y.toFixed(1)}" r="7" fill="var(--panel2)" stroke="var(--muted)" stroke-width="1.5"/>`}).join('');
-    const blob=`<defs><radialGradient id="mb"><stop offset="0" stop-color="#fff6a0"/><stop offset=".4" stop-color="#ffb020"/><stop offset=".75" stop-color="#ff3a10"/><stop offset="1" stop-color="#c00" stop-opacity="0"/></radialGradient></defs><ellipse cx="420" cy="306" rx="${46}" ry="20" fill="url(#mb)" opacity="${amp.toFixed(3)}"/>`;
-    svg.innerHTML=`<path d="M40,240 A280,215 0 0 1 600,240" fill="none" stroke="var(--line)" stroke-width="16" stroke-linecap="round" opacity=".6"/>`+sensors+brainSVG({flip:true,over:blob})+`<text x="620" y="430" text-anchor="end" class="svgm">Right hemisphere, front at right · fusiform gyrus is on the underside</text>`;}
+  const svg=$('megSvg');let amp=0,stim=null,t=0,lastFace=true;
+  const sens=[];for(let r=1;r<=5;r++){const n=r*7;for(let k=0;k<n;k++){const a=k/n*Math.PI*2;sens.push([Math.cos(a)*r/5.3,Math.sin(a)*r/5.3])}}sens.push([0,0]);
+  const field=(u,v)=>{const g=(cx,cy,s)=>Math.exp(-((u-cx)**2+(v-cy)**2)/(2*s*s));return g(0.52,0.28,0.17)-g(0.3,0.6,0.17);}; // right, toward the back (v>0 = back)
+  const face=`<circle cx="0" cy="0" r="22" fill="#ffd9b8" stroke="#b58e74" stroke-width="2"/><circle cx="-8" cy="-4" r="3" fill="#3b2a1e"/><circle cx="8" cy="-4" r="3" fill="#3b2a1e"/><path d="M-9,8 Q0,15 9,8" fill="none" stroke="#a5644f" stroke-width="2.5" stroke-linecap="round"/>`;
+  const obj=`<path d="M0,0 C-14,-22 -34,-16 -26,2 C-34,16 -14,22 0,6 C14,22 34,16 26,2 C34,-16 14,-22 0,0Z" fill="#9ab6e8" stroke="#4d6ea8" stroke-width="2"/><line x1="0" y1="-10" x2="0" y2="14" stroke="#33415c" stroke-width="3" stroke-linecap="round"/>`;
+  function col(v){const a=clamp(Math.abs(v),0,1);if(a<0.06)return 'rgba(150,150,150,.25)';return v>0?`rgba(220,40,40,${0.15+0.85*a})`:`rgba(40,90,220,${0.15+0.85*a})`;}
+  function draw(){const s=lastFace?1:0.42;const shown=stim&&stim.t>=0&&stim.t<500;
+    const dots=sens.map(([u,v])=>{const f=field(u,v)*amp/ (lastFace?1:1);return `<circle cx="${(470+u*118).toFixed(1)}" cy="${(212+v*118).toFixed(1)}" r="7" fill="${col(f*1.6)}" stroke="rgba(0,0,0,.25)" stroke-width="1"/>`}).join('');
+    svg.innerHTML=`<rect x="10" y="20" width="300" height="340" rx="14" fill="var(--panel2)" stroke="var(--line)" stroke-dasharray="6 5"/>
+      <text x="20" y="40" class="svgm" style="font-size:12px">magnetically shielded room</text>
+      <rect x="28" y="110" width="78" height="58" rx="5" fill="#1b2028" stroke="#94a1ae" stroke-width="2"/><rect x="34" y="116" width="66" height="46" fill="#f7f7f2"/>
+      <g transform="translate(67,139) scale(.9)">${shown?(stim.face?face:obj):''}</g>
+      <rect x="62" y="168" width="10" height="70" fill="#94a1ae"/>
+      <path d="M182,70 C182,40 268,40 268,70 L268,160 C268,176 182,176 182,160Z" fill="#eef1f5" stroke="#94a1ae" stroke-width="2"/>
+      <rect x="208" y="20" width="34" height="30" rx="6" fill="#d8dee6" stroke="#94a1ae" stroke-width="2"/>
+      <circle cx="222" cy="176" r="24" fill="#f0d0b6" stroke="#b58e74"/>
+      <path d="M200,166 C204,150 240,150 246,166" fill="#eef1f5" stroke="#94a1ae" stroke-width="2"/>
+      <path d="M190,206 C190,196 254,196 254,206 L262,280 L184,280Z" fill="#6d9bd1"/>
+      <rect x="176" y="280" width="96" height="14" rx="6" fill="#8f9aa6"/><rect x="184" y="294" width="10" height="56" fill="#8f9aa6"/><rect x="254" y="294" width="10" height="56" fill="#8f9aa6"/>
+      <path d="M196,186 L106,146" stroke="var(--muted)" stroke-width="1.4" stroke-dasharray="4 4"/>
+      <g class="svgm" style="font-size:12px"><text x="276" y="96">helmet with</text><text x="276" y="111">~300 sensors</text><line x1="274" y1="100" x2="268" y2="100" class="lead"/></g>
+      <circle cx="470" cy="212" r="132" fill="var(--panel)" stroke="var(--muted)" stroke-width="2"/>
+      <path d="M458,82 L470,62 L482,82" fill="var(--panel)" stroke="var(--muted)" stroke-width="2"/>
+      <path d="M338,196 q-14,16 0,32" fill="none" stroke="var(--muted)" stroke-width="2"/><path d="M602,196 q14,16 0,32" fill="none" stroke="var(--muted)" stroke-width="2"/>
+      ${dots}
+      <g class="svgm" style="font-size:12px" text-anchor="middle"><text x="470" y="50">nose</text><text x="470" y="370">sensor map, head seen from above</text><text x="470" y="388"><tspan fill="#dc2828" font-weight="700">red</tspan> = field coming out · <tspan fill="#2856dc" font-weight="700">blue</tspan> = going in</text></g>`;}
   const c=$('megCan');let traces=[];
   function wave(tt,face){ // tt in ms
     const g=(m,s,a)=>a*Math.exp(-((tt-m)**2)/(2*s*s));return g(100,18,0.35)+g(170,22,face?1:0.42)-g(250,40,0.2)+g(400,90,0.12);}
@@ -891,7 +975,7 @@ function heat(I){ // black-blue-cyan-green-yellow-red-white
     x.fillStyle=cssv('--muted');x.font='12px system-ui';[0,100,200,300,400,500].forEach(ms=>x.fillText(ms+' ms',X(ms)-14,h-6));x.fillText('image appears',X(0)+4,16);
     traces.forEach(tr=>{x.strokeStyle=tr.face?cssv('--accent2'):cssv('--accent');x.lineWidth=2.5;x.beginPath();for(let ms=-50;ms<=Math.min(500,tr.t);ms+=4){const p=[X(ms),Y(wave(ms,tr.face))];ms>-50?x.lineTo(...p):x.moveTo(...p)}x.stroke();
       if(tr.t>200){x.fillStyle=x.strokeStyle;x.fillText(tr.face?'face: M170':'object',X(175),Y(wave(170,tr.face))-8)}});}
-  function show(face){stim={face,t:-50};traces=traces.filter(tr=>tr.face!==face);traces.push(stim);}
+  function show(face){lastFace=face;stim={face,t:-50};traces=traces.filter(tr=>tr.face!==face);traces.push(stim);}
   $('megFace').onclick=()=>show(true);$('megObj').onclick=()=>show(false);
   frameHooks.push(dt=>{if(!stim)return;stim.t+=dt*1000*(reduce?2:0.35);const v=Math.max(0,wave(stim.t,stim.face));amp=clamp(v,0,1);$('megOut').textContent=`${Math.max(0,Math.round(stim.t))} ms`;draw();plot();
     if(stim.t>520){stim=null;amp=0;draw();$('megNote').innerHTML=traces.length>1?'<b>Faces vs. objects:</b> both produce an early visual response near 100 ms, but faces produce a much larger peak near <b>170 ms</b> (the M170 in MEG, N170 in EEG). The timing comes straight from the recording, something fMRI could never resolve.':'Now show the other kind of image and compare.'}});
