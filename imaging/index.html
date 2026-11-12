@@ -15,14 +15,14 @@
     --ink:#1d2230; --muted:#5a5f6c; --accent:#1f5f9c; --accent2:#b0453a;
     --good:#16864f; --bad:#c92a42;
     --br1:#f4e0d6; --br2:#cfa79c; --sul:#9a6f67; --brEdge:#8f6a63; --cb1:#e9cbc0; --cb2:#bf938a; --stem:#dcc0b5;
-    --skin:#f0d7c4; --skinLine:#b38f78;
+    --skin:#f0d7c4; --skinLine:#b38f78; --headC:#7f9bab; --headLine:#5d7a8b; --skull:#efd9b8; --skullLine:#c9ad86;
   }
   :root[data-theme="dark"]{
     --bg:#14161c; --band:#1a1d25; --panel:#20232c; --panel2:#262a34; --line:#3a3f4c;
     --ink:#eef0f5; --muted:#aab0bf; --accent:#7ab8ff; --accent2:#ff8a7a;
     --good:#5fe0a0; --bad:#ff6b7d;
     --br1:#cfa9a0; --br2:#8e6a63; --sul:#5c3f3b; --brEdge:#4a3330; --cb1:#b48b83; --cb2:#7d5a54; --stem:#a2827a;
-    --skin:#8a7262; --skinLine:#c2a58f;
+    --skin:#8a7262; --skinLine:#c2a58f; --headC:#4b6271; --headLine:#7d98a8; --skull:#bfa67f; --skullLine:#8f7754;
   }
   *{box-sizing:border-box}
   html{-webkit-text-size-adjust:100%;scroll-behavior:smooth;font-size:clamp(16px,1.15vw,21px)}
@@ -235,21 +235,21 @@
   <section class="s alt" id="dti" data-title="DTI">
     <p class="kicker">Part 4 · Wiring</p>
     <h2 class="sec">Diffusion tensor imaging (DTI)</h2>
-    <p class="lede">Inside a bundle of axons, water moves easily <b>along</b> the fibers but not across them, like a drop of ink spreading through a pack of straws. DTI is an MRI method that measures which way water diffuses in each tiny cube of brain, then a computer strings those directions together into <b>tracts</b>. Turn tracts on and run the tracking.</p>
+    <p class="lede">Water inside a bundle of axons can only flow <b>along</b> the bundle, like water in a pack of straws. DTI is an MRI scan that measures which way water flows at each spot, and a computer connects the dots into the brain's <b>wiring</b>. Colors show which way each fiber runs.</p>
     <div class="stage">
-      <div class="box dark"><svg id="dtiSvg" viewBox="0 0 640 440" role="img" aria-label="Diffusion tractography of major white matter tracts"></svg>
-        <div class="row" id="dtiBtns" style="margin-top:8px"></div>
+      <div class="box" style="background:#000;border-color:#222;padding:10px"><canvas id="dtiCan" style="aspect-ratio:1/1;max-width:560px;margin:0 auto;border-radius:8px" aria-label="Fiber map of the brain seen from above, colored by direction"></canvas>
+        <div class="row" id="dtiBtns" style="margin-top:8px;justify-content:center"></div>
       </div>
       <div class="box">
-        <h3>Colors show direction</h3>
-        <svg viewBox="0 0 300 120" style="max-width:320px" aria-hidden="true">
-          <line x1="40" y1="60" x2="120" y2="60" stroke="#2fbf4a" stroke-width="7" stroke-linecap="round"/><text x="130" y="65" class="svgt">front ↔ back</text>
-          <line x1="80" y1="20" x2="80" y2="100" stroke="#3d7bff" stroke-width="7" stroke-linecap="round"/><text x="130" y="30" class="svgt">up ↔ down</text>
-          <circle cx="80" cy="60" r="9" fill="#ff3b3b"/><text x="130" y="100" class="svgt">left ↔ right (toward you)</text>
-        </svg>
-        <div class="callout" id="dtiNote">Pick a tract.</div>
-        <div class="pc"><div class="pro"><h4>Good for</h4><ul><li>Mapping the brain's long-range connections in living people</li><li>Planning surgery around important tracts</li><li>Spotting white matter damage (injury, MS, aging)</li></ul></div>
-        <div class="con"><h4>Limits</h4><ul><li>Infers fibers from water movement; does not see axons</li><li>Struggles where tracts cross or fan out</li><li>Cannot tell the direction signals travel</li></ul></div></div>
+        <h3>Reading the colors</h3>
+        <div style="display:grid;gap:8px;margin:6px 0 4px;font-size:1rem">
+          <div style="display:flex;align-items:center;gap:12px"><span style="width:46px;height:9px;border-radius:5px;background:#ff3b3b"></span>left ↔ right</div>
+          <div style="display:flex;align-items:center;gap:12px"><span style="width:46px;height:9px;border-radius:5px;background:#33e04a"></span>front ↔ back</div>
+          <div style="display:flex;align-items:center;gap:12px"><span style="width:46px;height:9px;border-radius:5px;background:#4f6bff"></span>up ↔ down</div>
+        </div>
+        <div class="callout" id="dtiNote">This is the brain seen <b>from above</b>, front at the top. Tap a button to pick out one kind of fiber.</div>
+        <div class="pc"><div class="pro"><h4>Good for</h4><ul><li>Seeing the brain's wiring in living people</li><li>Finding white matter damage (injury, MS)</li></ul></div>
+        <div class="con"><h4>Limits</h4><ul><li>Guesses fibers from water flow; doesn't see axons</li><li>Gets confused where fibers cross</li></ul></div></div>
       </div>
     </div>
   </section>
@@ -348,7 +348,7 @@
     <h2 class="sec">Transcranial magnetic stimulation (TMS)</h2>
     <p class="lede">Imaging shows which areas are active, but not whether they are <b>needed</b>. TMS can test that. A figure-8 coil held against the head sends a brief, strong magnetic pulse that passes through the skull and induces an electric current in the cortex beneath, making neurons fire or briefly disrupting what they were doing. Drag the coil, then fire a pulse.</p>
     <div class="stage">
-      <div class="box"><svg id="tmsSvg" viewBox="0 0 760 480" role="img" aria-label="A head with a TMS coil you can drag" style="touch-action:none"></svg>
+      <div class="box"><svg id="tmsSvg" viewBox="0 -110 760 590" role="img" aria-label="A head with a TMS coil you can drag" style="touch-action:none"></svg>
         <div class="row"><button class="btn primary" id="tmsFire">Fire a pulse</button><span class="hint">Drag the coil over the head. Try the hand area of motor cortex, the back of the head, and low on the left frontal lobe.</span></div>
       </div>
       <div class="box">
@@ -729,34 +729,46 @@ function heat(I){ // black-blue-cyan-green-yellow-red-white
 
 /* ================= 4 DTI ================= */
 (()=>{
-  const svg=$('dtiSvg');
-  const T={
-    cst:{n:'Corticospinal tract',ctl:k=>[[240+k*100,64-Math.sin(k*Math.PI)*12],[300+k*30,170],[338,262],[408,410]],note:'Carries motor commands from motor cortex down through the internal capsule and brainstem to the spinal cord. Runs up and down, so it is blue.'},
-    arc:{n:'Arcuate fasciculus',ctl:k=>[[200,212+k*14],[300,170-k*12],[400,172+k*10],[430,262+k*10]],note:'Links frontal language areas (Broca\'s) with temporal ones (Wernicke\'s), arching around the lateral fissure. Damage can cause conduction aphasia.'},
-    ilf:{n:'Inferior longitudinal fasciculus',ctl:k=>[[530,228+k*16],[440,262+k*10],[300,290+k*8],[190,298+k*8]],note:'Connects occipital visual cortex with the temporal lobe; important for recognizing objects and faces. Runs front to back: green.'},
-    unc:{n:'Uncinate fasciculus',ctl:k=>[[110,232+k*12],[170,262+k*6],[176,296],[200,306+k*6]],note:'A hook-shaped tract linking the orbitofrontal cortex with the front of the temporal lobe; involved in emotion and memory.'},
-    slf:{n:'Superior longitudinal fasciculus',ctl:k=>[[130,146+k*18],[250,118+k*14],[380,120+k*14],[490,158+k*12]],note:'A long front-to-back highway linking frontal and parietal cortex: attention, working memory, and movement planning.'},
-    cc:{n:'Corpus callosum',ctl:k=>[[200+k*240,182],[210+k*230,170],[200+k*240-40*(k-0.5),120],[180+k*280-60*(k-0.5),62+Math.abs(k-0.5)*40]],lr:1,note:'The largest tract: about 200 million axons crossing between the two hemispheres. Where its fibers run left-right (toward you) they are red; as they turn up into the cortex they become blue.'}};
-  const on={cst:1,arc:1,ilf:1,unc:0,slf:0,cc:1};
-  let prog=1,anim=false;
-  function bez(p,t){const u=1-t;return[0,1].map(i=>u*u*u*p[0][i]+3*u*u*t*p[1][i]+3*u*t*t*p[2][i]+t*t*t*p[3][i])}
-  const R=rng(11);
-  const fibers={};Object.entries(T).forEach(([k,tr])=>{fibers[k]=Array.from({length:k==='cc'?34:26},()=>{const kk=R();const ctl=tr.ctl(kk).map(([x,y])=>[x+(R()-.5)*14,y+(R()-.5)*12]);return ctl})});
-  function draw(){let h=brainSVG({dim:true});
-    // dark background: override brain appearance
-    h=`<rect x="0" y="0" width="640" height="440" fill="#0b0c10"/>`+`<g opacity=".28">${h}</g>`;
-    let lines='';
-    Object.entries(fibers).forEach(([k,fs])=>{if(!on[k])return;const tr=T[k];
-      fs.forEach(ctl=>{const N=16;let prev=bez(ctl,0);const lim=Math.floor(N*prog);
-        for(let i=1;i<=lim;i++){const p=bez(ctl,i/N);const dx=p[0]-prev[0],dy=p[1]-prev[1],L=Math.hypot(dx,dy)||1;
-          let r=0.12,g=Math.abs(dx)/L,b=Math.abs(dy)/L;if(tr.lr){const lr=Math.max(0,1-i/N*1.5);r=lr;g*=1-lr;b*=1-lr*0.6}
-          const m=Math.max(r,g,b);r/=m;g/=m;b/=m;
-          lines+=`<line x1="${prev[0].toFixed(1)}" y1="${prev[1].toFixed(1)}" x2="${p[0].toFixed(1)}" y2="${p[1].toFixed(1)}" stroke="rgb(${Math.round(55+r*200)},${Math.round(55+g*190)},${Math.round(60+b*195)})"/>`;prev=p;}})});
-    svg.innerHTML=h+`<g stroke-width="1.6" stroke-linecap="round" opacity=".9">${lines}</g>`;}
-  const btns=Object.entries(T).map(([k,tr])=>{const b=mkBtn($('dtiBtns'),tr.n,()=>{on[k]=!on[k];b.setAttribute('aria-pressed',!!on[k]);$('dtiNote').innerHTML=`<b>${tr.n}.</b> ${tr.note}`;draw()});b.setAttribute('aria-pressed',!!on[k]);return b});
-  mkBtn($('dtiBtns'),'Run tracking',()=>{prog=0;anim=true},'btn primary');
-  $('dtiNote').innerHTML='<b>Run tracking</b> to watch the computer follow each fiber step by step, or toggle tracts on and off.';
-  frameHooks.push(dt=>{if(!anim)return;prog=Math.min(1,prog+dt*(reduce?3:0.6));draw();if(prog>=1)anim=false});
+  const c=$('dtiCan');const R=rng(7);
+  // brain seen from above: x left-right, y front(-1)-back(+1); z = up-down component of each segment
+  const inside=(x,y)=>{const ry=y<0?0.98:0.92,rx=0.80*(1-0.12*Math.max(0,-y)*Math.max(0,-y));return (x*x)/(rx*rx)+(y*y)/(ry*ry)<1&&(MID||Math.abs(x)>0.03);};
+  const F=[];// each fiber: {kind, pts:[[x,y,z]...]}
+  let MID=true;const add=(kind,fn,n)=>{MID=kind==='cc';for(let i=0;i<n;i++){const pts=fn();if(pts&&pts.length>2)F.push({kind,pts})}};
+  const jit=a=>(R()-.5)*a;
+  function curve(ctl,N=36,zf=()=>0){const out=[];const A=0.012+R()*0.018,f1=2+R()*4,f2=5+R()*7,p1=R()*6,p2=R()*6;for(let i=0;i<=N;i++){const t=i/N,u=1-t;const x=u*u*u*ctl[0][0]+3*u*u*t*ctl[1][0]+3*u*t*t*ctl[2][0]+t*t*t*ctl[3][0];const y=u*u*u*ctl[0][1]+3*u*u*t*ctl[1][1]+3*u*t*t*ctl[2][1]+t*t*t*ctl[3][1];const wx=A*Math.sin(t*f1+p1)+A*.5*Math.sin(t*f2+p2),wy=A*Math.cos(t*f1*.8+p2)+A*.5*Math.sin(t*f2*1.3+p1);const X=x+wx,Y=y+wy;if(!inside(X,Y)){if(out.length>2)break;else continue;}out.push([X,Y,zf(t)]);}return out;}
+  // corpus callosum body (left-right), fanning up into cortex at its ends
+  add('cc',()=>{const y0=-0.38+R()*0.78,spread=0.55+R()*0.3,lift=jit(0.5);return curve([[-spread,y0+lift*.4],[-0.2,y0+jit(.05)],[0.2,y0+jit(.05)],[spread,y0-lift*.4]],40,t=>Math.pow(Math.abs(t-.5)*2,3)*1.6);},780);
+  // forceps minor (front) and major (back)
+  add('cc',()=>{const d=0.3+R()*0.25;return curve([[-d,-0.88+jit(.08)],[-0.12,-0.52+jit(.06)],[0.12,-0.52+jit(.06)],[d,-0.88+jit(.08)]],36,t=>.25);},120);
+  add('cc',()=>{const d=0.28+R()*0.3;return curve([[-d,0.86+jit(.08)],[-0.12,0.5+jit(.06)],[0.12,0.5+jit(.06)],[d,0.86+jit(.08)]],36,t=>.25);},120);
+  // front-back highways: cingulum near midline, longitudinal bundles further out
+  add('ap',()=>{const sx=R()<.5?-1:1,x0=0.08+R()*0.1,y0=-0.75+R()*0.2,y1=0.55+R()*0.25;return curve([[sx*x0,y0],[sx*(x0+jit(.1)),-0.2],[sx*(x0+jit(.1)),0.25],[sx*(x0+jit(.06)),y1]],40,t=>.15+R()*.2);},220);
+  add('ap',()=>{const sx=R()<.5?-1:1,x0=0.22+R()*0.5,b=jit(.16),y0=-0.9+R()*0.35,y1=0.5+R()*0.42;return curve([[sx*(x0*.6),y0],[sx*(x0+0.1+b),y0*.35],[sx*(x0+0.1+b),y1*.4],[sx*(x0*.65),y1]],44,t=>.1+R()*.5*Math.sin(t*Math.PI));},700);
+  // up-down projection fibers (corona radiata, corticospinal): seen from above they are short and blue
+  add('si',()=>{const sx=R()<.5?-1:1,x=sx*(0.15+R()*0.45),y=-0.6+R()*1.15,a=Math.atan2(y*0.6,x)+jit(1.6),L=0.08+R()*0.2,zz=0.8+R()*2.4;return curve([[x,y],[x+Math.cos(a)*L*.3+jit(.04),y+Math.sin(a)*L*.3+jit(.04)],[x+Math.cos(a)*L*.7+jit(.04),y+Math.sin(a)*L*.7+jit(.04)],[x+Math.cos(a)*L,y+Math.sin(a)*L]],14,t=>zz);},1500);
+  // short U-fibers just under the cortex
+  add('u',()=>{const a=R()*Math.PI*2,r=0.78+R()*0.12;const x=Math.cos(a)*0.8*r,y=Math.sin(a)*0.95*r;const ta=a+Math.PI/2,L=0.07+R()*0.06,nx=-Math.cos(a)*0.08,ny=-Math.sin(a)*0.08;
+      return curve([[x-Math.cos(ta)*L,y-Math.sin(ta)*L],[x-Math.cos(ta)*L*.5+nx,y-Math.sin(ta)*L*.5+ny],[x+Math.cos(ta)*L*.5+nx,y+Math.sin(ta)*L*.5+ny],[x+Math.cos(ta)*L,y+Math.sin(ta)*L]],12,t=>.6);},1000);
+  const KIND={all:['All fibers','All the major kinds of wiring at once: a top-down view of the whole brain, front at the top.'],
+    cc:['Left ↔ right bridge','The <b>corpus callosum</b>: about 200 million axons that connect the two hemispheres. It runs side to side, so it is <b style="color:#ff5a5a">red</b>.'],
+    ap:['Front ↔ back highways','Long bundles that link the front of the brain with the back, so the frontal lobe can talk with parietal, temporal and visual areas. They run front to back, so they are <b style="color:#3ee05a">green</b>.'],
+    si:['Up ↔ down cables','Fibers running between the cortex and lower parts of the brain and spinal cord, such as the motor pathway to the muscles. Seen from above you look straight down them, so they show up as short <b style="color:#7a8cff">blue</b> bits.']};
+  let show='all',prog=1,anim=false;
+  function col(p,q){let dx=Math.abs(q[0]-p[0]),dy=Math.abs(q[1]-p[1]),dz=Math.abs(q[2]+p[2])*.5*Math.hypot(dx,dy);const m=Math.max(dx,dy,dz)||1;return[dx/m,dy/m,dz/m];}
+  function draw(){const{x,w,h}=fitCanvas(c);x.fillStyle='#000';x.fillRect(0,0,w,h);const S=Math.min(w,h)*0.47,cx=w/2,cy=h/2;
+    [-1,1].forEach(sg=>{x.beginPath();for(let i=0;i<=60;i++){const t=-Math.PI/2+i/60*Math.PI;const yy=Math.sin(t),ry=yy<0?0.98:0.92,rx=0.8*(1-0.12*Math.max(0,-yy)*Math.max(0,-yy));const px=Math.max(0.035,Math.cos(t)*rx*1.04);i?x.lineTo(cx+sg*px*S,cy+yy*ry*1.03*S):x.moveTo(cx+sg*px*S,cy+yy*ry*1.03*S);}x.closePath();x.fillStyle='#14161c';x.fill();x.strokeStyle='#2a2e38';x.lineWidth=1.5;x.stroke();});
+    x.globalCompositeOperation='lighter';x.lineCap='round';
+    const buckets={};
+    F.forEach((f,fi)=>{const on=show==='all'||f.kind===show||(show!=='all'&&false);const lim=Math.floor(f.pts.length*Math.min(1,prog*1.15-(fi%40)/400));
+      for(let i=1;i<lim;i++){const p=f.pts[i-1],q=f.pts[i];const[r,g,b]=col(p,q);const k=[r,g,b].map(v=>Math.round(v*4)).join(',')+(on?'1':'0');(buckets[k]=buckets[k]||[]).push(p[0],p[1],q[0],q[1]);}});
+    Object.entries(buckets).forEach(([k,arr])=>{const on=k.endsWith('1');const[r,g,b]=k.slice(0,-1).split(',').map(v=>+v/4);
+      x.strokeStyle=`rgba(${Math.round(40+215*r)},${Math.round(40+215*g)},${Math.round(60+195*b)},${on?(show==='all'?.12:.26):.03})`;x.lineWidth=on&&show!=='all'?1.1:.85;x.beginPath();
+      for(let i=0;i<arr.length;i+=4){x.moveTo(cx+arr[i]*S,cy+arr[i+1]*S);x.lineTo(cx+arr[i+2]*S,cy+arr[i+3]*S);}x.stroke();});
+    x.globalCompositeOperation='source-over';x.fillStyle='rgba(255,255,255,.75)';x.font='600 13px system-ui';x.textAlign='center';x.fillText('front',cx,16);x.fillText('back',cx,h-8);x.textAlign='left';x.fillText('L',8,cy);x.textAlign='right';x.fillText('R',w-8,cy);x.textAlign='left';}
+  const btns=Object.entries(KIND).map(([k,v])=>{const b=mkBtn($('dtiBtns'),v[0],()=>{show=k;setPressed(btns,b);$('dtiNote').innerHTML=v[1];draw();});return b;});
+  setPressed(btns,btns[0]);
+  mkBtn($('dtiBtns'),'Run the tracking',()=>{prog=0;anim=true;},'btn primary');
+  frameHooks.push(dt=>{if(!anim)return;prog=Math.min(1,prog+dt*(reduce?3:0.45));draw();if(prog>=1)anim=false;});
   redrawHooks.push(draw);draw();
 })();
 
@@ -889,22 +901,38 @@ function heat(I){ // black-blue-cyan-green-yellow-red-white
 /* ================= 9 TMS ================= */
 (()=>{
   const svg=$('tmsSvg');const BX=40,BY=40,BS=0.86;
-  const head=`<path d="M70,250 C52,140 130,24 300,16 C470,8 590,90 612,210 C628,290 606,350 572,392 L566,478 L330,478 C300,452 236,440 190,430 C150,422 112,410 100,392 C92,380 96,368 92,358 C86,352 72,350 72,340 C72,332 80,328 76,320 C66,316 54,312 56,300 C58,290 68,280 70,250Z" fill="var(--skin)" stroke="var(--skinLine)" stroke-width="2"/>
-    <path d="M118,300 C130,296 146,298 152,304" stroke="var(--skinLine)" stroke-width="2" fill="none"/><ellipse cx="136" cy="292" rx="10" ry="5" fill="var(--skinLine)" opacity=".5"/>
-    <path d="M440,250 C470,236 492,256 486,286 C482,306 466,318 452,310" fill="none" stroke="var(--skinLine)" stroke-width="2.5"/>`;
-  const T=[{k:'motor',n:'Motor cortex (hand area)',x:296,y:104,r:34},{k:'vis',n:'Visual cortex',x:536,y:222,r:40},{k:'broca',n:'Broca\'s area (left inferior frontal)',x:214,y:214,r:34}];
-  svg.innerHTML=head+`<g transform="translate(${BX},${BY}) scale(${BS})" id="tmsBrain" opacity=".92">${brainSVG()}</g>
-    <circle id="tmsSpot" r="18" fill="#ffd34a" opacity="0"/>
-    <g id="coil" style="cursor:grab"><rect x="-8" y="-150" width="16" height="110" rx="6" fill="#56607a"/><ellipse cx="-34" cy="-30" rx="36" ry="13" fill="#2f6fb5" stroke="#1d4a7a" stroke-width="3"/><ellipse cx="34" cy="-30" rx="36" ry="13" fill="#2f6fb5" stroke="#1d4a7a" stroke-width="3"/><ellipse cx="-34" cy="-30" rx="18" ry="6" fill="#c9daf0"/><ellipse cx="34" cy="-30" rx="18" ry="6" fill="#c9daf0"/><circle cx="0" cy="-16" r="4" fill="#ffd34a"/><path id="field" d="M-70,-18 Q0,30 70,-18" fill="none" stroke="#ffd34a" stroke-width="3" stroke-dasharray="5 5" opacity="0"/></g>
+  const HEAD='M70,250 C52,140 130,24 300,16 C470,8 590,90 612,210 C628,290 606,350 572,392 L566,478 L330,478 C300,452 236,440 190,430 C150,422 112,410 100,392 C92,380 96,368 92,358 C86,352 72,350 72,340 C72,332 80,328 76,320 C66,316 54,312 56,300 C58,290 68,280 70,250Z';
+  const T=[{k:'motor',n:'Motor cortex (hand area)',x:296,y:104,r:38},{k:'vis',n:'Visual cortex',x:536,y:222,r:42},{k:'broca',n:'Broca\'s area (left inferior frontal)',x:214,y:214,r:36}];
+  // skull = the brain outline drawn a bit larger, in the brain's own coordinates
+  const skull=`<g transform="translate(${BX},${BY}) scale(${BS})"><g transform="translate(320,200) scale(1.075,1.09) translate(-320,-196)"><path d="${BR_OUT}" fill="var(--skull)" stroke="var(--skullLine)" stroke-width="2"/></g>
+     <g transform="translate(320,200) scale(1.03,1.035) translate(-320,-198)"><path d="${BR_OUT}" fill="#cfe3ef" opacity=".55"/></g></g>`;
+  svg.innerHTML=`<defs><radialGradient id="tmsGlow"><stop offset="0" stop-color="#ffffff" stop-opacity=".95"/><stop offset=".35" stop-color="#9fd0ff" stop-opacity=".85"/><stop offset=".7" stop-color="#4f86ff" stop-opacity=".45"/><stop offset="1" stop-color="#4f86ff" stop-opacity="0"/></radialGradient>
+     <linearGradient id="coilG" x1="0" x2="0" y1="0" y2="1"><stop offset="0" stop-color="#a99bc4"/><stop offset="1" stop-color="#6c5f86"/></linearGradient>
+     <linearGradient id="handleG" x1="0" x2="1"><stop offset="0" stop-color="#9c90b5"/><stop offset=".5" stop-color="#d5cde6"/><stop offset="1" stop-color="#8a7da6"/></linearGradient></defs>
+    <path d="${HEAD}" fill="var(--headC)" stroke="var(--headLine)" stroke-width="2"/>
+    <path d="M384,392 C386,420 388,450 390,478 L414,478 C412,450 412,420 414,392Z" fill="var(--br2)" stroke="var(--brEdge)" stroke-width="1.5"/>
+    ${skull}
+    <g transform="translate(${BX},${BY}) scale(${BS})" id="tmsBrain">${brainSVG()}</g>
+    <path d="M104,300 C114,306 128,306 138,300" stroke="var(--headLine)" stroke-width="2.5" fill="none" stroke-linecap="round"/>
+    <circle id="tmsSpot" r="54" fill="url(#tmsGlow)" opacity="0"/>
+    <g class="svgm" style="font-size:13px"><text x="640" y="70">Skull</text><line x1="636" y1="66" x2="566" y2="112" class="lead"/><text x="640" y="150">Brain</text><line x1="636" y1="146" x2="540" y2="170" class="lead"/></g>
+    <g id="coil" style="cursor:grab">
+      <rect x="-9" y="-160" width="18" height="118" rx="8" fill="url(#handleG)" stroke="#6c5f86" stroke-width="1.5"/>
+      <rect x="-62" y="-46" width="124" height="22" rx="11" fill="url(#coilG)" stroke="#5a4e72" stroke-width="2"/>
+      <ellipse cx="0" cy="-46" rx="62" ry="10" fill="#c7bddb" stroke="#5a4e72" stroke-width="2"/>
+      <ellipse cx="0" cy="-46" rx="20" ry="4" fill="#8f82ab"/>
+      <path id="field" d="M-56,-14 Q0,26 56,-14" fill="none" stroke="#7ab8ff" stroke-width="3" stroke-dasharray="5 5" opacity="0"/>
+    </g>
     <g id="handG" transform="translate(690,400)"></g><g id="phos"></g><g id="speech"></g>`;
-  let cx=330,cy=50;const coil=$('coil');
-  function place(){coil.setAttribute('transform',`translate(${cx},${cy})`);const tgt=target();$('tmsName').textContent='Coil over: '+(tgt?tgt.n:'scalp (no specific target)');}
-  function brainPt(){return[(cx-BX)/BS,(cy-16-BY)/BS]}
+  let cx=292,cy=46;const coil=$('coil');
+  function place(){const ang=Math.atan2(cy-250,cx-335)*180/Math.PI+90;coil.setAttribute('transform',`translate(${cx},${cy}) rotate(${(ang*0.6).toFixed(1)})`);const tgt=target();$('tmsName').textContent='Coil over: '+(tgt?tgt.n:'scalp (no specific target)');}
+  function aim(){const dx=335-cx,dy=250-cy,L=Math.hypot(dx,dy)||1,d=Math.min(70,L*0.6);return[cx+dx/L*d,cy+dy/L*d]}
+  function brainPt(){const[ax,ay]=aim();return[(ax-BX)/BS,(ay-BY)/BS]}
   function target(){const[bx,by]=brainPt();return T.find(t=>Math.hypot(bx-t.x,by-t.y)<t.r)}
   let drag=false;
   function toSvg(e){const p=svg.createSVGPoint();p.x=e.clientX;p.y=e.clientY;return p.matrixTransform(svg.getScreenCTM().inverse())}
   coil.addEventListener('pointerdown',e=>{drag=true;coil.setPointerCapture(e.pointerId);coil.style.cursor='grabbing'});
-  coil.addEventListener('pointermove',e=>{if(!drag)return;const p=toSvg(e);cx=clamp(p.x,60,620);cy=clamp(p.y+16,30,420);place()});
+  coil.addEventListener('pointermove',e=>{if(!drag)return;const p=toSvg(e);cx=clamp(p.x,60,620);cy=clamp(p.y+16,-60,420);place()});
   coil.addEventListener('pointerup',()=>{drag=false;coil.style.cursor='grab'});
   svg.addEventListener('click',e=>{if(e.target.closest('#coil'))return;const p=toSvg(e);cx=clamp(p.x,60,610);cy=clamp(p.y+16,30,420);place()});
   place();
@@ -922,7 +950,7 @@ function heat(I){ // black-blue-cyan-green-yellow-red-white
       broca:'<b>Speech stops.</b> A rapid train of pulses over the left inferior frontal cortex can briefly halt or garble speech (<b>speech arrest</b>): a temporary "virtual lesion" showing this region is needed to produce speech.'};
     $('tmsNote').innerHTML=cur?msg[cur.k]:'You feel a tap and hear a click, and the scalp muscles may twitch, but no specific effect. Move the coil over a target area.';};
   frameHooks.push(dt=>{fireT+=dt*(reduce?3:1.2);if(fireT>3)return;
-    const f=$('field');f.setAttribute('opacity',fireT<0.5?1-fireT*2:0);$('tmsSpot').setAttribute('cx',cx);$('tmsSpot').setAttribute('cy',cy-16);$('tmsSpot').setAttribute('opacity',fireT<0.6?0.8-fireT:0);
+    const f=$('field');f.setAttribute('opacity',fireT<0.5?1-fireT*2:0);{const[ax,ay]=aim();$('tmsSpot').setAttribute('cx',ax);$('tmsSpot').setAttribute('cy',ay);}$('tmsSpot').setAttribute('opacity',fireT<0.6?0.8-fireT:0);
     const tw=cur&&cur.k==='motor'&&fireT>0.3&&fireT<1.1?Math.sin((fireT-0.3)/0.8*Math.PI):0;hand(tw);
     $('phos').innerHTML=cur&&cur.k==='vis'&&fireT<1.6?`<g transform="translate(130,140)" opacity="${(1-fireT/1.6).toFixed(2)}"><circle r="34" fill="#fff6b0" opacity=".5"/><circle r="14" fill="#fffde8"/><text x="0" y="56" text-anchor="middle" class="svgt">phosphene</text></g>`:'';
     $('speech').innerHTML=cur&&cur.k==='broca'&&fireT<2.5?`<g transform="translate(26,330)"><rect x="-20" y="-50" width="${fireT>0.4?150:150}" height="42" rx="12" fill="var(--panel)" stroke="var(--line)"/><text x="-8" y="-24" class="svgt">${fireT<0.4?'"The weather is…"':'"The w… w… …"'}</text></g>`:'';
