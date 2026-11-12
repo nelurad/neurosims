@@ -199,6 +199,28 @@
     <p class="kicker">Part 1</p>
     <h2 class="sec">Patient H.M.: the present kept vanishing</h2>
     <p class="lede">In 1953, a 27-year-old named <b>Henry Molaison</b> had surgery for epilepsy so severe that drugs could not control it. The surgeon removed the <b>medial temporal lobe on both sides</b>: much of the hippocampus, the amygdala and the nearby cortex. The seizures improved, but Henry could no longer form new long-term memories of facts and events. He met his doctors again and again as strangers for the rest of his life.</p>
+    <div class="stage even" style="margin-bottom:22px">
+      <div class="box">
+        <h3>What the surgeon removed</h3>
+        <svg id="hmVent" viewBox="0 0 460 430" role="img" aria-label="The underside of the brain with the tissue removed from both medial temporal lobes shaded red" style="max-width:480px;margin:0 auto"></svg>
+        <div class="row" style="justify-content:center;margin-top:6px"><button class="chip" id="hmV97" aria-pressed="true">MRI, 1997: about 5 cm</button><button class="chip" id="hmV57" aria-pressed="false">Surgeon's estimate, 1957: 8 cm</button></div>
+        <div class="callout" id="hmVNote"></div>
+      </div>
+      <div class="box">
+        <h3>The damage on MRI</h3>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
+          <canvas id="hmMriA" style="aspect-ratio:1/1;border-radius:10px;background:#000" aria-label="Simulated coronal MRI of a healthy brain with both hippocampi marked"></canvas>
+          <canvas id="hmMriB" style="aspect-ratio:1/1;border-radius:10px;background:#000" aria-label="Simulated coronal MRI of H.M.'s brain with fluid where the medial temporal lobes were"></canvas>
+        </div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;font-size:.85rem;margin-top:6px"><span><b style="color:var(--good)">Green circles:</b> the hippocampus on each side</span><span><b style="color:var(--bad)">Red circles:</b> dark fluid fills the space where tissue was removed</span></div>
+        <p class="hint" style="margin:.5em 0 .2em;text-align:center">Simulated coronal slices through the temporal lobes (an ear-to-ear cut, seen from the front).</p>
+        <dl class="kv" style="margin-top:10px">
+          <dt>Removed, both sides</dt><dd>Most of the amygdala, the entorhinal cortex, part of the perirhinal cortex, and the front half or so of the hippocampus</dd>
+          <dt>Left in place</dt><dd>About 2 cm of the back of each hippocampus, shrunken and cut off from its main input (the entorhinal cortex)</dd>
+          <dt>Also found later</dt><dd>A shrunken cerebellum, most likely from years of the seizure drug phenytoin, and a small scar in the left orbitofrontal cortex (Annese et al., 2014)</dd>
+        </dl>
+      </div>
+    </div>
     <div class="stage">
       <div class="box">
         <h3>Two kinds of amnesia</h3>
@@ -733,6 +755,14 @@ addEventListener('keydown',e=>{const ae=document.activeElement;const typing=/INP
   $('mriHi').onclick=()=>{hi=!hi;$('mriHi').setAttribute('aria-pressed',hi);drawMRI();};
   $('hmLes').onclick=()=>{les=!les;$('hmLes').setAttribute('aria-pressed',les);drawMRI();drawMTL();};
   redrawHooks.push(drawMRI);drawMRI();
+  function drawPair(){[['hmMriA',false,'Typical brain'],['hmMriB',true,'H.M.']].forEach(([id,L,lab])=>{const c=$(id);if(!c)return;const{x,w,h}=fitCanvas(c);
+      off.getContext('2d').putImageData(compute({hi:false,les:L}),0,0);x.imageSmoothingEnabled=true;x.fillStyle='#000';x.fillRect(0,0,w,h);x.drawImage(off,0,0,w,h);
+      x.fillStyle='#fff';x.font='600 13px system-ui';x.fillText(lab,8,18);
+      [-1,1].forEach(sg=>{const hx=w*(.5+sg*.4/2.15),hy=h*(.5+(.45-.02)/2.15);x.lineWidth=1.6;
+        if(L){x.strokeStyle='#ff8a8a';x.setLineDash([4,3]);x.beginPath();x.ellipse(hx,hy,w*.07,h*.05,0,0,7);x.stroke();x.setLineDash([]);}
+        else{x.strokeStyle='#8fe0a4';x.beginPath();x.ellipse(hx,hy-h*.01,w*.055,h*.04,0,0,7);x.stroke();}});
+      });}
+  redrawHooks.push(drawPair);drawPair();
   // MTL close-up
   const R={hip:['Hippocampus','Binds the pieces of an experience into a new declarative memory and supports spatial memory (place cells). Damaged on both sides, it causes anterograde amnesia.',true],
     erc:['Entorhinal cortex','The main gateway into the hippocampus: it relays information from across the cortex in, and sends hippocampal output back out. Home of grid cells. One of the first areas hit in Alzheimer\'s disease.',true],
@@ -1120,6 +1150,57 @@ addEventListener('keydown',e=>{const ae=document.activeElement;const typing=/INP
 $('copyBtn').onclick=()=>{const t=$('embedCode').textContent;if(navigator.clipboard)navigator.clipboard.writeText(t).then(()=>{$('copyBtn').textContent='Copied';setTimeout(()=>$('copyBtn').textContent='Copy',1500)},()=>{})};
 let rz;addEventListener('resize',()=>{clearTimeout(rz);rz=setTimeout(()=>redrawHooks.forEach(f=>f()),120)});
 if(store.get('memTheme')==='dark')setTheme(true);
+
+/* ================= H.M. lesion panel ================= */
+(()=>{
+  const svg=$('hmVent');
+  const LH='M230,32 C170,26 112,46 92,100 C84,126 88,148 100,164 C76,178 62,214 66,262 C70,312 96,352 140,376 C180,396 214,400 230,398';
+  const mir=d=>d.replace(/(-?\d+(?:\.\d+)?),(-?\d+(?:\.\d+)?)/g,(m,x,y)=>(460-+x)+','+y);
+  const TL='M118,170 C94,186 86,240 98,290 C110,332 150,344 176,322 C192,292 188,222 172,188 C162,172 136,164 118,170Z';
+  svg.innerHTML=`<defs>
+    <radialGradient id="hvg" cx="40%" cy="35%" r="80%"><stop offset="0" stop-color="var(--hl)"/><stop offset=".55" stop-color="var(--b1)"/><stop offset="1" stop-color="var(--b2)"/></radialGradient>
+    <radialGradient id="hvc" cx="50%" cy="40%" r="70%"><stop offset="0" stop-color="var(--b1)"/><stop offset="1" stop-color="var(--b3)"/></radialGradient>
+    <pattern id="hvh" width="7" height="7" patternUnits="userSpaceOnUse" patternTransform="rotate(45)"><rect width="7" height="7" fill="#e0525f" opacity=".55"/><line x1="0" y1="0" x2="0" y2="7" stroke="#9b1f2c" stroke-width="2.2"/></pattern></defs>
+   <path d="${LH} L230,32Z" fill="url(#hvg)" stroke="none"/><path d="${mir(LH)} L230,32Z" fill="url(#hvg)" stroke="none"/>
+   <path d="${LH}" fill="none" stroke="var(--b3)" stroke-width="2"/><path d="${mir(LH)}" fill="none" stroke="var(--b3)" stroke-width="2"/>
+   <line x1="230" y1="34" x2="230" y2="150" stroke="var(--b3)" stroke-width="1.5"/>
+   <g fill="none" stroke="var(--b3)" stroke-width="1.2" opacity=".75">
+     <path d="M200,70 C186,90 190,112 176,128"/><path d="M160,60 C150,84 138,100 140,126"/><path d="M120,88 C118,110 124,128 112,146"/>
+     <path d="M110,300 C130,320 150,340 176,352"/><path d="M96,250 C110,262 120,280 118,300"/>
+     ${['M200,70 C186,90 190,112 176,128','M160,60 C150,84 138,100 140,126','M120,88 C118,110 124,128 112,146','M110,300 C130,320 150,340 176,352','M96,250 C110,262 120,280 118,300'].map(d=>`<path d="${mir(d)}"/>`).join('')}
+   </g>
+   <path d="${TL}" fill="url(#hvg)" stroke="var(--b3)" stroke-width="1.8"/><path d="${mir(TL)}" fill="url(#hvg)" stroke="var(--b3)" stroke-width="1.8"/>
+   <path d="M128,200 C122,236 126,270 140,300 M150,190 C146,230 150,270 162,300" fill="none" stroke="var(--b3)" stroke-width="1" opacity=".7"/>
+   <path d="${mir('M128,200 C122,236 126,270 140,300 M150,190 C146,230 150,270 162,300')}" fill="none" stroke="var(--b3)" stroke-width="1" opacity=".7"/>
+   <path d="M214,60 L210,142 M246,60 L250,142" stroke="var(--b3)" stroke-width="5" stroke-linecap="round"/>
+   <path d="M206,166 L254,178 M254,166 L206,178" stroke="var(--b3)" stroke-width="5" stroke-linecap="round"/>
+   <g id="hvLes"></g>
+   <ellipse cx="190" cy="352" rx="52" ry="38" fill="url(#hvc)" stroke="var(--b3)" stroke-width="1.8"/><ellipse cx="270" cy="352" rx="52" ry="38" fill="url(#hvc)" stroke="var(--b3)" stroke-width="1.8"/>
+   <g fill="none" stroke="var(--b3)" stroke-width="1" opacity=".8">${[0,1,2,3,4].map(i=>`<path d="M${146+i*2},${330+i*10} C180,${322+i*10} 200,${326+i*10} 226,${334+i*10}"/><path d="M${314-i*2},${330+i*10} C280,${322+i*10} 260,${326+i*10} 234,${334+i*10}"/>`).join('')}</g>
+   <path d="M212,196 C206,250 210,320 216,380 L244,380 C250,320 254,250 248,196Z" fill="var(--b2)" stroke="var(--b3)" stroke-width="1.8"/>
+   <ellipse cx="230" cy="232" rx="36" ry="28" fill="url(#hvc)" stroke="var(--b3)" stroke-width="1.8"/>
+   <g class="svgm" style="font-size:12px">
+     <text x="230" y="20" text-anchor="middle">front</text><text x="230" y="424" text-anchor="middle">back</text>
+     <text x="8" y="120">Frontal lobe</text><line x1="78" y1="118" x2="118" y2="110" class="lead"/>
+     <text x="8" y="196">Temporal pole</text><line x1="90" y1="194" x2="116" y2="178" class="lead"/>
+     <text x="452" y="168" text-anchor="end">Optic chiasm</text><line x1="380" y1="166" x2="258" y2="172" class="lead"/>
+     <text x="452" y="396" text-anchor="end">Cerebellum</text><line x1="388" y1="394" x2="306" y2="370" class="lead"/>
+   </g>
+   <text x="8" y="282" class="blab" style="fill:var(--bad);font-size:13px">Removed</text><text x="8" y="298" class="blab" style="fill:var(--bad);font-size:13px">(both sides)</text>
+   <line id="hvLead" x1="72" y1="288" x2="150" y2="240" class="lead" style="stroke:var(--bad)"/>
+   <g id="hvScale"></g>`;
+  // 1 cm = 17 px in this drawing
+  const CM=17;
+  function les(cmLen){const y0=176,y1=y0+cmLen*CM;const one=(sx)=>{const x=v=>sx<0?v:460-v;
+      return `<path d="M${x(146)},${y0} C${x(170)},${y0+4} ${x(186)},${y0+24} ${x(188)},${(y0+y1)/2} C${x(190)},${y1-14} ${x(182)},${y1} ${x(172)},${y1} C${x(158)},${y1-6} ${x(146)},${(y0+y1)/2} ${x(144)},${y0+26}Z" fill="url(#hvh)" stroke="#9b1f2c" stroke-width="1.6"/>`;};
+    $('hvLes').innerHTML=one(-1)+one(1);
+    $('hvScale').innerHTML=`<line x1="${404}" y1="${y0}" x2="${404}" y2="${y1}" stroke="var(--ink)" stroke-width="2"/><line x1="398" y1="${y0}" x2="410" y2="${y0}" stroke="var(--ink)" stroke-width="2"/><line x1="398" y1="${y1}" x2="410" y2="${y1}" stroke="var(--ink)" stroke-width="2"/><text x="414" y="${(y0+y1)/2+4}" class="blab" style="font-size:13px">${cmLen} cm</text>`;
+    $('hvLead').setAttribute('y2',(y0+y1)/2);}
+  function set(which){const b=$('hmV97'),c=$('hmV57');b.setAttribute('aria-pressed',which===97);c.setAttribute('aria-pressed',which===57);
+    if(which===97){les(5);$('hmVNote').innerHTML='<b>What MRI showed (Corkin et al., 1997):</b> the removal ran about 5 cm back from the tip of each temporal lobe, along its inner (medial) side. Seen here from underneath, with the front of the brain at the top.';}
+    else{les(8);$('hmVNote').innerHTML='<b>The surgeon\'s estimate:</b> Scoville wrote that he removed about 8 cm on each side. Decades later, MRI scans showed the real lesion was shorter, about 5 cm, and that the back of each hippocampus was left in place.';}}
+  $('hmV97').onclick=()=>set(97);$('hmV57').onclick=()=>set(57);set(97);
+})();
 let prev=performance.now();
 function loop(now){const dt=Math.max(0,Math.min(.05,(now-prev)/1000));prev=now;frameHooks.forEach(f=>{try{f(dt)}catch(e){console.error(e)}});requestAnimationFrame(loop)}
 requestAnimationFrame(loop);
