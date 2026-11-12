@@ -6,6 +6,8 @@
 <title>The Remembering Brain</title>
 <link rel="icon" href="data:,">
 <meta name="description" content="An interactive tour of memory: patient H.M., the hippocampus and medial temporal lobe, mirror tracing, an interactive map of memory systems, the stages of memory, consolidation, false memories, emotional memory, place cells and grid cells, and how memories are stored.">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@500;600;700&family=Nunito:ital,wght@0,400;0,600;0,700;0,800;1,400&display=swap" rel="stylesheet">
 <style>
   :root{
     --serif:"Iowan Old Style","Palatino Linotype",Palatino,"Book Antiqua",Georgia,"Times New Roman",serif;
@@ -168,6 +170,154 @@
     .sgrid{font-size:1.3rem}
   }
   @media (prefers-reduced-motion:reduce){ html{scroll-behavior:auto} .tlink.flow{animation:none} }
+
+  /* ================= Playful redesign (shared by learning + memory) ================= */
+  :root{
+    --body:"Nunito",var(--sans);
+    --display:"Fredoka","Nunito",var(--sans);
+    --bg:#fbfaff; --panel:#ffffff; --panel2:#f3f1fb; --line:#dcd7ec; --grid:rgba(60,40,120,.10);
+    --ink:#231d3b; --muted:#5d5875;
+    --edge:#231d3b; --shadow:#231d3b; --dot:rgba(120,90,220,.16);
+    --c1:#ff6b6b; --c2:#ffb627; --c3:#20b393; --c4:#4d8dff; --c5:#9b5de5;
+    --note:#fff4b8; --noteInk:#2e2600;
+    --tint:var(--c4);
+  }
+  :root[data-theme="dark"]{
+    --bg:#17142a; --panel:#221e38; --panel2:#2a2545; --line:#3d3760; --grid:rgba(200,190,255,.12);
+    --ink:#f3f0ff; --muted:#b5afd0;
+    --edge:#7d74b8; --shadow:#07060f; --dot:rgba(185,160,255,.10);
+    --c1:#ff8a8a; --c2:#ffc857; --c3:#45d6b5; --c4:#7aa8ff; --c5:#b98af0;
+    --note:#3a3216; --noteInk:#fff1b8;
+  }
+  html,body{font-family:var(--body)}
+  body{overflow-x:hidden;background-color:var(--bg);background-image:radial-gradient(var(--dot) 1.3px,transparent 1.6px);background-size:22px 22px}
+  ::selection{background:color-mix(in srgb,var(--c2) 55%,transparent)}
+
+  /* per-section color */
+  section.s:nth-of-type(5n+1){--tint:var(--c4)}
+  section.s:nth-of-type(5n+2){--tint:var(--c3)}
+  section.s:nth-of-type(5n+3){--tint:var(--c1)}
+  section.s:nth-of-type(5n+4){--tint:var(--c5)}
+  section.s:nth-of-type(5n+5){--tint:var(--c2)}
+  section.s{border-top:0}
+  section.s.alt{--band:color-mix(in srgb,var(--tint) 11%,var(--bg))}
+
+  /* type */
+  .hero h1,h2.sec,h3,.card h4,.facts3 b,.q{font-family:var(--display);letter-spacing:0}
+  h2.sec{font-weight:700;font-size:clamp(30px,3.3vw,56px)}
+  h2.sec::after{content:"";display:block;width:160px;height:14px;margin-top:12px;background:var(--tint);
+    -webkit-mask:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='32' height='14' viewBox='0 0 32 14'%3E%3Cpath d='M0 7 Q8 0 16 7 T32 7' fill='none' stroke='black' stroke-width='4.5' stroke-linecap='round'/%3E%3C/svg%3E") repeat-x 0 0/32px 14px;
+            mask:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='32' height='14' viewBox='0 0 32 14'%3E%3Cpath d='M0 7 Q8 0 16 7 T32 7' fill='none' stroke='black' stroke-width='4.5' stroke-linecap='round'/%3E%3C/svg%3E") repeat-x 0 0/32px 14px}
+  h3{font-weight:600}
+  .kicker{font:700 .78rem/1 var(--display);letter-spacing:.08em;color:#231d3b;background:color-mix(in srgb,var(--tint) 45%,#fff);display:inline-flex;padding:7px 14px 7px 10px;border-radius:999px;border:2px solid var(--edge);transform:rotate(-2deg);box-shadow:2px 2px 0 var(--shadow);gap:8px}
+  .kicker::before{width:11px;height:11px;border-radius:50%;background:var(--tint);border:2px solid #231d3b}
+
+  /* hero */
+  .hero{display:grid;grid-template-columns:minmax(0,1.5fr) minmax(0,1fr);gap:10px 30px;align-items:center;padding:20px 0 34px}
+  .hero > .back{grid-column:1/-1}
+  .hero .heroText{min-width:0}
+  .hero .heroText .kicker{--tint:var(--c2);margin-top:6px!important}
+  .hero h1{font-weight:700;font-size:clamp(48px,6.6vw,108px);line-height:.98;margin:.25em 0 .35em}
+  .hero h1 .mark{position:relative;display:inline-block;z-index:0}
+  .hero h1 .mark::before{content:"";position:absolute;left:-.08em;right:-.08em;bottom:.06em;height:.36em;background:var(--hcol,var(--c2));border-radius:.2em;z-index:-1;transform:rotate(-1.5deg)}
+  .hero p.big{font-size:1.25rem}
+  .heroArt{min-width:0}
+  .heroArt svg{max-width:440px;margin:0 auto;overflow:visible}
+  .floaty{animation:floaty 5s ease-in-out infinite;transform-origin:50% 50%}
+  .twinkle{animation:twinkle 2.4s ease-in-out infinite}
+  .twinkle.d2{animation-delay:.8s}.twinkle.d3{animation-delay:1.6s}
+  @keyframes floaty{0%,100%{transform:translateY(0) rotate(-1.5deg)}50%{transform:translateY(-12px) rotate(1.5deg)}}
+  @keyframes twinkle{0%,100%{opacity:.25;transform:scale(.8)}50%{opacity:1;transform:scale(1.1)}}
+  .twinkle{transform-box:fill-box;transform-origin:center}
+  .facts3{grid-column:1/-1;gap:22px;max-width:none;margin-top:18px}
+  .facts3 div{border:2.5px solid var(--edge);border-radius:20px;padding:16px 18px;background:var(--panel);box-shadow:5px 5px 0 var(--shadow);color:var(--ink)}
+  .facts3 div:nth-child(1){background:color-mix(in srgb,var(--c2) 24%,var(--panel));transform:rotate(-1.2deg)}
+  .facts3 div:nth-child(2){background:color-mix(in srgb,var(--c3) 22%,var(--panel));transform:rotate(.8deg)}
+  .facts3 div:nth-child(3){background:color-mix(in srgb,var(--c1) 20%,var(--panel));transform:rotate(-.5deg)}
+  .facts3 b{font-weight:700;font-size:2.1rem}
+  .hero .hint{grid-column:1/-1;margin-top:10px}
+
+  /* nav */
+  .pipe{background:color-mix(in srgb,var(--bg) 94%,transparent);border-bottom:2.5px solid var(--edge)}
+  .pipe a{font-family:var(--display);font-weight:500;font-size:.78rem}
+  .pipe a.on{color:#fff;background:var(--ink)}
+  :root[data-theme="dark"] .pipe a.on{color:#17142a}
+
+  /* sticker boxes and buttons */
+  .box{border:2.5px solid var(--edge);border-radius:20px;box-shadow:5px 5px 0 var(--shadow)}
+  .chip,.btn,.tbtn,button.card,.qopts button,.embed button{border:2px solid var(--edge);box-shadow:2px 2px 0 var(--shadow);font-family:var(--body);font-weight:700;transition:transform .08s,box-shadow .08s,background .2s}
+  .chip:hover,.btn:hover,.tbtn:hover,button.card:hover,.qopts button:hover{transform:translate(-1px,-1px);box-shadow:3px 3px 0 var(--shadow);border-color:var(--edge)}
+  .chip:active,.btn:active,.tbtn:active,button.card:active,.qopts button:active{transform:translate(2px,2px);box-shadow:0 0 0 var(--shadow)}
+  .btn:disabled{opacity:.45;cursor:not-allowed;transform:none;box-shadow:2px 2px 0 var(--shadow)}
+  .chip[aria-pressed="true"],.btn.primary{border-color:var(--edge)}
+  button.card{border-radius:14px}
+  button.card[aria-pressed="true"]{background:color-mix(in srgb,var(--accent) 16%,var(--panel));box-shadow:3px 3px 0 var(--shadow)}
+  .callout{border-radius:14px;border-left-width:6px;background:var(--panel2)}
+  .meter{height:16px;border:2px solid var(--edge)}
+  .quiz .qcard{border:2.5px solid var(--edge);border-radius:22px;box-shadow:6px 6px 0 var(--shadow)}
+  .qopts button{border-radius:14px}
+  .qopts button.right{border-color:var(--good);box-shadow:3px 3px 0 var(--good)}
+  .qopts button.wrong{border-color:var(--bad)}
+  .card h4{font-weight:600}
+  .tag{color:var(--ink);background:color-mix(in srgb,var(--tint) 30%,transparent);border-radius:999px;padding:2px 9px}
+
+  /* "Go deeper" for the dense paragraphs */
+  p.note{background:color-mix(in srgb,var(--panel) 75%,transparent);border:2px dashed color-mix(in srgb,var(--tint) 60%,var(--line));border-radius:16px;padding:12px 16px}
+  p.note::before{content:"Go deeper";display:block;font:700 .72rem/1.4 var(--display);letter-spacing:.12em;text-transform:uppercase;color:var(--ink);margin-bottom:4px}
+  .box p.note{border:0;padding:0;background:none}
+  .box p.note::before{content:none}
+
+  /* "In plain words" sticky notes */
+  .plain{position:relative;max-width:46em;background:var(--note);color:var(--noteInk);border:2.5px solid var(--edge);border-radius:6px 20px 20px 20px;padding:20px 22px 16px;margin:14px 0 26px;box-shadow:5px 5px 0 var(--shadow);transform:rotate(-.5deg);font-size:1.1rem;line-height:1.55}
+  .plain .ptag{position:absolute;top:-15px;left:16px;font:700 .75rem/1 var(--display);letter-spacing:.1em;text-transform:uppercase;color:#231d3b;background:var(--tint);border:2px solid var(--edge);border-radius:999px;padding:6px 12px;transform:rotate(-2deg)}
+  .plain b{color:inherit}
+  .plain em{font-style:normal;background:color-mix(in srgb,var(--tint) 30%,transparent);border-radius:4px;padding:0 3px}
+
+  /* Start-here sections */
+  .steps{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:22px;margin:8px 0 26px}
+  .step{position:relative;background:var(--panel);border:2.5px solid var(--edge);border-radius:22px;padding:18px 20px 16px;box-shadow:5px 5px 0 var(--shadow);min-width:0}
+  .step:nth-child(1){--sc:var(--c2);transform:rotate(-.8deg)}
+  .step:nth-child(2){--sc:var(--c3);transform:rotate(.6deg)}
+  .step:nth-child(3){--sc:var(--c1);transform:rotate(-.4deg)}
+  .step .num{position:absolute;top:-16px;left:-12px;width:42px;height:42px;border-radius:50%;display:grid;place-items:center;font:700 1.25rem/1 var(--display);background:var(--sc);border:2.5px solid var(--edge);color:#231d3b;box-shadow:2px 2px 0 var(--shadow)}
+  .step .ico{width:100%;height:96px;margin:2px 0 8px}
+  .step h3{margin:0 0 .25em}
+  .step p{margin:.2em 0;font-size:.98rem}
+  .step .eg{display:block;margin-top:8px;font-size:.88rem;color:var(--muted)}
+  .vocab{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:14px;margin:14px 0 0}
+  .word{border:2px solid var(--edge);border-radius:16px;padding:12px 14px;background:var(--panel);box-shadow:3px 3px 0 var(--shadow);font-size:.92rem}
+  .word b{display:block;font-family:var(--display);font-weight:600;font-size:1.12rem;margin-bottom:2px}
+  .word:nth-child(5n+1){background:color-mix(in srgb,var(--c4) 13%,var(--panel))}
+  .word:nth-child(5n+2){background:color-mix(in srgb,var(--c3) 13%,var(--panel))}
+  .word:nth-child(5n+3){background:color-mix(in srgb,var(--c1) 12%,var(--panel))}
+  .word:nth-child(5n+4){background:color-mix(in srgb,var(--c5) 13%,var(--panel))}
+  .word:nth-child(5n+5){background:color-mix(in srgb,var(--c2) 16%,var(--panel))}
+  .roadmap{display:flex;flex-wrap:wrap;gap:8px 6px;align-items:center;margin:10px 0 0;font-family:var(--display);font-weight:500}
+  .roadmap a{color:var(--ink);text-decoration:none;border:2px solid var(--edge);border-radius:999px;padding:4px 12px;background:var(--panel);box-shadow:2px 2px 0 var(--shadow);font-size:.88rem}
+  .roadmap a:hover{background:color-mix(in srgb,var(--c2) 30%,var(--panel))}
+  .roadmap span{color:var(--muted)}
+  .bigq{font-family:var(--display);font-weight:600;font-size:1.25rem;margin:0 0 .3em}
+  .chunkShow{font:700 clamp(1.6rem,3.4vw,2.6rem)/1.2 var(--mono);letter-spacing:.18em;text-align:center;min-height:3.4em;display:flex;align-items:center;justify-content:center;background:var(--panel2);border:2px solid var(--edge);border-radius:16px;margin:10px 0;padding:10px;flex-wrap:wrap;word-break:break-all}
+  .chunkShow .cue{font:600 1rem var(--body);letter-spacing:0;color:var(--muted)}
+  .chunkShow .ch{display:inline-block;margin:0 .35em;padding:0 .15em;border-radius:8px;background:color-mix(in srgb,var(--c2) 35%,transparent)}
+  .scoreRow{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:10px}
+  .scoreRow div{border:2px solid var(--edge);border-radius:14px;padding:10px 12px;background:var(--panel2);text-align:center}
+  .scoreRow b{display:block;font:700 2rem/1.1 var(--display)}
+
+  /* dark theme: illustrations sit on light paper so their ink outlines stay visible */
+  :root[data-theme="dark"] .step .ico,:root[data-theme="dark"] #bxSvg{background:#f4f1ff;border-radius:14px}
+  :root[data-theme="dark"] .heroArt svg{filter:drop-shadow(0 0 1.5px #f3f0ff) drop-shadow(0 0 1px #f3f0ff)}
+  @media (max-width:900px){
+    .hero{grid-template-columns:1fr}
+    .heroArt{order:-1}
+    .heroArt svg{max-width:260px}
+    .steps{grid-template-columns:1fr;gap:28px}
+    .vocab{grid-template-columns:1fr 1fr}
+  }
+  @media (max-width:520px){ .vocab{grid-template-columns:1fr} .scoreRow b{font-size:1.5rem} }
+  @media (prefers-reduced-motion:reduce){ .floaty,.twinkle{animation:none} }
+  :root{--accent:#2f6bd8;--accent2:#d0581c}
+  :root[data-theme="dark"]{--accent:#7fb2ff;--accent2:#ff9b5e}
 </style>
 </head>
 <body>
@@ -175,9 +325,13 @@
 
   <header class="hero" id="top">
     <a class="back" href="../">← All NeuroSims</a>
+    <div class="heroText">
     <p class="kicker" style="margin-top:28px">NeuroSims · Memory</p>
-    <h1>The Remembering Brain</h1>
-    <p class="big">Memory is not a recording. It is a set of systems, each with its own brain machinery, that capture experiences, hold them for a moment, store some for a lifetime, and rebuild them every time you remember. This tour starts with the patient who showed us where new memories are made.</p>
+    <h1>The <span class="mark" style="--hcol:var(--c3)">Remembering</span> Brain</h1>
+    <p class="big">Memory is not a recording. It is a set of systems, each with its own brain machinery, that capture experiences, hold them for a moment, store some for a lifetime, and rebuild them every time you remember. This tour starts with the basics, then meets the patient who showed us where new memories are made.</p>
+    </div>
+    <div class="heroArt" aria-hidden="true"><svg viewBox="0 0 430 400"><path class="twinkle " d="M30 256 L33.92 266.08 L44 270 L33.92 273.92 L30 284 L26.08 273.92 L16 270 L26.08 266.08Z" fill="#ffb627" stroke="#231d3b" stroke-width="3" stroke-linejoin="round"/><path class="twinkle d2" d="M410 338 L413.36 346.64 L422 350 L413.36 353.36 L410 362 L406.64 353.36 L398 350 L406.64 346.64Z" fill="#9b5de5" stroke="#231d3b" stroke-width="3" stroke-linejoin="round"/><g class="floaty"><g transform="translate(-10,40)"><rect x="184" y="236" width="56" height="62" rx="14" fill="#ffb3c7" stroke="#231d3b" stroke-width="5.5"/><g stroke="#231d3b" stroke-width="11" fill="#ffb3c7"><circle cx="120" cy="165" r="66"/><circle cx="178" cy="118" r="74"/><circle cx="258" cy="112" r="76"/><circle cx="318" cy="160" r="62"/><circle cx="258" cy="200" r="74"/><circle cx="170" cy="206" r="64"/><circle cx="210" cy="160" r="70"/></g><g fill="#ffb3c7"><circle cx="120" cy="165" r="66"/><circle cx="178" cy="118" r="74"/><circle cx="258" cy="112" r="76"/><circle cx="318" cy="160" r="62"/><circle cx="258" cy="200" r="74"/><circle cx="170" cy="206" r="64"/><circle cx="210" cy="160" r="70"/></g><g fill="none" stroke="#e07a98" stroke-width="5" stroke-linecap="round"><path d="M120 110 q20 -14 36 6 q14 16 30 0"/><path d="M232 74 q16 18 4 34 q-10 16 8 28"/><path d="M300 118 q-18 6 -14 26 q4 18 -12 26"/><path d="M92 168 q18 -8 26 8"/><path d="M330 196 q-20 -2 -26 16"/><path d="M150 246 q10 -16 30 -8"/></g><ellipse cx="180" cy="178" rx="11" ry="14" fill="#231d3b"/><ellipse cx="252" cy="178" rx="11" ry="14" fill="#231d3b"/><circle cx="184" cy="172" r="4" fill="#fff"/><circle cx="256" cy="172" r="4" fill="#fff"/><ellipse cx="156" cy="204" rx="14" ry="8" fill="#ff7d9c" opacity=".55"/><ellipse cx="276" cy="204" rx="14" ry="8" fill="#ff7d9c" opacity=".55"/><path d="M196 206 q20 22 40 0" fill="none" stroke="#231d3b" stroke-width="6" stroke-linecap="round"/></g><circle cx="332" cy="128" r="8" fill="#fff" stroke="#231d3b" stroke-width="4"/><circle cx="350" cy="106" r="12" fill="#fff" stroke="#231d3b" stroke-width="4"/><g transform="rotate(6 360 50)"><rect x="306" y="0" width="116" height="92" rx="10" fill="#fff" stroke="#231d3b" stroke-width="5"/><rect x="318" y="11" width="92" height="56" rx="4" fill="#bfe3ff" stroke="#231d3b" stroke-width="3"/><circle cx="392" cy="26" r="9" fill="#ffb627" stroke="#231d3b" stroke-width="3"/><path d="M318 67 L348 38 L368 54 L382 42 L410 67Z" fill="#20b393" stroke="#231d3b" stroke-width="3" stroke-linejoin="round"/></g><path class="twinkle d3" d="M60 34 L64.48 45.519999999999996 L76 50 L64.48 54.480000000000004 L60 66 L55.519999999999996 54.480000000000004 L44 50 L55.519999999999996 45.519999999999996Z" fill="#4d8dff" stroke="#231d3b" stroke-width="3" stroke-linejoin="round"/></g></svg></div>
+    
     <div class="facts3">
       <div><b>1953</b>the year Henry Molaison (H.M.) had surgery that left him unable to form new long-term memories of facts and events</div>
       <div><b>~4 chunks</b>roughly what short-term memory can hold at once; without rehearsal it fades within about 30 seconds</div>
@@ -194,10 +348,52 @@
     </div>
   </nav>
 
+
+  <!-- ============ 0 START HERE ============ -->
+  <section class="s" id="basics" data-title="Start here">
+    <p class="kicker">Start here</p>
+    <h2 class="sec">What is a memory, anyway?</h2>
+    <div class="plain"><span class="ptag">In plain words</span>A memory is <b>a change in your brain that lets the past shape what you do now</b>. Remembering your friend's name, knowing how to ride a bike and flinching at the sound of a dentist's drill are all memories. Your brain keeps each kind in a different way, in different places.</div>
+
+    <div class="steps">
+      <div class="step"><span class="num">1</span><svg class="ico" viewBox="0 0 220 96" aria-hidden="true"><g stroke="#231d3b" stroke-width="4"><rect x="20" y="22" width="34" height="26" rx="5" fill="#bfe3ff"/><rect x="40" y="56" width="30" height="24" rx="5" fill="#ffd27a"/><rect x="164" y="20" width="36" height="24" rx="5" fill="#cfc6ff"/><rect x="168" y="56" width="30" height="26" rx="5" fill="#a8e6d4"/></g><circle cx="112" cy="44" r="26" fill="#fff" fill-opacity=".7" stroke="#231d3b" stroke-width="5"/><path d="M130 62 L152 84" stroke="#231d3b" stroke-width="9" stroke-linecap="round"/><circle cx="112" cy="44" r="9" fill="#ff6b6b" stroke="#231d3b" stroke-width="3"/></svg><h3>Get it in</h3><p><b>Encoding.</b> You can only remember what you paid attention to. Your senses take in a flood of information, and attention picks what gets through.</p><span class="eg">Can't find your keys? You probably weren't paying attention when you put them down.</span></div>
+      <div class="step"><span class="num">2</span><svg class="ico" viewBox="0 0 220 96" aria-hidden="true"><path d="M60 36 H160 V88 H60Z" fill="#ffd27a" stroke="#231d3b" stroke-width="4" stroke-linejoin="round"/><path d="M54 24 H166 V38 H54Z" fill="#ffb627" stroke="#231d3b" stroke-width="4" stroke-linejoin="round"/><rect x="92" y="52" width="36" height="16" rx="4" fill="#fff" stroke="#231d3b" stroke-width="3"/><path d="M84 22 L92 4 L104 20 M118 20 L130 2 L138 22" fill="#cfc6ff" stroke="#231d3b" stroke-width="3" stroke-linejoin="round"/><path d="M180 30 q10 -12 20 0 q10 12 0 22" fill="none" stroke="#9b5de5" stroke-width="4" stroke-linecap="round"/><text x="184" y="80" font-size="26" font-weight="700" fill="#9b5de5">z</text></svg><h3>Keep it</h3><p><b>Storage.</b> New memories are fragile. The <b>hippocampus</b> holds them together while they slowly settle into the rest of the brain. This is called <b>consolidation</b>, and sleep gives it a big boost.</p><span class="eg">That's why an all-nighter before an exam backfires.</span></div>
+      <div class="step"><span class="num">3</span><svg class="ico" viewBox="0 0 220 96" aria-hidden="true"><circle cx="64" cy="48" r="26" fill="#ffb627" stroke="#231d3b" stroke-width="5"/><circle cx="64" cy="48" r="9" fill="#fff" stroke="#231d3b" stroke-width="4"/><path d="M90 48 H178 V66 M156 48 V62" fill="none" stroke="#231d3b" stroke-width="9" stroke-linecap="round" stroke-linejoin="round"/><path d="M188 20 l6 -10 M200 30 l10 -4 M178 16 l-2 -10" stroke="#ff6b6b" stroke-width="4" stroke-linecap="round"/></svg><h3>Get it back</h3><p><b>Retrieval.</b> A memory only helps if you can find it. <b>Cues</b> like a smell, a place or a question help you pull it out, and every time you do, your brain rebuilds it a little.</p><span class="eg">A word on the tip of your tongue is stored. You just can't reach it yet.</span></div>
+    </div>
+    <div class="stage">
+      <div class="box">
+        <p class="bigq">Try it: how much can you hold at once?</p>
+        <p style="margin:.2em 0 .4em">You'll see 12 letters for 5 seconds. Then type as many as you can remember, in order.</p>
+        <div class="chunkShow" id="ckShow"><span class="cue">Press Round 1 when you're ready.</span></div>
+        <div class="row"><button class="btn primary" id="ck1">Round 1</button><button class="btn" id="ck2" disabled>Round 2</button><input type="text" id="ckIn" placeholder="type the letters" maxlength="24" aria-label="Type the letters you remember" style="flex:1;min-width:140px;text-transform:uppercase" disabled><button class="btn" id="ckCheck" disabled>Check</button></div>
+        <div class="scoreRow"><div>Round 1<b id="ckS1">–</b></div><div>Round 2<b id="ckS2">–</b></div></div>
+      </div>
+      <div class="box">
+        <p class="bigq">A sticky note and a library</p>
+        <p style="margin:.2em 0 .6em"><b>Short-term memory</b> is like a sticky note: it holds just a few things, about <b>4 chunks</b>, for around 30 seconds unless you keep repeating them. <b>Long-term memory</b> is like a huge library that can hold a lifetime of facts, faces and skills.</p>
+        <div class="callout" id="ckNote">Do Round 1, then Round 2, and compare your scores.</div>
+      </div>
+    </div>
+    <h3 style="margin-top:38px">Words you'll see a lot</h3>
+    <div class="vocab">
+      <div class="word"><b>Short-term memory</b>Holds a few things for seconds, like a phone number you're about to dial.</div>
+      <div class="word"><b>Long-term memory</b>Stores things for days to a lifetime. Huge capacity.</div>
+      <div class="word"><b>Hippocampus</b>The sea-horse-shaped structure that saves new facts and events.</div>
+      <div class="word"><b>Declarative memory</b>"Knowing that": facts and events you can put into words.</div>
+      <div class="word"><b>Nondeclarative memory</b>"Knowing how": skills, habits and reflexes you show by doing.</div>
+      <div class="word"><b>Consolidation</b>The slow process that turns a fragile new memory into a sturdy one.</div>
+      <div class="word"><b>Amnesia</b>Memory loss. <i>Anterograde</i> = can't make new memories. <i>Retrograde</i> = lost old ones.</div>
+      <div class="word"><b>Amygdala</b>The brain's alarm system. It makes emotional moments extra memorable.</div>
+    </div>
+    <h3 style="margin-top:38px">Where we're going</h3>
+    <div class="roadmap"><a href="#hm">The man who couldn't remember</a><span>→</span><a href="#anatomy">The hippocampus</a><span>→</span><a href="#systems">Kinds of memory</a><span>→</span><a href="#stages">Get in, keep, get back</a><span>→</span><a href="#rebuild">False memories</a><span>→</span><a href="#emotion">Why emotions stick</a><span>→</span><a href="#space">Your brain's GPS</a></div>
+  </section>
+
   <!-- ============ 1 H.M. ============ -->
   <section class="s" id="hm" data-title="Patient H.M.">
     <p class="kicker">Part 1</p>
     <h2 class="sec">Patient H.M.: the present kept vanishing</h2>
+    <div class="plain"><span class="ptag">In plain words</span>One man's brain surgery taught us where new memories are made. After a deep part of both sides of his brain was removed, Henry could still talk, joke, think and remember his childhood. But anything new slipped away within minutes, like writing on a whiteboard that kept getting erased.</div>
     <p class="lede">In 1953, a 27-year-old named <b>Henry Molaison</b> had surgery for epilepsy so severe that drugs could not control it. The surgeon removed the <b>medial temporal lobe on both sides</b>: much of the hippocampus, the amygdala and the nearby cortex. The seizures improved, but Henry could no longer form new long-term memories of facts and events. He met his doctors again and again as strangers for the rest of his life.</p>
     <div class="stage even" style="margin-bottom:22px">
       <div class="box">
@@ -245,6 +441,7 @@
   <section class="s alt" id="anatomy" data-title="The hippocampus">
     <p class="kicker">Part 2</p>
     <h2 class="sec">Where new memories are made</h2>
+    <div class="plain"><span class="ptag">In plain words</span>The <b>hippocampus</b> is a curled structure tucked deep inside each side of your brain, shaped a bit like a sea horse. Think of it as the brain's <b>"save" button</b> for new facts and events.</div>
     <p class="lede">The <b>hippocampus</b> (Latin for "sea horse") curls along the inner floor of each temporal lobe. Its output bundle, the <b>fornix</b>, arches up and forward to the <b>mammillary bodies</b> of the hypothalamus. In the drawing the temporal lobe is see-through so you can find it.</p>
     <div class="stage">
       <div class="box"><svg id="latA" viewBox="-80 0 840 490" role="img" aria-label="Side view of the brain with the hippocampus, fornix and mammillary body seen through the temporal lobe"></svg></div>
@@ -275,6 +472,7 @@
   <section class="s" id="mirror" data-title="Mirror tracing">
     <p class="kicker">Part 3</p>
     <h2 class="sec">Learning without remembering</h2>
+    <div class="plain"><span class="ptag">In plain words</span>Henry got better at a tricky drawing task every single day, yet never remembered doing it before. So <b>knowing how</b> (skills) and <b>knowing that</b> (facts) must use different brain systems.</div>
     <p class="lede">Brenda Milner gave H.M. a hard task: trace a star while seeing your hand only in a <b>mirror</b>. Over three days his errors dropped just like a healthy person's, yet each day he said he had <b>never done the task before</b>. Try it: the mirror flips up and down. Press inside the star near the dot and trace the path between the lines.</p>
     <div class="stage">
       <div class="box">
@@ -294,6 +492,7 @@
   <section class="s alt" id="circuit" data-title="More patients">
     <p class="kicker">Part 4</p>
     <h2 class="sec">More patients, one memory circuit</h2>
+    <div class="plain"><span class="ptag">In plain words</span>It's not just the hippocampus. Damage to a few <b>connected</b> brain parts causes the same kind of memory loss, because they work as a team, like stops along one train line. Break any stop and the train can't get through.</div>
     <p class="lede">Different injuries in different places can cause the same amnesia, which points to a connected <b>circuit</b>: medial temporal lobe, fornix, mammillary bodies and the <b>dorsomedial thalamus</b>. Some patients also show that episodic and semantic memory can come apart.</p>
     <div class="cols3" style="margin-top:0">
       <div class="box card"><span class="tag">Diencephalon</span><h4>Patient N.A.</h4><p>A miniature fencing foil went up his nostril into the brain, damaging the <b>dorsomedial thalamus</b> and the pathway to the <b>mammillary bodies</b>. Like H.M.: short-term memory fine, but few new declarative memories.</p></div>
@@ -318,6 +517,7 @@
   <section class="s" id="systems" data-title="Memory systems">
     <p class="kicker">Part 5</p>
     <h2 class="sec">A map of memory systems</h2>
+    <div class="plain"><span class="ptag">In plain words</span>There isn't one "memory." There are many kinds. Facts and life events are one kind. Skills, habits and learned fears are others, and each kind relies on its own brain areas.</div>
     <p class="lede">Long-term memory splits into <b>declarative</b> memory, which you can consciously state ("knowing that"), and <b>nondeclarative</b> memory, shown by performance ("knowing how"). Click the boxes to open each branch, then click any memory type to light up the brain regions it depends on.</p>
     <div class="box" style="padding:10px 10px 4px">
       <svg id="tree" viewBox="0 0 960 330" role="img" aria-label="Interactive tree of memory systems"></svg>
@@ -339,6 +539,7 @@
   <section class="s alt" id="stages" data-title="Stages">
     <p class="kicker">Part 6</p>
     <h2 class="sec">Capture, hold, store, retrieve</h2>
+    <div class="plain"><span class="ptag">In plain words</span>To remember anything, it has to <b>get in</b>, <b>stay</b> and <b>come back out</b>. Most of what hits your eyes and ears never makes it past step one, simply because you weren't paying attention to it.</div>
     <p class="lede">Information flows through stages. <b>Sensory buffers</b> hold a fleeting copy of everything for a fraction of a second to a few seconds. What you attend to is <b>encoded</b> into <b>short-term memory</b>, which lasts about 30 seconds unless you rehearse. Some of it is <b>consolidated</b> into <b>long-term memory</b>, and later <b>retrieved</b> back into use. Information can be lost at every step.</p>
     <div class="box">
       <svg id="flow" viewBox="0 0 960 380" role="img" aria-label="Animated flow of information from the senses through sensory buffers, short-term memory and long-term memory"></svg>
@@ -369,6 +570,7 @@
   <section class="s" id="consol" data-title="Consolidation">
     <p class="kicker">Part 7</p>
     <h2 class="sec">Consolidation: from hippocampus to cortex</h2>
+    <div class="plain"><span class="ptag">In plain words</span>New memories are fragile at first and lean on the hippocampus. Over time, and especially <b>while you sleep</b>, they get filed into the rest of the brain and become sturdy. That's why old memories survive brain injuries better than new ones.</div>
     <p class="lede">A new declarative memory is a pattern spread across many cortical areas (what you saw, heard, felt), tied together by the <b>hippocampus</b>. Over days to years, the cortical pieces link up with each other directly and the memory depends less on the hippocampus. Much of this happens during <b>slow-wave sleep</b>, when the hippocampus <b>replays</b> the day.</p>
     <div class="stage">
       <div class="box"><svg id="conSvg" viewBox="0 0 640 360" role="img" aria-label="A memory linked through the hippocampus becoming linked directly across cortex over time"></svg>
@@ -390,6 +592,7 @@
   <section class="s alt" id="rebuild" data-title="False memories">
     <p class="kicker">Part 8</p>
     <h2 class="sec">Remembering is rebuilding</h2>
+    <div class="plain"><span class="ptag">In plain words</span>Remembering isn't like replaying a video. Your brain <b>rebuilds</b> the memory every time, and it can slip in details that never happened, while you feel totally sure.</div>
     <p class="lede">Forgetting is often <b>interference</b>, not just fading: old learning disrupts new (<b>proactive</b>) and new learning disrupts old (<b>retroactive</b>). And every time you recall a memory it becomes unstable again and must be stored again (<b>reconsolidation</b>), so it can be strengthened, weakened or changed.</p>
     <div class="cols2" style="margin-top:0">
       <div class="box">
@@ -418,6 +621,7 @@
   <section class="s" id="emotion" data-title="Emotional memory">
     <p class="kicker">Part 9</p>
     <h2 class="sec">Why emotional events stick</h2>
+    <div class="plain"><span class="ptag">In plain words</span>Scary, exciting or embarrassing moments stick better. The <b>amygdala</b>, the brain's alarm system, tells the hippocampus <em>this one matters, save it well</em>.</div>
     <p class="lede">An emotional event activates the <b>amygdala</b> and releases stress hormones: <b>epinephrine</b> from the adrenal medulla and <b>cortisol</b> from the adrenal cortex. The amygdala then boosts consolidation in the hippocampus, so the memory comes out vivid and long-lasting. Block the hormone signal and the boost disappears.</p>
     <div class="stage">
       <div class="box"><svg id="latE" viewBox="-80 0 840 490" role="img" aria-label="Side view of the brain with the amygdala boosting the hippocampus"></svg></div>
@@ -448,6 +652,7 @@
   <section class="s alt" id="space" data-title="Place cells">
     <p class="kicker">Part 10</p>
     <h2 class="sec">Where am I? Place cells and grid cells</h2>
+    <div class="plain"><span class="ptag">In plain words</span>Your brain has a built-in map. Some neurons fire only when you're in one particular spot in a room. Others mark out a pattern like graph paper, so your brain always knows where you are.</div>
     <p class="lede">Record from single neurons in a rat's hippocampus as it explores, and each <b>place cell</b> fires only when the rat is in one particular spot, its <b>place field</b> (O'Keefe &amp; Dostrovsky, 1971). Together they form a <b>cognitive map</b>. Next door in the entorhinal cortex, <b>grid cells</b> fire at many spots that form a hexagonal grid, like map coordinates (Hafting et al., 2005). Watch the fields appear, or steer the rat with your pointer.</p>
     <div class="stage">
       <div class="box">
@@ -468,6 +673,7 @@
   <section class="s" id="storage" data-title="Storage">
     <p class="kicker">Part 11</p>
     <h2 class="sec">Where is a memory stored?</h2>
+    <div class="plain"><span class="ptag">In plain words</span>A memory isn't kept in one spot. The sights, sounds and smells are stored in the brain areas that handle each sense, and the hippocampus links them. That's why one cue, like a smell, can bring the whole scene flooding back.</div>
     <p class="lede">There is no single file for "grandma's kitchen". The pieces live in the cortical areas that first processed them: sights in visual cortex, sounds in auditory cortex, smells in olfactory cortex, feelings via the amygdala. Recalling the memory <b>reinstates</b> that pattern. A single cue, like the smell of cookies, can bring back the rest (pattern completion). Try it.</p>
     <div class="stage">
       <div class="box"><svg id="latR" viewBox="-80 0 840 490" role="img" aria-label="Side view of the brain showing a memory reinstated across cortical areas"></svg>
@@ -485,6 +691,7 @@
   <section class="s alt" id="clinical" data-title="When memory goes wrong">
     <p class="kicker">Part 12</p>
     <h2 class="sec">When memory goes wrong (Ch. 12)</h2>
+    <div class="plain"><span class="ptag">In plain words</span>Many mental health conditions involve memory systems that work <b>too strongly</b>, <b>too weakly</b> or get <b>stuck in a loop</b>.</div>
     <p class="lede">Several psychological disorders can be understood partly as memory systems working too well, not well enough, or in a loop.</p>
     <div class="cols4" style="margin-top:0">
       <div class="box card"><span class="tag">PTSD</span><h4>A memory that won't fade</h4><p>Flashbacks and intrusive memories: an <b>over-consolidated</b> emotional memory plus fear conditioning that won't extinguish. The hippocampus is smaller in PTSD; twin studies suggest this may be a pre-existing risk factor. Exposure therapy works through extinction, which is <b>new learning</b>.</p></div>
@@ -498,6 +705,7 @@
   <section class="s" id="review" data-title="Review">
     <p class="kicker">Part 13</p>
     <h2 class="sec">Memory at a glance</h2>
+    <div class="plain"><span class="ptag">In plain words</span>Here's everything on one page. Then quiz yourself. Testing yourself is one of the best ways to make memories stick, which you now know the neuroscience behind!</div>
     <div class="box tablewrap" style="margin-bottom:30px">
       <table class="sum">
         <tr><th>Memory or process</th><th>Key structure</th><th>Key evidence or disorder</th></tr>
@@ -1204,6 +1412,43 @@ if(store.get('memTheme')==='dark')setTheme(true);
 let prev=performance.now();
 function loop(now){const dt=Math.max(0,Math.min(.05,(now-prev)/1000));prev=now;frameHooks.forEach(f=>{try{f(dt)}catch(e){console.error(e)}});requestAnimationFrame(loop)}
 requestAnimationFrame(loop);
+})();
+</script>
+
+<script>
+/* Start-here demo: chunking */
+(()=>{
+'use strict';
+const $=id=>document.getElementById(id); if(!$('ckShow')) return;
+const LET='FBICIAUSANBA';
+const R1=['FB','ICIA','USAN','BA'], R2=['FBI','CIA','USA','NBA'];
+let round=0, score=[null,null];
+const show=$('ckShow'), inp=$('ckIn');
+function lcs(a,b){const d=Array(b.length+1).fill(0);for(let i=1;i<=a.length;i++){let p=0;for(let j=1;j<=b.length;j++){const t=d[j];d[j]=a[i-1]===b[j-1]?p+1:Math.max(d[j],d[j-1]);p=t}}return d[b.length]}
+function run(r){
+  round=r; inp.value=''; inp.disabled=true; $('ckCheck').disabled=true; $('ck1').disabled=true; $('ck2').disabled=true;
+  const groups=r===1?R1:R2;
+  show.innerHTML=groups.map(g=>r===2?`<span class="ch">${g}</span>`:`<span style="margin:0 .35em">${g}</span>`).join('');
+  let left=5; $('ckNote').innerHTML=`Memorize! <b>${left}</b>`;
+  const iv=setInterval(()=>{left--; if(left>0){$('ckNote').innerHTML=`Memorize! <b>${left}</b>`;return}
+    clearInterval(iv); show.innerHTML='<span class="cue">Gone! Type what you remember, in order.</span>';
+    inp.disabled=false; $('ckCheck').disabled=false; inp.focus(); $('ckNote').textContent='Type the letters, then press Check.';},1000);
+}
+function check(){
+  const typed=inp.value.toUpperCase().replace(/[^A-Z]/g,'');
+  const sc=Math.min(12,lcs(typed,LET)); score[round-1]=sc;
+  $('ckS'+round).textContent=sc+' / 12';
+  inp.disabled=true; $('ckCheck').disabled=true; $('ck1').disabled=false;
+  if(round===1){ $('ck2').disabled=false;
+    $('ckNote').innerHTML=`You got <b>${sc} of 12</b>. Most people get around 5 to 8. Twelve separate letters is far more than the <b>~4 chunks</b> short-term memory can hold. Now try Round 2.`;
+  } else {
+    const s1=score[0];
+    $('ckNote').innerHTML=`You got <b>${sc} of 12</b>${s1!=null?` (Round 1: ${s1})`:''}. Here's the trick: <b>they were the exact same 12 letters</b>, in the same order! Grouped as FBI, CIA, USA, NBA they're only <b>4 chunks</b>, because your <b>long-term memory</b> already knows each one. Long-term memory makes short-term memory roomier. That's <b>chunking</b>, and it's why grouping ideas helps you study.`;
+    $('ck2').disabled=false;
+  }
+}
+$('ck1').onclick=()=>run(1); $('ck2').onclick=()=>run(2); $('ckCheck').onclick=check;
+inp.addEventListener('keydown',e=>{if(e.key==='Enter'&&!$('ckCheck').disabled){e.preventDefault();check()}});
 })();
 </script>
 </body>

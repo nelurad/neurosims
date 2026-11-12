@@ -6,6 +6,8 @@
 <title>The Learning Brain</title>
 <link rel="icon" href="data:,">
 <meta name="description" content="An interactive tour of how experience changes the brain: habituation and sensitization in Aplysia, skill learning and priming, Pavlovian and eyeblink conditioning, the Skinner box, synaptic changes that store memories, enriched environments and dendritic branching, Hebb's rule, long-term potentiation, and the NMDA/AMPA mechanism.">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@500;600;700&family=Nunito:ital,wght@0,400;0,600;0,700;0,800;1,400&display=swap" rel="stylesheet">
 <style>
   :root{
     --serif:"Iowan Old Style","Palatino Linotype",Palatino,"Book Antiqua",Georgia,"Times New Roman",serif;
@@ -136,6 +138,154 @@
     .box{padding:12px}
   }
   @media (prefers-reduced-motion:reduce){ html{scroll-behavior:auto} }
+
+  /* ================= Playful redesign (shared by learning + memory) ================= */
+  :root{
+    --body:"Nunito",var(--sans);
+    --display:"Fredoka","Nunito",var(--sans);
+    --bg:#fbfaff; --panel:#ffffff; --panel2:#f3f1fb; --line:#dcd7ec; --grid:rgba(60,40,120,.10);
+    --ink:#231d3b; --muted:#5d5875;
+    --edge:#231d3b; --shadow:#231d3b; --dot:rgba(120,90,220,.16);
+    --c1:#ff6b6b; --c2:#ffb627; --c3:#20b393; --c4:#4d8dff; --c5:#9b5de5;
+    --note:#fff4b8; --noteInk:#2e2600;
+    --tint:var(--c4);
+  }
+  :root[data-theme="dark"]{
+    --bg:#17142a; --panel:#221e38; --panel2:#2a2545; --line:#3d3760; --grid:rgba(200,190,255,.12);
+    --ink:#f3f0ff; --muted:#b5afd0;
+    --edge:#7d74b8; --shadow:#07060f; --dot:rgba(185,160,255,.10);
+    --c1:#ff8a8a; --c2:#ffc857; --c3:#45d6b5; --c4:#7aa8ff; --c5:#b98af0;
+    --note:#3a3216; --noteInk:#fff1b8;
+  }
+  html,body{font-family:var(--body)}
+  body{overflow-x:hidden;background-color:var(--bg);background-image:radial-gradient(var(--dot) 1.3px,transparent 1.6px);background-size:22px 22px}
+  ::selection{background:color-mix(in srgb,var(--c2) 55%,transparent)}
+
+  /* per-section color */
+  section.s:nth-of-type(5n+1){--tint:var(--c4)}
+  section.s:nth-of-type(5n+2){--tint:var(--c3)}
+  section.s:nth-of-type(5n+3){--tint:var(--c1)}
+  section.s:nth-of-type(5n+4){--tint:var(--c5)}
+  section.s:nth-of-type(5n+5){--tint:var(--c2)}
+  section.s{border-top:0}
+  section.s.alt{--band:color-mix(in srgb,var(--tint) 11%,var(--bg))}
+
+  /* type */
+  .hero h1,h2.sec,h3,.card h4,.facts3 b,.q{font-family:var(--display);letter-spacing:0}
+  h2.sec{font-weight:700;font-size:clamp(30px,3.3vw,56px)}
+  h2.sec::after{content:"";display:block;width:160px;height:14px;margin-top:12px;background:var(--tint);
+    -webkit-mask:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='32' height='14' viewBox='0 0 32 14'%3E%3Cpath d='M0 7 Q8 0 16 7 T32 7' fill='none' stroke='black' stroke-width='4.5' stroke-linecap='round'/%3E%3C/svg%3E") repeat-x 0 0/32px 14px;
+            mask:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='32' height='14' viewBox='0 0 32 14'%3E%3Cpath d='M0 7 Q8 0 16 7 T32 7' fill='none' stroke='black' stroke-width='4.5' stroke-linecap='round'/%3E%3C/svg%3E") repeat-x 0 0/32px 14px}
+  h3{font-weight:600}
+  .kicker{font:700 .78rem/1 var(--display);letter-spacing:.08em;color:#231d3b;background:color-mix(in srgb,var(--tint) 45%,#fff);display:inline-flex;padding:7px 14px 7px 10px;border-radius:999px;border:2px solid var(--edge);transform:rotate(-2deg);box-shadow:2px 2px 0 var(--shadow);gap:8px}
+  .kicker::before{width:11px;height:11px;border-radius:50%;background:var(--tint);border:2px solid #231d3b}
+
+  /* hero */
+  .hero{display:grid;grid-template-columns:minmax(0,1.5fr) minmax(0,1fr);gap:10px 30px;align-items:center;padding:20px 0 34px}
+  .hero > .back{grid-column:1/-1}
+  .hero .heroText{min-width:0}
+  .hero .heroText .kicker{--tint:var(--c2);margin-top:6px!important}
+  .hero h1{font-weight:700;font-size:clamp(48px,6.6vw,108px);line-height:.98;margin:.25em 0 .35em}
+  .hero h1 .mark{position:relative;display:inline-block;z-index:0}
+  .hero h1 .mark::before{content:"";position:absolute;left:-.08em;right:-.08em;bottom:.06em;height:.36em;background:var(--hcol,var(--c2));border-radius:.2em;z-index:-1;transform:rotate(-1.5deg)}
+  .hero p.big{font-size:1.25rem}
+  .heroArt{min-width:0}
+  .heroArt svg{max-width:440px;margin:0 auto;overflow:visible}
+  .floaty{animation:floaty 5s ease-in-out infinite;transform-origin:50% 50%}
+  .twinkle{animation:twinkle 2.4s ease-in-out infinite}
+  .twinkle.d2{animation-delay:.8s}.twinkle.d3{animation-delay:1.6s}
+  @keyframes floaty{0%,100%{transform:translateY(0) rotate(-1.5deg)}50%{transform:translateY(-12px) rotate(1.5deg)}}
+  @keyframes twinkle{0%,100%{opacity:.25;transform:scale(.8)}50%{opacity:1;transform:scale(1.1)}}
+  .twinkle{transform-box:fill-box;transform-origin:center}
+  .facts3{grid-column:1/-1;gap:22px;max-width:none;margin-top:18px}
+  .facts3 div{border:2.5px solid var(--edge);border-radius:20px;padding:16px 18px;background:var(--panel);box-shadow:5px 5px 0 var(--shadow);color:var(--ink)}
+  .facts3 div:nth-child(1){background:color-mix(in srgb,var(--c2) 24%,var(--panel));transform:rotate(-1.2deg)}
+  .facts3 div:nth-child(2){background:color-mix(in srgb,var(--c3) 22%,var(--panel));transform:rotate(.8deg)}
+  .facts3 div:nth-child(3){background:color-mix(in srgb,var(--c1) 20%,var(--panel));transform:rotate(-.5deg)}
+  .facts3 b{font-weight:700;font-size:2.1rem}
+  .hero .hint{grid-column:1/-1;margin-top:10px}
+
+  /* nav */
+  .pipe{background:color-mix(in srgb,var(--bg) 94%,transparent);border-bottom:2.5px solid var(--edge)}
+  .pipe a{font-family:var(--display);font-weight:500;font-size:.78rem}
+  .pipe a.on{color:#fff;background:var(--ink)}
+  :root[data-theme="dark"] .pipe a.on{color:#17142a}
+
+  /* sticker boxes and buttons */
+  .box{border:2.5px solid var(--edge);border-radius:20px;box-shadow:5px 5px 0 var(--shadow)}
+  .chip,.btn,.tbtn,button.card,.qopts button,.embed button{border:2px solid var(--edge);box-shadow:2px 2px 0 var(--shadow);font-family:var(--body);font-weight:700;transition:transform .08s,box-shadow .08s,background .2s}
+  .chip:hover,.btn:hover,.tbtn:hover,button.card:hover,.qopts button:hover{transform:translate(-1px,-1px);box-shadow:3px 3px 0 var(--shadow);border-color:var(--edge)}
+  .chip:active,.btn:active,.tbtn:active,button.card:active,.qopts button:active{transform:translate(2px,2px);box-shadow:0 0 0 var(--shadow)}
+  .btn:disabled{opacity:.45;cursor:not-allowed;transform:none;box-shadow:2px 2px 0 var(--shadow)}
+  .chip[aria-pressed="true"],.btn.primary{border-color:var(--edge)}
+  button.card{border-radius:14px}
+  button.card[aria-pressed="true"]{background:color-mix(in srgb,var(--accent) 16%,var(--panel));box-shadow:3px 3px 0 var(--shadow)}
+  .callout{border-radius:14px;border-left-width:6px;background:var(--panel2)}
+  .meter{height:16px;border:2px solid var(--edge)}
+  .quiz .qcard{border:2.5px solid var(--edge);border-radius:22px;box-shadow:6px 6px 0 var(--shadow)}
+  .qopts button{border-radius:14px}
+  .qopts button.right{border-color:var(--good);box-shadow:3px 3px 0 var(--good)}
+  .qopts button.wrong{border-color:var(--bad)}
+  .card h4{font-weight:600}
+  .tag{color:var(--ink);background:color-mix(in srgb,var(--tint) 30%,transparent);border-radius:999px;padding:2px 9px}
+
+  /* "Go deeper" for the dense paragraphs */
+  p.note{background:color-mix(in srgb,var(--panel) 75%,transparent);border:2px dashed color-mix(in srgb,var(--tint) 60%,var(--line));border-radius:16px;padding:12px 16px}
+  p.note::before{content:"Go deeper";display:block;font:700 .72rem/1.4 var(--display);letter-spacing:.12em;text-transform:uppercase;color:var(--ink);margin-bottom:4px}
+  .box p.note{border:0;padding:0;background:none}
+  .box p.note::before{content:none}
+
+  /* "In plain words" sticky notes */
+  .plain{position:relative;max-width:46em;background:var(--note);color:var(--noteInk);border:2.5px solid var(--edge);border-radius:6px 20px 20px 20px;padding:20px 22px 16px;margin:14px 0 26px;box-shadow:5px 5px 0 var(--shadow);transform:rotate(-.5deg);font-size:1.1rem;line-height:1.55}
+  .plain .ptag{position:absolute;top:-15px;left:16px;font:700 .75rem/1 var(--display);letter-spacing:.1em;text-transform:uppercase;color:#231d3b;background:var(--tint);border:2px solid var(--edge);border-radius:999px;padding:6px 12px;transform:rotate(-2deg)}
+  .plain b{color:inherit}
+  .plain em{font-style:normal;background:color-mix(in srgb,var(--tint) 30%,transparent);border-radius:4px;padding:0 3px}
+
+  /* Start-here sections */
+  .steps{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:22px;margin:8px 0 26px}
+  .step{position:relative;background:var(--panel);border:2.5px solid var(--edge);border-radius:22px;padding:18px 20px 16px;box-shadow:5px 5px 0 var(--shadow);min-width:0}
+  .step:nth-child(1){--sc:var(--c2);transform:rotate(-.8deg)}
+  .step:nth-child(2){--sc:var(--c3);transform:rotate(.6deg)}
+  .step:nth-child(3){--sc:var(--c1);transform:rotate(-.4deg)}
+  .step .num{position:absolute;top:-16px;left:-12px;width:42px;height:42px;border-radius:50%;display:grid;place-items:center;font:700 1.25rem/1 var(--display);background:var(--sc);border:2.5px solid var(--edge);color:#231d3b;box-shadow:2px 2px 0 var(--shadow)}
+  .step .ico{width:100%;height:96px;margin:2px 0 8px}
+  .step h3{margin:0 0 .25em}
+  .step p{margin:.2em 0;font-size:.98rem}
+  .step .eg{display:block;margin-top:8px;font-size:.88rem;color:var(--muted)}
+  .vocab{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:14px;margin:14px 0 0}
+  .word{border:2px solid var(--edge);border-radius:16px;padding:12px 14px;background:var(--panel);box-shadow:3px 3px 0 var(--shadow);font-size:.92rem}
+  .word b{display:block;font-family:var(--display);font-weight:600;font-size:1.12rem;margin-bottom:2px}
+  .word:nth-child(5n+1){background:color-mix(in srgb,var(--c4) 13%,var(--panel))}
+  .word:nth-child(5n+2){background:color-mix(in srgb,var(--c3) 13%,var(--panel))}
+  .word:nth-child(5n+3){background:color-mix(in srgb,var(--c1) 12%,var(--panel))}
+  .word:nth-child(5n+4){background:color-mix(in srgb,var(--c5) 13%,var(--panel))}
+  .word:nth-child(5n+5){background:color-mix(in srgb,var(--c2) 16%,var(--panel))}
+  .roadmap{display:flex;flex-wrap:wrap;gap:8px 6px;align-items:center;margin:10px 0 0;font-family:var(--display);font-weight:500}
+  .roadmap a{color:var(--ink);text-decoration:none;border:2px solid var(--edge);border-radius:999px;padding:4px 12px;background:var(--panel);box-shadow:2px 2px 0 var(--shadow);font-size:.88rem}
+  .roadmap a:hover{background:color-mix(in srgb,var(--c2) 30%,var(--panel))}
+  .roadmap span{color:var(--muted)}
+  .bigq{font-family:var(--display);font-weight:600;font-size:1.25rem;margin:0 0 .3em}
+  .chunkShow{font:700 clamp(1.6rem,3.4vw,2.6rem)/1.2 var(--mono);letter-spacing:.18em;text-align:center;min-height:3.4em;display:flex;align-items:center;justify-content:center;background:var(--panel2);border:2px solid var(--edge);border-radius:16px;margin:10px 0;padding:10px;flex-wrap:wrap;word-break:break-all}
+  .chunkShow .cue{font:600 1rem var(--body);letter-spacing:0;color:var(--muted)}
+  .chunkShow .ch{display:inline-block;margin:0 .35em;padding:0 .15em;border-radius:8px;background:color-mix(in srgb,var(--c2) 35%,transparent)}
+  .scoreRow{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:10px}
+  .scoreRow div{border:2px solid var(--edge);border-radius:14px;padding:10px 12px;background:var(--panel2);text-align:center}
+  .scoreRow b{display:block;font:700 2rem/1.1 var(--display)}
+
+  /* dark theme: illustrations sit on light paper so their ink outlines stay visible */
+  :root[data-theme="dark"] .step .ico,:root[data-theme="dark"] #bxSvg{background:#f4f1ff;border-radius:14px}
+  :root[data-theme="dark"] .heroArt svg{filter:drop-shadow(0 0 1.5px #f3f0ff) drop-shadow(0 0 1px #f3f0ff)}
+  @media (max-width:900px){
+    .hero{grid-template-columns:1fr}
+    .heroArt{order:-1}
+    .heroArt svg{max-width:260px}
+    .steps{grid-template-columns:1fr;gap:28px}
+    .vocab{grid-template-columns:1fr 1fr}
+  }
+  @media (max-width:520px){ .vocab{grid-template-columns:1fr} .scoreRow b{font-size:1.5rem} }
+  @media (prefers-reduced-motion:reduce){ .floaty,.twinkle{animation:none} }
+  :root{--accent:#0e8a66;--accent2:#d2452c}
+  :root[data-theme="dark"]{--accent:#6fd3a0;--accent2:#ff8f74}
 </style>
 </head>
 <body>
@@ -143,9 +293,13 @@
 
   <header class="hero" id="top">
     <a class="back" href="../">← All NeuroSims</a>
+    <div class="heroText">
     <p class="kicker" style="margin-top:28px">NeuroSims · Learning and memory</p>
-    <h1>The Learning Brain</h1>
-    <p class="big">Every time you learn something, your brain physically changes. Synapses get stronger or weaker, new connections sprout, and dendrites grow. This tour follows learning from a sea slug's reflex to the receptor that acts like Hebb's rule in a single molecule.</p>
+    <h1>The <span class="mark">Learning</span> Brain</h1>
+    <p class="big">Every time you learn something, your brain physically changes. Synapses get stronger or weaker, new connections sprout, and dendrites grow. This tour starts with the basics, then follows learning from a sea slug's reflex all the way down to a single molecule.</p>
+    </div>
+    <div class="heroArt" aria-hidden="true"><svg viewBox="0 0 430 360"><path class="twinkle " d="M40 52 L45.04 64.96 L58 70 L45.04 75.04 L40 88 L34.96 75.04 L22 70 L34.96 64.96Z" fill="#ffb627" stroke="#231d3b" stroke-width="3" stroke-linejoin="round"/><path class="twinkle d2" d="M395 46 L398.92 56.08 L409 60 L398.92 63.92 L395 74 L391.08 63.92 L381 60 L391.08 56.08Z" fill="#20b393" stroke="#231d3b" stroke-width="3" stroke-linejoin="round"/><path class="twinkle d3" d="M390 238 L393.36 246.64 L402 250 L393.36 253.36 L390 262 L386.64 253.36 L378 250 L386.64 246.64Z" fill="#4d8dff" stroke="#231d3b" stroke-width="3" stroke-linejoin="round"/><g class="floaty"><rect x="184" y="236" width="56" height="62" rx="14" fill="#ffb3c7" stroke="#231d3b" stroke-width="5.5"/><g stroke="#231d3b" stroke-width="11" fill="#ffb3c7"><circle cx="120" cy="165" r="66"/><circle cx="178" cy="118" r="74"/><circle cx="258" cy="112" r="76"/><circle cx="318" cy="160" r="62"/><circle cx="258" cy="200" r="74"/><circle cx="170" cy="206" r="64"/><circle cx="210" cy="160" r="70"/></g><g fill="#ffb3c7"><circle cx="120" cy="165" r="66"/><circle cx="178" cy="118" r="74"/><circle cx="258" cy="112" r="76"/><circle cx="318" cy="160" r="62"/><circle cx="258" cy="200" r="74"/><circle cx="170" cy="206" r="64"/><circle cx="210" cy="160" r="70"/></g><g fill="none" stroke="#e07a98" stroke-width="5" stroke-linecap="round"><path d="M120 110 q20 -14 36 6 q14 16 30 0"/><path d="M232 74 q16 18 4 34 q-10 16 8 28"/><path d="M300 118 q-18 6 -14 26 q4 18 -12 26"/><path d="M92 168 q18 -8 26 8"/><path d="M330 196 q-20 -2 -26 16"/><path d="M150 246 q10 -16 30 -8"/></g><ellipse cx="180" cy="178" rx="11" ry="14" fill="#231d3b"/><ellipse cx="252" cy="178" rx="11" ry="14" fill="#231d3b"/><circle cx="184" cy="172" r="4" fill="#fff"/><circle cx="256" cy="172" r="4" fill="#fff"/><ellipse cx="156" cy="204" rx="14" ry="8" fill="#ff7d9c" opacity=".55"/><ellipse cx="276" cy="204" rx="14" ry="8" fill="#ff7d9c" opacity=".55"/><path d="M196 206 q20 22 40 0" fill="none" stroke="#231d3b" stroke-width="6" stroke-linecap="round"/><g transform="rotate(-8 225 40)"><path d="M225 6 L320 40 L225 74 L130 40Z" fill="#231d3b"/><path d="M168 54 v24 q57 26 114 0 v-24 L225 74Z" fill="#231d3b"/><path d="M300 46 v44" stroke="#ffb627" stroke-width="5" stroke-linecap="round"/><circle cx="300" cy="94" r="8" fill="#ffb627" stroke="#231d3b" stroke-width="3"/></g><g transform="rotate(35 360 230)"><rect x="345" y="170" width="28" height="104" rx="4" fill="#ffb627" stroke="#231d3b" stroke-width="5"/><rect x="345" y="170" width="28" height="18" fill="#ff6b6b" stroke="#231d3b" stroke-width="5"/><path d="M345 274 L359 306 L373 274Z" fill="#ffe7c2" stroke="#231d3b" stroke-width="5" stroke-linejoin="round"/><path d="M354 294 L359 306 L364 294Z" fill="#231d3b"/></g></g></svg></div>
+    
     <div class="facts3">
       <div><b>20,000</b>neurons in the sea slug <i>Aplysia</i>, some big enough to see without a microscope. Its reflexes showed learning at a single synapse.</div>
       <div><b>Hours to weeks</b>how long long-term potentiation (LTP) can last after one second of high-frequency stimulation</div>
@@ -162,10 +316,51 @@
     </div>
   </nav>
 
+
+  <!-- 0 START HERE -->
+  <section class="s" id="basics" data-title="Start here">
+    <p class="kicker">Start here</p>
+    <h2 class="sec">How does a brain learn anything?</h2>
+    <div class="plain"><span class="ptag">In plain words</span>Your brain is a giant web of cells that talk to each other. <b>Learning is that web rewiring itself.</b> Connections you use a lot get stronger, ones you don't use fade, and brand-new ones can grow. Everything else on this page is a closer look at that one idea.</div>
+
+    <div class="steps">
+      <div class="step"><span class="num">1</span><svg class="ico" viewBox="0 0 220 96" aria-hidden="true"><g stroke="#231d3b" stroke-width="4" stroke-linecap="round" fill="none"><path d="M48 48 L18 22 M48 48 L14 54 M48 48 L26 84 M30 30 L22 12"/><path d="M70 48 H188"/><path d="M188 48 l18 -14 M188 48 l20 2 M188 48 l16 16"/></g><circle cx="54" cy="48" r="20" fill="#ffd27a" stroke="#231d3b" stroke-width="4"/><g fill="#cfc6ff" stroke="#231d3b" stroke-width="3"><rect x="86" y="40" width="26" height="16" rx="8"/><rect x="120" y="40" width="26" height="16" rx="8"/><rect x="154" y="40" width="26" height="16" rx="8"/></g><path d="M96 30 h60" stroke="#4d8dff" stroke-width="4" stroke-linecap="round" stroke-dasharray="2 9"/><path d="M150 24 l8 6 -8 6" fill="none" stroke="#4d8dff" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/></svg><h3>Neurons are the talkers</h3><p>You have about <b>86 billion</b> neurons. Each one collects signals on its branchy <b>dendrites</b>. If it gets excited enough, it fires a quick electrical pulse down its long <b>axon</b>.</p></div>
+      <div class="step"><span class="num">2</span><svg class="ico" viewBox="0 0 220 96" aria-hidden="true"><path d="M0 48 H50 Q96 6 96 48 Q96 90 50 48" fill="#ffd27a" stroke="#231d3b" stroke-width="4"/><path d="M0 48 H50" stroke="#231d3b" stroke-width="4"/><path d="M220 30 H170 Q128 20 128 48 Q128 76 170 66 H220Z" fill="#a8e6d4" stroke="#231d3b" stroke-width="4" stroke-linejoin="round"/><rect x="124" y="30" width="9" height="10" rx="3" fill="#4d8dff" stroke="#231d3b" stroke-width="2"/><rect x="124" y="43" width="9" height="10" rx="3" fill="#4d8dff" stroke="#231d3b" stroke-width="2"/><rect x="124" y="56" width="9" height="10" rx="3" fill="#4d8dff" stroke="#231d3b" stroke-width="2"/><circle cx="104" cy="40" r="4" fill="#ff6b6b"/><circle cx="112" cy="56" r="4" fill="#ff6b6b"/><circle cx="118" cy="30" r="4" fill="#ff6b6b"/><circle cx="108" cy="66" r="4" fill="#ff6b6b"/><circle cx="120" cy="48" r="4" fill="#ff6b6b"/></svg><h3>Synapses are where they meet</h3><p>Neurons don't actually touch. At a <b>synapse</b>, the sending cell squirts chemical messengers (<b>neurotransmitters</b>) across a tiny gap, and the receiving cell catches them with <b>receptors</b>.</p></div>
+      <div class="step"><span class="num">3</span><svg class="ico" viewBox="0 0 220 96" aria-hidden="true"><g stroke="#20b393" stroke-width="3" stroke-linecap="round"><path d="M20 30 l-3 -10 M20 30 l4 -9"/><path d="M60 80 l-3 -10 M60 80 l4 -9"/><path d="M110 24 l-3 -10 M110 24 l4 -9"/><path d="M170 84 l-3 -10 M170 84 l4 -9"/><path d="M200 36 l-3 -10 M200 36 l4 -9"/><path d="M36 70 l-3 -10 M36 70 l4 -9"/><path d="M150 20 l-3 -10 M150 20 l4 -9"/></g><path d="M10 70 Q60 70 90 50 T200 30" fill="none" stroke="#e9d2a8" stroke-width="22" stroke-linecap="round"/><path d="M10 70 Q60 70 90 50 T200 30" fill="none" stroke="#231d3b" stroke-width="3" stroke-dasharray="3 10" stroke-linecap="round"/><circle cx="200" cy="30" r="9" fill="#ff6b6b" stroke="#231d3b" stroke-width="3"/></svg><h3>Learning changes synapses</h3><p>Use a connection a lot and it gets <b>stronger</b>: more messenger, more receptors, even extra synapses. The brain's ability to change like this is called <b>plasticity</b>.</p><span class="eg">It's like a shortcut across a lawn: walk it every day and it turns into a trail.</span></div>
+    </div>
+    <div class="stage">
+      <div class="box">
+        <svg id="bxSvg" viewBox="0 0 640 270" role="img" aria-label="Neuron A connects to neuron B through a synapse that grows stronger with practice"></svg>
+        <div class="row" style="margin-top:8px"><button class="btn primary" id="bxGo">Practice! (send a signal)</button><button class="btn" id="bxRest">Skip practice for a week</button><button class="btn" id="bxReset">Start over</button></div>
+      </div>
+      <div class="box">
+        <p class="bigq">Try it: train a synapse</p>
+        <p style="margin:.2em 0 .7em">Neuron A (left) is talking to neuron B (right). At first the connection is weak, so B ignores A. Keep practicing and watch the synapse grow until A's message is strong enough to make B fire.</p>
+        <div class="mlab"><span>Synapse strength</span><b id="bxOut">weak</b></div><div class="meter"><i id="bxBar"></i></div>
+        <div class="mlab"><span>Times practiced</span><b id="bxN">0</b></div>
+        <div class="callout" id="bxNote">Press <b>Practice!</b> to send a signal from A to B.</div>
+      </div>
+    </div>
+    <h3 style="margin-top:38px">Words you'll see a lot</h3>
+    <div class="vocab">
+      <div class="word"><b>Neuron</b>A brain cell that sends and receives signals.</div>
+      <div class="word"><b>Synapse</b>The tiny gap where one neuron passes a message to the next.</div>
+      <div class="word"><b>Neurotransmitter</b>The chemical messenger released at a synapse. Glutamate is the main "go" signal.</div>
+      <div class="word"><b>Receptor</b>A protein on the receiving cell that catches the messenger, like a lock for a key.</div>
+      <div class="word"><b>Plasticity</b>The brain's ability to change with experience.</div>
+      <div class="word"><b>Conditioning</b>Learning that two things go together (bell → food, action → reward).</div>
+      <div class="word"><b>Hippocampus</b>A curled brain structure that's key for new memories and a hot spot for synapse changes.</div>
+      <div class="word"><b>LTP</b>Long-term potentiation: a synapse staying stronger after a burst of activity.</div>
+    </div>
+    <h3 style="margin-top:38px">Where we're going</h3>
+    <div class="roadmap"><a href="#kinds">Kinds of learning</a><span>→</span><a href="#aplysia">A sea slug's reflex</a><span>→</span><a href="#pavlov">Bells and drooling dogs</a><span>→</span><a href="#operant">Rats and rewards</a><span>→</span><a href="#synapses">What changes in the brain</a><span>→</span><a href="#hebb">Fire together, wire together</a><span>→</span><a href="#nmda">The molecule that learns</a></div>
+  </section>
+
   <!-- 1 KINDS -->
   <section class="s" id="kinds" data-title="Kinds of learning">
     <p class="kicker">Part 1</p>
     <h2 class="sec">Learning vs. memory, and the kinds of "knowing how"</h2>
+    <div class="plain"><span class="ptag">In plain words</span><b>Learning</b> is your brain changing because of something you experienced. <b>Memory</b> is holding on to that change so you can use it later. Some of what you learn you can put into words (a fact, a date). A lot of it you can't: you can't explain <em>how</em> you keep your balance on a bike, but your brain clearly learned it.</div>
     <p class="lede"><b>Learning</b> is acquiring new information or behavior, so that behavior changes with experience. <b>Memory</b> is storing and retrieving it. They are two sides of one process: we only know learning happened because something was remembered. Most of this page is about <b>nondeclarative</b> learning, which shows up in performance rather than in something you can state. Click a type to see which brain regions it relies on.</p>
     <div class="stage">
       <div class="box"><svg id="latBrain" viewBox="0 0 660 430" role="img" aria-label="Side view of the human brain with regions for each kind of learning"></svg></div>
@@ -181,6 +376,7 @@
   <section class="s alt" id="aplysia" data-title="Aplysia">
     <p class="kicker">Part 2</p>
     <h2 class="sec">Learning at one synapse: the sea slug <i>Aplysia</i></h2>
+    <div class="plain"><span class="ptag">In plain words</span>A sea slug has very few neurons, and they're huge, so scientists could watch learning happen at <b>a single connection</b>. Poke it gently over and over and it stops bothering to react (<b>habituation</b>, like no longer hearing a ticking clock). Give it a scare and it overreacts to everything for a while (<b>sensitization</b>, like jumping at every creak after a horror movie).</div>
     <p class="lede">Eric Kandel picked <i>Aplysia</i> because its nervous system has few neurons, and they are large and identifiable. A touch to the <b>siphon</b> excites a sensory neuron, which excites a motor neuron, and the <b>gill withdraws</b>. Two simple, <b>nonassociative</b> forms of learning (only one stimulus is involved) change this reflex. Try them.</p>
     <div class="stage">
       <div class="box">
@@ -202,6 +398,7 @@
   <section class="s" id="skill" data-title="Skills and priming">
     <p class="kicker">Part 3</p>
     <h2 class="sec">Skills and priming: learning without knowing it</h2>
+    <div class="plain"><span class="ptag">In plain words</span>You can get better at something without remembering that you practiced it. Skills are stored by different brain parts than facts. That's why a man who couldn't form new memories still improved at a drawing task every day, and why you can type fast without being able to say where the letters are.</div>
     <p class="lede"><b>Skill learning</b> is getting better at a task through practice: motor skills (mirror tracing), perceptual skills (reading mirror-reversed text) and cognitive skills (puzzles). It relies on the <b>basal ganglia</b> (striatum), <b>cerebellum</b> and <b>motor cortex</b>, and is impaired in Parkinson's and Huntington's disease, which damage the basal ganglia. Patient H.M. improved at mirror tracing across days while insisting each day that he had never tried it.</p>
     <div class="stage even">
       <div class="box">
@@ -226,6 +423,7 @@
   <section class="s alt" id="pavlov" data-title="Classical">
     <p class="kicker">Part 4</p>
     <h2 class="sec">Classical (Pavlovian) conditioning</h2>
+    <div class="plain"><span class="ptag">In plain words</span>When one thing reliably comes right before another, your brain links them. The dog learns <em>bell means food</em>, so the bell alone makes it drool. Grabbing your phone when you hear its buzz, or your stomach growling at the lunch bell, is the same kind of learning.</div>
     <p class="lede"><b>Associative learning</b> links two events. In Pavlov's experiments, food in a dog's mouth (an <b>unconditioned stimulus, US</b>) triggers salivation (an <b>unconditioned response, UR</b>). A bell starts out meaningless. Ring the bell just before food, again and again, and the bell becomes a <b>conditioned stimulus (CS)</b> that triggers salivation by itself, now a <b>conditioned response (CR)</b>. Run the experiment, then extinguish it.</p>
     <div class="stage">
       <div class="box">
@@ -245,6 +443,7 @@
   <section class="s" id="eyeblink" data-title="Cerebellum">
     <p class="kicker">Part 5</p>
     <h2 class="sec">Eyeblink conditioning: a memory stored in the cerebellum</h2>
+    <div class="plain"><span class="ptag">In plain words</span>Same kind of linking, but here the brain learns <b>timing</b>: a tone means a puff of air is about to hit your eye, so you learn to blink just in time. Scientists tracked down exactly where this memory is kept: a tiny spot in the <b>cerebellum</b>, the brain's timing and coordination center.</div>
     <p class="lede">A tone is followed by a puff of air to the eye. At first you blink only <i>after</i> the puff (the reflex). After many pairings you blink <i>before</i> it, timed to close the eye just as the puff arrives. Richard Thompson's lab traced this memory to the <b>cerebellum</b>: the tone arrives over <b>mossy fibers</b>, the puff over <b>climbing fibers</b> from the inferior olive, and the two converge on Purkinje cells and the deep <b>interpositus nucleus</b>.</p>
     <div class="stage">
       <div class="box">
@@ -264,6 +463,7 @@
   <section class="s alt" id="operant" data-title="Instrumental">
     <p class="kicker">Part 6</p>
     <h2 class="sec">Instrumental (operant) conditioning</h2>
+    <div class="plain"><span class="ptag">In plain words</span>Here the animal learns from what <b>its own actions</b> cause. Actions that get rewarded happen more. And the pattern of rewards matters: rewards that come unpredictably keep you going the longest, which is the trick behind slot machines and refreshing your feed for likes.</div>
     <p class="lede">In <b>instrumental conditioning</b>, an animal learns the link between its <i>own behavior</i> and a consequence. In a <b>Skinner box</b>, a rat learns that pressing a lever delivers a food pellet. How the rewards are scheduled shapes how it responds. Choose a schedule and watch the cumulative record (the steeper the line, the faster the pressing).</p>
     <div class="stage">
       <div class="box">
@@ -284,6 +484,7 @@
   <section class="s" id="synapses" data-title="Synaptic change">
     <p class="kicker">Part 7</p>
     <h2 class="sec">Memory storage requires physical changes at synapses</h2>
+    <div class="plain"><span class="ptag">In plain words</span>If learning is real, it has to leave a <b>physical mark</b> in the brain. Most of that mark is at synapses, the junctions between neurons. A synapse can get "louder" (send more chemical messenger, or listen better), get bigger, or a whole new synapse can grow.</div>
     <p class="lede">Charles Sherrington, who named the synapse, guessed in 1897 that changing synapses could be the basis of learning. There are several ways to make a synapse more effective, and some are <b>physiological</b> (how much is released, how sensitive the receiver is) while others are <b>structural</b> (bigger or brand-new synapses). Toggle between before and after training.</p>
     <div class="row" style="margin-bottom:12px"><button class="chip" id="synBefore" aria-pressed="true">Before training</button><button class="chip" id="synAfter" aria-pressed="false">After training</button><button class="btn" id="synPlay">Animate the change</button></div>
     <div class="box"><svg id="synSvg" viewBox="0 0 1200 560" role="img" aria-label="Six ways a synapse can change with learning"></svg></div>
@@ -294,6 +495,7 @@
   <section class="s alt" id="enrich" data-title="Enrichment">
     <p class="kicker">Part 8</p>
     <h2 class="sec">Varied experience makes the brain grow</h2>
+    <div class="plain"><span class="ptag">In plain words</span>Rats with friends, toys and new things to explore grew neurons with <b>more branches</b> than rats in a bare cage. Experience literally builds brain. (Good news for you: new challenges and variety are brain food.)</div>
     <p class="lede">In the 1960s, Mark Rosenzweig, Marian Diamond and colleagues raised rats in three kinds of housing: alone in a bare cage (<b>impoverished</b>, IC), in small groups (<b>standard</b>, SC), or in large groups with toys, ladders and wheels that changed daily (<b>enriched</b>, EC). Enriched rats had measurably different brains. Pick a condition.</p>
     <div class="row" style="margin-bottom:12px" id="ecBtns"></div>
     <div class="stage">
@@ -316,6 +518,7 @@
   <section class="s" id="hebb" data-title="Hebb">
     <p class="kicker">Part 9</p>
     <h2 class="sec">Hebb's rule: cells that fire together wire together</h2>
+    <div class="plain"><span class="ptag">In plain words</span><b>"Neurons that fire together wire together."</b> If two cells keep being active at the same moment, the connection between them gets stronger. That's how a bell can get linked to food, one synapse at a time.</div>
     <p class="lede"><b>Donald Hebb (1949)</b> proposed that when neuron A repeatedly helps make neuron B fire, the A→B synapse gets stronger. Synapses that don't contribute weaken. A memory could then be a pattern of strengthened connections. Below, a strong input (food) always fires the cell; a weak input (bell) cannot, at first.</p>
     <div class="stage">
       <div class="box"><svg id="hebbSvg" viewBox="0 0 640 330" role="img" aria-label="Two inputs onto one neuron"></svg>
@@ -334,6 +537,7 @@
   <section class="s alt" id="ltp" data-title="LTP">
     <p class="kicker">Part 10</p>
     <h2 class="sec">Long-term potentiation in the hippocampus</h2>
+    <div class="plain"><span class="ptag">In plain words</span>Scientists found Hebb's idea in real brain tissue. Give a pathway in the <b>hippocampus</b> a quick, strong burst of activity and that connection stays stronger for hours, days or longer. This lasting boost is called <b>long-term potentiation (LTP)</b>, and it's a top candidate for how memories get written.</div>
     <p class="lede">In 1973, <b>Bliss and Lømo</b> stimulated the perforant path in the hippocampus of anesthetized rabbits. A brief, high-frequency burst (a <b>tetanus</b>) made every later test pulse produce a bigger response, and the increase lasted for hours. This lasting strengthening is <b>long-term potentiation (LTP)</b>. Run the experiment on a hippocampal slice.</p>
     <div class="stage">
       <div class="box">
@@ -364,6 +568,7 @@
   <section class="s" id="nmda" data-title="NMDA & AMPA">
     <p class="kicker">Part 11</p>
     <h2 class="sec">NMDA and AMPA receptors team up in LTP</h2>
+    <div class="plain"><span class="ptag">In plain words</span>The receiving cell has two kinds of "doors" for the messenger <b>glutamate</b>. <b>AMPA</b> doors open whenever glutamate arrives. <b>NMDA</b> doors are pickier: they need glutamate <em>and</em> a cell that's already active. When both happen at once, calcium rushes in and tells the synapse to get stronger. It's "fire together, wire together" built into one molecule.</div>
     <p class="lede">At CA1 synapses, glutamate acts on two receptor types. <b>AMPA receptors</b> open whenever glutamate binds and let Na⁺ in, depolarizing the spine. <b>NMDA receptors</b> also bind glutamate, but at rest their channel is plugged by a <b>magnesium ion (Mg²⁺)</b>. Only when the spine is already depolarized does the Mg²⁺ get pushed out, letting <b>Ca²⁺</b> flood in. That makes the NMDA receptor a <b>coincidence detector</b>: Hebb's rule in one molecule. Set the two conditions.</p>
     <div class="stage">
       <div class="box">
@@ -387,6 +592,7 @@
   <section class="s alt" id="evidence" data-title="Review">
     <p class="kicker">Part 12</p>
     <h2 class="sec">Is LTP a mechanism of memory?</h2>
+    <div class="plain"><span class="ptag">In plain words</span>If LTP really is how memories get made, then blocking it should block learning. It does: rats whose NMDA receptors are blocked can't learn where a hidden platform is in a pool. Then test yourself with the quiz.</div>
     <p class="lede">LTP has the right properties: it forms fast, lasts long and occurs where memories form. The strongest test: block it and see if learning fails. In the <b>Morris water maze</b>, a rat swims in murky water to find a hidden platform using room cues. Compare a normal rat with one given APV, which blocks hippocampal NMDA receptors (Morris et al., 1986).</p>
     <div class="stage">
       <div class="box"><canvas id="wmCan" style="aspect-ratio:16/8" aria-label="Water maze swim paths and escape times"></canvas>
@@ -1087,6 +1293,96 @@ if(store.get('learnTheme')==='dark')setTheme(true);
 let prev=performance.now();
 function loop(now){const dt=Math.max(0,Math.min(.05,(now-prev)/1000));prev=now;frameHooks.forEach(f=>{try{f(dt)}catch(e){console.error(e&&e.stack||e)}});requestAnimationFrame(loop)}
 requestAnimationFrame(loop);
+})();
+</script>
+
+<script>
+/* Start-here demo: train a synapse */
+(()=>{
+'use strict';
+const $=id=>document.getElementById(id);
+const svg=$('bxSvg'); if(!svg) return;
+const NS='http://www.w3.org/2000/svg', INK='#231d3b';
+const reduce=matchMedia('(prefers-reduced-motion: reduce)').matches;
+const mk=(t,a,p)=>{const e=document.createElementNS(NS,t);for(const k in a)e.setAttribute(k,a[k]);(p||svg).appendChild(e);return e};
+const S0=.12, TH=.6;
+let s=S0, n=0, busy=false;
+
+// static parts
+const gA=mk('g',{});
+[[95,135,40,92],[95,135,24,58],[95,135,32,200],[95,135,26,238],[95,135,30,150]].forEach(([x,y,r,deg])=>{const a=deg*Math.PI/180;mk('path',{d:`M${x} ${y} L${x-Math.cos(a)*(r+38)} ${y-Math.sin(a)*(r+38)}`,stroke:INK,'stroke-width':6,'stroke-linecap':'round'},gA)});
+mk('path',{d:'M130 135 H372',stroke:INK,'stroke-width':10,'stroke-linecap':'round'},gA);
+mk('path',{d:'M130 135 H372',stroke:'#ffd27a','stroke-width':4,'stroke-linecap':'round'},gA);
+mk('circle',{cx:95,cy:135,r:40,fill:'#ffd27a',stroke:INK,'stroke-width':5},gA);
+mk('path',{d:'M562 135 H636',stroke:INK,'stroke-width':10,'stroke-linecap':'round'});
+const bAx=mk('path',{d:'M562 135 H636',stroke:'#a8e6d4','stroke-width':4,'stroke-linecap':'round'});
+mk('path',{d:'M470 135 H520',stroke:INK,'stroke-width':12,'stroke-linecap':'round'});
+mk('path',{d:'M470 135 H520',stroke:'#a8e6d4','stroke-width':6,'stroke-linecap':'round'});
+[[300,40],[250,46],[120,30],[70,36]].forEach(([deg,r])=>{const a=deg*Math.PI/180;mk('path',{d:`M530 135 L${530+Math.cos(a)*(r+40)} ${135+Math.sin(a)*(r+40)}`,stroke:INK,'stroke-width':6,'stroke-linecap':'round'})});
+const term=mk('circle',{cx:392,cy:135,r:18,fill:'#ffd27a',stroke:INK,'stroke-width':5});
+const spine=mk('ellipse',{cx:462,cy:135,rx:14,ry:24,fill:'#a8e6d4',stroke:INK,'stroke-width':5});
+const recG=mk('g',{});
+const burst=mk('g',{opacity:0});
+for(let i=0;i<10;i++){const a=i/10*Math.PI*2;mk('path',{d:`M${530+Math.cos(a)*50} ${135+Math.sin(a)*50} L${530+Math.cos(a)*66} ${135+Math.sin(a)*66}`,stroke:'#ffb627','stroke-width':6,'stroke-linecap':'round'},burst)}
+const bodyB=mk('circle',{cx:530,cy:135,r:40,fill:'#a8e6d4',stroke:INK,'stroke-width':5});
+const faceA=mk('g',{}), faceB=mk('g',{});
+function face(g,cx,cy,mood){g.innerHTML='';
+  if(mood==='sleepy'){mk('path',{d:`M${cx-17} ${cy-4} q6 5 12 0 M${cx+5} ${cy-4} q6 5 12 0`,stroke:INK,'stroke-width':4,fill:'none','stroke-linecap':'round'},g);mk('path',{d:`M${cx-6} ${cy+13} h12`,stroke:INK,'stroke-width':4,'stroke-linecap':'round'},g);}
+  else if(mood==='wow'){mk('ellipse',{cx:cx-11,cy:cy-5,rx:6,ry:8,fill:INK},g);mk('ellipse',{cx:cx+11,cy:cy-5,rx:6,ry:8,fill:INK},g);mk('ellipse',{cx,cy:cy+15,rx:7,ry:8,fill:INK},g);}
+  else {mk('ellipse',{cx:cx-11,cy:cy-5,rx:5,ry:7,fill:INK},g);mk('ellipse',{cx:cx+11,cy:cy-5,rx:5,ry:7,fill:INK},g);mk('path',{d:`M${cx-10} ${cy+9} q10 10 20 0`,stroke:INK,'stroke-width':4,fill:'none','stroke-linecap':'round'},g);}
+  mk('ellipse',{cx:cx-22,cy:cy+8,rx:6,ry:4,fill:'#ff7d9c',opacity:.6},g);mk('ellipse',{cx:cx+22,cy:cy+8,rx:6,ry:4,fill:'#ff7d9c',opacity:.6},g);}
+const txt=(x,y,t,anchor='middle',sz=15)=>{const e=mk('text',{x,y,'text-anchor':anchor,style:`font:700 ${sz}px var(--display,var(--sans));fill:#231d3b`});e.textContent=t;return e};
+txt(95,225,'Neuron A');txt(530,225,'Neuron B');
+txt(427,58,'synapse');mk('path',{d:'M427 66 L427 100',stroke:'#5d5875','stroke-width':2.5});
+mk('path',{d:'M420 92 L427 102 L434 92',fill:'none',stroke:'#5d5875','stroke-width':2.5,'stroke-linecap':'round','stroke-linejoin':'round'});
+const spike=mk('circle',{cx:130,cy:135,r:9,fill:'#ff6b6b',stroke:INK,'stroke-width':3,opacity:0});
+const outSpike=mk('circle',{cx:570,cy:135,r:9,fill:'#ff6b6b',stroke:INK,'stroke-width':3,opacity:0});
+const dotG=mk('g',{});
+const status=txt(320,258,'','middle',14);
+
+function draw(){
+  term.setAttribute('r',16+16*s);
+  spine.setAttribute('ry',20+16*s);spine.setAttribute('rx',12+5*s);
+  recG.innerHTML='';const nr=2+Math.round(7*s);const ry=20+16*s;
+  for(let i=0;i<nr;i++){const y=135-ry*.75+ (nr>1? i*(ry*1.5)/(nr-1):ry*.75);mk('rect',{x:446-5*s,y:y-4,width:8,height:8,rx:2,fill:'#4d8dff',stroke:INK,'stroke-width':1.8},recG)}
+  const pct=Math.round((s-S0)/(1-S0)*100);
+  $('bxBar').style.width=Math.max(4,s*100)+'%';
+  $('bxOut').textContent=s<.3?'weak':s<TH?'getting stronger':s<.85?'strong':'super strong';
+  $('bxN').textContent=n;
+}
+face(faceA,95,135,'happy');face(faceB,530,135,'sleepy');draw();
+
+function anim(dur,step){return new Promise(res=>{if(reduce){step(1);return res()}const t0=performance.now();const f=t=>{const k=Math.min(1,(t-t0)/dur);step(k);k<1?requestAnimationFrame(f):res()};requestAnimationFrame(f)})}
+
+async function practice(){
+  if(busy) return; busy=true; n++;
+  spike.setAttribute('opacity',1);
+  await anim(450,k=>spike.setAttribute('cx',130+k*(372-130)));
+  spike.setAttribute('opacity',0);
+  const nd=2+Math.round(9*s);dotG.innerHTML='';
+  const dots=[...Array(nd)].map((_,i)=>mk('circle',{cx:400,cy:135+(i-(nd-1)/2)*7,r:4.5,fill:'#ff6b6b'},dotG));
+  await anim(350,k=>dots.forEach((d,i)=>d.setAttribute('cx',392+16*s+k*(440-392-16*s)+((i%3)-1)*3)));
+  const fires = s>=TH;
+  if(fires){
+    face(faceB,530,135,'wow');burst.setAttribute('opacity',1);bodyB.setAttribute('fill','#ffd27a');outSpike.setAttribute('opacity',1);
+    await anim(400,k=>outSpike.setAttribute('cx',570+k*60));outSpike.setAttribute('opacity',0);
+  }
+  dotG.innerHTML='';
+  // Hebbian-ish growth: bigger jump when B actually fired
+  s = s + (1-s)*(fires?.14:.18);
+  draw();
+  const msgs = fires
+    ? (s>.85?'B fires every time now. This connection is <b>learned</b>: A reliably gets its message through. Real synapses can stay strong like this for days or longer.':'<b>B fired!</b> The synapse got strong enough: more messenger released and more receptors catching it. Notice the bigger terminal and extra blue receptors.')
+    : (n===1?'A sent a signal, but only a few messenger molecules made it across, and B barely noticed. Practice again.':'The synapse is growing: a bigger terminal on the sending side, more receptors (blue) on the receiving side. Keep going.');
+  $('bxNote').innerHTML=msgs;
+  status.textContent=fires?'B fired!':'B didn’t fire';
+  setTimeout(()=>{burst.setAttribute('opacity',0);bodyB.setAttribute('fill','#a8e6d4');face(faceB,530,135,s>=TH?'happy':'sleepy');status.textContent=''},reduce?600:700);
+  busy=false;
+}
+$('bxGo').onclick=practice;
+$('bxRest').onclick=()=>{if(busy)return;s=Math.max(S0,s-(s-S0)*.45);draw();face(faceB,530,135,s>=TH?'happy':'sleepy');
+  $('bxNote').innerHTML='A week with no practice and the connection <b>weakened</b>. Use it or lose it: unused connections fade, which is one reason we forget. Practice again and see how quickly it comes back.'};
+$('bxReset').onclick=()=>{if(busy)return;s=S0;n=0;draw();face(faceB,530,135,'sleepy');$('bxNote').innerHTML='Press <b>Practice!</b> to send a signal from A to B.'};
 })();
 </script>
 </body>
