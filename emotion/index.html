@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>The Emotional Brain</title>
 <link rel="icon" href="data:,">
-<meta name="description" content="An interactive tour of the neuroscience of emotion: the autonomic nervous system, James–Lange vs. Cannon–Bard vs. Schachter, the facial feedback hypothesis and Botox, the reward circuit, the limbic system, the amygdala's low and high roads, fear conditioning, aggression, and the HPA stress axis.">
+<meta name="description" content="An interactive tour of the neuroscience of emotion: the autonomic nervous system, James–Lange vs. Cannon–Bard vs. Schachter, the facial feedback hypothesis and Botox, the reward circuit, the limbic system, the amygdala's low and high roads, aggression, and the HPA stress axis.">
 <style>
   :root{
     --serif:"Iowan Old Style","Palatino Linotype",Palatino,"Book Antiqua",Georgia,"Times New Roman",serif;
@@ -331,22 +331,11 @@
         <div class="mlab"><span>Amygdala activity</span><b id="frAmy">calm</b></div><div class="meter"><i id="frAmyBar"></i></div>
         <div class="mlab"><span>Heart rate</span><b id="frHR">70 bpm</b></div><div class="meter blue"><i id="frHRBar" style="width:20%"></i></div>
         <div class="callout" id="frNote">Press a button to start the race.</div>
-      </div>
-    </div>
-
-    <h3 style="margin-top:46px">Fear conditioning: learning what to fear</h3>
-    <p class="lede">Pair a harmless tone with a mild shock, and soon the tone alone makes a rat freeze and its heart race. The association forms in the amygdala. Play tones, pair them with shocks, then try extinction (tones with no shock). Then remove the amygdala and try again.</p>
-    <div class="stage">
-      <div class="box"><canvas id="fcCan" style="aspect-ratio:16/8" aria-label="Freezing to the tone on each trial"></canvas>
-        <div class="row" style="margin-top:8px"><button class="btn" id="fcTone">Tone alone</button><button class="btn primary" id="fcPair">Tone + shock</button><button class="btn" id="fcExt">Extinction ×5</button><button class="btn" id="fcReset">Reset</button><button class="chip" id="fcLes" aria-pressed="false">Amygdala lesion</button></div>
-      </div>
-      <div class="box">
-        <div class="mlab"><span>Freezing to the tone</span><b id="fcOut">0%</b></div><div class="meter"><i id="fcBar"></i></div>
-        <div class="callout" id="fcNote">Start with "Tone alone": the tone means nothing yet, so the rat ignores it.</div>
         <div class="callout blue"><b>Patient S.M.</b> lost both amygdalas to a rare disease. She shows no fear of snakes, spiders, haunted houses or dangerous people, and she cannot recognize fear in other people's faces. In people with temporal lobe epilepsy, seizures that spread into the amygdala often begin with a wave of intense fear.</div>
       </div>
     </div>
-    <p class="note"><b>Clinical link (Ch. 12):</b> in PTSD, reminders of the trauma keep triggering the amygdala, like fear conditioning that won't extinguish. Benzodiazepines boost GABA-A receptors, which are dense in the amygdala. Extinction does not erase the original memory; it adds a new "safe" memory that depends on the prefrontal cortex, which is why fear can come back.</p>
+
+    <p class="note"><b>Clinical link (Ch. 12):</b> in PTSD, reminders of the trauma keep triggering the amygdala, and the prefrontal cortex has trouble calming it down. Benzodiazepines boost GABA-A receptors, which are dense in the amygdala.</p>
   </section>
 
   <!-- =================== 9 NETWORK =================== -->
@@ -442,7 +431,7 @@
           <li>Sympathetic vs. parasympathetic</li>
           <li>James–Lange vs. Cannon–Bard vs. Schachter, and the facial feedback evidence</li>
           <li>Reward circuit: medial forebrain bundle, nucleus accumbens, dopamine</li>
-          <li>Amygdala, fear conditioning, low road vs. high road</li>
+          <li>Amygdala, low road vs. high road</li>
           <li>Testosterone and serotonin in aggression</li>
           <li>Adrenal medulla vs. HPA stress pathways; acute vs. chronic stress; epigenetics</li>
         </ul>
@@ -567,13 +556,16 @@ addEventListener('keydown',e=>{const typing=/INPUT|TEXTAREA|SELECT/.test(documen
   const svg=$('ansSvg');
   svg.innerHTML=`
   <g id="ansFig">
-    <circle cx="190" cy="70" r="46" class="tissue"/>
-    <g><ellipse cx="172" cy="64" rx="11" ry="8" fill="var(--panel)" stroke="var(--tissueLine)"/><circle id="pupL" cx="172" cy="64" r="4" fill="var(--ink)"/>
-       <ellipse cx="208" cy="64" rx="11" ry="8" fill="var(--panel)" stroke="var(--tissueLine)"/><circle id="pupR" cx="208" cy="64" r="4" fill="var(--ink)"/></g>
-    <path id="mouthA" d="M176,94 Q190,98 204,94" stroke="var(--ink)" stroke-width="2.5" fill="none" stroke-linecap="round"/>
-    <g id="sweat" fill="var(--cool)"><path d="M236,52 q5,9 0,12 q-5,-3 0,-12z"/><path d="M146,80 q5,9 0,12 q-5,-3 0,-12z"/></g>
-    <rect x="176" y="114" width="28" height="18" class="tissue"/>
-    <path d="M110,140 Q190,124 270,140 L262,330 Q190,346 118,330Z" class="tissue"/>
+    <circle cx="140" cy="74" r="9" fill="#ffdcbf" stroke="#e9b48c" stroke-width="2"/><circle cx="240" cy="74" r="9" fill="#ffdcbf" stroke="#e9b48c" stroke-width="2"/>
+    <rect x="178" y="110" width="24" height="22" rx="6" fill="#ffdcbf" stroke="#e9b48c" stroke-width="2"/>
+    <circle cx="190" cy="70" r="50" fill="#ffdcbf" stroke="#e9b48c" stroke-width="2.5"/>
+    <path d="M141,66 C138,34 160,18 190,18 C222,18 244,36 239,66 C230,48 214,40 200,44 C190,34 168,34 160,46 C152,50 145,56 141,66Z" fill="#6b4636"/>
+    <ellipse cx="164" cy="88" rx="9" ry="5.5" fill="#ff9fb2" opacity=".75"/><ellipse cx="216" cy="88" rx="9" ry="5.5" fill="#ff9fb2" opacity=".75"/>
+    <g><ellipse cx="174" cy="70" rx="9.5" ry="11" fill="#fff" stroke="#e9b48c" stroke-width="1.5"/><circle id="pupL" cx="174" cy="71" r="4" fill="#3b2a2a"/><circle cx="176.5" cy="67.5" r="2" fill="#fff"/>
+       <ellipse cx="206" cy="70" rx="9.5" ry="11" fill="#fff" stroke="#e9b48c" stroke-width="1.5"/><circle id="pupR" cx="206" cy="71" r="4" fill="#3b2a2a"/><circle cx="208.5" cy="67.5" r="2" fill="#fff"/></g>
+    <path id="mouthA" d="M182,94 Q190,101 198,94" stroke="#3b2a2a" stroke-width="3" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+    <g id="sweat" fill="#6fb3e8"><path d="M242,40 q6,10 0,14 q-6,-4 0,-14z"/><path d="M136,46 q5,9 0,12 q-5,-3 0,-12z"/></g>
+    <path d="M120,142 Q120,130 136,128 L178,126 Q190,134 202,126 L244,128 Q260,130 260,142 L256,318 Q256,336 236,338 L144,338 Q124,336 124,318Z" class="tissue"/>
     <rect x="186" y="132" width="8" height="200" fill="var(--tissue2)" stroke="var(--tissueLine)"/>
     <g id="lungs"><ellipse cx="158" cy="190" rx="28" ry="42" fill="#e9a6a6" opacity=".8"/><ellipse cx="222" cy="190" rx="28" ry="42" fill="#e9a6a6" opacity=".8"/></g>
     <path id="heart" d="M0,6 C-10,-6 -22,4 0,20 C22,4 10,-6 0,6Z" fill="var(--accent)" transform="translate(200,206) scale(1.4)"/>
@@ -585,14 +577,14 @@ addEventListener('keydown',e=>{const typing=/INPUT|TEXTAREA|SELECT/.test(documen
     <text x="300" y="212" class="svgt" id="tHeart"></text>
     <text x="300" y="290" class="svgt" id="tGut"></text>
     <text x="300" y="80" class="svgm" id="tSweat"></text>
-    <line x1="230" y1="64" x2="294" y2="56" class="lead"/><line x1="252" y1="170" x2="294" y2="146" class="lead"/><line x1="222" y1="212" x2="294" y2="208" class="lead"/><line x1="240" y1="284" x2="294" y2="286" class="lead"/>
+    <line x1="218" y1="66" x2="294" y2="56" class="lead"/><line x1="252" y1="170" x2="294" y2="146" class="lead"/><line x1="222" y1="212" x2="294" y2="208" class="lead"/><line x1="240" y1="284" x2="294" y2="286" class="lead"/>
     <text x="110" y="380" class="svgm" id="tOrigin"></text>
     <text x="110" y="400" class="svgm" id="tOrigin2"></text>
   </g>`;
-  const S={sym:{hr:120,br:22,pup:6.2,gut:0,sweat:1,mouth:'M176,96 Q190,92 204,96',
+  const S={sym:{hr:120,br:22,pup:6.6,gut:0,sweat:1,mouth:'M181,96 Q184.5,91 188,96 Q191.5,101 195,96 Q197,93 199,95',
       kv:[['Heart rate','up (about 120 bpm here)'],['Breathing','faster, airways open'],['Pupils','dilate to let in light'],['Digestion','paused, blood sent to muscles'],['Sweating','on'],['Energy','glucose released for muscles']],
       note:'<b>Fight or flight.</b> Neurons from the thoracic and lumbar spinal cord, plus epinephrine from the adrenal glands, get you ready to act.',o1:'Sympathetic neurons leave the spinal cord',o2:'from its middle (thoracic and lumbar) segments'},
-    para:{hr:64,br:12,pup:3,gut:1,sweat:0,mouth:'M176,94 Q190,99 204,94',
+    para:{hr:64,br:12,pup:3,gut:1,sweat:0,mouth:'M180,93 Q190,104 200,93',
       kv:[['Heart rate','down (about 64 bpm here)'],['Breathing','slow and deep'],['Pupils','constrict'],['Digestion','resumes, saliva flows'],['Sweating','off'],['Energy','stored for later']],
       note:'<b>Rest and digest.</b> Mostly carried by the <b>vagus nerve</b> (cranial nerve X) from the brainstem. It brings the body back down after the emergency.',o1:'Parasympathetic neurons leave the brainstem (vagus)',o2:'and the bottom (sacral) spinal cord'}};
   let mode='sym',cur={...S.sym};
@@ -649,15 +641,17 @@ addEventListener('keydown',e=>{const typing=/INPUT|TEXTAREA|SELECT/.test(documen
 /* ================= 3 FACE ================= */
 (()=>{
   const svg=$('faceSvg');
-  svg.innerHTML=`<ellipse cx="160" cy="150" rx="105" ry="125" class="tissue"/>
-   <path id="browL" stroke="var(--ink)" stroke-width="6" stroke-linecap="round" fill="none"/>
-   <path id="browR" stroke="var(--ink)" stroke-width="6" stroke-linecap="round" fill="none"/>
-   <ellipse id="corr" cx="160" cy="98" rx="30" ry="9" fill="var(--accent2)" opacity="0"/>
-   <ellipse cx="122" cy="122" rx="14" ry="9" fill="var(--panel)" stroke="var(--tissueLine)"/><circle cx="122" cy="122" r="5" fill="var(--ink)"/>
-   <ellipse cx="198" cy="122" rx="14" ry="9" fill="var(--panel)" stroke="var(--tissueLine)"/><circle cx="198" cy="122" r="5" fill="var(--ink)"/>
-   <path d="M160,130 L152,175 L166,176" stroke="var(--tissueLine)" stroke-width="2" fill="none"/>
-   <ellipse id="zygL" cx="108" cy="190" rx="16" ry="10" fill="var(--accent)" opacity="0"/><ellipse id="zygR" cx="212" cy="190" rx="16" ry="10" fill="var(--accent)" opacity="0"/>
-   <path id="mouth" stroke="var(--ink)" stroke-width="5" stroke-linecap="round" fill="none"/>
+  svg.innerHTML=`<circle cx="44" cy="156" r="20" fill="#ffdcbf" stroke="#e9b48c" stroke-width="3"/><circle cx="276" cy="156" r="20" fill="#ffdcbf" stroke="#e9b48c" stroke-width="3"/>
+   <circle cx="160" cy="152" r="118" fill="#ffdcbf" stroke="#e9b48c" stroke-width="3.5"/>
+   <path d="M46,128 C40,60 90,26 160,26 C232,26 282,62 274,128 C262,92 236,74 206,80 C188,62 150,60 130,74 C98,72 64,90 46,128Z" fill="#6b4636"/>
+   <ellipse id="corr" cx="160" cy="104" rx="26" ry="9" fill="var(--accent2)" opacity="0"/>
+   <path id="browL" stroke="#6b4636" stroke-width="7" stroke-linecap="round" fill="none"/>
+   <path id="browR" stroke="#6b4636" stroke-width="7" stroke-linecap="round" fill="none"/>
+   <ellipse cx="122" cy="138" rx="12" ry="15" fill="#3b2a2a"/><circle cx="126.5" cy="132" r="4.5" fill="#fff"/><circle cx="118" cy="144" r="2" fill="#fff" opacity=".8"/>
+   <ellipse cx="198" cy="138" rx="12" ry="15" fill="#3b2a2a"/><circle cx="202.5" cy="132" r="4.5" fill="#fff"/><circle cx="194" cy="144" r="2" fill="#fff" opacity=".8"/>
+   <path d="M152,172 Q160,180 168,172" stroke="#e9b48c" stroke-width="3.5" fill="none" stroke-linecap="round"/>
+   <ellipse id="zygL" cx="92" cy="184" rx="20" ry="12" fill="#ff9fb2" opacity=".5"/><ellipse id="zygR" cx="228" cy="184" rx="20" ry="12" fill="#ff9fb2" opacity=".5"/>
+   <path id="mouth" stroke="#3b2a2a" stroke-width="6" stroke-linecap="round" fill="none"/>
    <g id="pen" opacity="0"><rect x="70" y="0" width="190" height="10" rx="4" fill="#e3b505" stroke="#8a6d00"/><path d="M260,0 L280,5 L260,10z" fill="#5a4a33"/></g>
    <text id="boxLab" x="160" y="292" text-anchor="middle" class="svgm"></text>`;
   const loop=$('loopSvg');
@@ -679,11 +673,11 @@ addEventListener('keydown',e=>{const typing=/INPUT|TEXTAREA|SELECT/.test(documen
     if(pen==='lips'){e=-.35;label='Pen in lips: no smile possible, a slight pout';}
     let browDown=Math.max(0,-e);if(botox)browDown*=.12;
     const mouthE=e;
-    $('browL').setAttribute('d',`M98,${100-8*Math.max(0,e)} Q120,${92-6*e} 142,${98+16*browDown}`);
-    $('browR').setAttribute('d',`M178,${98+16*browDown} Q200,${92-6*e} 222,${100-8*Math.max(0,e)}`);
+    $('browL').setAttribute('d',`M104,${108-6*Math.max(0,e)} Q122,${100-6*e} 140,${106+14*browDown}`);
+    $('browR').setAttribute('d',`M180,${106+14*browDown} Q198,${100-6*e} 216,${108-6*Math.max(0,e)}`);
     $('corr').setAttribute('opacity',botox?0.55:0);
-    const zy=Math.max(0,mouthE);$('zygL').setAttribute('opacity',zy*.6);$('zygR').setAttribute('opacity',zy*.6);
-    $('mouth').setAttribute('d',`M${118-10*zy},${214-12*zy} Q160,${214+48*mouthE} ${202+10*zy},${214-12*zy}`);
+    const zy=Math.max(0,mouthE);$('zygL').setAttribute('opacity',.45+zy*.45);$('zygR').setAttribute('opacity',.45+zy*.45);
+    $('mouth').setAttribute('d',`M${130-8*zy},${208-8*zy} Q160,${208+40*mouthE} ${190+8*zy},${208-8*zy}`);
     $('pen').setAttribute('opacity',pen?1:0);$('pen').setAttribute('transform',`translate(0,${pen==='teeth'?206:210})`);
     $('boxLab').textContent=botox?'Botox: frown muscle (corrugator) cannot contract':label;
     // feeling: small effect of facial feedback; negative part blunted by botox
@@ -857,26 +851,6 @@ addEventListener('keydown',e=>{const typing=/INPUT|TEXTAREA|SELECT/.test(documen
     $('frHR').textContent=Math.round(run.hr)+' bpm';$('frHRBar').style.width=clamp((run.hr-50)/90*100,0,100)+'%';
     if(t>7)run=null;});
 
-  // fear conditioning
-  let V=0,trials=[],lesion=false;
-  const c=$('fcCan');
-  function trial(shock){const out=lesion?0.05+Math.random()*.04:V;trials.push({f:out,shock});if(trials.length>30)trials.shift();
-    if(!lesion){const lam=shock?1:0;V+= (shock?.35:.18)*(lam-V);}
-    $('fcBar').style.width=(out*100)+'%';$('fcOut').textContent=Math.round(out*100)+'%';
-    let n;
-    if(lesion)n='<b>No amygdala, no learning.</b> The rat still flinches at the shock itself, but never learns to fear the tone.';
-    else if(shock)n=V>.8?'<b>Fully conditioned.</b> The tone alone now predicts the shock. Try "Tone alone" to see the learned fear.':'<b>Pairing.</b> The amygdala links the tone (conditioned stimulus) with the shock (unconditioned stimulus).';
-    else n=V>.6?'<b>Tone alone: freezing!</b> The tone now triggers fear by itself. Keep playing tones with no shock to extinguish it.':V>.15?'<b>Extinction in progress.</b> Each tone without a shock weakens the fear response.':'<b>The tone means nothing</b> (yet). Pair it with shocks to condition fear.';
-    $('fcNote').innerHTML=n;draw();}
-  function draw(){const{x,w,h}=fitCanvas(c);x.clearRect(0,0,w,h);const m=34,bw=(w-m-10)/30;x.strokeStyle=cssv('--line');x.beginPath();x.moveTo(m,8);x.lineTo(m,h-24);x.lineTo(w-4,h-24);x.stroke();
-    x.fillStyle=cssv('--muted');x.font='12px system-ui';x.fillText('100%',2,14);x.fillText('0',20,h-26);x.fillText('trials →',w-56,h-6);
-    trials.forEach((tr,i)=>{const bh=tr.f*(h-36);x.fillStyle=tr.shock?cssv('--accent'):cssv('--accent2');x.beginPath();x.roundRect?x.roundRect(m+4+i*bw,h-24-bh,bw-3,bh,[3,3,0,0]):x.rect(m+4+i*bw,h-24-bh,bw-3,bh);x.fill();});
-    x.fillStyle=cssv('--accent');x.fillRect(w-150,8,10,10);x.fillStyle=cssv('--muted');x.fillText('tone + shock',w-136,17);x.fillStyle=cssv('--accent2');x.fillRect(w-150,24,10,10);x.fillStyle=cssv('--muted');x.fillText('tone alone',w-136,33);}
-  $('fcTone').onclick=()=>trial(false);$('fcPair').onclick=()=>trial(true);
-  $('fcExt').onclick=()=>{for(let i=0;i<5;i++)trial(false)};
-  $('fcReset').onclick=()=>{V=0;trials=[];$('fcBar').style.width='0';$('fcOut').textContent='0%';$('fcNote').innerHTML='Start with "Tone alone": the tone means nothing yet, so the rat ignores it.';draw();};
-  $('fcLes').onclick=()=>{lesion=!lesion;$('fcLes').setAttribute('aria-pressed',lesion);V=0;trials=[];draw();$('fcNote').innerHTML=lesion?'Amygdala removed. Now try pairing the tone with shocks.':'Amygdala restored. Learning starts over.';};
-  redrawHooks.push(draw);draw();
 })();
 
 /* ================= 9 NETWORK ================= */
