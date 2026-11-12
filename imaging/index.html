@@ -360,7 +360,7 @@
     <h2 class="sec">Transcranial magnetic stimulation (TMS)</h2>
     <p class="lede">Imaging shows which areas are active, but not whether they are <b>needed</b>. TMS can test that. A figure-8 coil held against the head sends a brief, strong magnetic pulse that passes through the skull and induces an electric current in the cortex beneath, making neurons fire or briefly disrupting what they were doing. Drag the coil, then fire a pulse.</p>
     <div class="stage">
-      <div class="box"><svg id="tmsSvg" viewBox="0 -110 760 590" role="img" aria-label="A head with a TMS coil you can drag" style="touch-action:none"></svg>
+      <div class="box"><svg id="tmsSvg" viewBox="0 -150 760 730" role="img" aria-label="A head with a TMS coil you can drag" style="touch-action:none"></svg>
         <div class="row"><button class="btn primary" id="tmsFire">Fire a pulse</button><span class="hint">Drag the coil over the head. Try the hand area of motor cortex, the back of the head, and low on the left frontal lobe.</span></div>
       </div>
       <div class="box">
@@ -984,44 +984,70 @@ function heat(I){ // black-blue-cyan-green-yellow-red-white
 
 /* ================= 9 TMS ================= */
 (()=>{
-  const svg=$('tmsSvg');const BX=40,BY=40,BS=0.86;
-  const HEAD='M70,250 C52,140 130,24 300,16 C470,8 590,90 612,210 C628,290 606,350 572,392 L566,478 L330,478 C300,452 236,440 190,430 C150,422 112,410 100,392 C92,380 96,368 92,358 C86,352 72,350 72,340 C72,332 80,328 76,320 C66,316 54,312 56,300 C58,290 68,280 70,250Z';
-  const T=[{k:'motor',n:'Motor cortex (hand area)',x:296,y:104,r:38},{k:'vis',n:'Visual cortex',x:536,y:222,r:42},{k:'broca',n:'Broca\'s area (left inferior frontal)',x:214,y:214,r:36}];
-  // skull = the brain outline drawn a bit larger, in the brain's own coordinates
-  const skull=`<g transform="translate(${BX},${BY}) scale(${BS})"><g transform="translate(320,200) scale(1.075,1.09) translate(-320,-196)"><path d="${BR_OUT}" fill="var(--skull)" stroke="var(--skullLine)" stroke-width="2"/></g>
-     <g transform="translate(320,200) scale(1.03,1.035) translate(-320,-198)"><path d="${BR_OUT}" fill="#cfe3ef" opacity=".55"/></g></g>`;
-  svg.innerHTML=`<defs><radialGradient id="tmsGlow"><stop offset="0" stop-color="#ffffff" stop-opacity=".95"/><stop offset=".35" stop-color="#9fd0ff" stop-opacity=".85"/><stop offset=".7" stop-color="#4f86ff" stop-opacity=".45"/><stop offset="1" stop-color="#4f86ff" stop-opacity="0"/></radialGradient>
-     <linearGradient id="coilG" x1="0" x2="0" y1="0" y2="1"><stop offset="0" stop-color="#a99bc4"/><stop offset="1" stop-color="#6c5f86"/></linearGradient>
-     <linearGradient id="handleG" x1="0" x2="1"><stop offset="0" stop-color="#9c90b5"/><stop offset=".5" stop-color="#d5cde6"/><stop offset="1" stop-color="#8a7da6"/></linearGradient></defs>
-    <path d="${HEAD}" fill="var(--headC)" stroke="var(--headLine)" stroke-width="2"/>
-    <path d="M384,392 C386,420 388,450 390,478 L414,478 C412,450 412,420 414,392Z" fill="var(--br2)" stroke="var(--brEdge)" stroke-width="1.5"/>
-    ${skull}
-    <g transform="translate(${BX},${BY}) scale(${BS})" id="tmsBrain">${brainSVG()}</g>
-    <path d="M104,300 C114,306 128,306 138,300" stroke="var(--headLine)" stroke-width="2.5" fill="none" stroke-linecap="round"/>
-    <circle id="tmsSpot" r="54" fill="url(#tmsGlow)" opacity="0"/>
-    <g class="svgm" style="font-size:13px"><text x="640" y="70">Skull</text><line x1="636" y1="66" x2="566" y2="112" class="lead"/><text x="640" y="150">Brain</text><line x1="636" y1="146" x2="540" y2="170" class="lead"/></g>
+  const svg=$('tmsSvg');const BS=0.6,BX=210-72*BS,BY=52;const HC=[380,175]; // head centre (aim point)
+  const T=[{k:'motor',n:'Motor cortex (hand area)',x:296,y:104,r:46},{k:'vis',n:'Visual cortex',x:536,y:222,r:48},{k:'broca',n:'Broca\'s area (left inferior frontal)',x:214,y:214,r:42}];
+  const HEAD='M380,30 C506,30 594,120 588,236 C584,304 556,350 522,380 L518,446 C588,466 690,500 748,560 L12,560 C70,500 170,468 244,450 L246,418 C226,416 212,410 210,398 C208,388 212,382 206,376 C198,372 194,364 200,356 C192,350 190,344 196,338 C182,334 156,320 158,306 C160,294 184,288 186,274 C188,250 182,234 186,212 C192,116 270,30 380,30Z';
+  const flatBrain=`<g transform="translate(${BX},${BY}) scale(${BS})">
+      <path d="M382,318 C388,350 395,382 398,414 L436,414 C430,382 426,350 430,316Z" fill="#e8998a"/>
+      <ellipse cx="468" cy="332" rx="72" ry="42" fill="#eda394"/>
+      <g fill="none" stroke="#d98676" stroke-width="2.4">${Array.from({length:6},(_,i)=>`<path d="M404,${314+i*8} Q468,${302+i*8} 534,${314+i*8}"/>`).join('')}</g>
+      <path d="${BR_OUT}" fill="#f2b0a2" stroke="#e08f7f" stroke-width="5"/>
+      <g fill="none" stroke="#e39686" stroke-linecap="round"><g stroke-width="2.4" opacity=".6">${BR_MINOR.map(d=>`<path d="${d}"/>`).join('')}</g><g stroke-width="4">${SULCI_MAJOR.map(d=>`<path d="${d}"/>`).join('')}</g></g>
+    </g>`;
+  const donut=(x)=>`<g transform="translate(${x},0)"><circle r="56" fill="#33363d"/><circle r="56" fill="url(#coilHatch)"/><circle r="16" fill="#f2b0a2" opacity=".9"/><circle r="16" fill="none" stroke="#1f2126" stroke-width="3"/></g>`;
+  svg.innerHTML=`<defs>
+      <pattern id="coilHatch" width="9" height="9" patternUnits="userSpaceOnUse" patternTransform="rotate(45)"><line x1="0" y1="0" x2="0" y2="9" stroke="#4a4e57" stroke-width="2"/></pattern>
+      <marker id="tmsArW" viewBox="0 0 10 10" refX="7" refY="5" markerWidth="6" markerHeight="6" orient="auto"><path d="M0,0 L10,5 L0,10z" fill="#fff"/></marker>
+      <marker id="tmsArG" viewBox="0 0 10 10" refX="7" refY="5" markerWidth="6" markerHeight="6" orient="auto"><path d="M0,0 L10,5 L0,10z" fill="#3ee05a"/></marker>
+      <clipPath id="tmsInset"><circle cx="672" cy="474" r="64"/></clipPath>
+    </defs>
+    <rect x="0" y="-150" width="760" height="730" rx="14" fill="#4b5570"/>
+    <path d="${HEAD}" fill="#f4cfa0"/>
+    <path d="M246,420 C300,428 360,430 400,420 L404,446 C360,452 300,452 246,446Z" fill="#ebbd8c" opacity=".6"/>
+    <path d="M200,330 C230,320 252,322 268,330" fill="none" stroke="#e5b07f" stroke-width="3" opacity=".7"/>
+    <path d="M174,262 C182,258 194,258 200,262" fill="none" stroke="#9c6b4c" stroke-width="3" stroke-linecap="round"/>
+    ${flatBrain}
+    <g id="indCur" opacity="0"><path d="M-30,-6 A32,22 0 1 1 -18,16" fill="none" stroke="#3ee05a" stroke-width="5" marker-end="url(#tmsArG)"/></g>
     <g id="coil" style="cursor:grab">
-      <rect x="-9" y="-160" width="18" height="118" rx="8" fill="url(#handleG)" stroke="#6c5f86" stroke-width="1.5"/>
-      <rect x="-62" y="-46" width="124" height="22" rx="11" fill="url(#coilG)" stroke="#5a4e72" stroke-width="2"/>
-      <ellipse cx="0" cy="-46" rx="62" ry="10" fill="#c7bddb" stroke="#5a4e72" stroke-width="2"/>
-      <ellipse cx="0" cy="-46" rx="20" ry="4" fill="#8f82ab"/>
-      <path id="field" d="M-56,-14 Q0,26 56,-14" fill="none" stroke="#7ab8ff" stroke-width="3" stroke-dasharray="5 5" opacity="0"/>
+      <g id="field" fill="none" stroke="#ffe14a" stroke-width="2" stroke-dasharray="7 6" opacity=".45">
+        <ellipse cx="-50" cy="0" rx="86" ry="74"/><ellipse cx="-50" cy="0" rx="118" ry="102"/><ellipse cx="50" cy="0" rx="86" ry="74"/><ellipse cx="50" cy="0" rx="118" ry="102"/></g>
+      <path d="M40,-40 L96,-112 C104,-122 118,-126 132,-126 L176,-126" fill="none" stroke="#2a2c31" stroke-width="12" stroke-linecap="round"/>
+      <rect x="172" y="-142" width="32" height="32" rx="4" fill="#2f74d0"/>
+      <path d="M20,-30 L74,-104 L100,-86 L48,-12Z" fill="#2a2c31"/>
+      ${donut(-50)}${donut(50)}
+      <path d="M-58,-34 A34,34 0 0 1 -18,-12" fill="none" stroke="#fff" stroke-width="3" marker-end="url(#tmsArW)"/>
+      <path d="M58,34 A34,34 0 0 1 18,12" fill="none" stroke="#fff" stroke-width="3" marker-end="url(#tmsArW)"/>
     </g>
-    <g id="handG" transform="translate(690,400)"></g><g id="phos"></g><g id="speech"></g>`;
-  let cx=292,cy=46;const coil=$('coil');
-  function place(){const ang=Math.atan2(cy-250,cx-335)*180/Math.PI+90;coil.setAttribute('transform',`translate(${cx},${cy}) rotate(${(ang*0.6).toFixed(1)})`);const tgt=target();$('tmsName').textContent='Coil over: '+(tgt?tgt.n:'scalp (no specific target)');}
-  function aim(){const dx=335-cx,dy=250-cy,L=Math.hypot(dx,dy)||1,d=Math.min(70,L*0.6);return[cx+dx/L*d,cy+dy/L*d]}
+    <g fill="#fff" style="font:600 17px var(--sans)">
+      <text x="22" y="-70">Magnetic field</text><text x="22" y="132">Induced current</text><text x="22" y="152" style="font-size:13px;font-weight:500">(in the cortex)</text><text x="22" y="300">Brain</text>
+      <text x="738" y="-70" text-anchor="end">TMS coil</text><text x="738" y="10" text-anchor="end">Electric current</text><text x="738" y="30" text-anchor="end" style="font-size:13px;font-weight:500">(in the coil)</text>
+    </g>
+    <g stroke="#fff" stroke-width="2" fill="#fff"><line id="lnMag" x1="152" y1="-76"/><line id="lnInd" x1="168" y1="138"/><line x1="72" y1="294" x2="250" y2="190"/><circle cx="250" cy="190" r="4"/>
+      <line id="lnCoil" x1="640" y1="-76"/><line id="lnElec" x1="600" y1="4"/><circle id="dMag" r="4"/><circle id="dInd" r="4"/><circle id="dCoil" r="4"/><circle id="dElec" r="4"/></g>
+    <circle cx="672" cy="474" r="68" fill="#e9ecf2" stroke="#2fb6c8" stroke-width="5"/>
+    <g clip-path="url(#tmsInset)"><g id="handG" transform="translate(672,494) scale(.95)"></g></g>
+    <text x="672" y="562" text-anchor="middle" fill="#fff" style="font:500 13px var(--sans)" id="insetLab">right hand</text>
+    <circle id="tmsSpot" r="0" fill="none"/>
+    <g id="phos"></g><g id="speech"></g>`;
+  let cx=340,cy=44;const coil=$('coil');
+  function aim(){const dx=HC[0]-cx,dy=HC[1]-cy,L=Math.hypot(dx,dy)||1,d=Math.min(70,L*0.6);return[cx+dx/L*d,cy+dy/L*d]}
   function brainPt(){const[ax,ay]=aim();return[(ax-BX)/BS,(ay-BY)/BS]}
   function target(){const[bx,by]=brainPt();return T.find(t=>Math.hypot(bx-t.x,by-t.y)<t.r)}
+  function place(){const ang=Math.atan2(cy-HC[1],cx-HC[0])*180/Math.PI+90;coil.setAttribute('transform',`translate(${cx},${cy}) rotate(${(ang*0.8).toFixed(1)})`);
+    const[ax,ay]=aim();const set=(id,x2,y2,dot)=>{$(id).setAttribute('x2',x2);$(id).setAttribute('y2',y2);$(dot).setAttribute('cx',x2);$(dot).setAttribute('cy',y2);};
+    const th=ang*0.8*Math.PI/180,rot=(px,py)=>[cx+px*Math.cos(th)-py*Math.sin(th),cy+px*Math.sin(th)+py*Math.cos(th)];
+    set('lnMag',...rot(-150,-30),'dMag');set('lnCoil',...rot(50,40),'dCoil');set('lnElec',...rot(30,22),'dElec');set('lnInd',ax-34,ay,'dInd');
+    $('indCur').setAttribute('transform',`translate(${ax},${ay})`);
+    const tgt=target();$('tmsName').textContent='Coil over: '+(tgt?tgt.n:'scalp (no specific target)');}
   let drag=false;
   function toSvg(e){const p=svg.createSVGPoint();p.x=e.clientX;p.y=e.clientY;return p.matrixTransform(svg.getScreenCTM().inverse())}
   coil.addEventListener('pointerdown',e=>{drag=true;coil.setPointerCapture(e.pointerId);coil.style.cursor='grabbing'});
-  coil.addEventListener('pointermove',e=>{if(!drag)return;const p=toSvg(e);cx=clamp(p.x,60,620);cy=clamp(p.y+16,-60,420);place()});
+  coil.addEventListener('pointermove',e=>{if(!drag)return;const p=toSvg(e);cx=clamp(p.x,120,640);cy=clamp(p.y,-60,380);place()});
   coil.addEventListener('pointerup',()=>{drag=false;coil.style.cursor='grab'});
-  svg.addEventListener('click',e=>{if(e.target.closest('#coil'))return;const p=toSvg(e);cx=clamp(p.x,60,610);cy=clamp(p.y+16,30,420);place()});
+  svg.addEventListener('click',e=>{if(e.target.closest('#coil'))return;const p=toSvg(e);cx=clamp(p.x,120,640);cy=clamp(p.y,-60,380);place()});
   place();
   const c=$('tmsCan');let mep=null,fireT=99,cur=null;
-  function hand(tw){$('handG').innerHTML=`<g transform="rotate(${-tw*18})"><rect x="-40" y="-20" width="70" height="44" rx="14" fill="var(--skin)" stroke="var(--skinLine)" stroke-width="2"/>${[0,1,2,3].map(i=>`<rect x="${-38+i*17}" y="${-58+(i===0||i===3?8:0)-tw*10*(i===1?1:.6)}" width="14" height="44" rx="7" fill="var(--skin)" stroke="var(--skinLine)" stroke-width="2"/>`).join('')}<rect x="28" y="-12" width="30" height="13" rx="6" fill="var(--skin)" stroke="var(--skinLine)" stroke-width="2" transform="rotate(${-20-tw*20} 28 -6)"/></g><text x="-40" y="44" class="svgm">right hand</text>`}
+  function hand(tw){$('handG').innerHTML=`<g transform="rotate(${-tw*14})"><rect x="-40" y="-20" width="70" height="60" rx="16" fill="#f4cfa0" stroke="#c99a6c" stroke-width="2"/>${[0,1,2,3].map(i=>`<rect x="${-38+i*17}" y="${-60+(i===0||i===3?8:0)-tw*12*(i===1?1:.6)}" width="14" height="46" rx="7" fill="#f4cfa0" stroke="#c99a6c" stroke-width="2"/>`).join('')}<rect x="28" y="-4" width="34" height="14" rx="7" fill="#f4cfa0" stroke="#c99a6c" stroke-width="2" transform="rotate(${-20-tw*24} 28 2)"/>${tw>0.05?`<path d="M-48,-70 l-10,-8 M44,-72 l10,-8 M0,-84 l0,-12" stroke="#2fb6c8" stroke-width="3" stroke-linecap="round" opacity="${tw.toFixed(2)}"/>`:''}</g>`}
   hand(0);
   function plot(){const{x,w,h}=fitCanvas(c);x.clearRect(0,0,w,h);const m=30,X=ms=>m+ms/60*(w-m-10),Y=v=>h/2-v*h*0.38;
     x.strokeStyle=cssv('--line');x.beginPath();x.moveTo(m,h/2);x.lineTo(w-6,h/2);x.stroke();x.fillStyle=cssv('--muted');x.font='12px system-ui';x.fillText('right-hand muscle (EMG)',m+4,14);[0,20,40,60].forEach(ms=>x.fillText(ms+' ms',X(ms)-10,h-4));
@@ -1033,11 +1059,13 @@ function heat(I){ // black-blue-cyan-green-yellow-red-white
       vis:'<b>A flash of light!</b> A pulse over visual cortex can make people see a brief spot of light (a <b>phosphene</b>) even with their eyes closed. Their vision comes from the stimulated neurons, not the eyes.',
       broca:'<b>Speech stops.</b> A rapid train of pulses over the left inferior frontal cortex can briefly halt or garble speech (<b>speech arrest</b>): a temporary "virtual lesion" showing this region is needed to produce speech.'};
     $('tmsNote').innerHTML=cur?msg[cur.k]:'You feel a tap and hear a click, and the scalp muscles may twitch, but no specific effect. Move the coil over a target area.';};
-  frameHooks.push(dt=>{fireT+=dt*(reduce?3:1.2);if(fireT>3)return;
-    const f=$('field');f.setAttribute('opacity',fireT<0.5?1-fireT*2:0);{const[ax,ay]=aim();$('tmsSpot').setAttribute('cx',ax);$('tmsSpot').setAttribute('cy',ay);}$('tmsSpot').setAttribute('opacity',fireT<0.6?0.8-fireT:0);
+  frameHooks.push(dt=>{fireT+=dt*(reduce?3:1.2);if(fireT>3){return;}
+    const f=$('field');f.setAttribute('opacity',fireT<0.8?(0.45+0.55*Math.abs(Math.sin(fireT*14))).toFixed(2):.45);f.setAttribute('stroke-dashoffset',(-fireT*60).toFixed(1));
+    $('indCur').setAttribute('opacity',fireT<1.2?(1-fireT/1.2).toFixed(2):0);
     const tw=cur&&cur.k==='motor'&&fireT>0.3&&fireT<1.1?Math.sin((fireT-0.3)/0.8*Math.PI):0;hand(tw);
-    $('phos').innerHTML=cur&&cur.k==='vis'&&fireT<1.6?`<g transform="translate(130,140)" opacity="${(1-fireT/1.6).toFixed(2)}"><circle r="34" fill="#fff6b0" opacity=".5"/><circle r="14" fill="#fffde8"/><text x="0" y="56" text-anchor="middle" class="svgt">phosphene</text></g>`:'';
-    $('speech').innerHTML=cur&&cur.k==='broca'&&fireT<2.5?`<g transform="translate(26,330)"><rect x="-20" y="-50" width="${fireT>0.4?150:150}" height="42" rx="12" fill="var(--panel)" stroke="var(--line)"/><text x="-8" y="-24" class="svgt">${fireT<0.4?'"The weather is…"':'"The w… w… …"'}</text></g>`:'';
+    $('phos').innerHTML=cur&&cur.k==='vis'&&fireT<1.6?`<g transform="translate(672,474)" opacity="${(1-fireT/1.6).toFixed(2)}"><circle r="64" fill="#1b2028"/><circle r="30" fill="#fff6b0" opacity=".5"/><circle r="12" fill="#fffde8"/></g>`:'';
+    $('insetLab').textContent=cur&&cur.k==='vis'&&fireT<1.6?'what they see: a phosphene':'right hand';
+    $('speech').innerHTML=cur&&cur.k==='broca'&&fireT<2.5?`<g transform="translate(30,420)"><rect x="0" y="-36" width="150" height="40" rx="12" fill="#fff" stroke="#c9ced8"/><text x="12" y="-10" style="font:600 14px var(--sans)" fill="#1d2230">${fireT<0.4?'"The weather is…"':'"The w… w… …"'}</text></g>`:'';
     plot();});
   redrawHooks.push(plot);plot();
 })();
