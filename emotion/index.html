@@ -5,7 +5,9 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>The Emotional Brain</title>
 <link rel="icon" href="data:,">
-<meta name="description" content="An interactive tour of the neuroscience of emotion: the autonomic nervous system, James–Lange vs. Cannon–Bard vs. Schachter, the facial feedback hypothesis and Botox, the reward circuit, the limbic system, the amygdala's low and high roads, aggression, and the HPA stress axis.">
+<meta name="description" content="What is an emotion? The autonomic nervous system, James–Lange vs. Cannon–Bard vs. Schachter, the facial feedback hypothesis and Botox, basic emotions, arousal and the polygraph. Part 1 of the NeuroSims emotion series.">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@500;600;700&family=Nunito:ital,wght@0,400;0,600;0,700;0,800;1,400&display=swap" rel="stylesheet">
 <style>
   :root{
     --serif:"Iowan Old Style","Palatino Linotype",Palatino,"Book Antiqua",Georgia,"Times New Roman",serif;
@@ -146,6 +148,178 @@
     section.s{padding:56px 0 50px}
   }
   @media (prefers-reduced-motion:reduce){ html{scroll-behavior:auto} }
+
+  /* ================= Playful redesign (shared by learning + memory) ================= */
+  :root{
+    --body:"Nunito",var(--sans);
+    --display:"Fredoka","Nunito",var(--sans);
+    --bg:#fbfaff; --panel:#ffffff; --panel2:#f3f1fb; --line:#dcd7ec; --grid:rgba(60,40,120,.10);
+    --ink:#231d3b; --muted:#5d5875;
+    --edge:#231d3b; --shadow:#231d3b; --dot:rgba(120,90,220,.16);
+    --c1:#ff6b6b; --c2:#ffb627; --c3:#20b393; --c4:#4d8dff; --c5:#9b5de5;
+    --note:#fff4b8; --noteInk:#2e2600;
+    --tint:var(--c4);
+  }
+  :root[data-theme="dark"]{
+    --bg:#17142a; --panel:#221e38; --panel2:#2a2545; --line:#3d3760; --grid:rgba(200,190,255,.12);
+    --ink:#f3f0ff; --muted:#b5afd0;
+    --edge:#7d74b8; --shadow:#07060f; --dot:rgba(185,160,255,.10);
+    --c1:#ff8a8a; --c2:#ffc857; --c3:#45d6b5; --c4:#7aa8ff; --c5:#b98af0;
+    --note:#3a3216; --noteInk:#fff1b8;
+  }
+  html,body{font-family:var(--body)}
+  body{overflow-x:hidden;background-color:var(--bg);background-image:radial-gradient(var(--dot) 1.3px,transparent 1.6px);background-size:22px 22px}
+  ::selection{background:color-mix(in srgb,var(--c2) 55%,transparent)}
+
+  /* per-section color */
+  section.s:nth-of-type(5n+1){--tint:var(--c4)}
+  section.s:nth-of-type(5n+2){--tint:var(--c3)}
+  section.s:nth-of-type(5n+3){--tint:var(--c1)}
+  section.s:nth-of-type(5n+4){--tint:var(--c5)}
+  section.s:nth-of-type(5n+5){--tint:var(--c2)}
+  section.s{border-top:0}
+  section.s.alt{--band:color-mix(in srgb,var(--tint) 11%,var(--bg))}
+
+  /* type */
+  .hero h1,h2.sec,h3,.card h4,.facts3 b,.q{font-family:var(--display);letter-spacing:0}
+  h2.sec{font-weight:700;font-size:clamp(30px,3.3vw,56px)}
+  h2.sec::after{content:"";display:block;width:160px;height:14px;margin-top:12px;background:var(--tint);
+    -webkit-mask:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='32' height='14' viewBox='0 0 32 14'%3E%3Cpath d='M0 7 Q8 0 16 7 T32 7' fill='none' stroke='black' stroke-width='4.5' stroke-linecap='round'/%3E%3C/svg%3E") repeat-x 0 0/32px 14px;
+            mask:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='32' height='14' viewBox='0 0 32 14'%3E%3Cpath d='M0 7 Q8 0 16 7 T32 7' fill='none' stroke='black' stroke-width='4.5' stroke-linecap='round'/%3E%3C/svg%3E") repeat-x 0 0/32px 14px}
+  h3{font-weight:600}
+  .kicker{font:700 .78rem/1 var(--display);letter-spacing:.08em;color:#231d3b;background:color-mix(in srgb,var(--tint) 45%,#fff);display:inline-flex;padding:7px 14px 7px 10px;border-radius:999px;border:2px solid var(--edge);transform:rotate(-2deg);box-shadow:2px 2px 0 var(--shadow);gap:8px}
+  .kicker::before{width:11px;height:11px;border-radius:50%;background:var(--tint);border:2px solid #231d3b}
+
+  /* hero */
+  .hero{display:grid;grid-template-columns:minmax(0,1.5fr) minmax(0,1fr);gap:10px 30px;align-items:center;padding:20px 0 34px}
+  .hero > .back{grid-column:1/-1}
+  .hero .heroText{min-width:0}
+  .hero .heroText .kicker{--tint:var(--c2);margin-top:6px!important}
+  .hero h1{font-weight:700;font-size:clamp(48px,6.6vw,108px);line-height:.98;margin:.25em 0 .35em}
+  .hero h1 .mark{position:relative;display:inline-block;z-index:0}
+  .hero h1 .mark::before{content:"";position:absolute;left:-.08em;right:-.08em;bottom:.06em;height:.36em;background:var(--hcol,var(--c2));border-radius:.2em;z-index:-1;transform:rotate(-1.5deg)}
+  .hero p.big{font-size:1.25rem}
+  .heroArt{min-width:0}
+  .heroArt svg{max-width:440px;margin:0 auto;overflow:visible}
+  .floaty{animation:floaty 5s ease-in-out infinite;transform-origin:50% 50%}
+  .twinkle{animation:twinkle 2.4s ease-in-out infinite}
+  .twinkle.d2{animation-delay:.8s}.twinkle.d3{animation-delay:1.6s}
+  @keyframes floaty{0%,100%{transform:translateY(0) rotate(-1.5deg)}50%{transform:translateY(-12px) rotate(1.5deg)}}
+  @keyframes twinkle{0%,100%{opacity:.25;transform:scale(.8)}50%{opacity:1;transform:scale(1.1)}}
+  .twinkle{transform-box:fill-box;transform-origin:center}
+  .facts3{grid-column:1/-1;gap:22px;max-width:none;margin-top:18px}
+  .facts3 div{border:2.5px solid var(--edge);border-radius:20px;padding:16px 18px;background:var(--panel);box-shadow:5px 5px 0 var(--shadow);color:var(--ink)}
+  .facts3 div:nth-child(1){background:color-mix(in srgb,var(--c2) 24%,var(--panel));transform:rotate(-1.2deg)}
+  .facts3 div:nth-child(2){background:color-mix(in srgb,var(--c3) 22%,var(--panel));transform:rotate(.8deg)}
+  .facts3 div:nth-child(3){background:color-mix(in srgb,var(--c1) 20%,var(--panel));transform:rotate(-.5deg)}
+  .facts3 b{font-weight:700;font-size:2.1rem}
+  .hero .hint{grid-column:1/-1;margin-top:10px}
+
+  /* nav */
+  .pipe{background:color-mix(in srgb,var(--bg) 94%,transparent);border-bottom:2.5px solid var(--edge)}
+  .pipe a{font-family:var(--display);font-weight:500;font-size:.78rem}
+  .pipe a.on{color:#fff;background:var(--ink)}
+  :root[data-theme="dark"] .pipe a.on{color:#17142a}
+
+  /* sticker boxes and buttons */
+  .box{border:2.5px solid var(--edge);border-radius:20px;box-shadow:5px 5px 0 var(--shadow)}
+  .chip,.btn,.tbtn,button.card,.qopts button,.embed button{border:2px solid var(--edge);box-shadow:2px 2px 0 var(--shadow);font-family:var(--body);font-weight:700;transition:transform .08s,box-shadow .08s,background .2s}
+  .chip:hover,.btn:hover,.tbtn:hover,button.card:hover,.qopts button:hover{transform:translate(-1px,-1px);box-shadow:3px 3px 0 var(--shadow);border-color:var(--edge)}
+  .chip:active,.btn:active,.tbtn:active,button.card:active,.qopts button:active{transform:translate(2px,2px);box-shadow:0 0 0 var(--shadow)}
+  .btn:disabled{opacity:.45;cursor:not-allowed;transform:none;box-shadow:2px 2px 0 var(--shadow)}
+  .chip[aria-pressed="true"],.btn.primary{border-color:var(--edge)}
+  button.card{border-radius:14px}
+  button.card[aria-pressed="true"]{background:color-mix(in srgb,var(--accent) 16%,var(--panel));box-shadow:3px 3px 0 var(--shadow)}
+  .callout{border-radius:14px;border-left-width:6px;background:var(--panel2)}
+  .meter{height:16px;border:2px solid var(--edge)}
+  .quiz .qcard{border:2.5px solid var(--edge);border-radius:22px;box-shadow:6px 6px 0 var(--shadow)}
+  .qopts button{border-radius:14px}
+  .qopts button.right{border-color:var(--good);box-shadow:3px 3px 0 var(--good)}
+  .qopts button.wrong{border-color:var(--bad)}
+  .card h4{font-weight:600}
+  .tag{color:var(--ink);background:color-mix(in srgb,var(--tint) 30%,transparent);border-radius:999px;padding:2px 9px}
+
+  /* "Go deeper" for the dense paragraphs */
+  p.note{background:color-mix(in srgb,var(--panel) 75%,transparent);border:2px dashed color-mix(in srgb,var(--tint) 60%,var(--line));border-radius:16px;padding:12px 16px}
+  p.note::before{content:"Go deeper";display:block;font:700 .72rem/1.4 var(--display);letter-spacing:.12em;text-transform:uppercase;color:var(--ink);margin-bottom:4px}
+  .box p.note{border:0;padding:0;background:none}
+  .box p.note::before{content:none}
+
+  /* "In plain words" sticky notes */
+  .plain{position:relative;max-width:46em;background:var(--note);color:var(--noteInk);border:2.5px solid var(--edge);border-radius:6px 20px 20px 20px;padding:20px 22px 16px;margin:14px 0 26px;box-shadow:5px 5px 0 var(--shadow);transform:rotate(-.5deg);font-size:1.1rem;line-height:1.55}
+  .plain .ptag{position:absolute;top:-15px;left:16px;font:700 .75rem/1 var(--display);letter-spacing:.1em;text-transform:uppercase;color:#231d3b;background:var(--tint);border:2px solid var(--edge);border-radius:999px;padding:6px 12px;transform:rotate(-2deg)}
+  .plain b{color:inherit}
+  .plain em{font-style:normal;background:color-mix(in srgb,var(--tint) 30%,transparent);border-radius:4px;padding:0 3px}
+
+  /* Start-here sections */
+  .steps{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:22px;margin:8px 0 26px}
+  .step{position:relative;background:var(--panel);border:2.5px solid var(--edge);border-radius:22px;padding:18px 20px 16px;box-shadow:5px 5px 0 var(--shadow);min-width:0}
+  .step:nth-child(1){--sc:var(--c2);transform:rotate(-.8deg)}
+  .step:nth-child(2){--sc:var(--c3);transform:rotate(.6deg)}
+  .step:nth-child(3){--sc:var(--c1);transform:rotate(-.4deg)}
+  .step .num{position:absolute;top:-16px;left:-12px;width:42px;height:42px;border-radius:50%;display:grid;place-items:center;font:700 1.25rem/1 var(--display);background:var(--sc);border:2.5px solid var(--edge);color:#231d3b;box-shadow:2px 2px 0 var(--shadow)}
+  .step .ico{width:100%;height:96px;margin:2px 0 8px}
+  .step h3{margin:0 0 .25em}
+  .step p{margin:.2em 0;font-size:.98rem}
+  .step .eg{display:block;margin-top:8px;font-size:.88rem;color:var(--muted)}
+  .vocab{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:14px;margin:14px 0 0}
+  .word{border:2px solid var(--edge);border-radius:16px;padding:12px 14px;background:var(--panel);box-shadow:3px 3px 0 var(--shadow);font-size:.92rem}
+  .word b{display:block;font-family:var(--display);font-weight:600;font-size:1.12rem;margin-bottom:2px}
+  .word:nth-child(5n+1){background:color-mix(in srgb,var(--c4) 13%,var(--panel))}
+  .word:nth-child(5n+2){background:color-mix(in srgb,var(--c3) 13%,var(--panel))}
+  .word:nth-child(5n+3){background:color-mix(in srgb,var(--c1) 12%,var(--panel))}
+  .word:nth-child(5n+4){background:color-mix(in srgb,var(--c5) 13%,var(--panel))}
+  .word:nth-child(5n+5){background:color-mix(in srgb,var(--c2) 16%,var(--panel))}
+  .roadmap{display:flex;flex-wrap:wrap;gap:8px 6px;align-items:center;margin:10px 0 0;font-family:var(--display);font-weight:500}
+  .roadmap a{color:var(--ink);text-decoration:none;border:2px solid var(--edge);border-radius:999px;padding:4px 12px;background:var(--panel);box-shadow:2px 2px 0 var(--shadow);font-size:.88rem}
+  .roadmap a:hover{background:color-mix(in srgb,var(--c2) 30%,var(--panel))}
+  .roadmap span{color:var(--muted)}
+  .bigq{font-family:var(--display);font-weight:600;font-size:1.25rem;margin:0 0 .3em}
+  .chunkShow{font:700 clamp(1.6rem,3.4vw,2.6rem)/1.2 var(--mono);letter-spacing:.18em;text-align:center;min-height:3.4em;display:flex;align-items:center;justify-content:center;background:var(--panel2);border:2px solid var(--edge);border-radius:16px;margin:10px 0;padding:10px;flex-wrap:wrap;word-break:break-all}
+  .chunkShow .cue{font:600 1rem var(--body);letter-spacing:0;color:var(--muted)}
+  .chunkShow .ch{display:inline-block;margin:0 .35em;padding:0 .15em;border-radius:8px;background:color-mix(in srgb,var(--c2) 35%,transparent)}
+  .scoreRow{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:10px}
+  .scoreRow div{border:2px solid var(--edge);border-radius:14px;padding:10px 12px;background:var(--panel2);text-align:center}
+  .scoreRow b{display:block;font:700 2rem/1.1 var(--display)}
+
+  /* dark theme: illustrations sit on light paper so their ink outlines stay visible */
+  :root[data-theme="dark"] .step .ico,:root[data-theme="dark"] #bxSvg{background:#f4f1ff;border-radius:14px}
+  :root[data-theme="dark"] .heroArt svg{filter:drop-shadow(0 0 1.5px #f3f0ff) drop-shadow(0 0 1px #f3f0ff)}
+  @media (max-width:900px){
+    .hero{grid-template-columns:1fr}
+    .heroArt{order:-1}
+    .heroArt svg{max-width:260px}
+    .steps{grid-template-columns:1fr;gap:28px}
+    .vocab{grid-template-columns:1fr 1fr}
+  }
+  @media (max-width:520px){ .vocab{grid-template-columns:1fr} .scoreRow b{font-size:1.5rem} }
+  @media (prefers-reduced-motion:reduce){ .floaty,.twinkle{animation:none} }
+  :root{--accent:#c8364a;--accent2:#2a6fd6}
+  :root[data-theme="dark"]{--accent:#ff8a99;--accent2:#7fb2ff}
+
+  .series{grid-column:1/-1;display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin-top:16px}
+  .series .slab{font:700 .74rem/1 var(--display);letter-spacing:.1em;text-transform:uppercase;color:var(--muted);margin-right:4px}
+  .series a{font:600 .88rem/1.2 var(--display);color:var(--ink);text-decoration:none;border:2px solid var(--edge);border-radius:999px;padding:6px 14px;background:var(--panel);box-shadow:2px 2px 0 var(--shadow)}
+  .series a:hover{background:color-mix(in srgb,var(--c2) 30%,var(--panel))}
+  .series a.on{background:var(--ink);color:var(--bg)}
+  .nextup{display:flex;justify-content:space-between;align-items:center;gap:16px;margin:46px 0 10px;padding:22px 26px;border:2.5px solid var(--edge);border-radius:22px;background:color-mix(in srgb,var(--c3) 18%,var(--panel));box-shadow:6px 6px 0 var(--shadow);text-decoration:none;color:var(--ink);transition:transform .1s}
+  .nextup:hover{transform:translate(-2px,-2px)}
+  .nextup small{display:block;font:700 .75rem/1.4 var(--display);letter-spacing:.1em;text-transform:uppercase;color:var(--muted)}
+  .nextup b{font:700 clamp(1.2rem,2.4vw,1.7rem)/1.2 var(--display)}
+  .nextup .arr{font:700 2.2rem/1 var(--display)}
+  .relay{cursor:pointer}
+  .relay:focus-visible{outline:none}
+  .relay:focus-visible .rb{stroke:var(--c4);stroke-width:5}
+  .relay .rb{transition:fill .25s}
+  .relay.done .rb{fill:#ffd27a}
+  .relay.shake{animation:shake .35s}
+  @keyframes shake{25%{transform:translateX(-5px)}75%{transform:translateX(5px)}}
+  .cfx{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:16px;margin-top:6px}
+  .cfx .box h4{margin:0 0 .3em;font:600 1.12rem var(--display)}
+  .cfx .box p{margin:.25em 0;font-size:.92rem}
+  .cfx .good{color:var(--good);font-weight:700}.cfx .bad{color:var(--bad);font-weight:700}
+  @media (max-width:900px){.cfx{grid-template-columns:1fr 1fr}.nextup{padding:18px}}
+  @media (max-width:560px){.cfx{grid-template-columns:1fr}}
 </style>
 </head>
 <body>
@@ -153,15 +327,19 @@
 
   <header class="hero" id="top">
     <a class="back" href="../">← All NeuroSims</a>
-    <p class="kicker" style="margin-top:28px">NeuroSims · Emotion and stress</p>
-    <h1>The Emotional Brain</h1>
-    <p class="big">Your heart pounds, your face changes, and a feeling rushes in. Where does an emotion come from? This tour follows the neural side: the body's autonomic wiring, the theories that argue about what comes first, and the brain circuits for reward, fear, aggression and stress.</p>
+    <div class="heroText">
+    <p class="kicker" style="margin-top:28px">NeuroSims · Emotion, part 1</p>
+    <h1>The <span class="mark" style="--hcol:var(--c1)">Emotional</span> Brain</h1>
+    <p class="big">Your heart pounds, your face changes, and a feeling rushes in. Where does an emotion come from? This first part covers what an emotion is made of: the body's autonomic wiring, the theories that argue about what comes first, your face, and arousal.</p>
+    </div>
+    <div class="heroArt" aria-hidden="true"><svg viewBox="0 0 430 380"><path class="twinkle " d="M40 64 L44.480000000000004 75.52 L56 80 L44.480000000000004 84.48 L40 96 L35.519999999999996 84.48 L24 80 L35.519999999999996 75.52Z" fill="#ffb627" stroke="#231d3b" stroke-width="3" stroke-linejoin="round"/><path class="twinkle d2" d="M395 288 L398.36 296.64 L407 300 L398.36 303.36 L395 312 L391.64 303.36 L383 300 L391.64 296.64Z" fill="#4d8dff" stroke="#231d3b" stroke-width="3" stroke-linejoin="round"/><g class="floaty"><g transform="translate(0,0)"><rect x="184" y="236" width="56" height="62" rx="14" fill="#ffb3c7" stroke="#231d3b" stroke-width="5.5"/><g stroke="#231d3b" stroke-width="11" fill="#ffb3c7"><circle cx="120" cy="165" r="66"/><circle cx="178" cy="118" r="74"/><circle cx="258" cy="112" r="76"/><circle cx="318" cy="160" r="62"/><circle cx="258" cy="200" r="74"/><circle cx="170" cy="206" r="64"/><circle cx="210" cy="160" r="70"/></g><g fill="#ffb3c7"><circle cx="120" cy="165" r="66"/><circle cx="178" cy="118" r="74"/><circle cx="258" cy="112" r="76"/><circle cx="318" cy="160" r="62"/><circle cx="258" cy="200" r="74"/><circle cx="170" cy="206" r="64"/><circle cx="210" cy="160" r="70"/></g><g fill="none" stroke="#e07a98" stroke-width="5" stroke-linecap="round"><path d="M120 110 q20 -14 36 6 q14 16 30 0"/><path d="M232 74 q16 18 4 34 q-10 16 8 28"/><path d="M300 118 q-18 6 -14 26 q4 18 -12 26"/><path d="M92 168 q18 -8 26 8"/><path d="M330 196 q-20 -2 -26 16"/><path d="M150 246 q10 -16 30 -8"/></g><ellipse cx="180" cy="178" rx="11" ry="14" fill="#231d3b"/><ellipse cx="252" cy="178" rx="11" ry="14" fill="#231d3b"/><circle cx="184" cy="172" r="4" fill="#fff"/><circle cx="256" cy="172" r="4" fill="#fff"/><ellipse cx="156" cy="204" rx="14" ry="8" fill="#ff7d9c" opacity=".55"/><ellipse cx="276" cy="204" rx="14" ry="8" fill="#ff7d9c" opacity=".55"/><path d="M196 206 q20 22 40 0" fill="none" stroke="#231d3b" stroke-width="6" stroke-linecap="round"/></g><path class="twinkle " transform="translate(370 70) scale(1.6)" d="M0 6 C-10 -6 -22 4 0 20 C22 4 10 -6 0 6Z" fill="#ff6b6b" stroke="#231d3b" stroke-width="1.88" stroke-linejoin="round"/><path class="twinkle d2" transform="translate(60 250) scale(1.2)" d="M0 6 C-10 -6 -22 4 0 20 C22 4 10 -6 0 6Z" fill="#ff9db5" stroke="#231d3b" stroke-width="2.50" stroke-linejoin="round"/><path class="twinkle d3" transform="translate(400 190) scale(1)" d="M0 6 C-10 -6 -22 4 0 20 C22 4 10 -6 0 6Z" fill="#ff6b6b" stroke="#231d3b" stroke-width="3.00" stroke-linejoin="round"/></g></svg></div>
     <div class="facts3">
-      <div><b>~60%</b>stronger amygdala response to upsetting pictures after one night without sleep (Yoo et al., 2007)</div>
-      <div><b>2 routes</b>from the thalamus to the amygdala: a fast, crude "low road" and a slower, detailed "high road"</div>
-      <div><b>0</b>brain regions that belong to just one emotion. Fear, anger, sadness and joy use overlapping networks.</div>
+      <div><b>4 parts</b>make up an emotion: a feeling, thoughts, behavior and changes in your body</div>
+      <div><b>8 basic emotions</b>in Plutchik's wheel, arranged in four pairs of opposites, like joy and sadness</div>
+      <div><b>Small but real</b>the effect of your facial expression on your mood, across 138 studies (Coles et al., 2019)</div>
     </div>
     <p class="hint">Teaching on a projector? Press <span class="kbd">P</span> for Present mode, then <span class="kbd">→</span>/<span class="kbd">←</span> to move between sections. <span class="kbd">T</span> switches between light and dark themes.</p>
+    <nav class="series" aria-label="Emotion series"><span class="slab">Emotion series</span><a href="../emotion/" class="on" aria-current="page">1 · What is an emotion?</a><a href="../emotion-circuits/">2 · Emotion circuits</a><a href="../stress/">3 · Stress and the HPA axis</a></nav>
   </header>
 
   <nav class="pipe" aria-label="Sections">
@@ -172,10 +350,10 @@
     </div>
   </nav>
 
-  <!-- =================== 1 BODY =================== -->
-  <section class="s" id="body" data-title="The body">
+<section class="s" id="body" data-title="The body">
     <p class="kicker">Part 1</p>
     <h2 class="sec">An emotion has four parts, and one of them is your body</h2>
+    <div class="plain"><span class="ptag">In plain words</span>An emotion isn't just a feeling. It also comes with thoughts, actions and <b>body changes</b>: your heart, lungs, gut and sweat glands all react. Two branches of your nervous system run those changes. One hits the gas (<b>fight or flight</b>), the other hits the brakes (<b>rest and digest</b>).</div>
     <p class="lede">Psychologists split an emotion into a <b>feeling</b> (the experience), <b>thoughts</b> (your appraisal of what is happening), <b>behavior</b> (your face, approaching or escaping) and <b>bodily changes</b>. The body part is run by the <b>autonomic nervous system</b>, which has two branches that pull in opposite directions. Switch between them.</p>
     <div class="stage">
       <div class="box"><svg id="ansSvg" viewBox="0 0 520 470" role="img" aria-label="A body showing the effects of the sympathetic or parasympathetic nervous system"></svg></div>
@@ -189,10 +367,10 @@
     <p class="note">The wiring: sympathetic neurons leave the spinal cord from its middle (thoracic and lumbar) segments; parasympathetic neurons leave from the brainstem (mostly the vagus nerve) and the bottom (sacral) segment. Most organs get both, so the two branches act like an accelerator and a brake.</p>
   </section>
 
-  <!-- =================== 2 THEORIES =================== -->
-  <section class="s alt" id="theories" data-title="Theories">
+<section class="s alt" id="theories" data-title="Theories">
     <p class="kicker">Part 2</p>
     <h2 class="sec">Which comes first, the feeling or the body?</h2>
+    <div class="plain"><span class="ptag">In plain words</span>Scientists have argued for over a century about the order of events. Do you run because you're scared, or are you scared because you notice yourself running? Each theory gives a different answer.</div>
     <p class="lede">You meet a bear in the woods. You feel afraid and your heart races. Four classic answers disagree about the <b>order</b>. Pick one and press Play.</p>
     <div class="row" id="thBtns" style="margin-bottom:12px"></div>
     <div class="stage">
@@ -209,10 +387,10 @@
     <p class="note">Cannon's case against James–Lange: the organs respond too slowly (it takes seconds for your heart to change, but you feel afraid almost at once), and the bodily pattern is too similar across emotions to tell fear from anger. Schachter's answer splits the difference: the body sets how <b>strong</b> the feeling is, your reading of the situation picks <b>which</b> emotion.</p>
   </section>
 
-  <!-- =================== 3 FACE =================== -->
-  <section class="s" id="face" data-title="Facial feedback">
+<section class="s" id="face" data-title="Facial feedback">
     <p class="kicker">Part 3</p>
     <h2 class="sec">The facial feedback hypothesis</h2>
+    <div class="plain"><span class="ptag">In plain words</span>Your face doesn't just show your feelings. It may feed back into them a little. Smiling can nudge you to feel slightly happier, and freezing your frown with Botox may soften negative feelings. The effect is real, but small.</div>
     <p class="lede">If James and Lange are right that we feel what our body is doing, then <b>your face should feed back into your feelings</b>. Make the face, and the signal from its muscles travels back to the brain. Try the pen trick, then freeze the frown muscles with Botox.</p>
     <div class="stage even">
       <div class="box">
@@ -235,10 +413,10 @@
     </div>
   </section>
 
-  <!-- =================== 4 EXPRESSIONS =================== -->
-  <section class="s alt" id="core" data-title="Basic emotions">
+<section class="s alt" id="core" data-title="Basic emotions">
     <p class="kicker">Part 4</p>
     <h2 class="sec">Is there a core set of emotions?</h2>
+    <div class="plain"><span class="ptag">In plain words</span>Some emotions, like fear, disgust and joy, show up on faces all over the world and even in other animals. That suggests evolution built them in to help us survive.</div>
     <p class="lede"><b>Darwin</b> argued that facial expressions are universal and shared with other primates: a chimpanzee's play face looks a lot like a human laugh. On this view, emotions are <b>motivational programs</b> built by evolution: fear gets you away from danger, disgust keeps you away from infection. <b>Plutchik</b> proposed eight basic emotions in four opposing pairs. Click one to find its opposite.</p>
     <div class="stage">
       <div class="box"><svg id="wheel" viewBox="0 0 440 440" role="img" aria-label="Plutchik's wheel of eight basic emotions"></svg></div>
@@ -255,10 +433,10 @@
     </div>
   </section>
 
-  <!-- =================== 5 AROUSAL =================== -->
-  <section class="s" id="arousal" data-title="Arousal">
+<section class="s" id="arousal" data-title="Arousal">
     <p class="kicker">Part 5</p>
     <h2 class="sec">Arousal: label it, or try to lie through it</h2>
+    <div class="plain"><span class="ptag">In plain words</span>Your body's revved-up state (<b>arousal</b>) feels much the same for very different emotions, so your brain looks at the situation to work out what you're feeling. Lie detectors measure that arousal, which is why they catch nervousness, not lies.</div>
     <p class="lede">Two ideas that both rest on the sympathetic nervous system. In <b>Schachter and Singer's (1962)</b> experiment, people got a shot of epinephrine (adrenaline) or a placebo, then waited with an actor who acted either euphoric or angry. Run the experiment yourself.</p>
     <div class="stage even">
       <div class="box">
@@ -280,201 +458,34 @@
     <p class="note">The polygraph measures sympathetic arousal (breathing, sweating through skin conductance, heart rate). It detects <b>stress, not lying</b>, which is why a National Research Council review (2003) found it too error-prone for screening. Schachter and Singer's results have also been hard to replicate in full; the lasting idea is that arousal sets intensity and context helps pick the label.</p>
   </section>
 
-  <!-- =================== 6 REWARD =================== -->
-  <section class="s alt" id="reward" data-title="Reward">
-    <p class="kicker">Part 6</p>
-    <h2 class="sec">The brain's reward circuit</h2>
-    <p class="lede">In 1954, <b>Olds and Milner</b> found that rats would press a lever over and over to get a tiny pulse of electricity into certain brain sites. The best sites run along the <b>medial forebrain bundle</b>, which carries dopamine neurons from the midbrain (VTA) past the hypothalamus to the <b>nucleus accumbens</b>. Choose where to place the electrode, then watch the rat.</p>
-    <div class="stage">
-      <div class="box"><svg id="rwBrain" viewBox="-70 0 775 430" role="img" aria-label="Side view of the brain with reward regions"></svg>
-        <div class="row" id="rwBtns"></div>
-      </div>
-      <div class="box">
-        <div class="mlab"><span>Lever presses</span><b id="rwCount">0</b></div>
-        <canvas id="rwRec" style="aspect-ratio:16/10" aria-label="Cumulative record of lever presses over time"></canvas>
-        <div class="row" style="margin-top:8px"><button class="btn primary" id="rwGo">Start session</button><button class="btn" id="rwReset">Clear</button></div>
-        <div class="callout" id="rwNote"></div>
-      </div>
-    </div>
-    <p class="note">The steeper the line, the faster the rat presses. Some rats pressed thousands of times an hour and ignored food. Humans with implanted electrodes have also reported pleasant feelings. <b>Clinical link:</b> depression often includes <b>anhedonia</b>, a loss of pleasure, and the reward circuit is one place to look for it. The <b>lateral habenula</b> works roughly as an "anti-reward" center: it fires when an expected reward fails to arrive, and it suppresses dopamine neurons.</p>
-  </section>
-
-  <!-- =================== 7 LIMBIC =================== -->
-  <section class="s" id="limbic" data-title="Limbic system">
-    <p class="kicker">Part 7</p>
-    <h2 class="sec">Lesions point to a limbic system</h2>
-    <p class="lede">Early clues came from damage. Remove an animal's cortex and it flies into rage at the slightest touch (<b>decorticate rage</b>), so the cortex must normally hold rage back. <b>Papez (1937)</b> proposed a loop of interconnected structures on the inner (medial) wall of the brain as the circuit for emotion. Press Play to follow it, then try the lesions.</p>
-    <div class="stage">
-      <div class="box"><svg id="lbBrain" viewBox="-70 0 775 430" role="img" aria-label="Side view of the brain with the Papez circuit"></svg>
-        <div class="row"><button class="btn primary" id="papezPlay">Play the Papez circuit</button><span class="hint" id="papezStep"></span></div>
-      </div>
-      <div class="box">
-        <div class="row" id="lesBtns" style="margin-bottom:10px"></div>
-        <table style="width:100%;border-collapse:collapse;font-size:.92rem" id="lesTable"></table>
-        <div class="callout" id="lesNote"></div>
-      </div>
-    </div>
-    <p class="note">Papez's loop: hippocampus → fornix → mammillary bodies (hypothalamus) → anterior thalamus → cingulate cortex → back to the hippocampus. We now know this loop matters more for memory than for emotion. MacLean later added the amygdala and prefrontal cortex and coined the term "limbic system". Klüver and Bucy (1939) removed both temporal lobes, including the amygdalas, in monkeys.</p>
-  </section>
-
-  <!-- =================== 8 FEAR =================== -->
-  <section class="s alt" id="fear" data-title="Fear">
-    <p class="kicker">Part 8</p>
-    <h2 class="sec">The amygdala: fast and slow roads to fear</h2>
-    <p class="lede">Something long and curved lies on the trail. <b>LeDoux</b> showed that sensory information reaches the amygdala by two routes from the thalamus. The <b>low road</b> goes straight there: fast, crude and unconscious. The <b>high road</b> goes through sensory cortex first: slower, detailed and conscious. Run the race.</p>
-    <div class="stage">
-      <div class="box"><svg id="frBrain" viewBox="-70 0 775 430" role="img" aria-label="Side view of the brain showing the low road and high road to the amygdala"></svg>
-        <div class="row"><button class="btn primary" id="frStick">It's a stick</button><button class="btn primary" id="frSnake">It's a snake</button></div>
-      </div>
-      <div class="box">
-        <svg id="frTime" viewBox="0 0 420 120" role="img" aria-label="Timeline of the two roads"></svg>
-        <div class="mlab"><span>Amygdala activity</span><b id="frAmy">calm</b></div><div class="meter"><i id="frAmyBar"></i></div>
-        <div class="mlab"><span>Heart rate</span><b id="frHR">70 bpm</b></div><div class="meter blue"><i id="frHRBar" style="width:20%"></i></div>
-        <div class="callout" id="frNote">Press a button to start the race.</div>
-        <div class="callout blue"><b>Patient S.M.</b> lost both amygdalas to a rare disease. She shows no fear of snakes, spiders, haunted houses or dangerous people, and she cannot recognize fear in other people's faces. In people with temporal lobe epilepsy, seizures that spread into the amygdala often begin with a wave of intense fear.</div>
-      </div>
-    </div>
-
-    <p class="note"><b>Clinical link (Ch. 12):</b> in PTSD, reminders of the trauma keep triggering the amygdala, and the prefrontal cortex has trouble calming it down. Benzodiazepines boost GABA-A receptors, which are dense in the amygdala.</p>
-  </section>
-
-  <!-- =================== 9 NETWORK =================== -->
-  <section class="s" id="network" data-title="Overlap">
-    <p class="kicker">Part 9</p>
-    <h2 class="sec">Different emotions, overlapping brain regions</h2>
-    <p class="lede">There is no "fear center" and "happiness center". Brain-imaging studies find that each emotion activates a <b>network</b>, and the networks overlap heavily (Lindquist et al., 2012). Click through the emotions and watch the same regions light up again and again.</p>
-    <div class="stage">
-      <div class="box"><svg id="nwBrain" viewBox="-70 0 775 430" role="img" aria-label="Side view of the brain with emotion-related regions"></svg>
-        <div class="row" id="nwBtns"></div>
-      </div>
-      <div class="box">
-        <dl class="kv" style="grid-template-columns:auto 1fr">
-          <dt style="color:var(--accent)">Amygdala</dt><dd style="font-weight:500">threat detection, emotional learning, what matters right now (salience)</dd>
-          <dt style="color:var(--accent)">Insula</dt><dd style="font-weight:500">awareness of your body's state, disgust, even feelings of love</dd>
-          <dt style="color:var(--accent)">Cingulate</dt><dd style="font-weight:500">emotional conflict, pain, attention</dd>
-          <dt style="color:var(--accent)">Prefrontal</dt><dd style="font-weight:500">appraisal and regulation: the brakes on the amygdala</dd>
-        </dl>
-        <div class="callout" id="nwNote">Pick an emotion.</div>
-      </div>
-    </div>
-    <h3 style="margin-top:40px">Louder alarm, weaker brakes: the sleep-deprived brain</h3>
-    <div class="stage">
-      <div class="box"><svg id="brakeSvg" viewBox="0 0 600 220" role="img" aria-label="Prefrontal cortex braking the amygdala"></svg>
-        <div class="ctrl"><span>Sleep last night</span><input type="range" id="sleepR" min="0" max="8" value="8" step="1" aria-label="Hours of sleep"><b id="sleepOut">8 hours</b></div>
-      </div>
-      <div class="box">
-        <div class="mlab"><span>Amygdala response to an upsetting picture</span><b id="brAmy"></b></div><div class="meter"><i id="brAmyBar"></i></div>
-        <div class="mlab"><span>Prefrontal–amygdala connection</span><b id="brPfc"></b></div><div class="meter blue"><i id="brPfcBar"></i></div>
-        <div class="callout">After one night without sleep, the amygdala responded about <b>60% more</b> to upsetting images, and its connection with the medial prefrontal cortex was weaker (Yoo et al., 2007). Small problems feel bigger. The values in between are interpolated for illustration.</div>
-      </div>
-    </div>
-  </section>
-
-  <!-- =================== 10 AGGRESSION =================== -->
-  <section class="s alt" id="aggression" data-title="Aggression">
-    <p class="kicker">Part 10</p>
-    <h2 class="sec">What makes us aggressive?</h2>
-    <p class="lede"><b>Aggression</b> is behavior meant to harm another. Two chemicals and one brain region keep coming up: <b>testosterone</b> (clear in animals, murky in humans), <b>serotonin</b> (which normally holds aggression back) and the <b>ventromedial hypothalamus</b> (which can drive an attack). Adjust them.</p>
-    <div class="stage">
-      <div class="box">
-        <div class="row" style="margin-bottom:6px"><button class="chip" id="agMouse" aria-pressed="true">Male mouse</button><button class="chip" id="agHuman" aria-pressed="false">Human</button></div>
-        <div class="ctrl"><span style="width:7em">Testosterone</span><input type="range" id="agT" min="0" max="100" value="50" aria-label="Testosterone"><b id="agTo">normal</b></div>
-        <div class="ctrl"><span style="width:7em">Serotonin</span><input type="range" id="ag5" min="0" max="100" value="50" aria-label="Serotonin"><b id="ag5o">normal</b></div>
-        <div class="row"><button class="chip" id="agVMH" aria-pressed="false">Stimulate the VMH</button><button class="chip" id="agCtx" aria-pressed="false">Remove the cortex</button><button class="btn" id="agWin">Win a contest</button></div>
-        <div class="mlab" style="margin-top:14px"><span>Aggression</span><b id="agOut"></b></div><div class="meter"><i id="agBar"></i></div>
-        <div class="callout" id="agNote"></div>
-      </div>
-      <div class="box"><svg id="agSvg" viewBox="0 0 440 300" role="img" aria-label="Testosterone and aggression influence each other"></svg></div>
-    </div>
-    <p class="note">Castrating male mice reduces fighting and testosterone replacement restores it. In humans, raising testosterone at puberty or by injection does not reliably raise aggression, though low testosterone goes with less aggression, and in women higher testosterone goes with more. The arrow runs both ways: <b>winning raises testosterone</b> for days, even in chess players (Mazur et al., 1992). Rhesus monkeys with the lowest serotonin activity are the most aggressive (Higley et al., 1992). Psychopathy (charming, little remorse) has a biology that is still debated.</p>
-  </section>
-
-  <!-- =================== 11 STRESS =================== -->
-  <section class="s" id="stress" data-title="Stress">
-    <p class="kicker">Part 11</p>
-    <h2 class="sec">Stress runs on two pathways: fast and slow</h2>
-    <p class="lede"><b>Stress</b> is anything that upsets the body's balance. The brain answers in two waves. The <b>fast</b> one is neural: the hypothalamus fires the sympathetic nerves to the <b>adrenal medulla</b>, which releases epinephrine and norepinephrine within seconds. The <b>slow</b> one is hormonal, the <b>HPA axis</b>: hypothalamus (CRH) → anterior pituitary (ACTH) → <b>adrenal cortex</b> → cortisol, over minutes. Cortisol then tells the hippocampus and hypothalamus to shut the system off.</p>
-    <div class="stage">
-      <div class="box"><svg id="hpaSvg" viewBox="0 0 600 440" role="img" aria-label="The fast sympathetic pathway and the slow HPA axis"></svg>
-        <div class="row"><button class="btn primary" id="stGo">Stressor!</button><button class="chip" id="stChronic" aria-pressed="false">Chronic stress (weeks)</button><button class="btn" id="stReset">Reset</button></div>
-      </div>
-      <div class="box">
-        <canvas id="stCan" style="aspect-ratio:16/10" aria-label="Epinephrine and cortisol levels over time"></canvas>
-        <div class="callout" id="stNote">Memory trick: <b>medulla = middle</b> (adrenaline, fast), <b>cortex = outer layer</b> (cortisol, slow).</div>
-      </div>
-    </div>
-    <div class="cols2">
-      <div class="box">
-        <h3>Early life tunes the stress system</h3>
-        <p style="margin:.2em 0 .6em">Rat pups whose mothers lick and groom them a lot grow up with more cortisol (glucocorticoid) receptors in the hippocampus, so their brake works better (Weaver et al., 2004). Drag the slider.</p>
-        <div class="ctrl"><span>Mother's licking and grooming</span><input type="range" id="lgR" min="0" max="100" value="80" aria-label="Maternal licking and grooming"><b id="lgOut">high</b></div>
-        <canvas id="lgCan" style="aspect-ratio:16/7" aria-label="Receptors in the hippocampus and the adult stress response"></canvas>
-      </div>
-      <div class="box">
-        <h3>Acute helps, chronic harms</h3>
-        <p style="margin:.2em 0 .6em"><b>Acute stress</b> (minutes to hours) mobilizes energy, ramps up heart and lungs and briefly suppresses the immune system: built for escaping a predator. <b>Chronic stress</b> (weeks to years) keeps cortisol high. That suppresses immunity in a harmful way and can damage hippocampal neurons, which weakens the brake even more. Humans and baboons can stay stressed for months over social threats.</p>
-        <div class="callout">The maternal-care effect is <b>epigenetic</b>: it changes how much a gene is <b>expressed</b> (here, the receptor gene gets methyl tags), not the gene itself. The same change shows up in the hippocampus of people with a history of childhood abuse (McGowan et al., 2009). Mild early stress followed by comfort can build resilience (stress immunization).</div>
-      </div>
-    </div>
-  </section>
-
-  <!-- =================== 12 LOOP + QUIZ =================== -->
   <section class="s alt" id="review" data-title="Review">
-    <p class="kicker">Part 12</p>
-    <h2 class="sec">Putting it together</h2>
-    <p class="lede">Sleep, emotion and stress feed each other. Poor sleep makes the amygdala more reactive and weakens the prefrontal brakes. Heightened emotion switches on the HPA axis. Cortisol disrupts sleep, and around it goes. That loop is part of why sleep problems, mood disorders and anxiety so often go together. Diathesis–stress model: a vulnerability (genes, early life) plus enough stress crosses a threshold into disorder.</p>
-    <div class="stage even" style="margin-bottom:30px">
-      <div class="box"><svg id="cycleSvg" viewBox="0 0 440 300" role="img" aria-label="The loop between poor sleep, emotion and stress"></svg></div>
-      <div class="box">
-        <h3>You should be able to explain…</h3>
-        <ul style="margin:.3em 0;padding-left:1.2em;line-height:1.7">
-          <li>Sympathetic vs. parasympathetic</li>
-          <li>James–Lange vs. Cannon–Bard vs. Schachter, and the facial feedback evidence</li>
-          <li>Reward circuit: medial forebrain bundle, nucleus accumbens, dopamine</li>
-          <li>Amygdala, low road vs. high road</li>
-          <li>Testosterone and serotonin in aggression</li>
-          <li>Adrenal medulla vs. HPA stress pathways; acute vs. chronic stress; epigenetics</li>
-        </ul>
-      </div>
-    </div>
-    <h3>Quick review</h3>
+    <p class="kicker">Review</p>
+    <h2 class="sec">Check yourself</h2>
+    <div class="plain"><span class="ptag">In plain words</span>Can you explain these out loud to a friend? If so, you've got it. Then try the quiz.</div>
+    <div class="box" style="max-width:900px"><h3>You should be able to explain…</h3><ul style="margin:.3em 0;padding-left:1.2em;line-height:1.75"><li>Sympathetic vs. parasympathetic nervous system</li><li>James–Lange vs. Cannon–Bard vs. Schachter, and the facial feedback evidence</li><li>Darwin's and Plutchik's ideas about basic emotions</li><li>Why a polygraph detects arousal, not lies</li></ul></div>
+    <h3 style="margin-top:34px">Quick review</h3>
     <div class="quiz">
-      <div class="qcard">
-        <p class="q" id="qText"></p>
-        <div class="qopts" id="qOpts"></div>
-        <p class="why" id="qWhy"></p>
-      </div>
+      <div class="qcard"><p class="q" id="qText"></p><div class="qopts" id="qOpts"></div><p class="why" id="qWhy"></p></div>
       <div class="qnav"><button class="btn" id="qPrev">← Previous</button><span id="qCount"></span><button class="btn primary" id="qNext">Next question →</button></div>
     </div>
   </section>
 
+  <a class="nextup" href="../emotion-circuits/"><span><small>Next up in the emotion series · Part 2</small><b>Emotion circuits</b></span><span class="arr" aria-hidden="true">→</span></a>
+
   <footer class="foot">
     <p class="embed"><span>Embed:</span>
-      <code id="embedCode">&lt;iframe src="https://nelurad.github.io/neurosims/emotion/" width="100%" height="9000" style="border:0" title="The Emotional Brain"&gt;&lt;/iframe&gt;</code>
+      <code id="embedCode">&lt;iframe src="https://nelurad.github.io/neurosims/emotion/" width="100%" height="6500" style="border:0" title="The Emotional Brain"&gt;&lt;/iframe&gt;</code>
       <button id="copyBtn">Copy</button></p>
     <p style="margin-bottom:2px">References</p>
     <ul class="refs">
-      <li>Coles, N. A., Larsen, J. T., &amp; Lench, H. C. (2019). A meta-analysis of the facial feedback literature. <i>Psychological Bulletin</i>, 145, 610–651.</li>
       <li>Coles, N. A., et al. (2022). A multi-lab test of the facial feedback hypothesis by the Many Smiles Collaboration. <i>Nature Human Behaviour</i>, 6, 1731–1742.</li>
+      <li>Coles, N. A., Larsen, J. T., &amp; Lench, H. C. (2019). A meta-analysis of the facial feedback literature. <i>Psychological Bulletin</i>, 145, 610–651.</li>
       <li>Dolensek, N., Gehrlach, D. A., Klein, A. S., &amp; Gogolla, N. (2020). Facial expressions of emotion states and their neuronal correlates in mice. <i>Science</i>, 368, 89–94.</li>
-      <li>Feinstein, J. S., Adolphs, R., Damasio, A., &amp; Tranel, D. (2011). The human amygdala and the induction and experience of fear. <i>Current Biology</i>, 21, 34–38.</li>
       <li>Havas, D. A., Glenberg, A. M., Gutowski, K. A., Lucarelli, M. J., &amp; Davidson, R. J. (2010). Cosmetic use of botulinum toxin-A affects processing of emotional language. <i>Psychological Science</i>, 21, 895–900.</li>
       <li>Hennenlotter, A., et al. (2009). The link between facial feedback and neural activity within central circuitries of emotion. <i>Cerebral Cortex</i>, 19, 537–542.</li>
-      <li>Higley, J. D., et al. (1992). Cerebrospinal fluid monoamine and adrenal correlates of aggression in free-ranging rhesus monkeys. <i>Archives of General Psychiatry</i>, 49, 436–441.</li>
-      <li>Klüver, H., &amp; Bucy, P. C. (1939). Preliminary analysis of functions of the temporal lobes in monkeys. <i>Archives of Neurology and Psychiatry</i>, 42, 979–1000.</li>
-      <li>LeDoux, J. E. (1996). <i>The Emotional Brain</i>. Simon &amp; Schuster.</li>
-      <li>Lindquist, K. A., Wager, T. D., Kober, H., Bliss-Moreau, E., &amp; Barrett, L. F. (2012). The brain basis of emotion: a meta-analytic review. <i>Behavioral and Brain Sciences</i>, 35, 121–143.</li>
-      <li>Matsumoto, M., &amp; Hikosaka, O. (2007). Lateral habenula as a source of negative reward signals in dopamine neurons. <i>Nature</i>, 447, 1111–1115.</li>
-      <li>Mazur, A., Booth, A., &amp; Dabbs, J. M. (1992). Testosterone and chess competition. <i>Social Psychology Quarterly</i>, 55, 70–77.</li>
-      <li>McGowan, P. O., et al. (2009). Epigenetic regulation of the glucocorticoid receptor in human brain associates with childhood abuse. <i>Nature Neuroscience</i>, 12, 342–348.</li>
       <li>National Research Council (2003). <i>The Polygraph and Lie Detection</i>. National Academies Press.</li>
-      <li>Olds, J., &amp; Milner, P. (1954). Positive reinforcement produced by electrical stimulation of septal area and other regions of rat brain. <i>Journal of Comparative and Physiological Psychology</i>, 47, 419–427.</li>
-      <li>Papez, J. W. (1937). A proposed mechanism of emotion. <i>Archives of Neurology and Psychiatry</i>, 38, 725–743.</li>
       <li>Schachter, S., &amp; Singer, J. (1962). Cognitive, social, and physiological determinants of emotional state. <i>Psychological Review</i>, 69, 379–399.</li>
       <li>Strack, F., Martin, L. L., &amp; Stepper, S. (1988). Inhibiting and facilitating conditions of the human smile. <i>Journal of Personality and Social Psychology</i>, 54, 768–777.</li>
-      <li>Wagenmakers, E.-J., et al. (2016). Registered replication report: Strack, Martin, &amp; Stepper (1988). <i>Perspectives on Psychological Science</i>, 11, 917–928.</li>
-      <li>Weaver, I. C. G., et al. (2004). Epigenetic programming by maternal behavior. <i>Nature Neuroscience</i>, 7, 847–854.</li>
-      <li>Yoo, S.-S., Gujar, N., Hu, P., Jolesz, F. A., &amp; Walker, M. P. (2007). The human emotional brain without sleep: a prefrontal amygdala disconnect. <i>Current Biology</i>, 17, R877–R878.</li>
     </ul>
     <p>Brain drawings are simplified side (medial) views; the amygdala and insula sit deeper toward the side of the brain and are drawn as if seen through it. Free to use, share and adapt with credit to "Nelu Radpour, NeuroSims." Content <a href="https://creativecommons.org/licenses/by/4.0/">CC BY 4.0</a>, code MIT. Spot a bug or an inaccuracy? <a href="https://github.com/nelurad/neurosims/issues">Open an issue</a>.</p>
   </footer>
@@ -755,261 +766,16 @@ addEventListener('keydown',e=>{const typing=/INPUT|TEXTAREA|SELECT/.test(documen
   redrawHooks.push(draw);
 })();
 
-/* ================= 6 REWARD ================= */
+
+/* ================= quiz ================= */
 (()=>{
-  const svg=brain('rwBrain',{show:['pfc','motor','thal','sept','nac','hyp','vta','mfb','lhb','bs'],labels:['pfc','motor','nac','vta','mfb','lhb','sept','hyp'],click:true,
-    extra:'<g id="elec" style="transition:transform .4s"><line x1="0" y1="-130" x2="0" y2="0" stroke="var(--ink)" stroke-width="3"/><circle r="5" fill="var(--warm)"/></g><g id="daDots"></g>'});
-  const SITES={nac:['Nucleus accumbens',1,'Dopamine release here is strongly rewarding. The rat presses as fast as it can.'],
-    mfb:['Medial forebrain bundle',.95,'This fiber bundle carries dopamine axons from the VTA to the nucleus accumbens: one of the best sites.'],
-    vta:['VTA',.9,'Dopamine neurons start here. Stimulating them releases dopamine in the nucleus accumbens.'],
-    sept:['Septal area',.75,'Olds and Milner\'s original site in 1954 was near here.'],
-    hyp:['Lateral hypothalamus',.85,'The medial forebrain bundle passes through the lateral hypothalamus, a strong site.'],
-    motor:['Motor cortex',0,'No reward here. Pulses just twitch a muscle, and the rat stops pressing after a few tries.'],
-    lhb:['Lateral habenula',-1,'"Anti-reward": stimulation here is unpleasant and suppresses dopamine. The rat avoids the lever.']};
-  const POS={nac:[212,254],mfb:[290,272],vta:[352,292],sept:[232,230],hyp:[290,262],motor:[318,62],lhb:[364,204]};
-  let site='nac',run=false,presses=[],T=0,acc=0;
-  const btns=Object.keys(SITES).map(k=>{const b=document.createElement('button');b.className='chip';b.textContent=SITES[k][0];b.onclick=()=>pick(k);$('rwBtns').appendChild(b);b.dataset.k=k;return b;});
-  svg.querySelectorAll('.reg').forEach(r=>{if(SITES[r.dataset.r])r.onclick=()=>pick(r.dataset.r)});
-  function pick(k){site=k;setPressed(btns,btns.find(b=>b.dataset.k===k));const[x,y]=POS[k];$('elec').setAttribute('transform',`translate(${x},${y})`);
-    svg.querySelectorAll('.reg').forEach(r=>r.classList.toggle('on',r.dataset.r===k));$('rwNote').innerHTML=`<b>${SITES[k][0]}.</b> ${SITES[k][2]}`;}
-  pick('nac');
-  $('rwGo').onclick=()=>{run=!run;$('rwGo').textContent=run?'Pause':'Start session';};
-  $('rwReset').onclick=()=>{presses=[];T=0;acc=0;$('rwCount').textContent=0;draw();};
-  const c=$('rwRec');
-  function draw(){const{x,w,h}=fitCanvas(c);x.clearRect(0,0,w,h);const m=30;x.strokeStyle=cssv('--line');x.lineWidth=1;x.beginPath();x.moveTo(m,6);x.lineTo(m,h-m);x.lineTo(w-6,h-m);x.stroke();
-    x.fillStyle=cssv('--muted');x.font='12px system-ui';x.fillText('time (minutes) →',w-110,h-10);x.save();x.translate(14,h/2+40);x.rotate(-Math.PI/2);x.fillText('total presses',0,0);x.restore();
-    const Tmax=Math.max(60,T),Pmax=Math.max(60,presses.length);x.strokeStyle=cssv('--accent');x.lineWidth=2;x.beginPath();x.moveTo(m,h-m);
-    presses.forEach((p,i)=>{const px=m+(p.t/Tmax)*(w-m-10),py=h-m-((i+1)/Pmax)*(h-m-10);x.lineTo(px,h-m-(i/Pmax)*(h-m-10));x.lineTo(px,py);});
-    x.lineTo(m+(T/Tmax)*(w-m-10),h-m-(presses.length/Pmax)*(h-m-10));x.stroke();}
-  redrawHooks.push(draw);draw();
-  const dots=$('daDots');
-  frameHooks.push(dt=>{if(!run||!isVis(c))return;T+=dt;const v=SITES[site][1];const rate=v>0?.4+v*5.5:(v===0?(T<4?.5:0):0);
-    acc+=rate*dt;while(acc>=1){acc-=1;presses.push({t:T});if(v>0.5){const d=document.createElementNS(NS,'circle');d.setAttribute('r',3.5);d.setAttribute('class','dot2');d.setAttribute('cx',212+(Math.random()-.5)*26);d.setAttribute('cy',254+(Math.random()-.5)*20);dots.appendChild(d);setTimeout(()=>d.remove(),600);}}
-    $('rwCount').textContent=presses.length+(v<0?' (avoiding the lever)':'');draw();});
-})();
-
-/* ================= 7 LIMBIC ================= */
-(()=>{
-  const svg=brain('lbBrain',{show:['pfc','cing','thal','hyp','mam','amy','hip','fornix','bs'],labels:['pfc','cing','thal','mam','amy','hip','fornix'],extra:'<circle id="pzDot" class="dot" r="8" cx="-20" cy="-20"/>'});
-  const loop=[['hip','Hippocampus'],['fornix','Fornix'],['mam','Mammillary bodies'],['thal','Anterior thalamus'],['cing','Cingulate cortex']];
-  const paths=[ 'M300,302 C340,298 362,282 370,266', 'M370,262 C392,196 330,170 296,196 C282,214 302,254 314,272', 'M314,276 C322,250 316,236 322,226', 'M335,210 C340,170 320,140 300,128', 'M300,128 C380,110 470,150 470,190 C460,240 420,280 300,302'];
-  const P=paths.map(d=>{const p=document.createElementNS(NS,'path');p.setAttribute('d',d);return p;});
-  let pz=null;
-  $('papezPlay').onclick=()=>{pz=pz?null:{t:0};$('papezPlay').textContent=pz?'Stop':'Play the Papez circuit';if(!pz){lightUp(svg,{});$('pzDot').setAttribute('cx',-20);$('papezStep').textContent=''}};
-  frameHooks.push(dt=>{if(!pz||!isVis(svg))return;pz.t+=dt*.7;const i=Math.floor(pz.t)%5,f=pz.t%1;const m={};m[loop[i][0]]=1;m[loop[(i+1)%5][0]]=2;lightUp(svg,m);
-    $('papezStep').textContent=loop[i][1]+' → '+loop[(i+1)%5][1];
-    svg.appendChild(P[i]);const L=P[i].getTotalLength(),q=P[i].getPointAtLength(L*f);P[i].remove();$('pzDot').setAttribute('cx',q.x);$('pzDot').setAttribute('cy',q.y);});
-  const L={intact:['Intact',{amy:0},'Normal responses.',[['Gentle touch','calm'],['Mild pinch','brief annoyance'],['A snake','fear, backs away'],['A strange object','cautious']]],
-    decort:['Remove the cortex',{pfc:1,cing:1},'<b>Decorticate ("sham") rage:</b> sudden, intense, poorly aimed rage to the slightest touch. The cortex normally <b>inhibits</b> rage circuits in the hypothalamus.',[['Gentle touch','<b style="color:var(--bad)">intense rage</b>'],['Mild pinch','<b style="color:var(--bad)">intense rage</b>'],['A snake','rage'],['A strange object','rage']]],
-    kb:['Remove both amygdalas (Klüver–Bucy)',{amy:1},'<b>Klüver–Bucy syndrome:</b> a dramatic loss of fear and anxiety. The monkeys became tame, approached snakes and handlers, put objects in their mouths and were hypersexual.',[['Gentle touch','calm'],['Mild pinch','calm'],['A snake','<b style="color:var(--bad)">approaches it, no fear</b>'],['A strange object','puts it in its mouth']]]};
-  const btns=Object.entries(L).map(([k,v])=>{const b=document.createElement('button');b.className='chip';b.textContent=v[0];b.onclick=()=>{setPressed(btns,b);show(k)};$('lesBtns').appendChild(b);return b;});
-  function show(k){const v=L[k];if(!pz){const m={};Object.keys(v[1]).forEach(r=>{if(v[1][r])m[r]=1});lightUp(svg,m);}
-    $('lesTable').innerHTML='<tr><th style="text-align:left;padding:6px;border-bottom:1.5px solid var(--line)">Stimulus</th><th style="text-align:left;padding:6px;border-bottom:1.5px solid var(--line)">Response</th></tr>'+v[3].map(([a,b])=>`<tr><td style="padding:6px;border-bottom:1px solid var(--line)">${a}</td><td style="padding:6px;border-bottom:1px solid var(--line)">${b}</td></tr>`).join('');
-    $('lesNote').innerHTML=v[2]+(k==='intact'?'':' (Red regions = removed.)');}
-  setPressed(btns,btns[0]);show('intact');
-})();
-
-/* ================= 8 FEAR ================= */
-(()=>{
-  const svg=brain('frBrain',{show:['pfc','thal','vis','amy','hyp','bs'],labels:['pfc','thal','vis','amy','hyp','bs'],
-    extra:`<path id="low" d="M318,236 C300,262 270,280 250,288" stroke="var(--accent)" stroke-width="5" fill="none" stroke-dasharray="2 8" stroke-linecap="round"/>
-           <path id="high1" d="M352,212 C410,170 470,180 490,196" stroke="var(--accent2)" stroke-width="5" fill="none" stroke-dasharray="2 8" stroke-linecap="round"/>
-           <path id="high2" d="M500,246 C470,300 330,330 254,298" stroke="var(--accent2)" stroke-width="5" fill="none" stroke-dasharray="2 8" stroke-linecap="round"/>
-           <path id="brakeP" d="M150,240 C170,280 200,296 222,294" stroke="var(--good)" stroke-width="5" fill="none" opacity="0"/>
-           <g transform="translate(78,262)"><ellipse rx="14" ry="9" fill="var(--panel)" stroke="var(--ink)" stroke-width="1.5"/><circle r="4.5" fill="var(--ink)"/></g><text x="78" y="290" class="svgm" text-anchor="middle">eye</text>
-           <path id="eyeIn" d="M92,262 C170,250 250,236 302,226" stroke="var(--muted)" stroke-width="3" fill="none" stroke-dasharray="4 4"/>
-           <text x="254" y="346" class="blab" style="fill:var(--accent)">low road (fast)</text><line x1="270" y1="334" x2="284" y2="272" class="lead"/><text x="420" y="160" class="blab" style="fill:var(--accent2)">high road (slow)</text>
-           <circle id="dLow" class="dot" r="8" cx="-20" cy="-20"/><circle id="dHigh" class="dot2" r="8" cx="-20" cy="-20"/>`});
-  const tl=$('frTime');
-  tl.innerHTML=`<line x1="20" y1="70" x2="400" y2="70" stroke="var(--line)" stroke-width="2"/>
-    <text x="20" y="100" class="svgm">0</text><text x="400" y="100" class="svgm" text-anchor="end">time →</text>
-    <circle id="tLowM" cx="-20" cy="70" r="7" class="dot"/><circle id="tHighM" cx="-20" cy="70" r="7" class="dot2"/>
-    <text id="tLowT" x="0" y="50" class="svgt" style="fill:var(--accent)"></text><text id="tHighT" x="0" y="30" class="svgt" style="fill:var(--accent2)"></text>`;
-  let run=null;
-  const P={eye:$('eyeIn'),low:$('low'),h1:$('high1'),h2:$('high2')};
-  function at(p,f){const L=p.getTotalLength(),q=p.getPointAtLength(L*clamp(f,0,1));return q}
-  function go(snake){run={t:0,snake,amy:0,hr:70,stage:0};$('frNote').innerHTML='Light from the eyes reaches the <b>thalamus</b>, the relay station. Now the race starts…';$('tLowT').textContent='';$('tHighT').textContent='';$('tLowM').setAttribute('cx',-20);$('tHighM').setAttribute('cx',-20);$('brakeP').setAttribute('opacity',0);lightUp(svg,{thal:1});}
-  $('frStick').onclick=()=>go(false);$('frSnake').onclick=()=>go(true);
-  frameHooks.push(dt=>{if(!run)return;run.t+=dt*(reduce?3:1);const t=run.t;let m={};
-    // timeline: eye 0-1, low 1-1.8, high1 1-2.6, high2 2.6-3.6
-    const dl=$('dLow'),dh=$('dHigh');
-    if(t<1){const q=at(P.eye,t);dl.setAttribute('cx',q.x);dl.setAttribute('cy',q.y);dh.setAttribute('cx',-20);m.thal=1;}
-    else{ if(t<1.8){const q=at(P.low,(t-1)/.8);dl.setAttribute('cx',q.x);dl.setAttribute('cy',q.y);}else dl.setAttribute('cx',-20);
-      if(t<2.6){const q=at(P.h1,(t-1)/1.6);dh.setAttribute('cx',q.x);dh.setAttribute('cy',q.y);m.vis=t>2.4?2:0;}
-      else if(t<3.8){const q=at(P.h2,(t-2.6)/1.2);dh.setAttribute('cx',q.x);dh.setAttribute('cy',q.y);m.vis=2;}else dh.setAttribute('cx',-20);
-      m.thal=1;}
-    if(t>=1.8&&run.stage<1){run.stage=1;run.amy=.9;$('tLowM').setAttribute('cx',20+380*.3);$('tLowT').setAttribute('x',20+380*.3-30);$('tLowT').textContent='low road arrives';
-      $('frNote').innerHTML='<b>Low road arrives first.</b> The amygdala gets a blurry "long curvy thing!" and fires. Through the hypothalamus and brainstem you <b>jump</b>, freeze and your heart speeds up, before you know what it is.';}
-    if(t>=3.8&&run.stage<2){run.stage=2;$('tHighM').setAttribute('cx',20+380*.75);$('tHighT').setAttribute('x',20+380*.75-40);$('tHighT').textContent='high road arrives';
-      if(run.snake){$('frNote').innerHTML='<b>High road arrives:</b> visual cortex has the details. Scales, a head, it moves. <b>It really is a snake.</b> The amygdala stays active and you back away. The fast guess was right, which is why it is worth having.';}
-      else{run.amy=.25;$('brakeP').setAttribute('opacity',.9);$('frNote').innerHTML='<b>High road arrives:</b> visual cortex has the details: bark, no head. <b>Just a stick.</b> The prefrontal cortex calms the amygdala and your heart rate comes back down. Better a false alarm than a missed snake.';}}
-    if(run.stage>=1){m.amy=1;m.hyp=1;m.bs=1;} if(run.stage>=2&&!run.snake){m.pfc=2;m.amy=run.amy>.5?1:0;m.hyp=0;m.bs=0;}
-    lightUp(svg,m);
-    const tgtHR=run.stage===0?70:(run.stage===1?115:(run.snake?125:80));run.hr=lerp(run.hr,tgtHR,dt*1.5);
-    const amyShow=run.stage===0?.1:(run.stage===1?.9:(run.snake?.95:.25));
-    $('frAmyBar').style.width=(amyShow*100)+'%';$('frAmy').textContent=amyShow>.7?'alarm!':amyShow>.3?'alert':'calm';
-    $('frHR').textContent=Math.round(run.hr)+' bpm';$('frHRBar').style.width=clamp((run.hr-50)/90*100,0,100)+'%';
-    if(t>7)run=null;});
-
-})();
-
-/* ================= 9 NETWORK ================= */
-(()=>{
-  const svg=brain('nwBrain',{show:['pfc','cing','ins','amy','thal','hyp','bs'],labels:['pfc','cing','ins','amy','thal','hyp']});
-  const E={Fear:{amy:1,ins:1,cing:1,pfc:1,hyp:1},Disgust:{ins:1,amy:1,pfc:1,cing:1},Sadness:{pfc:1,cing:1,amy:1,ins:1},Happiness:{pfc:1,cing:1,amy:1,ins:1},Anger:{pfc:1,ins:1,amy:1,cing:1,hyp:1}};
-  const notes={Fear:'Fear: amygdala, insula, cingulate, prefrontal cortex, and the hypothalamus for the body\'s alarm.',Disgust:'Disgust: the insula is prominent, but amygdala, cingulate and prefrontal cortex join in.',Sadness:'Sadness: cingulate and prefrontal cortex, plus amygdala and insula.',Happiness:'Happiness: prefrontal cortex and cingulate, plus amygdala and insula. Even the "threat" region joins in, because it tracks what matters, good or bad.',Anger:'Anger: prefrontal cortex, insula, amygdala, cingulate and hypothalamus.'};
-  const seen={};
-  const btns=Object.keys(E).map(k=>{const b=document.createElement('button');b.className='chip';b.textContent=k;b.onclick=()=>{setPressed(btns,b);lightUp(svg,E[k]);seen[k]=1;
-    const n=Object.keys(seen).length;$('nwNote').innerHTML=notes[k]+(n>=3?` <br><br><b>Notice:</b> after ${n} emotions, the same four regions keep lighting up. No one-to-one mapping between an emotion and a brain region.`:'');};$('nwBtns').appendChild(b);return b;});
-  const bs=$('brakeSvg');
-  bs.innerHTML=`<g class="node on"><rect x="20" y="70" width="170" height="70" rx="14"/><text x="105" y="102" text-anchor="middle">Prefrontal cortex</text><text x="105" y="122" text-anchor="middle" style="font-size:12px">the brakes</text></g>
-    <path id="brkLine" d="M192,105 L390,105" stroke="var(--accent2)" fill="none" stroke-linecap="round"/>
-    <text x="290" y="92" text-anchor="middle" class="svgm">calms</text>
-    <circle id="amyC" cx="480" cy="105" r="50" fill="var(--accent)" opacity=".85"/><text x="480" y="110" text-anchor="middle" style="font:700 15px var(--sans);fill:#fff">Amygdala</text>
-    <text x="480" y="200" text-anchor="middle" class="svgm">the alarm</text>`;
-  function upd(){const s=+$('sleepR').value;const loss=(8-s)/8;const amy=1+.6*loss;const conn=1-.6*loss;
-    $('sleepOut').textContent=s+(s===1?' hour':' hours');$('amyC').setAttribute('r',(48*Math.sqrt(amy)).toFixed(1));
-    $('brkLine').setAttribute('stroke-width',(2+12*conn).toFixed(1));$('brkLine').setAttribute('stroke-dasharray',conn<.6?'6 8':'none');
-    $('brAmy').textContent=amy>1.02?`+${Math.round((amy-1)*100)}%`:'baseline';$('brAmyBar').style.width=(amy/1.7*100)+'%';
-    $('brPfc').textContent=conn>.98?'strong':conn>.7?'weaker':'weak';$('brPfcBar').style.width=(conn*100)+'%';}
-  $('sleepR').oninput=upd;upd();
-})();
-
-/* ================= 10 AGGRESSION ================= */
-(()=>{
-  let sp='mouse',vmh=false,ctx=false,win=0;
-  const svg=$('agSvg');
-  svg.innerHTML=`<defs><marker id="aa" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0,0 L10,5 L0,10z" fill="var(--muted)"/></marker></defs>
-    <g class="node" id="agnT"><rect x="20" y="40" width="160" height="56" rx="12"/><text x="100" y="74" text-anchor="middle">Testosterone</text></g>
-    <g class="node" id="agnA"><rect x="260" y="40" width="160" height="56" rx="12"/><text x="340" y="74" text-anchor="middle">Aggression / winning</text></g>
-    <g class="node" id="agn5"><rect x="20" y="200" width="160" height="56" rx="12"/><text x="100" y="234" text-anchor="middle">Serotonin</text></g>
-    <g class="node" id="agnV"><rect x="260" y="200" width="160" height="56" rx="12"/><text x="340" y="228" text-anchor="middle">Ventromedial</text><text x="340" y="246" text-anchor="middle" style="font-size:13px">hypothalamus</text></g>
-    <path d="M182,58 C215,48 228,48 256,58" class="edge on" marker-end="url(#aa)"/><text x="220" y="40" text-anchor="middle" class="svgm" id="agTA">raises (in animals)</text>
-    <path d="M256,84 C228,96 212,96 184,84" class="edge on" marker-end="url(#aa)"/><text x="220" y="116" text-anchor="middle" class="svgm">winning raises it</text>
-    <path d="M182,214 C230,180 260,140 300,100" class="edge" marker-end="url(#aa)" stroke-dasharray="6 5"/><text x="168" y="168" class="svgm">holds back</text>
-    <path d="M340,198 L340,100" class="edge on" marker-end="url(#aa)"/><text x="348" y="156" class="svgm">drives attack</text>`;
-  function upd(){const T=+$('agT').value/100,S=+$('ag5').value/100;const tw=sp==='mouse'?1:.25;
-    let a=.3+(T-.5)*.7*tw-(S-.5)*.6+win*.12;if(vmh)a+=.45;if(ctx)a+=.35;a=clamp(a,0,1);
-    $('agBar').style.width=(a*100)+'%';$('agOut').textContent=a>.75?'high':a>.45?'moderate':a>.2?'low':'very low';
-    $('agTo').textContent=T<.15?(sp==='mouse'?'castrated':'very low'):T>.8?'high':'normal';$('ag5o').textContent=S<.25?'low':S>.75?'high':'normal';
-    $('agTA').textContent=sp==='mouse'?'raises (clear in mice)':'weak link in humans';
-    ['agnT','agnA','agn5','agnV'].forEach(id=>$(id).classList.remove('on'));if(a>.45)$('agnA').classList.add('on');if(vmh)$('agnV').classList.add('on');if(T>.8||win)$('agnT').classList.add('on');if(S>.75)$('agn5').classList.add('on');
-    let n=sp==='mouse'?'In male mice the testosterone link is strong: castration cuts fighting, replacement restores it.':'In humans, extra testosterone does not reliably raise aggression. Low serotonin and social context matter more.';
-    if(S<.25)n+=' <b>Low serotonin</b> removes a brake: the most aggressive monkeys have the lowest serotonin activity.';
-    if(vmh)n+=' <b>VMH stimulation</b> can trigger attack on the spot (shown in mice with optogenetics).';
-    if(ctx)n+=' <b>Without the cortex</b>, rage is released (decorticate rage).';
-    if(win)n+=` <b>You won ${win} time${win>1?'s':''}.</b> Winning raises testosterone for days, which can make the next contest more likely.`;
-    $('agNote').innerHTML=n;}
-  $('agT').oninput=upd;$('ag5').oninput=upd;
-  $('agMouse').onclick=()=>{sp='mouse';setPressed([$('agMouse'),$('agHuman')],$('agMouse'));upd();};
-  $('agHuman').onclick=()=>{sp='human';setPressed([$('agMouse'),$('agHuman')],$('agHuman'));upd();};
-  $('agVMH').onclick=()=>{vmh=!vmh;$('agVMH').setAttribute('aria-pressed',vmh);upd();};
-  $('agCtx').onclick=()=>{ctx=!ctx;$('agCtx').setAttribute('aria-pressed',ctx);upd();};
-  $('agWin').onclick=()=>{win=Math.min(3,win+1);$('agT').value=Math.min(100,+$('agT').value+12);upd();};
-  upd();
-})();
-
-/* ================= 11 STRESS ================= */
-(()=>{
-  const svg=$('hpaSvg');
-  svg.innerHTML=`<defs><marker id="sa" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0,0 L10,5 L0,10z" fill="var(--muted)"/></marker></defs>
-    <path class="tissue" d="M60,140 C50,70 120,20 220,18 C320,16 390,60 400,130 C405,170 380,190 340,192 L120,196 C90,196 66,180 60,140Z"/>
-    <ellipse id="sHyp" class="reg" cx="210" cy="168" rx="34" ry="16"/><text x="250" y="196" class="blab">Hypothalamus</text>
-    <path id="sHip" class="reg line" d="M260,150 C300,156 340,140 360,118" style="stroke-width:16px"/><text x="362" y="104" class="blab">Hippocampus</text>
-    <circle id="sPit" class="reg" cx="200" cy="222" r="15"/><line x1="206" y1="184" x2="202" y2="207" stroke="var(--tissueLine)" stroke-width="3"/><text x="222" y="236" class="blab">Anterior pituitary</text>
-    <rect x="395" y="200" width="22" height="210" rx="10" fill="var(--tissue2)" stroke="var(--tissueLine)"/><text x="425" y="400" class="svgm">spinal cord</text>
-    <ellipse cx="190" cy="390" rx="62" ry="40" fill="#c98a7a" opacity=".55"/><text x="122" y="404" text-anchor="end" class="svgm">kidney</text>
-    <path id="sCortex" class="reg" d="M140,350 C150,300 230,300 240,350 C220,360 160,360 140,350Z"/>
-    <ellipse id="sMed" class="reg" cx="190" cy="340" rx="24" ry="9"/>
-    <text x="262" y="378" class="blab">Adrenal cortex (outer)</text><text x="262" y="398" class="blab">Medulla (middle)</text>
-    <line x1="226" y1="322" x2="258" y2="374" class="lead"/><line x1="196" y1="344" x2="258" y2="394" class="lead"/>
-    <path id="pFast" d="M240,172 C330,180 395,190 406,230 C412,290 300,330 214,340" class="edge" fill="none" marker-end="url(#sa)"/>
-    <path id="pCRH" d="M204,186 L201,206" class="edge" fill="none"/>
-    <path id="pACTH" d="M186,232 C140,270 150,300 168,322" class="edge" fill="none" marker-end="url(#sa)"/>
-    <path id="pCort" d="M140,345 C40,330 30,190 172,166" class="edge" fill="none" marker-end="url(#sa)" stroke-dasharray="7 6"/>
-    <path id="pCort2" d="M140,345 C70,300 90,150 260,150" class="edge" fill="none" stroke-dasharray="7 6"/>
-    <text x="426" y="250" class="svgt" style="fill:var(--accent)">FAST (seconds)</text><text x="426" y="268" class="svgm">sympathetic nerves</text><text x="426" y="284" class="svgm">→ epinephrine + NE</text>
-    <text x="70" y="262" class="svgt" style="fill:var(--accent2)">SLOW</text><text x="70" y="278" class="svgm">(minutes)</text><text x="132" y="258" class="svgm">ACTH</text><text x="160" y="204" class="svgm" text-anchor="end">CRH</text>
-    <text x="20" y="300" class="svgm">cortisol:</text><text x="20" y="316" class="svgm">"shut it off"</text>
-    <g id="sDots"></g>`;
-  let sim=null,chronic=false,hipHealth=1,hist=[],tt=0;
-  const dotsG=$('sDots');
-  function spawn(pid,cls,dur){const p=$(pid),L=p.getTotalLength(),d=document.createElementNS(NS,'circle');d.setAttribute('r',6);d.setAttribute('class',cls);dotsG.appendChild(d);let s=0;
-    const f=dt=>{s+=dt/dur;if(s>=1){d.remove();return true}const q=p.getPointAtLength(L*s);d.setAttribute('cx',q.x);d.setAttribute('cy',q.y);return false};flows.push(f);}
-  let flows=[];
-  let E=0,C=0,H=0,stress=0,stressT=0;
-  function stressor(){stressT=chronic?9999:2.2;sim=true;
-    const seq=[[0,'pFast','dot',1.2],[.2,'pFast','dot',1.2],[.4,'pFast','dot',1.2],[1.2,'pCRH','dot2',.5],[1.6,'pACTH','dot2',1.4],[3,'pCort','dot2',2],[3.2,'pCort2','dot2',2]];
-    seq.forEach(([d,p,c,du])=>setTimeout(()=>spawn(p,c,du),d*1000/(reduce?3:1)));}
-  $('stGo').onclick=stressor;
-  $('stChronic').onclick=()=>{chronic=!chronic;$('stChronic').setAttribute('aria-pressed',chronic);if(chronic){stressor();$('stNote').innerHTML='<b>Chronic stress:</b> the stressor never goes away. Cortisol stays high, slowly damaging the hippocampus. A weaker hippocampus means a weaker brake, so cortisol climbs even higher.';}else{stressT=0;$('stNote').innerHTML='Stressor removed. The brake still works, more weakly if the hippocampus was damaged.';}};
-  $('stReset').onclick=()=>{chronic=false;$('stChronic').setAttribute('aria-pressed',false);hipHealth=1;hist=[];E=C=H=0;stressT=0;tt=0;flows=[];dotsG.innerHTML='';$('sHip').style.strokeWidth='16px';$('stNote').innerHTML='Memory trick: <b>medulla = middle</b> (adrenaline, fast), <b>cortex = outer layer</b> (cortisol, slow).';draw();};
-  const c=$('stCan');
-  function draw(){const{x,w,h}=fitCanvas(c);x.clearRect(0,0,w,h);const m=30;x.strokeStyle=cssv('--line');x.beginPath();x.moveTo(m,8);x.lineTo(m,h-24);x.lineTo(w-4,h-24);x.stroke();
-    x.fillStyle=cssv('--muted');x.font='12px system-ui';x.fillText('time →',w-50,h-6);
-    const N=hist.length,X=i=>m+(i/Math.max(300,N))*(w-m-8),Y=v=>h-24-v*(h-40);
-    [['e',cssv('--accent'),'epinephrine (fast)'],['c',cssv('--accent2'),'cortisol (slow)']].forEach(([k,col,lab],j)=>{x.strokeStyle=col;x.lineWidth=2.5;x.beginPath();hist.forEach((p,i)=>i?x.lineTo(X(i),Y(p[k])):x.moveTo(X(i),Y(p[k])));x.stroke();
-      x.fillStyle=col;x.fillRect(m+12,10+j*18,10,10);x.fillStyle=cssv('--muted');x.fillText(lab,m+28,19+j*18);});
-    x.fillStyle=cssv('--muted');x.fillText('hippocampus health: '+Math.round(hipHealth*100)+'%',w-180,19);}
-  redrawHooks.push(draw);draw();
-  frameHooks.push(dt=>{flows=flows.filter(f=>!f(dt));if(!isVis(c))return;tt+=dt;
-    stressT-=dt;stress=stressT>0?1:0;
-    E+=dt*(stress*.95-E)*3;
-    const fb=1.6*hipHealth;H+=dt*(stress*1.2-fb*C*H-H*.4)*1.2;H=Math.max(0,H);C+=dt*(H*.9-C*.35)*.6;C=clamp(C,0,1);
-    if(chronic&&C>.5)hipHealth=Math.max(.35,hipHealth-dt*.012);
-    $('sHip').style.strokeWidth=(6+10*hipHealth).toFixed(1)+'px';
-    const lit=(id,on,cl)=>{$(id).classList.toggle(cl||'on',on)};
-    lit('sHyp',stress||H>.15);lit('sMed',E>.2);lit('sPit',H>.15,'on2');lit('sCortex',C>.15,'on2');lit('sHip',C>.3,'on2');
-    ['pFast'].forEach(p=>$(p).classList.toggle('on',E>.2));['pCRH','pACTH'].forEach(p=>$(p).classList.toggle('on',H>.15));['pCort','pCort2'].forEach(p=>$(p).classList.toggle('on',C>.2));
-    if(sim||chronic){hist.push({e:E,c:C});if(hist.length>600)hist.shift();draw();}});
-
-  // maternal care
-  const lc=$('lgCan');
-  function lg(){const v=+$('lgR').value/100;$('lgOut').textContent=v>.66?'high':v>.33?'medium':'low';const{x,w,h}=fitCanvas(lc);x.clearRect(0,0,w,h);
-    const half=w*.42;x.fillStyle=cssv('--muted');x.font='12px system-ui';x.fillText('receptors in the hippocampus',6,14);
-    const n=Math.round(6+v*30);let rng=7;const rnd=()=>{rng=(rng*16807)%2147483647;return rng/2147483647};
-    x.strokeStyle=cssv('--tissueLine');x.lineWidth=18;x.lineCap='round';x.beginPath();x.moveTo(20,h*.6);x.quadraticCurveTo(half*.5,h*.95,half-14,h*.35);x.stroke();
-    x.fillStyle=cssv('--accent2');for(let i=0;i<n;i++){const t=rnd();const px=20+(half-34)*t,py=h*.6+Math.sin(t*Math.PI)*h*.18-t*h*.2+(rnd()-.5)*12;x.beginPath();x.arc(px,py,3.2,0,7);x.fill();}
-    x.fillStyle=cssv('--muted');x.fillText('adult cortisol response to stress',half+10,14);
-    const m=half+16,bw=w-m-8,bh=h-40;x.strokeStyle=cssv('--line');x.lineWidth=1;x.beginPath();x.moveTo(m,22);x.lineTo(m,h-14);x.lineTo(w-4,h-14);x.stroke();
-    const peak=.45+.5*(1-v),decay=.06+.12*v;x.strokeStyle=cssv('--accent');x.lineWidth=2.5;x.beginPath();
-    for(let i=0;i<=100;i++){const t=i/100*40;const yv=t<5?peak*t/5:peak*Math.exp(-decay*(t-5));const px=m+i/100*bw,py=h-14-yv*bh;i?x.lineTo(px,py):x.moveTo(px,py);}x.stroke();
-    x.fillStyle=cssv('--muted');x.fillText(v>.5?'small peak, fast recovery':'big peak, slow recovery',m+bw*.3,30+(1-peak)*bh*.5);}
-  $('lgR').oninput=lg;redrawHooks.push(lg);lg();
-})();
-
-/* ================= 12 CYCLE + QUIZ ================= */
-(()=>{
-  const svg=$('cycleSvg');const pts=[[220,50,'Poor sleep'],[350,232,'Louder amygdala'],[90,232,'Cortisol (HPA axis)']];
-  let h='<defs><marker id="ca" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0,0 L10,5 L0,10z" fill="var(--accent)"/></marker></defs>';
-  h+='<path d="M290,70 C350,100 370,150 360,204" class="edge on" fill="none" marker-end="url(#ca)"/><path d="M280,252 C240,280 200,280 160,252" class="edge on" fill="none" marker-end="url(#ca)"/><path d="M70,204 C60,150 90,90 150,68" class="edge on" fill="none" marker-end="url(#ca)"/>';
-  pts.forEach(([x,y,l])=>{h+=`<g class="node"><rect x="${x-80}" y="${y-24}" width="160" height="48" rx="12"/><text x="${x}" y="${y+5}" text-anchor="middle" style="font-size:13px">${l}</text></g>`});
-  h+='<circle id="cyDot" class="dot" r="7" cx="-20" cy="-20"/>';svg.innerHTML=h;
-  const segs=['M290,70 C350,100 370,150 360,204','M280,252 C240,280 200,280 160,252','M70,204 C60,150 90,90 150,68'].map(d=>{const p=document.createElementNS(NS,'path');p.setAttribute('d',d);svg.appendChild(p);p.setAttribute('fill','none');return p;});
-  let t=0;frameHooks.push(dt=>{if(!isVis(svg)||reduce)return;t+=dt*.5;const i=Math.floor(t)%3,f=t%1;const p=segs[i],q=p.getPointAtLength(p.getTotalLength()*f);$('cyDot').setAttribute('cx',q.x);$('cyDot').setAttribute('cy',q.y);});
-
-  const Q=[
-    ['Someone gets Botox in their forehead and reports feeling emotions less intensely. Which theory does this support best?',['Cannon–Bard','James–Lange','Common sense (feeling causes body change)','None; Botox only affects muscles'],1,'James–Lange: if feedback from the body, including the face, helps produce the feeling, blocking that feedback should weaken it.'],
-    ['Which branch of the autonomic nervous system dilates your pupils and pauses digestion?',['Parasympathetic','Sympathetic','Somatic','Enteric'],1,'Sympathetic = fight or flight. The parasympathetic branch (largely the vagus nerve) does the opposite: rest and digest.'],
-    ['Cannon argued against James–Lange because bodily changes are…',['too fast and too varied','too slow and too similar across emotions','controlled by the cortex','only found in animals'],1,'Autonomic responses take seconds and look much the same for fear and anger, so they cannot be what makes each feeling distinct.'],
-    ['In Schachter and Singer\'s study, who took on the actor\'s mood most strongly?',['Placebo group','Epinephrine group told what to expect','Epinephrine group not told what to expect','All groups equally'],2,'Aroused people with no explanation looked to the situation for a label. Informed people blamed the shot.'],
-    ['Rats press a lever most for stimulation along the…',['medial forebrain bundle toward the nucleus accumbens','motor cortex','lateral habenula','visual cortex'],0,'The medial forebrain bundle carries dopamine axons from the VTA to the nucleus accumbens. The lateral habenula acts more like an anti-reward center.'],
-    ['You jump at a stick before realizing it is a stick. Which pathway made you jump?',['High road: thalamus → cortex → amygdala','Low road: thalamus → amygdala','Papez circuit','HPA axis'],1,'The low road is fast, crude and unconscious. The high road arrives later with the details.'],
-    ['Patient S.M. lost both amygdalas. What would you expect?',['Extra fear of snakes','No fear of snakes and trouble recognizing fear in faces','Loss of all memory','Decorticate rage'],1,'S.M. shows almost no fear and cannot recognize fearful faces. Bilateral amygdala damage in monkeys likewise causes Klüver–Bucy syndrome.'],
-    ['Which statement about emotions and brain regions is best supported?',['Each emotion has its own region','Fear lives only in the amygdala','Emotions activate overlapping networks','Emotions do not involve the cortex'],2,'Meta-analyses find overlapping networks (amygdala, insula, cingulate, prefrontal cortex) rather than one region per emotion.'],
-    ['Which is true of serotonin and aggression?',['High serotonin increases aggression','Serotonin normally inhibits aggression','Serotonin is unrelated to aggression','Serotonin is made in the adrenal medulla'],1,'The most aggressive monkeys had the lowest serotonin activity. The ventromedial hypothalamus, by contrast, can drive aggression.'],
-    ['Cortisol is released by the ___ after the pituitary releases ___.',['adrenal medulla; CRH','adrenal cortex; ACTH','hypothalamus; ACTH','adrenal cortex; epinephrine'],1,'HPA axis: hypothalamus (CRH) → anterior pituitary (ACTH) → adrenal cortex (cortisol). The medulla makes epinephrine via the fast neural route.'],
-    ['Why can chronic stress make the stress response even bigger over time?',['Cortisol strengthens the hippocampus','Prolonged cortisol can damage the hippocampus, weakening negative feedback','The adrenal medulla runs out of epinephrine','Chronic stress lowers CRH'],1,'The hippocampus helps shut off the HPA axis. Damage to it weakens the brake, so cortisol stays high.'],
-    ['Rat pups that get little licking and grooming grow up with…',['more hippocampal cortisol receptors and a smaller stress response','fewer hippocampal cortisol receptors and a bigger stress response','no change; genes alone decide','a smaller amygdala and no fear'],1,'Less care → fewer glucocorticoid receptors (an epigenetic change in gene expression) → weaker feedback → bigger stress response.']];
+  const Q=[["Someone gets Botox in their forehead and reports feeling emotions less intensely. Which theory does this support best?", ["Cannon–Bard", "James–Lange", "Common sense (feeling causes body change)", "None; Botox only affects muscles"], 1, "James–Lange: if feedback from the body, including the face, helps produce the feeling, blocking that feedback should weaken it."], ["Which branch of the autonomic nervous system dilates your pupils and pauses digestion?", ["Parasympathetic", "Sympathetic", "Somatic", "Enteric"], 1, "Sympathetic = fight or flight. The parasympathetic branch (largely the vagus nerve) does the opposite: rest and digest."], ["Cannon argued against James–Lange because bodily changes are…", ["too fast and too varied", "too slow and too similar across emotions", "controlled by the cortex", "only found in animals"], 1, "Autonomic responses take seconds and look much the same for fear and anger, so they cannot be what makes each feeling distinct."], ["In Schachter and Singer's study, who took on the actor's mood most strongly?", ["Placebo group", "Epinephrine group told what to expect", "Epinephrine group not told what to expect", "All groups equally"], 2, "Aroused people with no explanation looked to the situation for a label. Informed people blamed the shot."], ["A polygraph (\"lie detector\") mainly measures…", ["Whether someone is lying", "Sympathetic arousal: breathing, sweating and heart rate", "Activity in the amygdala", "Facial expressions"], 1, "It detects stress, not lies. Nervous truth-tellers can fail and calm liars can pass, which is why it is too error-prone for screening."], ["In Plutchik's wheel of basic emotions, which emotion sits opposite joy?", ["Anger", "Sadness", "Fear", "Surprise"], 1, "The four opposing pairs are joy–sadness, trust–disgust, fear–anger and surprise–anticipation."]];
   let qi=0;const ans={};
-  function show(){const[q,opts,right,why]=Q[qi];$('qText').textContent=q;$('qCount').textContent=`${qi+1} / ${Q.length}`;$('qWhy').textContent=ans[qi]!==undefined?why:'';
-    $('qOpts').innerHTML='';opts.forEach((o,i)=>{const b=document.createElement('button');b.textContent=String.fromCharCode(65+i)+')  '+o;
-      if(ans[qi]!==undefined){if(i===right)b.classList.add('right');else if(i===ans[qi])b.classList.add('wrong');}
-      b.onclick=()=>{ans[qi]=i;show();};$('qOpts').appendChild(b);});}
+  function show(){const[q,o,r,why]=Q[qi];$('qText').textContent=q;$('qCount').textContent=`${qi+1} / ${Q.length}`;$('qWhy').textContent=ans[qi]!==undefined?why:'';$('qOpts').innerHTML='';
+    o.forEach((t,i)=>{const b=document.createElement('button');b.textContent=String.fromCharCode(65+i)+')  '+t;if(ans[qi]!==undefined){if(i===r)b.classList.add('right');else if(i===ans[qi])b.classList.add('wrong');}b.onclick=()=>{ans[qi]=i;show();};$('qOpts').appendChild(b);});}
   $('qPrev').onclick=()=>{qi=(qi-1+Q.length)%Q.length;show()};$('qNext').onclick=()=>{qi=(qi+1)%Q.length;show()};show();
 })();
 
-/* ================= loop ================= */
 $('copyBtn').onclick=()=>{const t=$('embedCode').textContent;if(navigator.clipboard)navigator.clipboard.writeText(t).then(()=>{$('copyBtn').textContent='Copied';setTimeout(()=>$('copyBtn').textContent='Copy',1500)},()=>{})};
 let rz;addEventListener('resize',()=>{clearTimeout(rz);rz=setTimeout(()=>redrawHooks.forEach(f=>f()),120)});
 if(store.get('emoTheme')==='dark')setTheme(true);
@@ -1018,5 +784,6 @@ function loop(now){const dt=Math.max(0,Math.min(.05,(now-prev)/1000));prev=now;f
 requestAnimationFrame(loop);
 })();
 </script>
+
 </body>
 </html>

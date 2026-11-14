@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>The Remembering Brain</title>
 <link rel="icon" href="data:,">
-<meta name="description" content="An interactive tour of memory: patient H.M., the hippocampus and medial temporal lobe, mirror tracing, an interactive map of memory systems, the stages of memory, consolidation, false memories, emotional memory, place cells and grid cells, and how memories are stored.">
+<meta name="description" content="Where new memories are made: memory basics, patient H.M., the hippocampus and medial temporal lobe, place and grid cells, mirror tracing, and the memory circuit. Part 1 of the NeuroSims memory series.">
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@500;600;700&family=Nunito:ital,wght@0,400;0,600;0,700;0,800;1,400&display=swap" rel="stylesheet">
 <style>
@@ -318,6 +318,30 @@
   @media (prefers-reduced-motion:reduce){ .floaty,.twinkle{animation:none} }
   :root{--accent:#2f6bd8;--accent2:#d0581c}
   :root[data-theme="dark"]{--accent:#7fb2ff;--accent2:#ff9b5e}
+
+  .series{grid-column:1/-1;display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin-top:16px}
+  .series .slab{font:700 .74rem/1 var(--display);letter-spacing:.1em;text-transform:uppercase;color:var(--muted);margin-right:4px}
+  .series a{font:600 .88rem/1.2 var(--display);color:var(--ink);text-decoration:none;border:2px solid var(--edge);border-radius:999px;padding:6px 14px;background:var(--panel);box-shadow:2px 2px 0 var(--shadow)}
+  .series a:hover{background:color-mix(in srgb,var(--c2) 30%,var(--panel))}
+  .series a.on{background:var(--ink);color:var(--bg)}
+  .nextup{display:flex;justify-content:space-between;align-items:center;gap:16px;margin:46px 0 10px;padding:22px 26px;border:2.5px solid var(--edge);border-radius:22px;background:color-mix(in srgb,var(--c3) 18%,var(--panel));box-shadow:6px 6px 0 var(--shadow);text-decoration:none;color:var(--ink);transition:transform .1s}
+  .nextup:hover{transform:translate(-2px,-2px)}
+  .nextup small{display:block;font:700 .75rem/1.4 var(--display);letter-spacing:.1em;text-transform:uppercase;color:var(--muted)}
+  .nextup b{font:700 clamp(1.2rem,2.4vw,1.7rem)/1.2 var(--display)}
+  .nextup .arr{font:700 2.2rem/1 var(--display)}
+  .relay{cursor:pointer}
+  .relay:focus-visible{outline:none}
+  .relay:focus-visible .rb{stroke:var(--c4);stroke-width:5}
+  .relay .rb{transition:fill .25s}
+  .relay.done .rb{fill:#ffd27a}
+  .relay.shake{animation:shake .35s}
+  @keyframes shake{25%{transform:translateX(-5px)}75%{transform:translateX(5px)}}
+  .cfx{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:16px;margin-top:6px}
+  .cfx .box h4{margin:0 0 .3em;font:600 1.12rem var(--display)}
+  .cfx .box p{margin:.25em 0;font-size:.92rem}
+  .cfx .good{color:var(--good);font-weight:700}.cfx .bad{color:var(--bad);font-weight:700}
+  @media (max-width:900px){.cfx{grid-template-columns:1fr 1fr}.nextup{padding:18px}}
+  @media (max-width:560px){.cfx{grid-template-columns:1fr}}
 </style>
 </head>
 <body>
@@ -326,18 +350,18 @@
   <header class="hero" id="top">
     <a class="back" href="../">← All NeuroSims</a>
     <div class="heroText">
-    <p class="kicker" style="margin-top:28px">NeuroSims · Memory</p>
+    <p class="kicker" style="margin-top:28px">NeuroSims · Memory, part 1</p>
     <h1>The <span class="mark" style="--hcol:var(--c3)">Remembering</span> Brain</h1>
-    <p class="big">Memory is not a recording. It is a set of systems, each with its own brain machinery, that capture experiences, hold them for a moment, store some for a lifetime, and rebuild them every time you remember. This tour starts with the basics, then meets the patient who showed us where new memories are made.</p>
+    <p class="big">Where are new memories made? This first part starts with the basics, then follows the patient who couldn't form new memories, the sea-horse-shaped structure he lost, and the brain's built-in map.</p>
     </div>
     <div class="heroArt" aria-hidden="true"><svg viewBox="0 0 430 400"><path class="twinkle " d="M30 256 L33.92 266.08 L44 270 L33.92 273.92 L30 284 L26.08 273.92 L16 270 L26.08 266.08Z" fill="#ffb627" stroke="#231d3b" stroke-width="3" stroke-linejoin="round"/><path class="twinkle d2" d="M410 338 L413.36 346.64 L422 350 L413.36 353.36 L410 362 L406.64 353.36 L398 350 L406.64 346.64Z" fill="#9b5de5" stroke="#231d3b" stroke-width="3" stroke-linejoin="round"/><g class="floaty"><g transform="translate(-10,40)"><rect x="184" y="236" width="56" height="62" rx="14" fill="#ffb3c7" stroke="#231d3b" stroke-width="5.5"/><g stroke="#231d3b" stroke-width="11" fill="#ffb3c7"><circle cx="120" cy="165" r="66"/><circle cx="178" cy="118" r="74"/><circle cx="258" cy="112" r="76"/><circle cx="318" cy="160" r="62"/><circle cx="258" cy="200" r="74"/><circle cx="170" cy="206" r="64"/><circle cx="210" cy="160" r="70"/></g><g fill="#ffb3c7"><circle cx="120" cy="165" r="66"/><circle cx="178" cy="118" r="74"/><circle cx="258" cy="112" r="76"/><circle cx="318" cy="160" r="62"/><circle cx="258" cy="200" r="74"/><circle cx="170" cy="206" r="64"/><circle cx="210" cy="160" r="70"/></g><g fill="none" stroke="#e07a98" stroke-width="5" stroke-linecap="round"><path d="M120 110 q20 -14 36 6 q14 16 30 0"/><path d="M232 74 q16 18 4 34 q-10 16 8 28"/><path d="M300 118 q-18 6 -14 26 q4 18 -12 26"/><path d="M92 168 q18 -8 26 8"/><path d="M330 196 q-20 -2 -26 16"/><path d="M150 246 q10 -16 30 -8"/></g><ellipse cx="180" cy="178" rx="11" ry="14" fill="#231d3b"/><ellipse cx="252" cy="178" rx="11" ry="14" fill="#231d3b"/><circle cx="184" cy="172" r="4" fill="#fff"/><circle cx="256" cy="172" r="4" fill="#fff"/><ellipse cx="156" cy="204" rx="14" ry="8" fill="#ff7d9c" opacity=".55"/><ellipse cx="276" cy="204" rx="14" ry="8" fill="#ff7d9c" opacity=".55"/><path d="M196 206 q20 22 40 0" fill="none" stroke="#231d3b" stroke-width="6" stroke-linecap="round"/></g><circle cx="332" cy="128" r="8" fill="#fff" stroke="#231d3b" stroke-width="4"/><circle cx="350" cy="106" r="12" fill="#fff" stroke="#231d3b" stroke-width="4"/><g transform="rotate(6 360 50)"><rect x="306" y="0" width="116" height="92" rx="10" fill="#fff" stroke="#231d3b" stroke-width="5"/><rect x="318" y="11" width="92" height="56" rx="4" fill="#bfe3ff" stroke="#231d3b" stroke-width="3"/><circle cx="392" cy="26" r="9" fill="#ffb627" stroke="#231d3b" stroke-width="3"/><path d="M318 67 L348 38 L368 54 L382 42 L410 67Z" fill="#20b393" stroke="#231d3b" stroke-width="3" stroke-linejoin="round"/></g><path class="twinkle d3" d="M60 34 L64.48 45.519999999999996 L76 50 L64.48 54.480000000000004 L60 66 L55.519999999999996 54.480000000000004 L44 50 L55.519999999999996 45.519999999999996Z" fill="#4d8dff" stroke="#231d3b" stroke-width="3" stroke-linejoin="round"/></g></svg></div>
-    
     <div class="facts3">
       <div><b>1953</b>the year Henry Molaison (H.M.) had surgery that left him unable to form new long-term memories of facts and events</div>
-      <div><b>~4 chunks</b>roughly what short-term memory can hold at once; without rehearsal it fades within about 30 seconds</div>
-      <div><b>10,000</b>pictures people viewed once and still recognized most of days later (Standing, 1973)</div>
+      <div><b>~5 cm</b>of tissue removed along the inner side of each temporal lobe, as MRI later showed (Corkin et al., 1997)</div>
+      <div><b>2014</b>Nobel Prize for discovering place cells and grid cells, the brain's positioning system</div>
     </div>
     <p class="hint">Teaching on a projector? Press <span class="kbd">P</span> for Present mode, then <span class="kbd">→</span>/<span class="kbd">←</span> to move between sections. <span class="kbd">T</span> switches between light and dark themes.</p>
+    <nav class="series" aria-label="Memory series"><span class="slab">Memory series</span><a href="../memory/" class="on" aria-current="page">1 · Amnesia and the hippocampus</a><a href="../memory-systems/">2 · Kinds of memory</a><a href="../memory-real-life/">3 · Memory in real life</a></nav>
   </header>
 
   <nav class="pipe" aria-label="Sections">
@@ -348,9 +372,7 @@
     </div>
   </nav>
 
-
-  <!-- ============ 0 START HERE ============ -->
-  <section class="s" id="basics" data-title="Start here">
+<section class="s" id="basics" data-title="Start here">
     <p class="kicker">Start here</p>
     <h2 class="sec">What is a memory, anyway?</h2>
     <div class="plain"><span class="ptag">In plain words</span>A memory is <b>a change in your brain that lets the past shape what you do now</b>. Remembering your friend's name, knowing how to ride a bike and flinching at the sound of a dentist's drill are all memories. Your brain keeps each kind in a different way, in different places.</div>
@@ -386,11 +408,10 @@
       <div class="word"><b>Amygdala</b>The brain's alarm system. It makes emotional moments extra memorable.</div>
     </div>
     <h3 style="margin-top:38px">Where we're going</h3>
-    <div class="roadmap"><a href="#hm">The man who couldn't remember</a><span>→</span><a href="#anatomy">The hippocampus</a><span>→</span><a href="#systems">Kinds of memory</a><span>→</span><a href="#stages">Get in, keep, get back</a><span>→</span><a href="#rebuild">False memories</a><span>→</span><a href="#emotion">Why emotions stick</a><span>→</span><a href="#space">Your brain's GPS</a></div>
+    <div class="roadmap"><a href="#hm">The man who couldn't remember</a><span>→</span><a href="#anatomy">The hippocampus</a><span>→</span><a href="#space">Your brain's GPS</a><span>→</span><a href="#mirror">Learning without remembering</a><span>→</span><a href="../memory-systems/">Part 2: Kinds of memory</a><span>→</span><a href="../memory-real-life/">Part 3: Memory in real life</a></div>
   </section>
 
-  <!-- ============ 1 H.M. ============ -->
-  <section class="s" id="hm" data-title="Patient H.M.">
+<section class="s alt" id="hm" data-title="Patient H.M.">
     <p class="kicker">Part 1</p>
     <h2 class="sec">Patient H.M.: the present kept vanishing</h2>
     <div class="plain"><span class="ptag">In plain words</span>One man's brain surgery taught us where new memories are made. After a deep part of both sides of his brain was removed, Henry could still talk, joke, think and remember his childhood. But anything new slipped away within minutes, like writing on a whiteboard that kept getting erased.</div>
@@ -437,8 +458,7 @@
     <p class="note">The timelines are illustrative. Retrograde amnesia is usually <b>graded</b>: recent memories are lost more than old ones, because recent memories had not finished consolidating (Ribot's law). H.M. lost some memories from roughly the decade before surgery.</p>
   </section>
 
-  <!-- ============ 2 ANATOMY ============ -->
-  <section class="s alt" id="anatomy" data-title="The hippocampus">
+<section class="s" id="anatomy" data-title="The hippocampus">
     <p class="kicker">Part 2</p>
     <h2 class="sec">Where new memories are made</h2>
     <div class="plain"><span class="ptag">In plain words</span>The <b>hippocampus</b> is a curled structure tucked deep inside each side of your brain, shaped a bit like a sea horse. Think of it as the brain's <b>"save" button</b> for new facts and events.</div>
@@ -468,9 +488,28 @@
     <p class="note">Entorhinal and perirhinal cortex lie toward the front of the medial temporal lobe and parahippocampal cortex further back; the close-up combines them in one view. Brain scans of H.M. (Corkin et al., 1997; Annese et al., 2014) showed that the front of the hippocampus, the amygdala and entorhinal cortex were removed, while a shrunken back part of the hippocampus and most parahippocampal cortex remained. His cerebellum, which the surgeons never touched, also shrank over the decades, most likely from long-term use of the antiseizure drug phenytoin.</p>
   </section>
 
-  <!-- ============ 3 MIRROR ============ -->
-  <section class="s" id="mirror" data-title="Mirror tracing">
+<section class="s alt" id="space" data-title="Place cells">
     <p class="kicker">Part 3</p>
+    <h2 class="sec">Where am I? Place cells and grid cells</h2>
+    <div class="plain"><span class="ptag">In plain words</span>Your brain has a built-in map. Some neurons fire only when you're in one particular spot in a room. Others mark out a pattern like graph paper, so your brain always knows where you are.</div>
+    <p class="lede">Record from single neurons in a rat's hippocampus as it explores, and each <b>place cell</b> fires only when the rat is in one particular spot, its <b>place field</b> (O'Keefe &amp; Dostrovsky, 1971). Together they form a <b>cognitive map</b>. Next door in the entorhinal cortex, <b>grid cells</b> fire at many spots that form a hexagonal grid, like map coordinates (Hafting et al., 2005). Watch the fields appear, or steer the rat with your pointer.</p>
+    <div class="stage">
+      <div class="box">
+        <canvas id="arena" style="aspect-ratio:1/1;max-width:560px;margin:0 auto;touch-action:none" aria-label="A rat exploring an arena; dots mark where the recorded neuron fired"></canvas>
+        <div class="row" style="margin-top:8px;justify-content:center"><button class="chip" id="pcBtn" aria-pressed="true">5 place cells</button><button class="chip" id="gcBtn" aria-pressed="false">1 grid cell</button><button class="btn" id="arClear">Clear</button><button class="chip" id="arFast" aria-pressed="false">Fast forward</button></div>
+      </div>
+      <div class="box">
+        <div class="mlab"><span>Time exploring</span><b id="arTime">0 s</b></div>
+        <div class="mlab"><span>Spikes recorded</span><b id="arSp">0</b></div>
+        <div class="callout" id="arNote">Each color is one hippocampal neuron. A dot marks where the rat was when that neuron fired. The gray line is the rat's path.</div>
+        <div class="callout warm"><b>Nobel Prize 2014:</b> John O'Keefe, May-Britt Moser and Edvard Moser, for discovering the brain's positioning system. Place cells and grid cells have since been recorded in people too.</div>
+        <div class="callout green"><b>Bigger maps for bigger jobs.</b> London taxi drivers, who memorize thousands of streets, have a larger <b>posterior hippocampus</b> (Maguire et al., 2000), and birds that hide food in many places have larger hippocampi than related birds that don't.</div>
+      </div>
+    </div>
+  </section>
+
+<section class="s" id="mirror" data-title="Mirror tracing">
+    <p class="kicker">Part 4</p>
     <h2 class="sec">Learning without remembering</h2>
     <div class="plain"><span class="ptag">In plain words</span>Henry got better at a tricky drawing task every single day, yet never remembered doing it before. So <b>knowing how</b> (skills) and <b>knowing that</b> (facts) must use different brain systems.</div>
     <p class="lede">Brenda Milner gave H.M. a hard task: trace a star while seeing your hand only in a <b>mirror</b>. Over three days his errors dropped just like a healthy person's, yet each day he said he had <b>never done the task before</b>. Try it: the mirror flips up and down. Press inside the star near the dot and trace the path between the lines.</p>
@@ -488,9 +527,8 @@
     <p class="note">H.M.'s curve is an illustrative redrawing of the shape of Milner's (1962) data (ten trials a day for three days), not exact values.</p>
   </section>
 
-  <!-- ============ 4 CIRCUIT ============ -->
-  <section class="s alt" id="circuit" data-title="More patients">
-    <p class="kicker">Part 4</p>
+<section class="s alt" id="circuit" data-title="More patients">
+    <p class="kicker">Part 5</p>
     <h2 class="sec">More patients, one memory circuit</h2>
     <div class="plain"><span class="ptag">In plain words</span>It's not just the hippocampus. Damage to a few <b>connected</b> brain parts causes the same kind of memory loss, because they work as a team, like stops along one train line. Break any stop and the train can't get through.</div>
     <p class="lede">Different injuries in different places can cause the same amnesia, which points to a connected <b>circuit</b>: medial temporal lobe, fornix, mammillary bodies and the <b>dorsomedial thalamus</b>. Some patients also show that episodic and semantic memory can come apart.</p>
@@ -513,247 +551,34 @@
     </div>
   </section>
 
-  <!-- ============ 5 SYSTEMS ============ -->
-  <section class="s" id="systems" data-title="Memory systems">
-    <p class="kicker">Part 5</p>
-    <h2 class="sec">A map of memory systems</h2>
-    <div class="plain"><span class="ptag">In plain words</span>There isn't one "memory." There are many kinds. Facts and life events are one kind. Skills, habits and learned fears are others, and each kind relies on its own brain areas.</div>
-    <p class="lede">Long-term memory splits into <b>declarative</b> memory, which you can consciously state ("knowing that"), and <b>nondeclarative</b> memory, shown by performance ("knowing how"). Click the boxes to open each branch, then click any memory type to light up the brain regions it depends on.</p>
-    <div class="box" style="padding:10px 10px 4px">
-      <svg id="tree" viewBox="0 0 960 330" role="img" aria-label="Interactive tree of memory systems"></svg>
-      <div class="row" style="padding:0 6px 8px"><button class="btn" id="treeAll">Open everything</button><button class="btn" id="treeNone">Close everything</button><span class="hint">Tip: click a box with + to open it.</span></div>
-    </div>
-    <div class="stage" style="margin-top:22px">
-      <div class="box"><svg id="latS" viewBox="-80 0 840 490" role="img" aria-label="Side view of the brain showing the regions for the selected memory type"></svg></div>
-      <div class="box">
-        <p class="tag" id="sysTag">Memory systems</p>
-        <h3 id="sysName">Pick a memory type</h3>
-        <p id="sysWhat" style="margin:.2em 0 .6em"></p>
-        <dl class="kv" id="sysKV"></dl>
-        <div class="callout" id="sysEvid">Every type of memory depends on a different mix of brain regions. Many regions take part in memory, and no single "memory center" stores everything.</div>
-      </div>
-    </div>
-  </section>
-
-  <!-- ============ 6 STAGES ============ -->
-  <section class="s alt" id="stages" data-title="Stages">
-    <p class="kicker">Part 6</p>
-    <h2 class="sec">Capture, hold, store, retrieve</h2>
-    <div class="plain"><span class="ptag">In plain words</span>To remember anything, it has to <b>get in</b>, <b>stay</b> and <b>come back out</b>. Most of what hits your eyes and ears never makes it past step one, simply because you weren't paying attention to it.</div>
-    <p class="lede">Information flows through stages. <b>Sensory buffers</b> hold a fleeting copy of everything for a fraction of a second to a few seconds. What you attend to is <b>encoded</b> into <b>short-term memory</b>, which lasts about 30 seconds unless you rehearse. Some of it is <b>consolidated</b> into <b>long-term memory</b>, and later <b>retrieved</b> back into use. Information can be lost at every step.</p>
-    <div class="box">
-      <svg id="flow" viewBox="0 0 960 380" role="img" aria-label="Animated flow of information from the senses through sensory buffers, short-term memory and long-term memory"></svg>
-      <div class="ctrl" style="max-width:520px"><span>Attention</span><input type="range" id="attR" min="0" max="100" value="35" aria-label="Attention"><b id="attOut">some</b></div>
-      <div class="row"><button class="chip" id="rehBtn" aria-pressed="false">Rehearse</button><button class="btn" id="slpBtn">Sleep on it</button><button class="btn" id="retBtn">Retrieve a memory</button><button class="btn" id="flowReset">Reset</button><span class="hint" id="flowStat"></span></div>
-    </div>
-    <div class="cols2">
-      <div class="box">
-        <h3>How much is in the sensory buffer?</h3>
-        <p style="font-size:.92rem;margin:.2em 0">Sperling (1960) flashed 12 letters. People could report only about 4 of them, but when a tone right after the flash told them <b>which row</b> to report, they got most of that row, so most letters were briefly available. Try it.</p>
-        <div class="row" style="margin:6px 0"><span class="hint">Cue delay:</span><button class="chip" data-sd="0" aria-pressed="true">0 s</button><button class="chip" data-sd="300" aria-pressed="false">0.3 s</button><button class="chip" data-sd="1000" aria-pressed="false">1 s</button></div>
-        <div class="sgrid" id="sGrid"><span class="cue">Press Flash, then look at the box.</span></div>
-        <div class="row"><button class="btn primary" id="sFlash">Flash</button><input type="text" id="sIn" placeholder="letters in the cued row" maxlength="8" aria-label="Type the letters in the cued row" style="flex:1"><button class="btn" id="sCheck">Check</button></div>
-        <div class="callout" id="sNote">The letters stay on screen for only 0.15 seconds.</div>
-      </div>
-      <div class="box">
-        <h3>Short-term memory fades without rehearsal</h3>
-        <p style="font-size:.92rem;margin:.2em 0">In the Petersons' (1959) task, people saw three letters, then counted backward by threes so they could not rehearse. Recall fell steeply within seconds. Let them rehearse and the letters stay.</p>
-        <canvas id="stmCan" style="aspect-ratio:16/9" aria-label="Recall of letters over time with and without rehearsal"></canvas>
-        <div class="row" style="margin-top:6px"><button class="chip" id="stmReh" aria-pressed="false">Allow rehearsal</button></div>
-        <div class="callout">Capacity is limited too: Miller (1956) suggested about 7 ± 2 items; later work suggests about <b>4 chunks</b> (Cowan, 2001). <b>Working memory</b> is the active use of what is in short-term memory, and it relies heavily on the <b>prefrontal cortex</b>.</div>
-      </div>
-    </div>
-    <p class="note">Peterson curve values are approximate. Figures for buffers: visual (iconic) memory lasts well under a second; auditory (echoic) memory lasts a few seconds.</p>
-  </section>
-
-  <!-- ============ 7 CONSOLIDATION ============ -->
-  <section class="s" id="consol" data-title="Consolidation">
-    <p class="kicker">Part 7</p>
-    <h2 class="sec">Consolidation: from hippocampus to cortex</h2>
-    <div class="plain"><span class="ptag">In plain words</span>New memories are fragile at first and lean on the hippocampus. Over time, and especially <b>while you sleep</b>, they get filed into the rest of the brain and become sturdy. That's why old memories survive brain injuries better than new ones.</div>
-    <p class="lede">A new declarative memory is a pattern spread across many cortical areas (what you saw, heard, felt), tied together by the <b>hippocampus</b>. Over days to years, the cortical pieces link up with each other directly and the memory depends less on the hippocampus. Much of this happens during <b>slow-wave sleep</b>, when the hippocampus <b>replays</b> the day.</p>
-    <div class="stage">
-      <div class="box"><svg id="conSvg" viewBox="0 0 640 360" role="img" aria-label="A memory linked through the hippocampus becoming linked directly across cortex over time"></svg>
-        <div class="ctrl"><span>Time since learning</span><input type="range" id="conT" min="0" max="5" value="0" step="1" aria-label="Time since learning"><b id="conOut">1 hour</b></div>
-        <div class="row"><button class="btn primary" id="conSleep">Slow-wave sleep replay</button><button class="chip" id="conLes" aria-pressed="false">Damage the hippocampus</button></div>
-      </div>
-      <div class="box">
-        <div class="mlab"><span>Depends on the hippocampus</span><b id="conH"></b></div><div class="meter"><i id="conHBar"></i></div>
-        <div class="mlab"><span>Stored across cortex</span><b id="conC"></b></div><div class="meter warm"><i id="conCBar"></i></div>
-        <div class="callout" id="conNote"></div>
-        <canvas id="ribot" style="aspect-ratio:16/8;margin-top:12px" aria-label="Retrograde amnesia gradient: recent memories lost, old memories spared"></canvas>
-        <p class="hint" style="margin:.3em 0 0">Why retrograde amnesia hits recent memories hardest: they were still hippocampus-dependent. Concussions, electroconvulsive therapy (ECT) and hippocampal damage erase what had not finished consolidating.</p>
-      </div>
-    </div>
-    <p class="note">This is the <b>standard model</b> of systems consolidation (e.g., Squire &amp; Alvarez, 1995). Some researchers argue that vivid episodic detail always needs the hippocampus. Sleep link: slow-wave sleep after learning especially helps declarative memories; see <a href="../sleep/">The Sleeping Brain</a>.</p>
-  </section>
-
-  <!-- ============ 8 REBUILD ============ -->
-  <section class="s alt" id="rebuild" data-title="False memories">
-    <p class="kicker">Part 8</p>
-    <h2 class="sec">Remembering is rebuilding</h2>
-    <div class="plain"><span class="ptag">In plain words</span>Remembering isn't like replaying a video. Your brain <b>rebuilds</b> the memory every time, and it can slip in details that never happened, while you feel totally sure.</div>
-    <p class="lede">Forgetting is often <b>interference</b>, not just fading: old learning disrupts new (<b>proactive</b>) and new learning disrupts old (<b>retroactive</b>). And every time you recall a memory it becomes unstable again and must be stored again (<b>reconsolidation</b>), so it can be strengthened, weakened or changed.</p>
-    <div class="cols2" style="margin-top:0">
-      <div class="box">
-        <h3>The wording changes the memory</h3>
-        <p style="font-size:.92rem;margin:.2em 0 .6em">Loftus and Palmer (1974) showed people a film of a car crash, then asked: "About how fast were the cars going when they ___ each other?" Pick the verb.</p>
-        <div class="row" id="lpBtns"></div>
-        <svg id="lpSvg" viewBox="0 0 420 250" role="img" aria-label="Speedometer showing the average speed estimate"></svg>
-        <div class="callout" id="lpNote"></div>
-      </div>
-      <div class="box">
-        <h3>Make a false memory</h3>
-        <p style="font-size:.92rem;margin:.2em 0 .6em">Watch a list of words, one at a time. Then decide which test words were on the list (Roediger &amp; McDermott, 1995).</p>
-        <div class="drmbox" id="drmBox"><span style="font-family:var(--sans);font-size:1rem;color:var(--muted)">Press Start and read each word.</span></div>
-        <div class="row"><button class="btn primary" id="drmGo">Start</button><button class="btn" id="drmCheck" disabled>Check my answers</button></div>
-        <div class="callout" id="drmNote">The list takes about 12 seconds.</div>
-      </div>
-    </div>
-    <div class="cols3">
-      <div class="box card"><span class="tag">Reconsolidation</span><h4>Recall reopens the memory</h4><p>In rats, blocking protein synthesis in the amygdala right after a fear memory was <b>recalled</b> erased the memory, even though it was old and well consolidated (Nader et al., 2000). This window is a target for PTSD treatment research.</p></div>
-      <div class="box card"><span class="tag">Eyewitnesses</span><h4>Confident is not accurate</h4><p>Leading questions, later information and retelling all reshape memories. That is why eyewitness memory is unreliable, even when the witness is sure.</p></div>
-      <div class="box card"><span class="tag">Study tip</span><h4>Use it for your exam</h4><p><b>Test yourself</b> (retrieval practice beats rereading), <b>space</b> your study over days, <b>sleep</b> after studying, and <b>connect</b> new ideas to what you know so there are more routes back to them.</p></div>
-    </div>
-  </section>
-
-  <!-- ============ 9 EMOTION ============ -->
-  <section class="s" id="emotion" data-title="Emotional memory">
-    <p class="kicker">Part 9</p>
-    <h2 class="sec">Why emotional events stick</h2>
-    <div class="plain"><span class="ptag">In plain words</span>Scary, exciting or embarrassing moments stick better. The <b>amygdala</b>, the brain's alarm system, tells the hippocampus <em>this one matters, save it well</em>.</div>
-    <p class="lede">An emotional event activates the <b>amygdala</b> and releases stress hormones: <b>epinephrine</b> from the adrenal medulla and <b>cortisol</b> from the adrenal cortex. The amygdala then boosts consolidation in the hippocampus, so the memory comes out vivid and long-lasting. Block the hormone signal and the boost disappears.</p>
-    <div class="stage">
-      <div class="box"><svg id="latE" viewBox="-80 0 840 490" role="img" aria-label="Side view of the brain with the amygdala boosting the hippocampus"></svg></div>
-      <div class="box">
-        <div class="row" style="margin-bottom:6px"><button class="chip" data-em="story" data-v="neutral" aria-pressed="false">Neutral story</button><button class="chip" data-em="story" data-v="emo" aria-pressed="true">Emotional story</button></div>
-        <div class="row" style="margin-bottom:10px"><button class="chip" data-em="drug" data-v="plac" aria-pressed="true">Placebo</button><button class="chip" data-em="drug" data-v="prop" aria-pressed="false">Propranolol (beta-blocker)</button></div>
-        <div class="mlab"><span>Amygdala activity</span><b id="emA"></b></div><div class="meter warm"><i id="emABar"></i></div>
-        <div class="mlab"><span>Memory a week later</span><b id="emM"></b></div><div class="meter"><i id="emMBar"></i></div>
-        <div class="callout" id="emNote"></div>
-      </div>
-    </div>
-    <div class="cols2">
-      <div class="box">
-        <h3>A little stress helps; a lot hurts</h3>
-        <canvas id="ushape" style="aspect-ratio:16/8" aria-label="Memory performance rises with moderate stress and falls with very high stress"></canvas>
-        <div class="ctrl"><span>Stress</span><input type="range" id="stR" min="0" max="100" value="45" aria-label="Stress level"><b id="stOut">moderate</b></div>
-        <div class="callout" id="stNote"></div>
-      </div>
-      <div class="box">
-        <h3>Flashbulb memories</h3>
-        <canvas id="flash" style="aspect-ratio:16/8" aria-label="Over time, accuracy of flashbulb memories falls while confidence stays high"></canvas>
-        <p style="font-size:.92rem;margin:.6em 0 0">Memories of shocking news feel vivid and certain. When researchers tested people the day after 9/11 and again months later, details changed as much as for ordinary memories, but people's <b>confidence stayed high</b> (Talarico &amp; Rubin, 2003). Curves are illustrative.</p>
-      </div>
-    </div>
-  </section>
-
-  <!-- ============ 10 SPACE ============ -->
-  <section class="s alt" id="space" data-title="Place cells">
-    <p class="kicker">Part 10</p>
-    <h2 class="sec">Where am I? Place cells and grid cells</h2>
-    <div class="plain"><span class="ptag">In plain words</span>Your brain has a built-in map. Some neurons fire only when you're in one particular spot in a room. Others mark out a pattern like graph paper, so your brain always knows where you are.</div>
-    <p class="lede">Record from single neurons in a rat's hippocampus as it explores, and each <b>place cell</b> fires only when the rat is in one particular spot, its <b>place field</b> (O'Keefe &amp; Dostrovsky, 1971). Together they form a <b>cognitive map</b>. Next door in the entorhinal cortex, <b>grid cells</b> fire at many spots that form a hexagonal grid, like map coordinates (Hafting et al., 2005). Watch the fields appear, or steer the rat with your pointer.</p>
-    <div class="stage">
-      <div class="box">
-        <canvas id="arena" style="aspect-ratio:1/1;max-width:560px;margin:0 auto;touch-action:none" aria-label="A rat exploring an arena; dots mark where the recorded neuron fired"></canvas>
-        <div class="row" style="margin-top:8px;justify-content:center"><button class="chip" id="pcBtn" aria-pressed="true">5 place cells</button><button class="chip" id="gcBtn" aria-pressed="false">1 grid cell</button><button class="btn" id="arClear">Clear</button><button class="chip" id="arFast" aria-pressed="false">Fast forward</button></div>
-      </div>
-      <div class="box">
-        <div class="mlab"><span>Time exploring</span><b id="arTime">0 s</b></div>
-        <div class="mlab"><span>Spikes recorded</span><b id="arSp">0</b></div>
-        <div class="callout" id="arNote">Each color is one hippocampal neuron. A dot marks where the rat was when that neuron fired. The gray line is the rat's path.</div>
-        <div class="callout warm"><b>Nobel Prize 2014:</b> John O'Keefe, May-Britt Moser and Edvard Moser, for discovering the brain's positioning system. Place cells and grid cells have since been recorded in people too.</div>
-        <div class="callout green"><b>Bigger maps for bigger jobs.</b> London taxi drivers, who memorize thousands of streets, have a larger <b>posterior hippocampus</b> (Maguire et al., 2000), and birds that hide food in many places have larger hippocampi than related birds that don't.</div>
-      </div>
-    </div>
-  </section>
-
-  <!-- ============ 11 STORAGE ============ -->
-  <section class="s" id="storage" data-title="Storage">
-    <p class="kicker">Part 11</p>
-    <h2 class="sec">Where is a memory stored?</h2>
-    <div class="plain"><span class="ptag">In plain words</span>A memory isn't kept in one spot. The sights, sounds and smells are stored in the brain areas that handle each sense, and the hippocampus links them. That's why one cue, like a smell, can bring the whole scene flooding back.</div>
-    <p class="lede">There is no single file for "grandma's kitchen". The pieces live in the cortical areas that first processed them: sights in visual cortex, sounds in auditory cortex, smells in olfactory cortex, feelings via the amygdala. Recalling the memory <b>reinstates</b> that pattern. A single cue, like the smell of cookies, can bring back the rest (pattern completion). Try it.</p>
-    <div class="stage">
-      <div class="box"><svg id="latR" viewBox="-80 0 840 490" role="img" aria-label="Side view of the brain showing a memory reinstated across cortical areas"></svg>
-        <div class="row"><button class="btn primary" id="recallGo">Smell cookies</button><button class="chip" id="recallOld" aria-pressed="false">Years later (consolidated)</button></div>
-      </div>
-      <div class="box">
-        <div class="callout" id="recallNote">The memory trace (sometimes called an <b>engram</b>) is distributed. The hippocampus acts like an <b>index</b> that points to all the pieces.</div>
-        <div class="callout warm"><b>Huge capacity.</b> People shown 10,000 pictures for a few seconds each recognized most of them days later (Standing, 1973). In another study people remembered which of two nearly identical objects they had seen among 2,500, about 87% of the time (Brady et al., 2008). No one has found the upper limit of long-term memory.</div>
-        <div class="callout green"><b>How do the synapses store it?</b> Changes in synaptic strength, such as long-term potentiation (LTP) through NMDA and AMPA receptors, are the leading candidate. That story, plus enriched environments and the sea slug <i>Aplysia</i>, is on the companion page: <a href="../learning/">The Learning Brain</a>.</div>
-      </div>
-    </div>
-  </section>
-
-  <!-- ============ 12 CLINICAL ============ -->
-  <section class="s alt" id="clinical" data-title="When memory goes wrong">
-    <p class="kicker">Part 12</p>
-    <h2 class="sec">When memory goes wrong (Ch. 12)</h2>
-    <div class="plain"><span class="ptag">In plain words</span>Many mental health conditions involve memory systems that work <b>too strongly</b>, <b>too weakly</b> or get <b>stuck in a loop</b>.</div>
-    <p class="lede">Several psychological disorders can be understood partly as memory systems working too well, not well enough, or in a loop.</p>
-    <div class="cols4" style="margin-top:0">
-      <div class="box card"><span class="tag">PTSD</span><h4>A memory that won't fade</h4><p>Flashbacks and intrusive memories: an <b>over-consolidated</b> emotional memory plus fear conditioning that won't extinguish. The hippocampus is smaller in PTSD; twin studies suggest this may be a pre-existing risk factor. Exposure therapy works through extinction, which is <b>new learning</b>.</p></div>
-      <div class="box card"><span class="tag">Depression</span><h4>A negative bias</h4><p>Negative memories come to mind easily, and rumination replays and strengthens them. An overactive stress (HPA) axis and prolonged cortisol can harm the hippocampus. ECT helps many patients but causes retrograde amnesia for recent memories.</p></div>
-      <div class="box card"><span class="tag">Schizophrenia</span><h4>The LTP receptor</h4><p>Memory and working-memory problems and underactive frontal lobes. PCP and ketamine block <b>NMDA receptors</b> and cause schizophrenia-like symptoms, leading to the glutamate hypothesis. That is the same receptor that drives LTP.</p></div>
-      <div class="box card"><span class="tag">OCD and Tourette's</span><h4>Habit loops stuck on</h4><p>The <b>basal ganglia</b> support habit learning. In OCD (with orbitofrontal cortex) and Tourette's syndrome (tics), these loops misfire and behaviors repeat without control.</p></div>
-    </div>
-  </section>
-
-  <!-- ============ 13 REVIEW ============ -->
   <section class="s" id="review" data-title="Review">
-    <p class="kicker">Part 13</p>
-    <h2 class="sec">Memory at a glance</h2>
-    <div class="plain"><span class="ptag">In plain words</span>Here's everything on one page. Then quiz yourself. Testing yourself is one of the best ways to make memories stick, which you now know the neuroscience behind!</div>
-    <div class="box tablewrap" style="margin-bottom:30px">
-      <table class="sum">
-        <tr><th>Memory or process</th><th>Key structure</th><th>Key evidence or disorder</th></tr>
-        <tr><td>Declarative (episodic, semantic)</td><td>Hippocampus, medial temporal lobe</td><td>H.M.; monkeys on delayed non-matching; K.C.</td></tr>
-        <tr><td>Declarative (circuit)</td><td>Mammillary bodies, dorsomedial thalamus</td><td>N.A.; Korsakoff's syndrome</td></tr>
-        <tr><td>Skill and habit learning</td><td>Basal ganglia (striatum), motor cortex, cerebellum</td><td>H.M.'s mirror tracing; Parkinson's, Huntington's; OCD, Tourette's</td></tr>
-        <tr><td>Priming</td><td>Neocortex</td><td>Less cortical activity for repeated items; spared in amnesia</td></tr>
-        <tr><td>Emotional conditioning</td><td>Amygdala</td><td>Fear conditioning; PTSD</td></tr>
-        <tr><td>Motor conditioning</td><td>Cerebellum (interpositus nucleus)</td><td>Eyeblink conditioning</td></tr>
-        <tr><td>Spatial memory</td><td>Hippocampus (place cells), entorhinal cortex (grid cells)</td><td>Taxi drivers; water maze</td></tr>
-        <tr><td>Working memory</td><td>Prefrontal cortex</td><td>Delay-period activity; schizophrenia</td></tr>
-        <tr><td>Emotional enhancement</td><td>Amygdala + stress hormones</td><td>Propranolol blocks it; flashbulb memories</td></tr>
-      </table>
-    </div>
-    <h3>Quick review</h3>
+    <p class="kicker">Review</p>
+    <h2 class="sec">Check yourself</h2>
+    <div class="plain"><span class="ptag">In plain words</span>Quizzing yourself is one of the best ways to make memories stick, and now you know the neuroscience behind why.</div>
+
+    <h3 style="margin-top:34px">Quick review</h3>
     <div class="quiz">
       <div class="qcard"><p class="q" id="qText"></p><div class="qopts" id="qOpts"></div><p class="why" id="qWhy"></p></div>
       <div class="qnav"><button class="btn" id="qPrev">← Previous</button><span id="qCount"></span><button class="btn primary" id="qNext">Next question →</button></div>
     </div>
   </section>
 
+  <a class="nextup" href="../memory-systems/"><span><small>Next up in the memory series · Part 2</small><b>Kinds of memory</b></span><span class="arr" aria-hidden="true">→</span></a>
+
   <footer class="foot">
     <p class="embed"><span>Embed:</span>
-      <code id="embedCode">&lt;iframe src="https://nelurad.github.io/neurosims/memory/" width="100%" height="11000" style="border:0" title="The Remembering Brain"&gt;&lt;/iframe&gt;</code>
+      <code id="embedCode">&lt;iframe src="https://nelurad.github.io/neurosims/memory/" width="100%" height="8000" style="border:0" title="The Remembering Brain"&gt;&lt;/iframe&gt;</code>
       <button id="copyBtn">Copy</button></p>
     <p style="margin-bottom:2px">References</p>
     <ul class="refs">
       <li>Annese, J., et al. (2014). Postmortem examination of patient H.M.'s brain based on histological sectioning and digital 3D reconstruction. <i>Nature Communications</i>, 5, 3122.</li>
-      <li>Brady, T. F., Konkle, T., Alvarez, G. A., &amp; Oliva, A. (2008). Visual long-term memory has a massive storage capacity for object details. <i>PNAS</i>, 105, 14325–14329.</li>
-      <li>Cahill, L., Prins, B., Weber, M., &amp; McGaugh, J. L. (1994). β-adrenergic activation and memory for emotional events. <i>Nature</i>, 371, 702–704.</li>
       <li>Corkin, S., Amaral, D. G., González, R. G., Johnson, K. A., &amp; Hyman, B. T. (1997). H.M.'s medial temporal lobe lesion: findings from magnetic resonance imaging. <i>Journal of Neuroscience</i>, 17, 3964–3979.</li>
-      <li>Cowan, N. (2001). The magical number 4 in short-term memory. <i>Behavioral and Brain Sciences</i>, 24, 87–114.</li>
       <li>Hafting, T., Fyhn, M., Molden, S., Moser, M.-B., &amp; Moser, E. I. (2005). Microstructure of a spatial map in the entorhinal cortex. <i>Nature</i>, 436, 801–806.</li>
-      <li>Loftus, E. F., &amp; Palmer, J. C. (1974). Reconstruction of automobile destruction. <i>Journal of Verbal Learning and Verbal Behavior</i>, 13, 585–589.</li>
       <li>Maguire, E. A., et al. (2000). Navigation-related structural change in the hippocampi of taxi drivers. <i>PNAS</i>, 97, 4398–4403.</li>
-      <li>Miller, G. A. (1956). The magical number seven, plus or minus two. <i>Psychological Review</i>, 63, 81–97.</li>
       <li>Milner, B. (1962). Les troubles de la mémoire accompagnant des lésions hippocampiques bilatérales. In <i>Physiologie de l'hippocampe</i>. CNRS.</li>
-      <li>Nader, K., Schafe, G. E., &amp; LeDoux, J. E. (2000). Fear memories require protein synthesis in the amygdala for reconsolidation after retrieval. <i>Nature</i>, 406, 722–726.</li>
       <li>O'Keefe, J., &amp; Dostrovsky, J. (1971). The hippocampus as a spatial map. <i>Brain Research</i>, 34, 171–175.</li>
-      <li>Peterson, L. R., &amp; Peterson, M. J. (1959). Short-term retention of individual verbal items. <i>Journal of Experimental Psychology</i>, 58, 193–198.</li>
-      <li>Roediger, H. L., &amp; McDermott, K. B. (1995). Creating false memories. <i>Journal of Experimental Psychology: Learning, Memory, and Cognition</i>, 21, 803–814.</li>
-      <li>Scoville, W. B., &amp; Milner, B. (1957). Loss of recent memory after bilateral hippocampal lesions. <i>Journal of Neurology, Neurosurgery and Psychiatry</i>, 20, 11–21.</li>
-      <li>Sperling, G. (1960). The information available in brief visual presentations. <i>Psychological Monographs</i>, 74(11), 1–29.</li>
       <li>Squire, L. R. (2004). Memory systems of the brain: a brief history and current perspective. <i>Neurobiology of Learning and Memory</i>, 82, 171–177.</li>
       <li>Squire, L. R., &amp; Alvarez, P. (1995). Retrograde amnesia and memory consolidation: a neurobiological perspective. <i>Current Opinion in Neurobiology</i>, 5, 169–177.</li>
-      <li>Standing, L. (1973). Learning 10,000 pictures. <i>Quarterly Journal of Experimental Psychology</i>, 25, 207–222.</li>
-      <li>Talarico, J. M., &amp; Rubin, D. C. (2003). Confidence, not consistency, characterizes flashbulb memories. <i>Psychological Science</i>, 14, 455–461.</li>
-      <li>Tulving, E. (2002). Episodic memory: from mind to brain. <i>Annual Review of Psychology</i>, 53, 1–25.</li>
       <li>Zola-Morgan, S., Squire, L. R., &amp; Amaral, D. G. (1989). Lesions of the hippocampal formation but not lesions of the fornix or the mammillary nuclei produce long-lasting memory impairment in monkeys. <i>Journal of Neuroscience</i>, 9, 898–913.</li>
     </ul>
     <p>All drawings and simulations are original, simplified illustrations; brain regions drawn deep inside the brain are shown as if seen through it. Free to use, share and adapt with credit to "Nelu Radpour, NeuroSims." Content <a href="https://creativecommons.org/licenses/by/4.0/">CC BY 4.0</a>, code MIT. Spot a bug or an inaccuracy? <a href="https://github.com/nelurad/neurosims/issues">Open an issue</a>.</p>
@@ -1007,6 +832,38 @@ addEventListener('keydown',e=>{const ae=document.activeElement;const typing=/INP
   drawMTL();
 })();
 
+/* ================= 10 place & grid cells ================= */
+(()=>{
+  const c=$('arena');const S=500;let mode='place',fast=false,rat={x:250,y:250,a:0,v:110},trail=[],spikes=[],T=0,ptr=null;
+  const COLS=['#2a78d6','#eb6834','#1baf7a','#d9a000','#d55181'];
+  const PCS=[[120,140],[360,110],[260,280],[110,380],[390,380]].map(([x,y],i)=>({x,y,s:38,col:COLS[i]}));
+  const gr=(x,y)=>{const k=2*Math.PI/95;let s=0;for(let i=0;i<3;i++){const a=i*Math.PI/3+.25;s+=Math.cos(k*((x-30)*Math.cos(a)+(y-20)*Math.sin(a)));}return Math.max(0,(s+1.5)/4.5);};
+  function setMode(m){mode=m;setPressed([$('pcBtn'),$('gcBtn')],m==='place'?$('pcBtn'):$('gcBtn'));clear();
+    $('arNote').innerHTML=m==='place'?'Each color is one hippocampal <b>place cell</b>. A dot marks where the rat was when that neuron fired. The gray line is the rat\'s path.':'One entorhinal <b>grid cell</b>. Its firing spots (black) tile the whole arena in a triangular, hexagonal pattern, no matter where the rat goes. Let it run for a while.';}
+  function clear(){trail=[];spikes=[];T=0;}
+  $('pcBtn').onclick=()=>setMode('place');$('gcBtn').onclick=()=>setMode('grid');$('arClear').onclick=clear;$('arFast').onclick=()=>{fast=!fast;$('arFast').setAttribute('aria-pressed',fast);};
+  c.addEventListener('pointermove',e=>{const r=c.getBoundingClientRect();ptr=[(e.clientX-r.left)/r.width*S,(e.clientY-r.top)/r.height*S];});c.addEventListener('pointerleave',()=>ptr=null);
+  c.addEventListener('pointerdown',e=>{const r=c.getBoundingClientRect();ptr=[(e.clientX-r.left)/r.width*S,(e.clientY-r.top)/r.height*S];});
+  function step(dt){T+=dt;if(ptr){const ta=Math.atan2(ptr[1]-rat.y,ptr[0]-rat.x);let da=((ta-rat.a+Math.PI*3)%(Math.PI*2))-Math.PI;rat.a+=clamp(da,-4*dt,4*dt);if(Math.hypot(ptr[0]-rat.x,ptr[1]-rat.y)<10)return;}
+    else rat.a+=(Math.random()-.5)*5*dt;
+    let nx=rat.x+Math.cos(rat.a)*rat.v*dt,ny=rat.y+Math.sin(rat.a)*rat.v*dt;const m=22;if(nx<m||nx>S-m){rat.a=Math.PI-rat.a;nx=clamp(nx,m,S-m);}if(ny<m||ny>S-m){rat.a=-rat.a;ny=clamp(ny,m,S-m);}rat.x=nx;rat.y=ny;
+    trail.push([rat.x,rat.y]);if(trail.length>6000)trail.shift();
+    if(mode==='place')PCS.forEach(p=>{const d2=(rat.x-p.x)**2+(rat.y-p.y)**2;const rate=22*Math.exp(-d2/(2*p.s*p.s));if(Math.random()<rate*dt)spikes.push([rat.x+(Math.random()-.5)*4,rat.y+(Math.random()-.5)*4,p.col]);});
+    else{const rate=26*Math.pow(gr(rat.x,rat.y),3);if(Math.random()<rate*dt)spikes.push([rat.x+(Math.random()-.5)*4,rat.y+(Math.random()-.5)*4,'grid']);}
+    if(spikes.length>5000)spikes.shift();}
+  function draw(){const{x,w,h}=fitCanvas(c);const k=w/S;x.save();x.scale(k,k);x.fillStyle=cssv('--panel2');x.fillRect(0,0,S,S);x.strokeStyle=cssv('--ink');x.lineWidth=3;x.strokeRect(12,12,S-24,S-24);
+    x.strokeStyle=document.documentElement.dataset.theme==='dark'?'rgba(255,255,255,.18)':'rgba(0,0,0,.16)';x.lineWidth=1;x.beginPath();trail.forEach((p,i)=>i?x.lineTo(p[0],p[1]):x.moveTo(p[0],p[1]));x.stroke();
+    const ink=cssv('--ink');spikes.forEach(s=>{x.fillStyle=s[2]==='grid'?ink:s[2];x.beginPath();x.arc(s[0],s[1],2.6,0,7);x.fill();});
+    // rat
+    x.save();x.translate(rat.x,rat.y);x.rotate(rat.a);x.strokeStyle='#d99';x.lineWidth=2;x.beginPath();x.moveTo(-12,0);x.quadraticCurveTo(-24,6,-34,-2);x.stroke();
+    x.fillStyle='#9a8f88';x.beginPath();x.ellipse(0,0,13,8,0,0,7);x.fill();x.beginPath();x.ellipse(11,0,7,5,0,0,7);x.fill();x.fillStyle='#e8b4b4';x.beginPath();x.arc(8,-6,3,0,7);x.arc(8,6,3,0,7);x.fill();x.fillStyle='#111';x.beginPath();x.arc(15,-2,1.3,0,7);x.arc(15,2,1.3,0,7);x.fill();
+    x.fillStyle=cssv('--accent2');x.beginPath();x.arc(2,0,2.5,0,7);x.fill();x.restore();
+    x.fillStyle=cssv('--muted');x.font='13px system-ui';x.fillText(ptr?'Steering: the rat follows your pointer':'Exploring on its own (move your pointer over the arena to steer)',18,S-18);x.restore();
+    $('arTime').textContent=Math.round(T)+' s';$('arSp').textContent=spikes.length;}
+  frameHooks.push(dt=>{if(!isVis(c))return;const n=fast?8:1;for(let i=0;i<n;i++)step(dt);draw();});
+  redrawHooks.push(draw);
+})();
+
 /* ================= 3 mirror tracing ================= */
 (()=>{
   const c=$('mt');const W0=520,H0=426;let mirror=true;
@@ -1067,298 +924,6 @@ addEventListener('keydown',e=>{const ae=document.activeElement;const typing=/INP
    <text x="210" y="234" text-anchor="middle" class="svgm">Monkeys learn this easily, because they naturally prefer novelty.</text>`;
 })();
 
-/* ================= 5 memory systems tree ================= */
-(()=>{
-  const T={id:'mem',l:'Memory systems',open:true,kids:[
-    {id:'ltm',l:'Long-term memory',open:true,kids:[
-      {id:'decl',l:'Declarative',sub:'explicit: "knowing that"',open:false,kids:[
-        {id:'epi',l:'Episodic',regs:['hip','temporal','cortex'],what:'Memories of personal events, tied to a time and place.',ex:'Your 10th birthday party at the lake',ev:'H.M. lost the ability to form new episodic memories. K.C. could not relive any specific event from his life, though he knew facts.'},
-        {id:'sem',l:'Semantic',regs:['temporal','cortex','hip'],what:'Facts and general knowledge, not tied to when you learned them.',ex:'Tallahassee is the capital of Florida',ev:'K.C. kept his semantic memory. New facts still depend on the medial temporal lobe at first, then become stored across neocortex.'}]},
-      {id:'nond',l:'Nondeclarative',sub:'implicit: "knowing how"',open:false,kids:[
-        {id:'skill',l:'Skill learning',l2:'(procedural)',regs:['striatum','motor','cereb'],what:'Getting better at a motor, perceptual or cognitive skill through practice.',ex:'Riding a bike, typing, mirror tracing',ev:'H.M. improved at mirror tracing without remembering practicing. Parkinson\'s and Huntington\'s disease, which damage the basal ganglia, impair skill learning.'},
-        {id:'prime',l:'Priming',regs:['visual','cortex'],what:'Faster or easier processing of something because you encountered it (or something like it) recently.',ex:'Completing STA__ with "stamp" because you just saw that word',ev:'Priming is intact in amnesia. Repeated items produce less activity in the cortical area that processes them (repetition suppression).'},
-        {id:'cond',l:'Classical',l2:'conditioning',regs:['amy','cereb'],what:'Learning that one stimulus predicts another.',ex:'Feeling tense at the sound of a dentist\'s drill',ev:'Fear conditioning depends on the amygdala. Eyeblink conditioning depends on the cerebellum: lesion its interpositus nucleus and the learned blink disappears while the reflex remains.'},
-        {id:'nonassoc',l:'Nonassociative',l2:'learning',regs:['bs'],what:'Change in response to a single repeated stimulus: habituation (weaker) and sensitization (stronger).',ex:'No longer noticing the hum of the fridge',ev:'Stored in reflex pathways. Kandel\'s work on the sea slug Aplysia showed it as a change in transmitter release (see The Learning Brain).'},
-        {id:'spat',l:'Spatial',l2:'memory',regs:['hip','temporal'],what:'Remembering locations and routes: a cognitive map.',ex:'Finding your way across campus',ev:'Place cells in the hippocampus, grid cells in entorhinal cortex, larger posterior hippocampus in London taxi drivers. Your textbook groups it here; many researchers treat it as declarative because it depends on the hippocampus.'}]}]},
-    {id:'stm',l:'Short-term memory',sub:'(working memory)',open:true,kids:[
-      {id:'wm',l:'Working memory',regs:['pfc'],what:'Holding and manipulating information for seconds while you use it.',ex:'Keeping a phone number in mind while you dial it',ev:'Prefrontal neurons keep firing during the delay while an animal holds information in mind. Different prefrontal regions handle different kinds of information. H.M.\'s short-term memory was normal.'}]}]};
-  const REGNAME={hip:'Hippocampus',temporal:'Medial temporal lobe',cortex:'Neocortex',striatum:'Striatum (basal ganglia)',motor:'Motor cortex',cereb:'Cerebellum',visual:'Sensory (e.g., visual) cortex',amy:'Amygdala',bs:'Reflex pathways (brainstem, spinal cord)',pfc:'Prefrontal cortex'};
-  const nodes={};(function walk(n,p){n.parent=p;nodes[n.id]=n;n.x=480;n.y=30;n.vx=480;n.vy=30;(n.kids||[]).forEach(k=>walk(k,n));})(T,null);
-  const svg=$('tree');let sel=null;
-  const LEVY=[34,108,186,276];const BW={0:180,1:230,2:200,3:104};
-  function layout(){let leafX=0;const vis=[];
-    function leaves(n){return n.open&&n.kids?n.kids.reduce((a,k)=>a+leaves(k),0):1}
-    const total=leaves(T);const span=940/total;
-    (function place(n,depth,x0){n.depth=depth;n.tx=x0+leaves(n)*span/2;n.ty=LEVY[depth];vis.push(n);if(n.open&&n.kids){let x=x0;n.kids.forEach(k=>{place(k,depth+1,x);x+=leaves(k)*span;});}else (n.kids||[]).forEach(k=>hide(k,n));})(T,0,10);
-    function hide(n,anc){n.hidden=true;n.tx=anc.tx;n.ty=anc.ty;(n.kids||[]).forEach(k=>hide(k,anc));}
-    vis.forEach(n=>{n.hidden=false;if(n.kids){const bw=BW[n.depth]||200;n.tx=clamp(n.tx,bw/2+4,956-bw/2);}});return span;}
-  function boxW(n,span){if(n.depth===3||(!n.kids))return Math.min(124,span-6);return Math.min(BW[n.depth],(n.open&&n.kids?9e9:span-6));}
-  function color(n){if(n.depth===0)return['var(--panel2)','var(--line)'];if(n.depth===1)return['#d6ebe3','#8fbcae'];if(n.id==='decl'||n.id==='nond')return['#f8e2dc','#d8a99c'];return['#cfe3f5','#7fa8cf'];}
-  let span=layout();
-  function render(){let h='';const all=Object.values(nodes);
-    all.forEach(n=>{if(!n.parent)return;const p=n.parent;const op=n.hidden?0:1;const y1=p.vy+20,y2=n.vy-20,my=(y1+y2)/2;
-      const flow=sel&&isAnc(n,sel);h+=`<path class="tlink${flow?' flow':''}" d="M${p.vx},${y1} C${p.vx},${my} ${n.vx},${my} ${n.vx},${y2}" style="opacity:${op}"/>`;});
-    all.forEach(n=>{const op=n.hidden?0:1;const w=boxW(n,span);const[f,s]=color(n);const two=n.l2||n.sub;const hh=n.depth>=2&&(two)?44:(n.sub?44:36);
-      const dark=document.documentElement.dataset.theme==='dark';const fill=dark&&n.depth>0?'var(--panel2)':f;
-      h+=`<g class="tnode${sel===n?' sel':''}" data-id="${n.id}" transform="translate(${n.vx},${n.vy})" style="opacity:${op};pointer-events:${op?'auto':'none'}" tabindex="${op?0:-1}" role="button" aria-label="${n.l}">
-        <rect x="${-w/2}" y="${-hh/2}" width="${w}" height="${hh}" rx="9" fill="${fill}" stroke="${s}"/>
-        <text text-anchor="middle" y="${two?-4:5}">${n.l}</text>${n.l2?`<text text-anchor="middle" y="13">${n.l2}</text>`:''}${n.sub&&!n.l2?`<text class="sub" text-anchor="middle" y="13">${n.sub}</text>`:''}
-        ${n.kids?`<text class="plus" x="${w/2-12}" y="${-hh/2+13}">${n.open?'−':'+'}</text>`:''}</g>`;});
-    svg.innerHTML=h;
-    svg.querySelectorAll('.tnode').forEach(g=>{const f=()=>click(nodes[g.dataset.id]);g.onclick=f;g.onkeydown=e=>{if(e.key==='Enter'||e.key===' '){f();e.preventDefault()}}});}
-  function isAnc(n,t){let q=t;while(q){if(q===n)return true;q=q.parent;}return false;}
-  function leafRegs(n){if(!n.kids)return n.regs;return [...new Set(n.kids.flatMap(leafRegs))];}
-  let anim=0;
-  function click(n){if(n.kids){n.open=!n.open;if(!n.open&&sel&&isAnc(n,sel)&&sel!==n)sel=n;span=layout();anim=1;}
-    sel=n;show(n);render();}
-  const brainS=lateral('latS',{deep:['striatum','thal','hip','fornix','mamm','amy'],ghost:['striatum','thal','hip','fornix','mamm','amy'],labels:[]});
-  function show(n){const regs=leafRegs(n);const map={};regs.forEach(r=>map[r]=1);if(regs.includes('hip')){map.fornix=0;}
-    // tints for cortex-level keys
-    const svgB=$('latS');setLit(svgB,map);setGhost(svgB,['striatum','thal','hip','fornix','mamm','amy'],regs);
-    // labels
-    svgB.querySelectorAll('.dynlab').forEach(e=>e.remove());let lab='';regs.forEach(r=>{const L=LAB[r==='temporal'?'temporal':r];if(!L||r==='cortex')return;const[t,lx,ly,ax,ay]=L;const anc=lx<ax?'end':'start';lab+=`<g class="dynlab"><line class="lead" x1="${anc==='end'?lx+4:lx-4}" y1="${ly-4}" x2="${ax}" y2="${ay}"/><circle cx="${ax}" cy="${ay}" r="2.4" fill="var(--ink)"/><text class="blab" x="${lx}" y="${ly}" text-anchor="${anc}">${t}</text></g>`;});
-    if(regs.includes('bs'))lab+=`<g class="dynlab"><path d="M500,470 l18,-26 l14,18 l16,-30" stroke="var(--accent)" stroke-width="3" fill="none"/><text x="560" y="452" class="svgm">reflex arcs in the spinal cord</text></g>`;
-    svgB.insertAdjacentHTML('beforeend',lab);
-    $('sysTag').textContent=n.kids?'Branch':((n.parent&&n.parent.l)||'')+' memory';$('sysName').textContent=n.l+(n.l2?' '+n.l2:'');
-    $('sysWhat').textContent=n.what||(n.kids?'Includes: '+n.kids.map(k=>k.l+(k.l2?' '+k.l2:'')).join(', ')+'.':'');
-    $('sysKV').innerHTML=`<dt>Brain regions</dt><dd>${regs.map(r=>REGNAME[r]).join(', ')}</dd>`+(n.ex?`<dt>Example</dt><dd>${n.ex}</dd>`:'');
-    $('sysEvid').innerHTML=n.ev?`<b>Evidence:</b> ${n.ev}`:(n.kids?'Click the box again to '+(n.open?'close':'open')+' this branch, or pick one of its memory types.':'');}
-  $('treeAll').onclick=()=>{Object.values(nodes).forEach(n=>{if(n.kids)n.open=true});span=layout();render();};
-  $('treeNone').onclick=()=>{Object.values(nodes).forEach(n=>{if(n.kids)n.open=n.depth===0});sel=null;span=layout();render();};
-  Object.values(nodes).forEach(n=>{n.vx=n.tx;n.vy=n.ty;});render();
-  frameHooks.push(dt=>{let moving=false;Object.values(nodes).forEach(n=>{const k=Math.min(1,dt*9);const nx=lerp(n.vx,n.tx,k),ny=lerp(n.vy,n.ty,k);if(Math.abs(nx-n.tx)>.3||Math.abs(ny-n.ty)>.3)moving=true;n.vx=reduce?n.tx:nx;n.vy=reduce?n.ty:ny;});if(moving||anim){render();anim=moving?1:0;}});
-  redrawHooks.push(()=>{render();});
-})();
-
-/* ================= 6 stages flow ================= */
-(()=>{
-  const svg=$('flow');
-  const SENSE=[[52,74,'eye'],[52,160,'ear'],[52,246,'nose'],[52,326,'hand']];
-  svg.innerHTML=`<defs><marker id="fa" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto"><path d="M0,0 L10,5 L0,10z" fill="var(--muted)"/></marker>
-     <radialGradient id="cloud" cx="50%" cy="50%" r="50%"><stop offset="0" stop-color="var(--accent)" stop-opacity=".22"/><stop offset="1" stop-color="var(--accent)" stop-opacity="0"/></radialGradient></defs>
-    <g id="senses"></g>
-    <rect x="120" y="36" width="80" height="320" rx="10" fill="var(--buf)" stroke="var(--line)"/><text x="160" y="58" text-anchor="middle" class="svgt" style="font-size:12.5px">Sensory</text><text x="160" y="74" text-anchor="middle" class="svgt" style="font-size:12.5px">buffers</text><text x="160" y="340" text-anchor="middle" class="svgm">&lt;1 s to a few s</text>
-    <rect x="330" y="110" width="170" height="180" rx="12" fill="var(--stm)" stroke="var(--line)"/><text x="415" y="134" text-anchor="middle" class="svgt">Short-term memory</text><text x="415" y="280" text-anchor="middle" class="svgm">~30 s · about 4 chunks</text>
-    <rect x="660" y="110" width="200" height="180" rx="12" fill="var(--ltm)" stroke="var(--line)"/><text x="760" y="134" text-anchor="middle" class="svgt">Long-term memory</text><text x="760" y="280" text-anchor="middle" class="svgm">minutes to a lifetime</text>
-    <path d="M204,220 L322,220" stroke="var(--muted)" stroke-width="3" marker-end="url(#fa)"/><text x="262" y="210" text-anchor="middle" class="svgm">encoding</text>
-    <path d="M504,170 L652,170" stroke="var(--muted)" stroke-width="3" marker-end="url(#fa)"/><text x="578" y="160" text-anchor="middle" class="svgm">consolidation</text>
-    <path d="M656,240 L508,240" stroke="var(--muted)" stroke-width="3" marker-end="url(#fa)"/><text x="582" y="258" text-anchor="middle" class="svgm">retrieval</text>
-    <path d="M415,108 L415,60 L470,60" stroke="var(--muted)" stroke-width="3" fill="none" marker-end="url(#fa)"/><text x="478" y="64" class="svgm">use it (working memory)</text>
-    <ellipse cx="560" cy="340" rx="120" ry="30" fill="url(#cloud)"/><text x="560" y="345" text-anchor="middle" class="svgm">forgotten</text>
-    <path id="rehLoop" d="M380,200 C380,160 450,160 450,200 C450,240 380,240 380,200Z" fill="none" stroke="var(--accent)" stroke-width="1.6" stroke-dasharray="4 5" opacity="0"/>
-    <g id="toks"></g>`;
-  // sense icons
-  $('senses').innerHTML=`
-   <g transform="translate(52,74)"><path d="M-26,0 C-14,-14 14,-14 26,0 C14,14 -14,14 -26,0Z" fill="#fff" stroke="var(--ink)" stroke-width="1.6"/><circle r="8" fill="#5a8fc4"/><circle r="3.5" fill="#111"/><circle cx="-2" cy="-3" r="1.5" fill="#fff"/></g>
-   <g transform="translate(52,160)"><path d="M-6,-24 C12,-26 22,-12 18,4 C16,12 8,14 6,22 C4,28 -6,28 -8,22" fill="#f1c5a5" stroke="#9a6a50" stroke-width="1.6"/><path d="M-2,-12 C8,-14 12,-4 8,4 C6,8 2,6 2,2" fill="none" stroke="#9a6a50" stroke-width="1.4"/></g>
-   <g transform="translate(52,246)"><path d="M-4,-24 C-4,-8 -12,6 -14,12 C-16,20 -6,22 0,18 C6,22 14,20 12,12 C10,6 4,-8 4,-24" fill="#f1c5a5" stroke="#9a6a50" stroke-width="1.6"/><circle cx="-6" cy="15" r="2.4" fill="#9a6a50"/><circle cx="6" cy="15" r="2.4" fill="#9a6a50"/></g>
-   <g transform="translate(52,326)"><path d="M-28,-4 L4,-6 C8,-6 10,-2 6,0 L-2,2 L14,2 C18,2 18,8 14,8 L-26,10 Z" fill="#f1c5a5" stroke="#9a6a50" stroke-width="1.6"/></g>
-   <path d="M84,74 L116,74 M84,160 L116,160 M84,246 L116,246 M84,326 L116,326" stroke="var(--muted)" stroke-width="2" marker-end="url(#fa)"/>`;
-  const toks=$('toks');let T=[],reh=false,att=.35,stat={buf:0,stm:0,ltm:0,lost:0},spawnAcc=0;const COLS=['#2a78d6','#eb6834','#1baf7a','#eda100','#e87ba4','#6250d6'];
-  function mk(){const s=SENSE[Math.floor(Math.random()*4)];const el=document.createElementNS(NS,'circle');el.setAttribute('r',6);el.setAttribute('fill',COLS[Math.floor(Math.random()*6)]);el.setAttribute('stroke','#fff');el.setAttribute('stroke-width','1.2');toks.appendChild(el);
-    return{el,x:s[0]+30,y:s[1],tx:130+Math.random()*60,ty:clamp(s[1]+(Math.random()-.5)*30,48,330),st:'in',age:0,life:0,ang:Math.random()*6.28};}
-  function setTarget(t,st){t.st=st;t.age=0;
-    if(st==='stm'){t.tx=360+Math.random()*110;t.ty=150+Math.random()*110;t.life=reh?1e9:6+Math.random()*3;}
-    if(st==='ltm'){t.tx=680+Math.random()*160;t.ty=150+Math.random()*110;}
-    if(st==='lost'){t.tx=470+Math.random()*180;t.ty=330+Math.random()*20;}}
-  function updStat(){stat={buf:0,stm:0,ltm:0};T.forEach(t=>{if(t.st==='buf'||t.st==='in')stat.buf++;else if(t.st==='stm')stat.stm++;else if(t.st==='ltm')stat.ltm++;});
-    $('flowStat').textContent=`In buffers: ${stat.buf} · In STM: ${stat.stm} · In LTM: ${stat.ltm} · Forgotten: ${lostN}`;}
-  let lostN=0;
-  $('attR').oninput=e=>{att=+e.target.value/100;$('attOut').textContent=att<.2?'distracted':att<.5?'some':att<.8?'focused':'full';};
-  $('rehBtn').onclick=()=>{reh=!reh;$('rehBtn').setAttribute('aria-pressed',reh);$('rehLoop').setAttribute('opacity',reh?1:0);T.forEach(t=>{if(t.st==='stm')t.life=reh?1e9:t.age+4;});};
-  $('slpBtn').onclick=()=>{T.filter(t=>t.st==='stm').forEach(t=>{if(Math.random()<.7)setTarget(t,'ltm');});};
-  $('retBtn').onclick=()=>{const L=T.filter(t=>t.st==='ltm');if(!L.length)return;const s=L[Math.floor(Math.random()*L.length)];const c=mk();c.x=s.x;c.y=s.y;c.el.setAttribute('fill',s.el.getAttribute('fill'));setTarget(c,'stm');T.push(c);};
-  $('flowReset').onclick=()=>{T.forEach(t=>t.el.remove());T=[];lostN=0;updStat();};
-  frameHooks.push(dt=>{if(!isVis(svg))return;spawnAcc+=dt*2.2;while(spawnAcc>1&&T.length<90){spawnAcc--;T.push(mk());}
-    T.forEach(t=>{t.age+=dt;const k=Math.min(1,dt*3.2);t.x=lerp(t.x,t.tx,k);t.y=lerp(t.y,t.ty,k);
-      if(t.st==='in'&&t.age>.5){t.st='buf';t.age=0;}
-      else if(t.st==='buf'&&t.age>.8){if(Math.random()<att*.8)setTarget(t,'stm');else setTarget(t,'lost');}
-      else if(t.st==='stm'){if(reh){t.ang+=dt*2;t.tx=415+Math.cos(t.ang)*35+(t.ang%1)*4;t.ty=200+Math.sin(t.ang)*40;}
-        if(t.age>t.life)setTarget(t,'lost');else if(Math.random()<dt*(reh?.12:.03))setTarget(t,'ltm');}
-      else if(t.st==='lost'&&t.age>1.6){t.dead=true;lostN++;}
-      t.el.setAttribute('cx',t.x.toFixed(1));t.el.setAttribute('cy',t.y.toFixed(1));t.el.setAttribute('opacity',t.st==='lost'?Math.max(0,1-t.age/1.6):1);});
-    // STM capacity when rehearsing: ~4
-    const S=T.filter(t=>t.st==='stm');if(reh&&S.length>5){S.slice(0,S.length-5).forEach(t=>setTarget(t,'lost'));}
-    const L=T.filter(t=>t.st==='ltm');if(L.length>40)L.slice(0,L.length-40).forEach(t=>{t.dead=true;lostN++;});
-    T=T.filter(t=>{if(t.dead){t.el.remove();return false}return true});updStat();});
-  // Sperling
-  let delay=0,trial=null;const sres={0:[],300:[],1000:[]};
-  document.querySelectorAll('[data-sd]').forEach(b=>b.onclick=()=>{delay=+b.dataset.sd;document.querySelectorAll('[data-sd]').forEach(x=>x.setAttribute('aria-pressed',x===b));});
-  const CON='BCDFGHJKLMNPQRSTVWXZ';
-  $('sFlash').onclick=()=>{const g=[0,1,2].map(()=>Array.from({length:4},()=>CON[Math.floor(Math.random()*CON.length)]));const row=Math.floor(Math.random()*3);trial={g,row};
-    $('sGrid').innerHTML='<span class="cue">Get ready…</span>';$('sIn').value='';
-    setTimeout(()=>{$('sGrid').innerHTML=g.map(r=>`<div>${r.join('')}</div>`).join('');setTimeout(()=>{$('sGrid').innerHTML='<div>&nbsp;</div><div>&nbsp;</div><div>&nbsp;</div>';
-      setTimeout(()=>{$('sGrid').innerHTML=[0,1,2].map(i=>`<div>${i===row?'<span class="cue">→ type this row →</span>':'&nbsp;'}</div>`).join('');$('sIn').focus();},delay);},150);},700);};
-  $('sCheck').onclick=()=>{if(!trial)return;const ans=$('sIn').value.toUpperCase().replace(/[^A-Z]/g,'').split('');const tgt=[...trial.g[trial.row]];let ok=0;ans.forEach(a=>{const i=tgt.indexOf(a);if(i>=0){ok++;tgt.splice(i,1);}});
-    sres[delay].push(ok);const avg=d=>sres[d].length?(sres[d].reduce((a,b)=>a+b,0)/sres[d].length/4*12).toFixed(1):'–';
-    $('sGrid').innerHTML=trial.g.map((r,i)=>`<div style="${i===trial.row?'color:var(--accent)':'opacity:.45'}">${r.join('')}</div>`).join('');
-    $('sNote').innerHTML=`You got <b>${ok} of 4</b> in the cued row. Estimated letters available (correct ÷ 4 × 12): 0 s: <b>${avg(0)}</b> · 0.3 s: <b>${avg(300)}</b> · 1 s: <b>${avg(1000)}</b>. Sperling found about 9 letters available with an immediate cue, falling toward the whole-report limit of about 4 by 1 second: the visual buffer fades fast.`;trial=null;};
-  // Peterson
-  let pr=false;const pc=$('stmCan');const PX=[0,3,6,9,12,15,18],PY=[100,80,55,35,20,12,9];
-  function pdraw(){const{x,w,h}=fitCanvas(pc);x.clearRect(0,0,w,h);const m={l:38,r:12,t:12,b:30};axes(x,w,h,m,{xl:'seconds of counting backward →',yl:'% recalled'});
-    const X=s=>m.l+s/18*(w-m.l-m.r),Y=v=>h-m.b-v/100*(h-m.t-m.b);x.fillStyle=cssv('--muted');x.font='12px system-ui';[0,6,12,18].forEach(s=>x.fillText(s,X(s)-4,h-m.b+14));
-    x.strokeStyle=cssv('--bad');x.lineWidth=2.5;x.beginPath();PX.forEach((s,i)=>i?x.lineTo(X(s),Y(PY[i])):x.moveTo(X(s),Y(PY[i])));x.stroke();x.fillStyle=cssv('--bad');x.fillText('no rehearsal',X(7),Y(52));
-    if(pr){x.strokeStyle=cssv('--good');x.beginPath();x.moveTo(X(0),Y(100));x.lineTo(X(18),Y(94));x.stroke();x.fillStyle=cssv('--good');x.fillText('with rehearsal',X(12),Y(88));}}
-  $('stmReh').onclick=()=>{pr=!pr;$('stmReh').setAttribute('aria-pressed',pr);pdraw();};redrawHooks.push(pdraw);pdraw();
-})();
-
-/* ================= 7 consolidation ================= */
-(()=>{
-  const svg=$('conSvg');const TL=['1 hour','1 day','1 week','1 month','1 year','10 years'];const TV=[0,.06,.18,.35,.65,.95];
-  const C=[['Sights',90,90],['Sounds',190,48],['Smells',320,34],['People',450,48],['Place',550,90],['Feelings',600,170],['Words',40,170]];
-  const MEM=[0,1,3,4,5];let t=0,boost=0,les=false,pulses=[];
-  function hv(){const v=clamp(TV[t]+boost,0,1);return v;}
-  function draw(){const v=hv();const hS=les?0:Math.max(.08,1-v),cS=v;const hx=320,hy=300;
-    let h=`<path d="M20,210 C80,10 560,10 620,210" fill="none" stroke="var(--line)" stroke-width="40" stroke-linecap="round" opacity=".5"/><text x="320" y="122" text-anchor="middle" class="svgm">cortex</text>`;
-    for(let i=0;i<MEM.length;i++)for(let j=i+1;j<MEM.length;j++){const a=C[MEM[i]],b=C[MEM[j]];h+=`<line x1="${a[1]}" y1="${a[2]}" x2="${b[1]}" y2="${b[2]}" stroke="var(--accent2)" stroke-width="${(cS*5).toFixed(1)}" opacity="${(cS*.9).toFixed(2)}"/>`;}
-    MEM.forEach(i=>{const a=C[i];h+=`<line id="hl${i}" x1="${hx}" y1="${hy}" x2="${a[1]}" y2="${a[2]}" stroke="var(--hip)" stroke-width="${(hS*6).toFixed(1)}" opacity="${les?0:(.25+hS*.7).toFixed(2)}" ${les?'':''}/>`;});
-    C.forEach((a,i)=>{const on=MEM.includes(i);h+=`<circle cx="${a[1]}" cy="${a[2]}" r="${on?17:12}" fill="${on?'var(--accent)':'var(--panel2)'}" stroke="${on?'var(--accent)':'var(--line)'}" stroke-width="2"/><text x="${a[1]}" y="${a[2]+(a[2]<100?-24:32)}" text-anchor="middle" class="svgm">${a[0]}</text>`;});
-    h+=`<g transform="translate(${hx},${hy})"><path d="M-46,8 C-40,-16 -6,-22 14,-14 C34,-6 46,12 34,22 C24,30 6,22 -6,20 C-24,18 -40,24 -46,8Z" fill="${les?'url(#lesH)':'var(--hip)'}" stroke="var(--hipD)" stroke-width="1.5"/>${les?'<line x1="-40" y1="-18" x2="40" y2="26" stroke="var(--bad)" stroke-width="4"/><line x1="-40" y1="26" x2="40" y2="-18" stroke="var(--bad)" stroke-width="4"/>':''}<text y="46" text-anchor="middle" class="svgt">Hippocampus</text></g>`;
-    h+='<g id="pulseG"></g>';
-    svg.innerHTML=`<defs><pattern id="lesH" width="6" height="6" patternUnits="userSpaceOnUse"><rect width="6" height="6" fill="var(--panel2)"/></pattern></defs>`+h;
-    const ok=les?cS>.5:true;$('conH').textContent=les?'gone':Math.round(hS*100)+'%';$('conHBar').style.width=(hS*100)+'%';$('conC').textContent=Math.round(cS*100)+'%';$('conCBar').style.width=(cS*100)+'%';
-    $('conOut').textContent=TL[t]+(boost>0?' + sleep':'');
-    $('conNote').innerHTML=les?(ok?'<b>Memory survives.</b> It was old enough that the cortical pieces were linked directly, so it no longer needed the hippocampus. This is why H.M. kept his childhood memories.':'<b>Memory lost.</b> It still depended on the hippocampus, so damaging it erased the memory. Recent memories are the most vulnerable.'):(v<.2?'<b>New memory:</b> the pieces are held together through the hippocampus.':v<.6?'<b>Consolidating:</b> the cortical pieces are linking up with each other; the hippocampus is needed less.':'<b>Consolidated:</b> the memory is now stored mostly across the cortex.');}
-  $('conT').oninput=e=>{t=+e.target.value;boost=0;draw();};
-  $('conLes').onclick=()=>{les=!les;$('conLes').setAttribute('aria-pressed',les);draw();};
-  $('conSleep').onclick=()=>{if(les)return;boost=Math.min(.3,boost+.1);MEM.forEach((i,k)=>pulses.push({i,f:-k*.15}));draw();};
-  frameHooks.push(dt=>{if(!pulses.length)return;const g=$('pulseG');if(!g)return;let h='';pulses.forEach(p=>{p.f+=dt*1.4;const a=C[p.i];const f=clamp(p.f,0,1);if(p.f>0)h+=`<circle cx="${lerp(320,a[1],f)}" cy="${lerp(300,a[2],f)}" r="6" fill="var(--hipL)" stroke="var(--hipD)"/>`;});g.innerHTML=h;pulses=pulses.filter(p=>p.f<1);});
-  draw();
-  const rc=$('ribot');function rdraw(){const{x,w,h}=fitCanvas(rc);x.clearRect(0,0,w,h);const m={l:38,r:12,t:14,b:30};axes(x,w,h,m,{yl:'% recalled'});
-    const N=8;const lab=['30+ yrs','20','10','5','2','1','6 mo','weeks'];const val=[85,84,80,68,45,30,18,10];const bw=(w-m.l-m.r)/N;
-    val.forEach((v,i)=>{const bh=v/100*(h-m.t-m.b);x.fillStyle=cssv('--accent');x.globalAlpha=.25+v/130;x.beginPath();(x.roundRect?x.roundRect(m.l+i*bw+4,h-m.b-bh,bw-8,bh,[4,4,0,0]):x.rect(m.l+i*bw+4,h-m.b-bh,bw-8,bh));x.fill();x.globalAlpha=1;
-      x.fillStyle=cssv('--muted');x.font='11px system-ui';x.textAlign='center';x.fillText(lab[i],m.l+i*bw+bw/2,h-m.b+14);});x.textAlign='left';
-    x.fillText('memories from before the injury: older ← → more recent',m.l+6,m.t+6);}
-  redrawHooks.push(rdraw,draw);rdraw();
-})();
-
-/* ================= 8 Loftus + DRM ================= */
-(()=>{
-  const V=[['smashed',40.5,32],['collided',39.3,null],['bumped',38.1,null],['hit',34.0,14],['contacted',31.8,null]];
-  const svg=$('lpSvg');let cur=0,needle=31.8;
-  const btns=V.map((v,i)=>{const b=document.createElement('button');b.className='chip';b.textContent='"'+v[0]+'"';b.onclick=()=>{cur=i;setPressed(btns,b);note();};$('lpBtns').appendChild(b);return b;});setPressed(btns,btns[0]);
-  function gauge(){const cx=210,cy=190,R=150;const a=v=>Math.PI*(1-(v-20)/30);let h=`<path d="M${cx-R},${cy} A${R},${R} 0 0 1 ${cx+R},${cy}" fill="none" stroke="var(--line)" stroke-width="16" stroke-linecap="round"/>`;
-    for(let v=20;v<=50;v+=5){const t=a(v);h+=`<line x1="${cx+Math.cos(t)*(R-14)}" y1="${cy-Math.sin(t)*(R-14)}" x2="${cx+Math.cos(t)*(R+8)}" y2="${cy-Math.sin(t)*(R+8)}" stroke="var(--muted)" stroke-width="2"/><text x="${cx+Math.cos(t)*(R-34)}" y="${cy-Math.sin(t)*(R-34)+4}" text-anchor="middle" class="svgm">${v}</text>`;}
-    const t=a(needle);h+=`<line x1="${cx}" y1="${cy}" x2="${cx+Math.cos(t)*(R-24)}" y2="${cy-Math.sin(t)*(R-24)}" stroke="var(--accent2)" stroke-width="5" stroke-linecap="round"/><circle cx="${cx}" cy="${cy}" r="10" fill="var(--accent2)"/>
-      <text x="${cx}" y="${cy+44}" text-anchor="middle" style="font:700 26px var(--serif);fill:var(--ink)">${needle.toFixed(1)} <tspan class="svgm" style="font:500 13px var(--sans)">mph average estimate</tspan></text>`;svg.innerHTML=h;}
-  function note(){const v=V[cur];$('lpNote').innerHTML=`Average estimate with "${v[0]}": <b>${v[1]} mph</b>. Everyone saw the same film. `+(v[2]!==null?`A week later, <b>${v[2]}%</b> of the "${v[0]}" group said they saw broken glass (there was none), compared with 12% of people not asked about speed.`:'Broken glass was tested only for "smashed" (32% said yes) and "hit" (14%).');}
-  note();gauge();frameHooks.push(dt=>{const tgt=V[cur][1];if(Math.abs(needle-tgt)>.02){needle=lerp(needle,tgt,Math.min(1,dt*4));gauge();}});redrawHooks.push(gauge);
-  const LIST=['bed','rest','awake','tired','dream','wake','snooze','blanket','doze','slumber','snore','nap','peace','yawn','drowsy'];
-  const TEST=[['dream','old'],['butter','new'],['sleep','lure'],['blanket','old'],['river','new'],['nap','old'],['candle','new'],['tired','old']];
-  let ans={},phase=0,tm=null;
-  $('drmGo').onclick=()=>{clearInterval(tm);phase=1;ans={};$('drmCheck').disabled=true;let i=0;$('drmBox').textContent='';$('drmNote').textContent='Read each word…';
-    tm=setInterval(()=>{if(i<LIST.length){$('drmBox').textContent=LIST[i++];}else{clearInterval(tm);test();}},reduce?400:800);};
-  function test(){phase=2;$('drmBox').innerHTML=TEST.map(([w],k)=>`<span class="w">${w}<button data-k="${k}" data-a="old" aria-pressed="false">on list</button><button data-k="${k}" data-a="new" aria-pressed="false">not</button></span>`).join('');
-    $('drmBox').querySelectorAll('button').forEach(b=>b.onclick=()=>{ans[b.dataset.k]=b.dataset.a;$('drmBox').querySelectorAll(`button[data-k="${b.dataset.k}"]`).forEach(x=>x.setAttribute('aria-pressed',x===b));$('drmCheck').disabled=Object.keys(ans).length<TEST.length;});
-    $('drmNote').textContent='Mark every word, then press Check.';}
-  $('drmCheck').onclick=()=>{const lureK=TEST.findIndex(t=>t[1]==='lure');let hits=0,fa=0;TEST.forEach(([w,t],k)=>{if(t==='old'&&ans[k]==='old')hits++;if(t==='new'&&ans[k]==='old')fa++;});
-    const lure=ans[lureK]==='old';$('drmNote').innerHTML=(lure?'<b>You "remembered" <i>sleep</i>, but it was never on the list.</b> ':'<b>You correctly rejected <i>sleep</i>, which was never on the list.</b> ')+`Every word on the list was related to sleep, so your brain filled in the theme. You recognized ${hits} of 4 studied words and called ${fa} of 3 unrelated words "old". In the original study, people "recognized" the missing theme word about as often as words they had really seen, and often felt sure they remembered it.`;};
-})();
-
-/* ================= 9 emotion ================= */
-(()=>{
-  const ex=`<path id="amyArrow" d="M246,312 C262,304 280,306 300,322" stroke="var(--accent2)" stroke-width="4" fill="none" marker-end="url(#latEarr)"/>
-    <defs><marker id="latEarr" viewBox="0 0 10 10" refX="7" refY="5" markerWidth="5" markerHeight="5" orient="auto"><path d="M0,0 L10,5 L0,10z" fill="var(--accent2)"/></marker></defs>
-    <g id="adrenal" transform="translate(540,448)"><path d="M-30,10 C-28,-14 28,-14 30,10Z" fill="#e3b46a" stroke="#a87a35"/><text x="38" y="2" class="svgm">adrenal gland</text><text x="38" y="16" class="svgm">epinephrine, cortisol</text></g>
-    <path id="hormone" d="M520,442 C490,430 470,420 440,400" stroke="var(--accent2)" stroke-width="2.5" stroke-dasharray="5 5" fill="none"/>
-    <text x="300" y="300" class="svgm" id="boostLbl" style="fill:var(--accent2)">boosts consolidation</text>`;
-  lateral('latE',{deep:['hip','fornix','mamm','amy'],labels:['hip','amy'],extra:ex});
-  const st={story:'emo',drug:'plac'};
-  document.querySelectorAll('[data-em]').forEach(b=>b.onclick=()=>{st[b.dataset.em]=b.dataset.v;document.querySelectorAll(`[data-em="${b.dataset.em}"]`).forEach(x=>x.setAttribute('aria-pressed',x===b));upd();});
-  function upd(){const emo=st.story==='emo',prop=st.drug==='prop';const amy=emo?(prop?.55:.9):.25;const mem=emo&&!prop?.85:.5;
-    $('emA').textContent=amy>.7?'high':amy>.4?'moderate':'low';$('emABar').style.width=(amy*100)+'%';$('emM').textContent=mem>.7?'strong, vivid':'ordinary';$('emMBar').style.width=(mem*100)+'%';
-    const s=$('latE');setLit(s,{amy:emo?2:0,hip:emo&&!prop?1:0});$('amyArrow').style.opacity=emo&&!prop?1:.15;$('boostLbl').style.opacity=emo&&!prop?1:0;$('hormone').style.opacity=emo?1:.15;
-    $('emNote').innerHTML=!emo?'<b>Neutral story:</b> little amygdala activity, ordinary memory.':(prop?'<b>Emotional story + propranolol:</b> the beta-blocker blocks the adrenaline (noradrenaline) signal, so the emotional boost to memory disappears, while people still rate the story as emotional (Cahill et al., 1994). Being studied for softening traumatic memories.':'<b>Emotional story:</b> stress hormones and the amygdala strengthen consolidation in the hippocampus, so the emotional part is remembered best.');}
-  upd();redrawHooks.push(()=>{lateral('latE',{deep:['hip','fornix','mamm','amy'],labels:['hip','amy'],extra:ex});upd();});
-  const uc=$('ushape');function ud(){const s=+$('stR').value/100;const{x,w,h}=fitCanvas(uc);x.clearRect(0,0,w,h);const m={l:38,r:12,t:14,b:30};axes(x,w,h,m,{xl:'stress →',yl:'memory'});
-    const X=v=>m.l+v*(w-m.l-m.r),Y=v=>h-m.b-v*(h-m.t-m.b);const f=v=>Math.exp(-Math.pow((v-.45)/.27,2))*.85+.08;x.strokeStyle=cssv('--accent');x.lineWidth=2.5;x.beginPath();for(let i=0;i<=100;i++){const v=i/100;i?x.lineTo(X(v),Y(f(v))):x.moveTo(X(v),Y(f(v)));}x.stroke();
-    x.fillStyle=cssv('--accent2');x.beginPath();x.arc(X(s),Y(f(s)),8,0,7);x.fill();
-    $('stOut').textContent=s<.2?'very low':s<.65?'moderate':'very high';
-    $('stNote').innerHTML=s<.2?'Too little arousal: attention drifts.':s<.65?'<b>The sweet spot:</b> moderate, short-lived stress sharpens attention and strengthens consolidation.':'<b>Very high stress</b> impairs performance, especially on complex material. <b>Chronic</b> stress keeps cortisol high, which can damage hippocampal neurons and weaken the brake on the stress response.';}
-  $('stR').oninput=ud;redrawHooks.push(ud);ud();
-  const fc=$('flash');function fd(){const{x,w,h}=fitCanvas(fc);x.clearRect(0,0,w,h);const m={l:38,r:12,t:14,b:30};axes(x,w,h,m,{xl:'days since event →'});
-    const X=v=>m.l+v*(w-m.l-m.r),Y=v=>h-m.b-v*(h-m.t-m.b);const L=(f,col,dash,lab,ly)=>{x.strokeStyle=col;x.setLineDash(dash);x.lineWidth=2.5;x.beginPath();for(let i=0;i<=50;i++){const v=i/50;i?x.lineTo(X(v),Y(f(v))):x.moveTo(X(v),Y(f(v)));}x.stroke();x.setLineDash([]);x.fillStyle=col;x.font='12px system-ui';x.fillText(lab,X(.55),Y(ly));};
-    L(v=>.95-.05*v,cssv('--accent2'),[],'confidence: flashbulb',.97);L(v=>.92-.35*Math.sqrt(v),cssv('--accent'),[],'accuracy: flashbulb and everyday',.5);L(v=>.9-.35*Math.sqrt(v),cssv('--muted'),[6,5],'confidence: everyday',.7);}
-  redrawHooks.push(fd);fd();
-})();
-
-/* ================= 10 place & grid cells ================= */
-(()=>{
-  const c=$('arena');const S=500;let mode='place',fast=false,rat={x:250,y:250,a:0,v:110},trail=[],spikes=[],T=0,ptr=null;
-  const COLS=['#2a78d6','#eb6834','#1baf7a','#d9a000','#d55181'];
-  const PCS=[[120,140],[360,110],[260,280],[110,380],[390,380]].map(([x,y],i)=>({x,y,s:38,col:COLS[i]}));
-  const gr=(x,y)=>{const k=2*Math.PI/95;let s=0;for(let i=0;i<3;i++){const a=i*Math.PI/3+.25;s+=Math.cos(k*((x-30)*Math.cos(a)+(y-20)*Math.sin(a)));}return Math.max(0,(s+1.5)/4.5);};
-  function setMode(m){mode=m;setPressed([$('pcBtn'),$('gcBtn')],m==='place'?$('pcBtn'):$('gcBtn'));clear();
-    $('arNote').innerHTML=m==='place'?'Each color is one hippocampal <b>place cell</b>. A dot marks where the rat was when that neuron fired. The gray line is the rat\'s path.':'One entorhinal <b>grid cell</b>. Its firing spots (black) tile the whole arena in a triangular, hexagonal pattern, no matter where the rat goes. Let it run for a while.';}
-  function clear(){trail=[];spikes=[];T=0;}
-  $('pcBtn').onclick=()=>setMode('place');$('gcBtn').onclick=()=>setMode('grid');$('arClear').onclick=clear;$('arFast').onclick=()=>{fast=!fast;$('arFast').setAttribute('aria-pressed',fast);};
-  c.addEventListener('pointermove',e=>{const r=c.getBoundingClientRect();ptr=[(e.clientX-r.left)/r.width*S,(e.clientY-r.top)/r.height*S];});c.addEventListener('pointerleave',()=>ptr=null);
-  c.addEventListener('pointerdown',e=>{const r=c.getBoundingClientRect();ptr=[(e.clientX-r.left)/r.width*S,(e.clientY-r.top)/r.height*S];});
-  function step(dt){T+=dt;if(ptr){const ta=Math.atan2(ptr[1]-rat.y,ptr[0]-rat.x);let da=((ta-rat.a+Math.PI*3)%(Math.PI*2))-Math.PI;rat.a+=clamp(da,-4*dt,4*dt);if(Math.hypot(ptr[0]-rat.x,ptr[1]-rat.y)<10)return;}
-    else rat.a+=(Math.random()-.5)*5*dt;
-    let nx=rat.x+Math.cos(rat.a)*rat.v*dt,ny=rat.y+Math.sin(rat.a)*rat.v*dt;const m=22;if(nx<m||nx>S-m){rat.a=Math.PI-rat.a;nx=clamp(nx,m,S-m);}if(ny<m||ny>S-m){rat.a=-rat.a;ny=clamp(ny,m,S-m);}rat.x=nx;rat.y=ny;
-    trail.push([rat.x,rat.y]);if(trail.length>6000)trail.shift();
-    if(mode==='place')PCS.forEach(p=>{const d2=(rat.x-p.x)**2+(rat.y-p.y)**2;const rate=22*Math.exp(-d2/(2*p.s*p.s));if(Math.random()<rate*dt)spikes.push([rat.x+(Math.random()-.5)*4,rat.y+(Math.random()-.5)*4,p.col]);});
-    else{const rate=26*Math.pow(gr(rat.x,rat.y),3);if(Math.random()<rate*dt)spikes.push([rat.x+(Math.random()-.5)*4,rat.y+(Math.random()-.5)*4,'grid']);}
-    if(spikes.length>5000)spikes.shift();}
-  function draw(){const{x,w,h}=fitCanvas(c);const k=w/S;x.save();x.scale(k,k);x.fillStyle=cssv('--panel2');x.fillRect(0,0,S,S);x.strokeStyle=cssv('--ink');x.lineWidth=3;x.strokeRect(12,12,S-24,S-24);
-    x.strokeStyle=document.documentElement.dataset.theme==='dark'?'rgba(255,255,255,.18)':'rgba(0,0,0,.16)';x.lineWidth=1;x.beginPath();trail.forEach((p,i)=>i?x.lineTo(p[0],p[1]):x.moveTo(p[0],p[1]));x.stroke();
-    const ink=cssv('--ink');spikes.forEach(s=>{x.fillStyle=s[2]==='grid'?ink:s[2];x.beginPath();x.arc(s[0],s[1],2.6,0,7);x.fill();});
-    // rat
-    x.save();x.translate(rat.x,rat.y);x.rotate(rat.a);x.strokeStyle='#d99';x.lineWidth=2;x.beginPath();x.moveTo(-12,0);x.quadraticCurveTo(-24,6,-34,-2);x.stroke();
-    x.fillStyle='#9a8f88';x.beginPath();x.ellipse(0,0,13,8,0,0,7);x.fill();x.beginPath();x.ellipse(11,0,7,5,0,0,7);x.fill();x.fillStyle='#e8b4b4';x.beginPath();x.arc(8,-6,3,0,7);x.arc(8,6,3,0,7);x.fill();x.fillStyle='#111';x.beginPath();x.arc(15,-2,1.3,0,7);x.arc(15,2,1.3,0,7);x.fill();
-    x.fillStyle=cssv('--accent2');x.beginPath();x.arc(2,0,2.5,0,7);x.fill();x.restore();
-    x.fillStyle=cssv('--muted');x.font='13px system-ui';x.fillText(ptr?'Steering: the rat follows your pointer':'Exploring on its own (move your pointer over the arena to steer)',18,S-18);x.restore();
-    $('arTime').textContent=Math.round(T)+' s';$('arSp').textContent=spikes.length;}
-  frameHooks.push(dt=>{if(!isVis(c))return;const n=fast?8:1;for(let i=0;i<n;i++)step(dt);draw();});
-  redrawHooks.push(draw);
-})();
-
-/* ================= 11 storage / reinstatement ================= */
-(()=>{
-  const AREAS=[['olf','smell of cookies'],['visual','the yellow kitchen'],['auditory','grandma\'s voice'],['somato','warm oven, soft apron'],['amy','feeling safe']];
-  const ex='<g id="rLinks"></g>';
-  function build(){lateral('latR',{deep:['hip','fornix','mamm','amy'],ghost:['fornix','mamm'],labels:['olf','visual','auditory','somato','amy','hip'],extra:ex});}
-  build();let old=false,seq=null;
-  const P={olf:[150,280],visual:[590,220],auditory:[330,290],somato:[365,130],amy:[236,322],hip:[350,334]};
-  $('recallOld').onclick=()=>{old=!old;$('recallOld').setAttribute('aria-pressed',old);setLit($('latR'),{});$('rLinks').innerHTML='';};
-  $('recallGo').onclick=()=>{seq={t:0};};
-  frameHooks.push(dt=>{if(!seq)return;seq.t+=dt*(reduce?3:1);const t=seq.t;const map={olf:1};let links='';
-    const hub=old?P.olf:P.hip;
-    if(t>.6&&!old){map.hip=1;links+=`<line x1="${P.olf[0]}" y1="${P.olf[1]}" x2="${P.hip[0]}" y2="${P.hip[1]}" stroke="var(--hip)" stroke-width="4" stroke-linecap="round"/>`;}
-    const rest=AREAS.slice(1);rest.forEach(([k],i)=>{const tt=(old?.6:1.2)+i*.35;if(t>tt){map[k]=k==='amy'?2:1;const f=clamp((t-tt)/.4,0,1);const a=hub,b=P[k];links+=`<line x1="${a[0]}" y1="${a[1]}" x2="${lerp(a[0],b[0],f)}" y2="${lerp(a[1],b[1],f)}" stroke="${old?'var(--accent2)':'var(--hip)'}" stroke-width="3" stroke-dasharray="${old?'0':'6 4'}" stroke-linecap="round"/>`;}});
-    setLit($('latR'),map);$('rLinks').innerHTML=links;
-    const shown=['smell of cookies'].concat(rest.filter((a,i)=>t>(old?.6:1.2)+i*.35).map(a=>a[1]));
-    $('recallNote').innerHTML=`<b>Recalled:</b> ${shown.join(' → ')}.<br>`+(old?'Years later, the cortical pieces are linked <b>directly</b> (orange), so the memory can come back even without the hippocampus.':'The cue reaches the <b>hippocampus</b>, which acts like an index and reactivates the other pieces (green), reinstating the original pattern of activity.');
-    if(t>4)seq=null;});
-  redrawHooks.push(()=>{build();});
-})();
-
-/* ================= 13 quiz ================= */
-(()=>{
-  const Q=[
-   ['H.M. could not remember meeting his doctors, but his IQ, language and short-term memory were normal. Which brain region was removed on both sides?',['Prefrontal cortex','Medial temporal lobe (hippocampus and nearby cortex)','Cerebellum','Basal ganglia'],1,'His surgery removed the medial temporal lobes, including much of the hippocampus, the amygdala and nearby cortex.'],
-   ['A patient cannot form new memories after a brain injury. This is…',['Retrograde amnesia','Anterograde amnesia','Confabulation','Priming'],1,'Antero = forward from the injury. Retrograde amnesia is loss of memories from before the injury.'],
-   ['A patient can\'t remember meeting you five minutes ago, but she\'s getting faster at a new video game she plays every day. Which memory system is spared?',['Episodic memory','Semantic memory','Nondeclarative (skill) memory','Short-term memory only'],2,'Skill memory depends on the basal ganglia, not the hippocampus, just like H.M.\'s mirror tracing.'],
-   ['Patient K.C. knew facts about the world but could not relive any specific event from his life. He lost…',['Semantic memory','Episodic memory','Procedural memory','Working memory'],1,'Episodic memory (personal events in time and place) and semantic memory (facts) can come apart.'],
-   ['Korsakoff\'s syndrome is caused by ___ and damages the ___.',['vitamin C deficiency; cerebellum','thiamine (B1) deficiency; mammillary bodies and dorsomedial thalamus','dopamine loss; striatum','a fencing foil; hippocampus'],1,'Usually from chronic alcoholism. Patients often confabulate. (N.A. was the fencing-foil patient.)'],
-   ['Lesioning the cerebellum\'s interpositus nucleus abolishes a learned eyeblink to a tone but not the reflex blink to an air puff. This shows…',['The memory trace for this conditioning is stored in the cerebellum','Eyeblinks need the hippocampus','The cerebellum controls all reflexes','Conditioning is declarative'],0,'The learned (conditioned) response depends on the cerebellar circuit; the unlearned reflex uses another pathway.'],
-   ['In Sperling\'s experiment, partial report after an immediate cue showed that…',['Only about 4 letters are ever seen','Most letters are briefly available in the visual buffer, but fade within about a second','Short-term memory lasts 30 seconds','Long-term memory has limited capacity'],1,'The iconic buffer holds most of the display for a fraction of a second.'],
-   ['Without rehearsal, information in short-term memory lasts about…',['A fraction of a second','About 30 seconds','About a day','A lifetime'],1,'The Petersons showed recall falls steeply within seconds when rehearsal is blocked.'],
-   ['Why does retrograde amnesia usually spare old memories more than recent ones?',['Old memories are stored in the cerebellum','Recent memories had not finished consolidating into cortex and still depended on the hippocampus','Old memories are rehearsed in sleep forever','Recent memories are stored in short-term memory'],1,'Over time, consolidation makes memories less dependent on the hippocampus (Ribot\'s law).'],
-   ['People who heard "smashed" instead of "hit" gave higher speed estimates and later "remembered" broken glass. This shows…',['Memory is a perfect recording','Retrieval can reshape memories (misinformation effect)','Eyewitnesses are always accurate when confident','The amygdala stores speed'],1,'Loftus and Palmer (1974): wording after the event changed the memory.'],
-   ['Propranolol given before an emotional story…',['Makes the story feel less emotional and is remembered better','Blocks the emotional boost to memory','Erases old memories','Improves working memory'],1,'Blocking beta-adrenergic (adrenaline/noradrenaline) signaling removed the memory advantage for emotional material (Cahill et al., 1994).'],
-   ['A neuron that fires whenever a rat is in one corner of its box, wherever it is facing, is a…',['Grid cell in the cerebellum','Place cell in the hippocampus','Mirror neuron','Motor neuron'],1,'Place cells (hippocampus) have one place field; grid cells (entorhinal cortex) fire at many points on a hexagonal grid.']];
-  let qi=0;const ans={};
-  function show(){const[q,o,r,why]=Q[qi];$('qText').textContent=q;$('qCount').textContent=`${qi+1} / ${Q.length}`;$('qWhy').textContent=ans[qi]!==undefined?why:'';$('qOpts').innerHTML='';
-    o.forEach((t,i)=>{const b=document.createElement('button');b.textContent=String.fromCharCode(65+i)+')  '+t;if(ans[qi]!==undefined){if(i===r)b.classList.add('right');else if(i===ans[qi])b.classList.add('wrong');}b.onclick=()=>{ans[qi]=i;show();};$('qOpts').appendChild(b);});}
-  $('qPrev').onclick=()=>{qi=(qi-1+Q.length)%Q.length;show()};$('qNext').onclick=()=>{qi=(qi+1)%Q.length;show()};show();
-})();
-
-$('copyBtn').onclick=()=>{const t=$('embedCode').textContent;if(navigator.clipboard)navigator.clipboard.writeText(t).then(()=>{$('copyBtn').textContent='Copied';setTimeout(()=>$('copyBtn').textContent='Copy',1500)},()=>{})};
-let rz;addEventListener('resize',()=>{clearTimeout(rz);rz=setTimeout(()=>redrawHooks.forEach(f=>f()),120)});
-if(store.get('memTheme')==='dark')setTheme(true);
-
 /* ================= H.M. lesion panel ================= */
 (()=>{
   const svg=$('hmVent');
@@ -1409,12 +974,24 @@ if(store.get('memTheme')==='dark')setTheme(true);
     else{les(8);$('hmVNote').innerHTML='<b>The surgeon\'s estimate:</b> Scoville wrote that he removed about 8 cm on each side. Decades later, MRI scans showed the real lesion was shorter, about 5 cm, and that the back of each hippocampus was left in place.';}}
   $('hmV97').onclick=()=>set(97);$('hmV57').onclick=()=>set(57);set(97);
 })();
+
+/* ================= quiz ================= */
+(()=>{
+  const Q=[["H.M. could not remember meeting his doctors, but his IQ, language and short-term memory were normal. Which brain region was removed on both sides?", ["Prefrontal cortex", "Medial temporal lobe (hippocampus and nearby cortex)", "Cerebellum", "Basal ganglia"], 1, "His surgery removed the medial temporal lobes, including much of the hippocampus, the amygdala and nearby cortex."], ["A patient cannot form new memories after a brain injury. This is…", ["Retrograde amnesia", "Anterograde amnesia", "Confabulation", "Priming"], 1, "Antero = forward from the injury. Retrograde amnesia is loss of memories from before the injury."], ["A patient can't remember meeting you five minutes ago, but she's getting faster at a new video game she plays every day. Which memory system is spared?", ["Episodic memory", "Semantic memory", "Nondeclarative (skill) memory", "Short-term memory only"], 2, "Skill memory depends on the basal ganglia, not the hippocampus, just like H.M.'s mirror tracing."], ["Patient K.C. knew facts about the world but could not relive any specific event from his life. He lost…", ["Semantic memory", "Episodic memory", "Procedural memory", "Working memory"], 1, "Episodic memory (personal events in time and place) and semantic memory (facts) can come apart."], ["Korsakoff's syndrome is caused by ___ and damages the ___.", ["vitamin C deficiency; cerebellum", "thiamine (B1) deficiency; mammillary bodies and dorsomedial thalamus", "dopamine loss; striatum", "a fencing foil; hippocampus"], 1, "Usually from chronic alcoholism. Patients often confabulate. (N.A. was the fencing-foil patient.)"], ["A neuron that fires whenever a rat is in one corner of its box, wherever it is facing, is a…", ["Grid cell in the cerebellum", "Place cell in the hippocampus", "Mirror neuron", "Motor neuron"], 1, "Place cells (hippocampus) have one place field; grid cells (entorhinal cortex) fire at many points on a hexagonal grid."]];
+  let qi=0;const ans={};
+  function show(){const[q,o,r,why]=Q[qi];$('qText').textContent=q;$('qCount').textContent=`${qi+1} / ${Q.length}`;$('qWhy').textContent=ans[qi]!==undefined?why:'';$('qOpts').innerHTML='';
+    o.forEach((t,i)=>{const b=document.createElement('button');b.textContent=String.fromCharCode(65+i)+')  '+t;if(ans[qi]!==undefined){if(i===r)b.classList.add('right');else if(i===ans[qi])b.classList.add('wrong');}b.onclick=()=>{ans[qi]=i;show();};$('qOpts').appendChild(b);});}
+  $('qPrev').onclick=()=>{qi=(qi-1+Q.length)%Q.length;show()};$('qNext').onclick=()=>{qi=(qi+1)%Q.length;show()};show();
+})();
+
+$('copyBtn').onclick=()=>{const t=$('embedCode').textContent;if(navigator.clipboard)navigator.clipboard.writeText(t).then(()=>{$('copyBtn').textContent='Copied';setTimeout(()=>$('copyBtn').textContent='Copy',1500)},()=>{})};
+let rz;addEventListener('resize',()=>{clearTimeout(rz);rz=setTimeout(()=>redrawHooks.forEach(f=>f()),120)});
+if(store.get('memTheme')==='dark')setTheme(true);
 let prev=performance.now();
 function loop(now){const dt=Math.max(0,Math.min(.05,(now-prev)/1000));prev=now;frameHooks.forEach(f=>{try{f(dt)}catch(e){console.error(e)}});requestAnimationFrame(loop)}
 requestAnimationFrame(loop);
 })();
 </script>
-
 <script>
 /* Start-here demo: chunking */
 (()=>{

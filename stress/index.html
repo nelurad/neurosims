@@ -1,0 +1,695 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Stress and the HPA Axis</title>
+<link rel="icon" href="data:,">
+<meta name="description" content="Stress and the HPA axis: the fast adrenaline pathway and the slow cortisol pathway, negative feedback, acute vs. chronic stress, early-life care and epigenetics, and the stress–sleep–emotion loop. Part 3 of the NeuroSims emotion series.">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@500;600;700&family=Nunito:ital,wght@0,400;0,600;0,700;0,800;1,400&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --serif:"Iowan Old Style","Palatino Linotype",Palatino,"Book Antiqua",Georgia,"Times New Roman",serif;
+    --sans:system-ui,-apple-system,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif;
+    --mono:ui-monospace,"SF Mono",Menlo,Consolas,monospace;
+    --bg:#fcfbf8; --band:#f4f1ea; --panel:#ffffff; --panel2:#f8f6f1; --line:#d9d4c8; --grid:rgba(60,50,30,.12);
+    --ink:#1d2230; --muted:#5a5f6c; --accent:#a8323e; --accent2:#1f5f9c;
+    --tissue:#efe6dc; --tissue2:#e2d5c6; --tissueLine:#b9a896; --dim:#d6c8b8; --dimLine:#b8a590;
+    --good:#16864f; --bad:#c92a42; --warm:#c76a00; --cool:#1f6fc4;
+  }
+  :root[data-theme="dark"]{
+    --bg:#16151c; --band:#1c1b24; --panel:#22212c; --panel2:#272633; --line:#3a3848; --grid:rgba(220,210,255,.12);
+    --ink:#f1eff6; --muted:#b0adbf; --accent:#ff7a86; --accent2:#7ab8ff;
+    --tissue:#3a3340; --tissue2:#463d4c; --tissueLine:#6c6078; --dim:#544b5e; --dimLine:#7a6d88;
+    --good:#5fe0a0; --bad:#ff6b7d; --warm:#ffb04a; --cool:#6cb6ff;
+  }
+  *{box-sizing:border-box}
+  html{-webkit-text-size-adjust:100%;scroll-behavior:smooth;font-size:clamp(16px,1.15vw,21px)}
+  html.present{font-size:clamp(18px,1.35vw,26px)}
+  html,body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--sans);line-height:1.5;-webkit-font-smoothing:antialiased}
+  .wrap{margin:0 auto;padding:16px 24px 40px;max-width:1400px}
+  a{color:var(--accent2)}
+  .back{font-size:.8rem;color:var(--muted);text-decoration:none}
+  .back:hover{text-decoration:underline}
+  :focus-visible{outline:3px solid var(--accent);outline-offset:2px}
+  svg{display:block;width:100%;height:auto;user-select:none;-webkit-user-select:none}
+  canvas{display:block;width:100%}
+  b,strong{font-weight:700}
+
+  .hero{padding:24px 0 30px}
+  .hero h1{font-family:var(--serif);font-weight:600;font-size:clamp(44px,5vw,86px);line-height:1.04;margin:.2em 0 .3em;letter-spacing:-.015em}
+  .hero p.big{font-size:1.2rem;max-width:42em;margin:0 0 .6em}
+  .hint{color:var(--muted);font-size:.85rem}
+  .kbd{display:inline-block;border:1.5px solid var(--line);border-bottom-width:3px;border-radius:6px;padding:0 .4em;font-family:var(--mono);font-size:.85em;background:var(--panel)}
+  .facts3{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:32px;margin:26px 0 14px;max-width:1100px}
+  .facts3 div{border-top:2px solid var(--line);padding:12px 0 0;color:var(--muted);font-size:.95rem}
+  .facts3 b{display:block;font-size:2rem;color:var(--ink);font-family:var(--serif);font-weight:600;line-height:1.1;margin-bottom:4px}
+
+  .pipe{position:sticky;top:0;z-index:20;background:color-mix(in srgb,var(--bg) 92%,transparent);backdrop-filter:blur(6px);border-bottom:1.5px solid var(--line);margin:0 -24px;padding:8px 24px;display:flex;gap:10px;align-items:center}
+  .pipe ol{list-style:none;margin:0;padding:0;display:flex;gap:1px;overflow-x:auto;scrollbar-width:none;flex:1}
+  .pipe ol::-webkit-scrollbar{display:none}
+  .pipe a{display:flex;align-items:center;gap:4px;text-decoration:none;color:var(--muted);font-size:.72rem;padding:5px 7px;border-radius:999px;white-space:nowrap;border:1.5px solid transparent}
+  .pipe a .i{font-family:var(--mono);font-size:.85em;opacity:.7}
+  .pipe a:hover{color:var(--ink);border-color:var(--line)}
+  .pipe a.on{color:#fff;background:var(--accent)}
+  :root[data-theme="dark"] .pipe a.on{color:#16151c}
+  .tools{display:flex;gap:6px;flex:none}
+  .tbtn{font:inherit;font-size:.78rem;background:var(--panel);color:var(--ink);border:1.5px solid var(--line);border-radius:999px;padding:5px 12px;cursor:pointer;white-space:nowrap}
+  .tbtn:hover{border-color:var(--accent)}
+
+  section.s{padding:80px 0 70px;scroll-margin-top:52px;border-top:1px solid var(--line)}
+  section.s.alt{background:var(--band);box-shadow:0 0 0 100vmax var(--band);clip-path:inset(0 -100vmax)}
+  html.present section.s{min-height:calc(100vh - 56px);padding:22px 0 26px;display:flex;flex-direction:column;justify-content:center}
+  html.present{scroll-snap-type:y proximity}
+  html.present section.s{scroll-snap-align:start}
+  .kicker{font:700 .72rem/1 var(--sans);letter-spacing:.16em;text-transform:uppercase;color:var(--accent);margin:0 0 14px;display:flex;align-items:center;gap:12px}
+  .kicker::before{content:"";width:36px;height:2px;background:var(--accent)}
+  h2.sec{font-family:var(--serif);font-weight:600;font-size:clamp(30px,3vw,52px);line-height:1.1;margin:0 0 .4em;letter-spacing:-.01em}
+  h3{font-family:var(--serif);font-weight:600;font-size:1.3rem;margin:0 0 .4em}
+  .lede{font-size:1.08rem;max-width:48em;margin:0 0 1.2em}
+  .note{color:var(--muted);font-size:.86rem;max-width:60em;margin:14px 0 0}
+
+  .stage{display:grid;grid-template-columns:minmax(0,1.35fr) minmax(0,1fr);gap:22px;align-items:start}
+  .stage.even{grid-template-columns:minmax(0,1fr) minmax(0,1fr)}
+  .box{background:var(--panel);border:1.5px solid var(--line);border-radius:14px;padding:16px}
+  .row{display:flex;flex-wrap:wrap;gap:8px;align-items:center}
+  .chip,.btn{font:inherit;font-size:.85rem;background:var(--panel2);color:var(--ink);border:1.5px solid var(--line);border-radius:999px;padding:6px 14px;cursor:pointer}
+  .chip:hover,.btn:hover{border-color:var(--accent)}
+  .chip[aria-pressed="true"]{background:var(--accent);border-color:var(--accent);color:#fff}
+  :root[data-theme="dark"] .chip[aria-pressed="true"]{color:#16151c}
+  .btn.primary{background:var(--accent);border-color:var(--accent);color:#fff}
+  :root[data-theme="dark"] .btn.primary{color:#16151c}
+  .ctrl{display:flex;align-items:center;gap:10px;margin:10px 0;font-size:.9rem}
+  .ctrl input[type=range]{flex:1;accent-color:var(--accent)}
+  .ctrl b{min-width:5.5em;text-align:right;font-variant-numeric:tabular-nums}
+  .callout{border-left:3px solid var(--accent);background:var(--panel2);padding:10px 14px;border-radius:0 10px 10px 0;font-size:.92rem;margin:12px 0 0}
+  .callout.blue{border-color:var(--accent2)}
+  dl.kv{display:grid;grid-template-columns:auto 1fr;gap:4px 14px;margin:8px 0;font-size:.92rem}
+  dl.kv dt{color:var(--muted)} dl.kv dd{margin:0;font-weight:600}
+  .meter{height:14px;background:var(--panel2);border:1.5px solid var(--line);border-radius:999px;overflow:hidden;margin:4px 0 10px}
+  .meter i{display:block;height:100%;width:0;background:var(--accent);border-radius:999px;transition:width .35s}
+  .meter.blue i{background:var(--accent2)}
+  .mlab{display:flex;justify-content:space-between;font-size:.85rem;color:var(--muted)}
+  .mlab b{color:var(--ink)}
+  .big2{font-family:var(--serif);font-size:1.6rem;font-weight:600;margin:4px 0}
+  .cols2{display:grid;grid-template-columns:1fr 1fr;gap:22px;margin-top:22px}
+
+  /* brain svg */
+  .tissue{fill:var(--tissue);stroke:var(--tissueLine);stroke-width:2}
+  .tissue2{fill:var(--tissue2);stroke:var(--tissueLine);stroke-width:1.5}
+  .reg{fill:var(--dim);stroke:var(--tissueLine);stroke-width:1.2;transition:fill .3s,opacity .3s}
+  .reg.line{fill:none;stroke:var(--dimLine);stroke-linecap:round}
+  .reg.on{fill:var(--accent);stroke:var(--accent)}
+  .reg.line.on{fill:none;stroke:var(--accent)}
+  .reg.on2{fill:var(--accent2);stroke:var(--accent2)}
+  .reg.line.on2{fill:none;stroke:var(--accent2)}
+  .reg.dash{stroke-dasharray:5 4}
+  .reg.click{cursor:pointer}
+  .blab{font:600 13px var(--sans);fill:var(--ink)}
+  .blab.m{fill:var(--muted);font-weight:500}
+  .lead{stroke:var(--muted);stroke-width:1}
+  .svgt{font:600 14px var(--sans);fill:var(--ink)}
+  .svgm{font:500 12px var(--sans);fill:var(--muted)}
+  .node rect{fill:var(--panel2);stroke:var(--line);stroke-width:2;transition:all .3s}
+  .node text{font:600 15px var(--sans);fill:var(--muted);transition:fill .3s}
+  .node.on rect{fill:var(--accent);stroke:var(--accent)}
+  .node.on text{fill:#fff}
+  .node.off{opacity:.25}
+  .edge{stroke:var(--line);stroke-width:3;fill:none;transition:stroke .3s}
+  .edge.on{stroke:var(--accent)}
+  .edge.hide{opacity:0}
+  .dot{fill:var(--accent)}
+  .dot2{fill:var(--accent2)}
+
+  .quiz .qcard{background:var(--panel);border:1.5px solid var(--line);border-radius:14px;padding:22px;max-width:900px}
+  .q{font-size:1.1rem;font-weight:600;margin:0 0 12px}
+  .qopts{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+  .qopts button{font:inherit;text-align:left;background:var(--panel2);color:var(--ink);border:1.5px solid var(--line);border-radius:10px;padding:10px 14px;cursor:pointer}
+  .qopts button.right{border-color:var(--good);box-shadow:inset 0 0 0 1.5px var(--good)}
+  .qopts button.wrong{border-color:var(--bad);opacity:.7}
+  .why{min-height:1.5em;margin:12px 0 0;color:var(--muted)}
+  .qnav{display:flex;gap:12px;align-items:center;margin-top:12px;max-width:900px;justify-content:space-between}
+
+  .foot{border-top:1px solid var(--line);margin-top:30px;padding-top:20px;font-size:.85rem;color:var(--muted)}
+  .embed{display:flex;flex-wrap:wrap;gap:8px;align-items:center}
+  .embed code{font-family:var(--mono);font-size:.75rem;background:var(--panel2);border:1px solid var(--line);border-radius:6px;padding:6px 8px;overflow-x:auto;max-width:100%;white-space:nowrap}
+  .embed button{font:inherit;font-size:.8rem;background:var(--panel);color:var(--ink);border:1.5px solid var(--line);border-radius:999px;padding:4px 12px;cursor:pointer}
+  .refs{padding-left:1.2em;margin:4px 0 12px}
+  .refs li{margin:3px 0}
+
+  @media (max-width:900px){
+    .stage,.stage.even,.cols2{grid-template-columns:1fr}
+    .facts3{grid-template-columns:1fr;gap:12px}
+    .qopts{grid-template-columns:1fr}
+  }
+  @media (max-width:640px){
+    .wrap{padding:12px 16px 30px} .pipe{margin:0 -16px;padding:8px 16px}
+    section.s{padding:56px 0 50px}
+  }
+  @media (prefers-reduced-motion:reduce){ html{scroll-behavior:auto} }
+
+  /* ================= Playful redesign (shared by learning + memory) ================= */
+  :root{
+    --body:"Nunito",var(--sans);
+    --display:"Fredoka","Nunito",var(--sans);
+    --bg:#fbfaff; --panel:#ffffff; --panel2:#f3f1fb; --line:#dcd7ec; --grid:rgba(60,40,120,.10);
+    --ink:#231d3b; --muted:#5d5875;
+    --edge:#231d3b; --shadow:#231d3b; --dot:rgba(120,90,220,.16);
+    --c1:#ff6b6b; --c2:#ffb627; --c3:#20b393; --c4:#4d8dff; --c5:#9b5de5;
+    --note:#fff4b8; --noteInk:#2e2600;
+    --tint:var(--c4);
+  }
+  :root[data-theme="dark"]{
+    --bg:#17142a; --panel:#221e38; --panel2:#2a2545; --line:#3d3760; --grid:rgba(200,190,255,.12);
+    --ink:#f3f0ff; --muted:#b5afd0;
+    --edge:#7d74b8; --shadow:#07060f; --dot:rgba(185,160,255,.10);
+    --c1:#ff8a8a; --c2:#ffc857; --c3:#45d6b5; --c4:#7aa8ff; --c5:#b98af0;
+    --note:#3a3216; --noteInk:#fff1b8;
+  }
+  html,body{font-family:var(--body)}
+  body{overflow-x:hidden;background-color:var(--bg);background-image:radial-gradient(var(--dot) 1.3px,transparent 1.6px);background-size:22px 22px}
+  ::selection{background:color-mix(in srgb,var(--c2) 55%,transparent)}
+
+  /* per-section color */
+  section.s:nth-of-type(5n+1){--tint:var(--c4)}
+  section.s:nth-of-type(5n+2){--tint:var(--c3)}
+  section.s:nth-of-type(5n+3){--tint:var(--c1)}
+  section.s:nth-of-type(5n+4){--tint:var(--c5)}
+  section.s:nth-of-type(5n+5){--tint:var(--c2)}
+  section.s{border-top:0}
+  section.s.alt{--band:color-mix(in srgb,var(--tint) 11%,var(--bg))}
+
+  /* type */
+  .hero h1,h2.sec,h3,.card h4,.facts3 b,.q{font-family:var(--display);letter-spacing:0}
+  h2.sec{font-weight:700;font-size:clamp(30px,3.3vw,56px)}
+  h2.sec::after{content:"";display:block;width:160px;height:14px;margin-top:12px;background:var(--tint);
+    -webkit-mask:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='32' height='14' viewBox='0 0 32 14'%3E%3Cpath d='M0 7 Q8 0 16 7 T32 7' fill='none' stroke='black' stroke-width='4.5' stroke-linecap='round'/%3E%3C/svg%3E") repeat-x 0 0/32px 14px;
+            mask:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='32' height='14' viewBox='0 0 32 14'%3E%3Cpath d='M0 7 Q8 0 16 7 T32 7' fill='none' stroke='black' stroke-width='4.5' stroke-linecap='round'/%3E%3C/svg%3E") repeat-x 0 0/32px 14px}
+  h3{font-weight:600}
+  .kicker{font:700 .78rem/1 var(--display);letter-spacing:.08em;color:#231d3b;background:color-mix(in srgb,var(--tint) 45%,#fff);display:inline-flex;padding:7px 14px 7px 10px;border-radius:999px;border:2px solid var(--edge);transform:rotate(-2deg);box-shadow:2px 2px 0 var(--shadow);gap:8px}
+  .kicker::before{width:11px;height:11px;border-radius:50%;background:var(--tint);border:2px solid #231d3b}
+
+  /* hero */
+  .hero{display:grid;grid-template-columns:minmax(0,1.5fr) minmax(0,1fr);gap:10px 30px;align-items:center;padding:20px 0 34px}
+  .hero > .back{grid-column:1/-1}
+  .hero .heroText{min-width:0}
+  .hero .heroText .kicker{--tint:var(--c2);margin-top:6px!important}
+  .hero h1{font-weight:700;font-size:clamp(48px,6.6vw,108px);line-height:.98;margin:.25em 0 .35em}
+  .hero h1 .mark{position:relative;display:inline-block;z-index:0}
+  .hero h1 .mark::before{content:"";position:absolute;left:-.08em;right:-.08em;bottom:.06em;height:.36em;background:var(--hcol,var(--c2));border-radius:.2em;z-index:-1;transform:rotate(-1.5deg)}
+  .hero p.big{font-size:1.25rem}
+  .heroArt{min-width:0}
+  .heroArt svg{max-width:440px;margin:0 auto;overflow:visible}
+  .floaty{animation:floaty 5s ease-in-out infinite;transform-origin:50% 50%}
+  .twinkle{animation:twinkle 2.4s ease-in-out infinite}
+  .twinkle.d2{animation-delay:.8s}.twinkle.d3{animation-delay:1.6s}
+  @keyframes floaty{0%,100%{transform:translateY(0) rotate(-1.5deg)}50%{transform:translateY(-12px) rotate(1.5deg)}}
+  @keyframes twinkle{0%,100%{opacity:.25;transform:scale(.8)}50%{opacity:1;transform:scale(1.1)}}
+  .twinkle{transform-box:fill-box;transform-origin:center}
+  .facts3{grid-column:1/-1;gap:22px;max-width:none;margin-top:18px}
+  .facts3 div{border:2.5px solid var(--edge);border-radius:20px;padding:16px 18px;background:var(--panel);box-shadow:5px 5px 0 var(--shadow);color:var(--ink)}
+  .facts3 div:nth-child(1){background:color-mix(in srgb,var(--c2) 24%,var(--panel));transform:rotate(-1.2deg)}
+  .facts3 div:nth-child(2){background:color-mix(in srgb,var(--c3) 22%,var(--panel));transform:rotate(.8deg)}
+  .facts3 div:nth-child(3){background:color-mix(in srgb,var(--c1) 20%,var(--panel));transform:rotate(-.5deg)}
+  .facts3 b{font-weight:700;font-size:2.1rem}
+  .hero .hint{grid-column:1/-1;margin-top:10px}
+
+  /* nav */
+  .pipe{background:color-mix(in srgb,var(--bg) 94%,transparent);border-bottom:2.5px solid var(--edge)}
+  .pipe a{font-family:var(--display);font-weight:500;font-size:.78rem}
+  .pipe a.on{color:#fff;background:var(--ink)}
+  :root[data-theme="dark"] .pipe a.on{color:#17142a}
+
+  /* sticker boxes and buttons */
+  .box{border:2.5px solid var(--edge);border-radius:20px;box-shadow:5px 5px 0 var(--shadow)}
+  .chip,.btn,.tbtn,button.card,.qopts button,.embed button{border:2px solid var(--edge);box-shadow:2px 2px 0 var(--shadow);font-family:var(--body);font-weight:700;transition:transform .08s,box-shadow .08s,background .2s}
+  .chip:hover,.btn:hover,.tbtn:hover,button.card:hover,.qopts button:hover{transform:translate(-1px,-1px);box-shadow:3px 3px 0 var(--shadow);border-color:var(--edge)}
+  .chip:active,.btn:active,.tbtn:active,button.card:active,.qopts button:active{transform:translate(2px,2px);box-shadow:0 0 0 var(--shadow)}
+  .btn:disabled{opacity:.45;cursor:not-allowed;transform:none;box-shadow:2px 2px 0 var(--shadow)}
+  .chip[aria-pressed="true"],.btn.primary{border-color:var(--edge)}
+  button.card{border-radius:14px}
+  button.card[aria-pressed="true"]{background:color-mix(in srgb,var(--accent) 16%,var(--panel));box-shadow:3px 3px 0 var(--shadow)}
+  .callout{border-radius:14px;border-left-width:6px;background:var(--panel2)}
+  .meter{height:16px;border:2px solid var(--edge)}
+  .quiz .qcard{border:2.5px solid var(--edge);border-radius:22px;box-shadow:6px 6px 0 var(--shadow)}
+  .qopts button{border-radius:14px}
+  .qopts button.right{border-color:var(--good);box-shadow:3px 3px 0 var(--good)}
+  .qopts button.wrong{border-color:var(--bad)}
+  .card h4{font-weight:600}
+  .tag{color:var(--ink);background:color-mix(in srgb,var(--tint) 30%,transparent);border-radius:999px;padding:2px 9px}
+
+  /* "Go deeper" for the dense paragraphs */
+  p.note{background:color-mix(in srgb,var(--panel) 75%,transparent);border:2px dashed color-mix(in srgb,var(--tint) 60%,var(--line));border-radius:16px;padding:12px 16px}
+  p.note::before{content:"Go deeper";display:block;font:700 .72rem/1.4 var(--display);letter-spacing:.12em;text-transform:uppercase;color:var(--ink);margin-bottom:4px}
+  .box p.note{border:0;padding:0;background:none}
+  .box p.note::before{content:none}
+
+  /* "In plain words" sticky notes */
+  .plain{position:relative;max-width:46em;background:var(--note);color:var(--noteInk);border:2.5px solid var(--edge);border-radius:6px 20px 20px 20px;padding:20px 22px 16px;margin:14px 0 26px;box-shadow:5px 5px 0 var(--shadow);transform:rotate(-.5deg);font-size:1.1rem;line-height:1.55}
+  .plain .ptag{position:absolute;top:-15px;left:16px;font:700 .75rem/1 var(--display);letter-spacing:.1em;text-transform:uppercase;color:#231d3b;background:var(--tint);border:2px solid var(--edge);border-radius:999px;padding:6px 12px;transform:rotate(-2deg)}
+  .plain b{color:inherit}
+  .plain em{font-style:normal;background:color-mix(in srgb,var(--tint) 30%,transparent);border-radius:4px;padding:0 3px}
+
+  /* Start-here sections */
+  .steps{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:22px;margin:8px 0 26px}
+  .step{position:relative;background:var(--panel);border:2.5px solid var(--edge);border-radius:22px;padding:18px 20px 16px;box-shadow:5px 5px 0 var(--shadow);min-width:0}
+  .step:nth-child(1){--sc:var(--c2);transform:rotate(-.8deg)}
+  .step:nth-child(2){--sc:var(--c3);transform:rotate(.6deg)}
+  .step:nth-child(3){--sc:var(--c1);transform:rotate(-.4deg)}
+  .step .num{position:absolute;top:-16px;left:-12px;width:42px;height:42px;border-radius:50%;display:grid;place-items:center;font:700 1.25rem/1 var(--display);background:var(--sc);border:2.5px solid var(--edge);color:#231d3b;box-shadow:2px 2px 0 var(--shadow)}
+  .step .ico{width:100%;height:96px;margin:2px 0 8px}
+  .step h3{margin:0 0 .25em}
+  .step p{margin:.2em 0;font-size:.98rem}
+  .step .eg{display:block;margin-top:8px;font-size:.88rem;color:var(--muted)}
+  .vocab{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:14px;margin:14px 0 0}
+  .word{border:2px solid var(--edge);border-radius:16px;padding:12px 14px;background:var(--panel);box-shadow:3px 3px 0 var(--shadow);font-size:.92rem}
+  .word b{display:block;font-family:var(--display);font-weight:600;font-size:1.12rem;margin-bottom:2px}
+  .word:nth-child(5n+1){background:color-mix(in srgb,var(--c4) 13%,var(--panel))}
+  .word:nth-child(5n+2){background:color-mix(in srgb,var(--c3) 13%,var(--panel))}
+  .word:nth-child(5n+3){background:color-mix(in srgb,var(--c1) 12%,var(--panel))}
+  .word:nth-child(5n+4){background:color-mix(in srgb,var(--c5) 13%,var(--panel))}
+  .word:nth-child(5n+5){background:color-mix(in srgb,var(--c2) 16%,var(--panel))}
+  .roadmap{display:flex;flex-wrap:wrap;gap:8px 6px;align-items:center;margin:10px 0 0;font-family:var(--display);font-weight:500}
+  .roadmap a{color:var(--ink);text-decoration:none;border:2px solid var(--edge);border-radius:999px;padding:4px 12px;background:var(--panel);box-shadow:2px 2px 0 var(--shadow);font-size:.88rem}
+  .roadmap a:hover{background:color-mix(in srgb,var(--c2) 30%,var(--panel))}
+  .roadmap span{color:var(--muted)}
+  .bigq{font-family:var(--display);font-weight:600;font-size:1.25rem;margin:0 0 .3em}
+  .chunkShow{font:700 clamp(1.6rem,3.4vw,2.6rem)/1.2 var(--mono);letter-spacing:.18em;text-align:center;min-height:3.4em;display:flex;align-items:center;justify-content:center;background:var(--panel2);border:2px solid var(--edge);border-radius:16px;margin:10px 0;padding:10px;flex-wrap:wrap;word-break:break-all}
+  .chunkShow .cue{font:600 1rem var(--body);letter-spacing:0;color:var(--muted)}
+  .chunkShow .ch{display:inline-block;margin:0 .35em;padding:0 .15em;border-radius:8px;background:color-mix(in srgb,var(--c2) 35%,transparent)}
+  .scoreRow{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:10px}
+  .scoreRow div{border:2px solid var(--edge);border-radius:14px;padding:10px 12px;background:var(--panel2);text-align:center}
+  .scoreRow b{display:block;font:700 2rem/1.1 var(--display)}
+
+  /* dark theme: illustrations sit on light paper so their ink outlines stay visible */
+  :root[data-theme="dark"] .step .ico,:root[data-theme="dark"] #bxSvg{background:#f4f1ff;border-radius:14px}
+  :root[data-theme="dark"] .heroArt svg{filter:drop-shadow(0 0 1.5px #f3f0ff) drop-shadow(0 0 1px #f3f0ff)}
+  @media (max-width:900px){
+    .hero{grid-template-columns:1fr}
+    .heroArt{order:-1}
+    .heroArt svg{max-width:260px}
+    .steps{grid-template-columns:1fr;gap:28px}
+    .vocab{grid-template-columns:1fr 1fr}
+  }
+  @media (max-width:520px){ .vocab{grid-template-columns:1fr} .scoreRow b{font-size:1.5rem} }
+  @media (prefers-reduced-motion:reduce){ .floaty,.twinkle{animation:none} }
+  :root{--accent:#c8364a;--accent2:#2a6fd6}
+  :root[data-theme="dark"]{--accent:#ff8a99;--accent2:#7fb2ff}
+
+  .series{grid-column:1/-1;display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin-top:16px}
+  .series .slab{font:700 .74rem/1 var(--display);letter-spacing:.1em;text-transform:uppercase;color:var(--muted);margin-right:4px}
+  .series a{font:600 .88rem/1.2 var(--display);color:var(--ink);text-decoration:none;border:2px solid var(--edge);border-radius:999px;padding:6px 14px;background:var(--panel);box-shadow:2px 2px 0 var(--shadow)}
+  .series a:hover{background:color-mix(in srgb,var(--c2) 30%,var(--panel))}
+  .series a.on{background:var(--ink);color:var(--bg)}
+  .nextup{display:flex;justify-content:space-between;align-items:center;gap:16px;margin:46px 0 10px;padding:22px 26px;border:2.5px solid var(--edge);border-radius:22px;background:color-mix(in srgb,var(--c3) 18%,var(--panel));box-shadow:6px 6px 0 var(--shadow);text-decoration:none;color:var(--ink);transition:transform .1s}
+  .nextup:hover{transform:translate(-2px,-2px)}
+  .nextup small{display:block;font:700 .75rem/1.4 var(--display);letter-spacing:.1em;text-transform:uppercase;color:var(--muted)}
+  .nextup b{font:700 clamp(1.2rem,2.4vw,1.7rem)/1.2 var(--display)}
+  .nextup .arr{font:700 2.2rem/1 var(--display)}
+  .relay{cursor:pointer}
+  .relay:focus-visible{outline:none}
+  .relay:focus-visible .rb{stroke:var(--c4);stroke-width:5}
+  .relay .rb{transition:fill .25s}
+  .relay.done .rb{fill:#ffd27a}
+  .relay.shake{animation:shake .35s}
+  @keyframes shake{25%{transform:translateX(-5px)}75%{transform:translateX(5px)}}
+  .cfx{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:16px;margin-top:6px}
+  .cfx .box h4{margin:0 0 .3em;font:600 1.12rem var(--display)}
+  .cfx .box p{margin:.25em 0;font-size:.92rem}
+  .cfx .good{color:var(--good);font-weight:700}.cfx .bad{color:var(--bad);font-weight:700}
+  @media (max-width:900px){.cfx{grid-template-columns:1fr 1fr}.nextup{padding:18px}}
+  @media (max-width:560px){.cfx{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <header class="hero" id="top">
+    <a class="back" href="../">← All NeuroSims</a>
+    <div class="heroText">
+    <p class="kicker" style="margin-top:28px">NeuroSims · Emotion, part 3</p>
+    <h1><span class="mark" style="--hcol:var(--c2)">Stress</span> and the HPA Axis</h1>
+    <p class="big">A test tomorrow, a near-miss on the road, a fight with a friend: your body answers all of them with the same two-wave stress response. Learn how the fast adrenaline wave and the slow cortisol wave work, how the system shuts itself off, and why stress that never ends causes harm.</p>
+    </div>
+    <div class="heroArt" aria-hidden="true"><svg viewBox="0 0 430 380"><path class="twinkle " d="M40 66 L43.92 76.08 L54 80 L43.92 83.92 L40 94 L36.08 83.92 L26 80 L36.08 76.08Z" fill="#4d8dff" stroke="#231d3b" stroke-width="3" stroke-linejoin="round"/><g class="floaty"><g transform="translate(0,0)"><rect x="184" y="236" width="56" height="62" rx="14" fill="#ffb3c7" stroke="#231d3b" stroke-width="5.5"/><g stroke="#231d3b" stroke-width="11" fill="#ffb3c7"><circle cx="120" cy="165" r="66"/><circle cx="178" cy="118" r="74"/><circle cx="258" cy="112" r="76"/><circle cx="318" cy="160" r="62"/><circle cx="258" cy="200" r="74"/><circle cx="170" cy="206" r="64"/><circle cx="210" cy="160" r="70"/></g><g fill="#ffb3c7"><circle cx="120" cy="165" r="66"/><circle cx="178" cy="118" r="74"/><circle cx="258" cy="112" r="76"/><circle cx="318" cy="160" r="62"/><circle cx="258" cy="200" r="74"/><circle cx="170" cy="206" r="64"/><circle cx="210" cy="160" r="70"/></g><g fill="none" stroke="#e07a98" stroke-width="5" stroke-linecap="round"><path d="M120 110 q20 -14 36 6 q14 16 30 0"/><path d="M232 74 q16 18 4 34 q-10 16 8 28"/><path d="M300 118 q-18 6 -14 26 q4 18 -12 26"/><path d="M92 168 q18 -8 26 8"/><path d="M330 196 q-20 -2 -26 16"/><path d="M150 246 q10 -16 30 -8"/></g><ellipse cx="180" cy="178" rx="11" ry="14" fill="#231d3b"/><ellipse cx="252" cy="178" rx="11" ry="14" fill="#231d3b"/><circle cx="184" cy="172" r="4" fill="#fff"/><circle cx="256" cy="172" r="4" fill="#fff"/><ellipse cx="156" cy="204" rx="14" ry="8" fill="#ff7d9c" opacity=".55"/><ellipse cx="276" cy="204" rx="14" ry="8" fill="#ff7d9c" opacity=".55"/><path d="M196 206 q20 22 40 0" fill="none" stroke="#231d3b" stroke-width="6" stroke-linecap="round"/></g><path class="twinkle " transform="translate(330 70) scale(1.6)" d="M0 -14 C6 -4 10 2 10 7 A10 10 0 0 1 -10 7 C-10 2 -6 -4 0 -14Z" fill="#9fd3ff" stroke="#231d3b" stroke-width="1.88"/><path class="twinkle d2" transform="translate(372 110) scale(1.2)" d="M0 -14 C6 -4 10 2 10 7 A10 10 0 0 1 -10 7 C-10 2 -6 -4 0 -14Z" fill="#9fd3ff" stroke="#231d3b" stroke-width="2.50"/><path class="twinkle d3" transform="translate(92 82) scale(1.3)" d="M0 -14 C6 -4 10 2 10 7 A10 10 0 0 1 -10 7 C-10 2 -6 -4 0 -14Z" fill="#9fd3ff" stroke="#231d3b" stroke-width="2.31"/><path class="twinkle d2" transform="translate(395 230) scale(1.4)" d="M4 -22 L-10 3 L0 3 L-4 22 L10 -3 L0 -3Z" fill="#ffb627" stroke="#231d3b" stroke-width="2.14" stroke-linejoin="round"/><path d="M150 46 l-10 -16 M176 34 l-4 -18 M206 30 l4 -18" stroke="#231d3b" stroke-width="5" stroke-linecap="round"/></g></svg></div>
+    <div class="facts3">
+      <div><b>Seconds</b>for the adrenal medulla to release adrenaline after the sympathetic nerves fire</div>
+      <div><b>20–40 min</b>for cortisol to peak after a stressor begins (Dickerson &amp; Kemeny, 2004)</div>
+      <div><b>For life</b>how long a rat mother's care can tune her pups' stress response (Weaver et al., 2004)</div>
+    </div>
+    <p class="hint">Teaching on a projector? Press <span class="kbd">P</span> for Present mode, then <span class="kbd">→</span>/<span class="kbd">←</span> to move between sections. <span class="kbd">T</span> switches between light and dark themes.</p>
+    <nav class="series" aria-label="Emotion series"><span class="slab">Emotion series</span><a href="../emotion/">1 · What is an emotion?</a><a href="../emotion-circuits/">2 · Emotion circuits</a><a href="../stress/" class="on" aria-current="page">3 · Stress and the HPA axis</a></nav>
+  </header>
+
+  <nav class="pipe" aria-label="Sections">
+    <ol id="navList"></ol>
+    <div class="tools">
+      <button class="tbtn" id="themeBtn">Dark theme</button>
+      <button class="tbtn" id="presentBtn" aria-pressed="false">Present</button>
+    </div>
+  </nav>
+
+  <section class="s" id="basics" data-title="Start here">
+    <p class="kicker">Start here</p>
+    <h2 class="sec">What is stress, really?</h2>
+    <div class="plain"><span class="ptag">In plain words</span><b>Stress</b> is your body's response to anything that threatens its balance: a test, a fight, a scary noise, not enough sleep. The thing causing it is the <b>stressor</b>. Your body's reaction is the <b>stress response</b>. A little helps you rise to the moment. A lot, for too long, wears you down.</div>
+    <div class="steps">
+      <div class="step"><span class="num">1</span><svg class="ico" viewBox="0 0 220 96" aria-hidden="true"><path d="M110 12 C84 12 76 34 76 56 L66 72 H154 L144 56 C144 34 136 12 110 12Z" fill="#ffd27a" stroke="#231d3b" stroke-width="4" stroke-linejoin="round"/><circle cx="110" cy="80" r="9" fill="#ff6b6b" stroke="#231d3b" stroke-width="4"/><path d="M52 30 l-14 -8 M48 50 h-16 M168 30 l14 -8 M172 50 h16" stroke="#ff6b6b" stroke-width="5" stroke-linecap="round"/></svg><h3>The brain spots a threat</h3><p>Your <b>amygdala</b> sounds the alarm, and the <b>hypothalamus</b>, the brain's control center for your body, gets the stress response moving.</p><span class="eg">Like realizing the test you forgot about starts in five minutes.</span></div>
+      <div class="step"><span class="num">2</span><svg class="ico" viewBox="0 0 220 96" aria-hidden="true"><path d="M122 6 L84 52 H108 L96 90 L138 40 H112Z" fill="#ffb627" stroke="#231d3b" stroke-width="4" stroke-linejoin="round"/><path d="M40 48 h26 M154 48 h26 M50 24 l18 10 M170 72 l-18 -10" stroke="#4d8dff" stroke-width="5" stroke-linecap="round"/></svg><h3>Fast wave: adrenaline</h3><p>Within <b>seconds</b>, nerves tell the <b>adrenal glands</b> (on top of your kidneys) to release <b>adrenaline</b>. Your heart pounds, you breathe faster and energy floods in.</p><span class="eg">That jolt you feel when you almost miss a step on the stairs.</span></div>
+      <div class="step"><span class="num">3</span><svg class="ico" viewBox="0 0 220 96" aria-hidden="true"><circle cx="110" cy="50" r="38" fill="#fff" stroke="#231d3b" stroke-width="5"/><path d="M110 50 V24 M110 50 L130 60" stroke="#231d3b" stroke-width="5" stroke-linecap="round"/><path d="M110 12 a38 38 0 0 1 38 38" fill="none" stroke="#20b393" stroke-width="7" stroke-linecap="round"/><rect x="100" y="2" width="20" height="10" rx="3" fill="#231d3b"/></svg><h3>Slow wave: cortisol</h3><p>Over <b>minutes</b>, a chain of hormones (the <b>HPA axis</b>) ends with the adrenal glands releasing <b>cortisol</b>. It keeps energy up, and then helps switch the whole response off.</p><span class="eg">Cortisol is why you still feel wound up long after the scare is over.</span></div>
+    </div>
+    <div class="stage">
+      <div class="box">
+        <svg id="relaySvg" viewBox="0 0 560 380" role="group" aria-label="HPA axis relay: click the parts in order"></svg>
+        <div class="row" style="margin-top:6px"><button class="btn" id="relayReset">Start over</button><span class="hint" id="relayStep">Step 0 of 4</span></div>
+      </div>
+      <div class="box">
+        <p class="bigq">Try it: run the HPA relay</p>
+        <p style="margin:.2em 0 .7em">The stress hormone system works like a relay race: each part passes a chemical message to the next. Click the parts in the order the message travels.</p>
+        <div class="meter"><i id="relayBar"></i></div>
+        <div class="callout" id="relayNote">A stressor appears! Where in the brain does the hormone chain start? Click it.</div>
+      </div>
+    </div>
+    <h3 style="margin-top:38px">Words you'll see a lot</h3>
+    <div class="vocab">
+      <div class="word"><b>Stressor</b>Anything that throws your body off balance, from a predator to a deadline.</div>
+      <div class="word"><b>Homeostasis</b>Your body's steady, balanced state. Stress pushes you away from it.</div>
+      <div class="word"><b>Sympathetic nervous system</b>The "fight or flight" branch that revs the body up.</div>
+      <div class="word"><b>Adrenal glands</b>Small glands on top of the kidneys. Middle = <i>medulla</i>, outer layer = <i>cortex</i>.</div>
+      <div class="word"><b>Adrenaline (epinephrine)</b>The fast stress hormone from the adrenal medulla.</div>
+      <div class="word"><b>Cortisol</b>The slow stress hormone from the adrenal cortex.</div>
+      <div class="word"><b>HPA axis</b>Hypothalamus → Pituitary → Adrenal cortex: the hormone chain that makes cortisol.</div>
+      <div class="word"><b>Negative feedback</b>When the end product (cortisol) tells the system to slow down, like a thermostat.</div>
+    </div>
+  </section>
+
+  <section class="s alt" id="pathways" data-title="Fast and slow">
+    <p class="kicker">Part 1</p>
+    <h2 class="sec">Stress runs on two pathways: fast and slow</h2>
+    <div class="plain"><span class="ptag">In plain words</span>Your body answers stress in two waves. The <b>fast wave</b> uses nerves and adrenaline and takes seconds. The <b>slow wave</b> uses a chain of hormones ending in <b>cortisol</b> and takes minutes. When the danger passes, cortisol itself tells the brain to switch the system off.</div>
+    <p class="lede">The <b>fast</b> wave is neural: the hypothalamus fires the sympathetic nerves to the <b>adrenal medulla</b>, which releases epinephrine and norepinephrine within seconds. The <b>slow</b> wave is hormonal, the <b>HPA axis</b>: hypothalamus (CRH) → anterior pituitary (ACTH) → <b>adrenal cortex</b> → cortisol, over minutes. Cortisol then tells the hippocampus and hypothalamus to shut the system off. Press <b>Stressor!</b>, then try chronic stress.</p>
+    <div class="stage">
+      <div class="box"><svg id="hpaSvg" viewBox="0 0 600 440" role="img" aria-label="The fast sympathetic pathway and the slow HPA axis"></svg>
+        <div class="row"><button class="btn primary" id="stGo">Stressor!</button><button class="chip" id="stChronic" aria-pressed="false">Chronic stress (weeks)</button><button class="btn" id="stReset">Reset</button></div>
+      </div>
+      <div class="box">
+        <canvas id="stCan" style="aspect-ratio:16/10" aria-label="Epinephrine and cortisol levels over time"></canvas>
+        <div class="callout" id="stNote">Memory trick: <b>medulla = middle</b> (adrenaline, fast), <b>cortex = outer layer</b> (cortisol, slow).</div>
+      </div>
+    </div>
+    <p class="note">Cortisol usually peaks roughly 20 to 40 minutes after a stressor begins (Dickerson &amp; Kemeny, 2004). The hippocampus is rich in cortisol (glucocorticoid) receptors, which is why it acts as one of the main brakes on the HPA axis, and why it is vulnerable when cortisol stays high.</p>
+  </section>
+
+  <section class="s" id="chronic" data-title="Acute vs. chronic">
+    <p class="kicker">Part 2</p>
+    <h2 class="sec">Acute stress helps, chronic stress harms</h2>
+    <div class="plain"><span class="ptag">In plain words</span>A short burst of stress helps you: more energy, sharper focus, faster reactions. The problem is stress that <b>never switches off</b>. Weeks of high cortisol wear down the body, and even the brain.</div>
+    <p class="lede"><b>Acute stress</b> (minutes to hours) mobilizes energy, ramps up the heart and lungs and briefly damps the immune system: built for escaping a predator. <b>Chronic stress</b> (weeks to years) keeps cortisol high. Humans and baboons can stay stressed for months over social threats alone. Here is what cortisol does around the body.</p>
+    <div class="cfx">
+      <div class="box"><h4>Energy</h4><p><span class="good">Short burst:</span> raises blood sugar so your muscles and brain have fuel to act.</p><p><span class="bad">Weeks on end:</span> keeps blood sugar high, linked to belly fat and a higher risk of type 2 diabetes.</p></div>
+      <div class="box"><h4>Immune system</h4><p><span class="good">Short burst:</span> briefly damps inflammation.</p><p><span class="bad">Weeks on end:</span> suppresses immune defenses, so wounds heal more slowly and infections take hold more easily.</p></div>
+      <div class="box"><h4>Memory</h4><p><span class="good">Short burst:</span> a moderate rise helps lock in memories of the event.</p><p><span class="bad">Weeks on end:</span> can shrink dendrites in the hippocampus and hurt memory, which also weakens the HPA brake.</p></div>
+      <div class="box"><h4>Sleep and mood</h4><p><span class="good">Short burst:</span> keeps you alert and focused.</p><p><span class="bad">Weeks on end:</span> disrupts sleep and raises the risk of depression and anxiety.</p></div>
+    </div>
+    <div class="callout" style="max-width:60em;margin-top:20px">See it in the simulation in Part 1: switch on <b>Chronic stress</b> and watch hippocampus health fall and cortisol climb as the brake weakens.</div>
+  </section>
+
+  <section class="s alt" id="earlylife" data-title="Early life">
+    <p class="kicker">Part 3</p>
+    <h2 class="sec">Early life tunes the stress system</h2>
+    <div class="plain"><span class="ptag">In plain words</span>How you're cared for as a baby can tune your stress system for life. In rats, pups with attentive mothers grow up calmer under stress, because care changes how their genes are <em>used</em>, not the genes themselves.</div>
+    <div class="stage even">
+      <div class="box">
+        <p style="margin:.2em 0 .6em">Rat pups whose mothers lick and groom them a lot grow up with more cortisol (glucocorticoid) receptors in the hippocampus, so their brake works better (Weaver et al., 2004). Drag the slider.</p>
+        <div class="ctrl"><span>Mother's licking and grooming</span><input type="range" id="lgR" min="0" max="100" value="80" aria-label="Maternal licking and grooming"><b id="lgOut">high</b></div>
+        <canvas id="lgCan" style="aspect-ratio:16/7" aria-label="Receptors in the hippocampus and the adult stress response"></canvas>
+      </div>
+      <div class="box">
+        <h3>Changing the volume, not the song</h3>
+        <p style="margin:.2em 0 .6em">The maternal-care effect is <b>epigenetic</b>: it changes how much a gene is <b>expressed</b> (here, the receptor gene gets chemical methyl tags that turn it down), not the DNA sequence itself.</p>
+        <div class="callout">The same change shows up in the hippocampus of people with a history of childhood abuse (McGowan et al., 2009). Mild early stress followed by comfort, on the other hand, can build resilience (<b>stress immunization</b>).</div>
+      </div>
+    </div>
+  </section>
+
+  <section class="s" id="loop" data-title="Sleep and emotion">
+    <p class="kicker">Part 4</p>
+    <h2 class="sec">The stress, sleep and emotion loop</h2>
+    <div class="plain"><span class="ptag">In plain words</span>Stress, sleep and emotion feed each other. Stress hurts sleep, bad sleep makes emotions bigger, and big emotions trigger more stress. Breaking any one link can help break the whole loop.</div>
+    <p class="lede">Poor sleep makes the amygdala more reactive and weakens the prefrontal brakes (see <a href="../emotion-circuits/#network">Emotion circuits</a>). Heightened emotion switches on the HPA axis. Cortisol disrupts sleep, and around it goes. That loop is part of why sleep problems, mood disorders and anxiety so often go together.</p>
+    <div class="stage even">
+      <div class="box"><svg id="cycleSvg" viewBox="0 0 440 300" role="img" aria-label="The loop between poor sleep, emotion and stress"></svg></div>
+      <div class="box">
+        <h3>The diathesis–stress model</h3>
+        <p style="margin:.2em 0 .6em">Why does the same stress lead to a disorder in one person and not another? A <b>vulnerability</b> (the diathesis: genes, early life) plus <b>enough stress</b> crosses a threshold into disorder. The more vulnerable you are, the less stress it takes.</p>
+        <div class="callout">This is why early-life care (Part 3) matters so much: it sets how big your stress response is for the rest of your life.</div>
+      </div>
+    </div>
+  </section>
+
+  <section class="s alt" id="review" data-title="Review">
+    <p class="kicker">Review</p>
+    <h2 class="sec">Check yourself</h2>
+    <div class="plain"><span class="ptag">In plain words</span>Can you explain these out loud to a friend? If so, you've got it. Then try the quiz.</div>
+    <div class="box" style="max-width:900px"><h3>You should be able to explain…</h3><ul style="margin:.3em 0;padding-left:1.2em;line-height:1.75"><li>The fast pathway (sympathetic → adrenal medulla) vs. the slow HPA axis</li><li>CRH → ACTH → cortisol, and how negative feedback shuts it off</li><li>Why acute stress helps but chronic stress harms</li><li>How maternal care changes the stress system through epigenetics</li><li>The stress–sleep–emotion loop and the diathesis–stress model</li></ul></div>
+    <h3 style="margin-top:34px">Quick review</h3>
+    <div class="quiz">
+      <div class="qcard"><p class="q" id="qText"></p><div class="qopts" id="qOpts"></div><p class="why" id="qWhy"></p></div>
+      <div class="qnav"><button class="btn" id="qPrev">← Previous</button><span id="qCount"></span><button class="btn primary" id="qNext">Next question →</button></div>
+    </div>
+  </section>
+
+  <a class="nextup" href="../emotion/"><span><small>Back to the start of the emotion series</small><b>What is an emotion?</b></span><span class="arr" aria-hidden="true">→</span></a>
+
+  <footer class="foot">
+    <p class="embed"><span>Embed:</span>
+      <code id="embedCode">&lt;iframe src="https://nelurad.github.io/neurosims/stress/" width="100%" height="7000" style="border:0" title="Stress and the HPA Axis"&gt;&lt;/iframe&gt;</code>
+      <button id="copyBtn">Copy</button></p>
+    <p style="margin-bottom:2px">References</p>
+    <ul class="refs">
+      <li>Dickerson, S. S., &amp; Kemeny, M. E. (2004). Acute stressors and cortisol responses: a theoretical integration and synthesis of laboratory research. <i>Psychological Bulletin</i>, 130, 355–391.</li>
+      <li>McGowan, P. O., et al. (2009). Epigenetic regulation of the glucocorticoid receptor in human brain associates with childhood abuse. <i>Nature Neuroscience</i>, 12, 342–348.</li>
+      <li>Weaver, I. C. G., et al. (2004). Epigenetic programming by maternal behavior. <i>Nature Neuroscience</i>, 7, 847–854.</li>
+    </ul>
+    <p>Brain drawings are simplified side (medial) views; the amygdala and insula sit deeper toward the side of the brain and are drawn as if seen through it. Free to use, share and adapt with credit to "Nelu Radpour, NeuroSims." Content <a href="https://creativecommons.org/licenses/by/4.0/">CC BY 4.0</a>, code MIT. Spot a bug or an inaccuracy? <a href="https://github.com/nelurad/neurosims/issues">Open an issue</a>.</p>
+  </footer>
+</div>
+
+<script>
+(()=>{
+'use strict';
+const $=id=>document.getElementById(id);
+const NS='http://www.w3.org/2000/svg';
+const cssv=n=>getComputedStyle(document.documentElement).getPropertyValue(n).trim();
+const clamp=(x,a,b)=>Math.max(a,Math.min(b,x));
+const lerp=(a,b,t)=>a+(b-a)*t;
+const reduce=matchMedia('(prefers-reduced-motion: reduce)').matches;
+const store={get(k){try{return localStorage.getItem(k)}catch(e){return null}},set(k,v){try{localStorage.setItem(k,v)}catch(e){}}};
+function setPressed(btns,on){btns.forEach(b=>b.setAttribute('aria-pressed',b===on))}
+function fitCanvas(c){const r=c.getBoundingClientRect(),d=devicePixelRatio||1;const w=Math.max(10,Math.round(r.width*d)),h=Math.max(10,Math.round(r.height*d));if(c.width!==w||c.height!==h){c.width=w;c.height=h}const x=c.getContext('2d');x.setTransform(d,0,0,d,0,0);return{x,w:r.width,h:r.height}}
+function isVis(el){const r=el.getBoundingClientRect();return r.bottom>-50&&r.top<innerHeight+50}
+const frameHooks=[]; const redrawHooks=[];
+
+/* ================= shared brain drawing ================= */
+const REG={
+  pfc:{s:'<path d="M104,248 C92,170 140,95 205,70 C196,120 184,175 192,246 C165,262 128,262 104,248Z"/>',l:'Prefrontal cortex',ax:140,ay:170,lx:-64,ly:118},
+  motor:{s:'<ellipse cx="318" cy="62" rx="34" ry="12"/>',l:'Motor cortex',lx:318,ly:38,a:'middle'},
+  cing:{s:'<path d="M178,200 C205,122 400,104 466,178"/>',line:18,l:'Cingulate cortex',lx:318,ly:98,a:'middle'},
+  thal:{s:'<ellipse cx="335" cy="222" rx="34" ry="20"/>',l:'Thalamus',ax:362,ay:218,lx:582,ly:206},
+  hyp:{s:'<ellipse cx="290" cy="262" rx="22" ry="13"/>',l:'Hypothalamus',ax:292,ay:270,lx:262,ly:392,a:'end'},
+  pit:{s:'<circle cx="272" cy="300" r="9"/>',l:'Pituitary',ax:268,ay:306,lx:214,ly:366,a:'end'},
+  mam:{s:'<circle cx="314" cy="278" r="6.5"/>',l:'Mammillary body',ax:318,ay:280,lx:582,ly:300},
+  amy:{s:'<ellipse cx="238" cy="292" rx="16" ry="12"/>',l:'Amygdala',ax:228,ay:296,lx:-64,ly:330},
+  hip:{s:'<path d="M256,302 C290,304 332,294 370,268"/>',line:13,l:'Hippocampus',ax:352,ay:284,lx:582,ly:268},
+  fornix:{s:'<path d="M370,262 C392,196 330,170 296,196 C282,214 302,254 314,272"/>',line:5,l:'Fornix',ax:380,ay:226,lx:582,ly:238},
+  ins:{s:'<ellipse cx="236" cy="212" rx="28" ry="17"/>',dash:1,l:'Insula (deep, on the side)',ax:214,ay:208,lx:-64,ly:196},
+  nac:{s:'<ellipse cx="212" cy="254" rx="13" ry="10"/>',l:'Nucleus accumbens',ax:202,ay:256,lx:-64,ly:262},
+  sept:{s:'<ellipse cx="232" cy="230" rx="10" ry="9"/>',l:'Septal area',ax:226,ay:230,lx:-64,ly:226},
+  vta:{s:'<ellipse cx="352" cy="292" rx="12" ry="8"/>',l:'VTA (midbrain)',ax:360,ay:294,lx:582,ly:332},
+  mfb:{s:'<path d="M352,292 C318,280 262,264 212,254 C188,248 168,240 148,226"/>',line:6,dash:1,l:'Medial forebrain bundle',ax:262,ay:266,lx:-64,ly:296},
+  lhb:{s:'<circle cx="364" cy="204" r="7"/>',l:'Lateral habenula',ax:368,ay:200,lx:582,ly:176},
+  vis:{s:'<ellipse cx="508" cy="214" rx="24" ry="34"/>',l:'Visual cortex',ax:520,ay:196,lx:582,ly:130},
+  bs:{s:'<path d="M332,300 C338,338 346,372 350,414 L386,414 C381,372 379,334 388,296Z"/>',l:'Brainstem',ax:382,ay:396,lx:582,ly:404}
+};
+const OUTLINE='<path class="tissue" d="M100,250 C84,160 150,74 262,57 C372,41 482,76 530,152 C561,206 549,262 513,290 C492,304 462,300 440,292 C420,288 405,286 390,292 L330,300 C300,306 262,312 232,318 C200,325 172,320 160,302 C150,288 120,282 100,250Z"/>'+
+ '<ellipse class="tissue2" cx="466" cy="334" rx="62" ry="38"/>'+
+ '<path d="M418,326 C440,318 490,318 518,328 M412,342 C440,334 492,334 524,344 M422,358 C448,352 486,352 512,358" stroke="var(--tissueLine)" fill="none" stroke-width="1.2"/>'+
+ '<path class="tissue2" d="M188,196 C230,140 382,128 444,186 C430,176 410,166 392,162 C330,150 250,160 210,204Z"/>';
+const estW=t=>t.length*7.1;
+function brain(svgId,{show=[],labels=[],click=false,extra=''}={}){
+  const svg=$(svgId); let h=OUTLINE;
+  const order=['pfc','motor','vis','cing','ins','bs','thal','sept','nac','hyp','pit','mam','amy','hip','fornix','vta','lhb','mfb'];
+  order.filter(k=>show.includes(k)).forEach(k=>{const r=REG[k];
+    const cls='reg'+(r.line?' line':'')+(r.dash?' dash':'')+(click?' click':'');
+    const st=r.line?` style="stroke-width:${r.line}px"`:'';
+    h+=r.s.replace(/^<(\w+)/,`<$1 class="${cls}" data-r="${k}"${st}`);});
+  labels.forEach(k=>{const r=REG[k];const left=r.lx<0;const anc=r.a||(left?'start':'start');
+    if(r.ax!==undefined){const x0=left?r.lx+estW(r.l)+4:(anc==='end'?r.lx+4:r.lx-4);h+=`<line class="lead" x1="${x0}" y1="${r.ly-4}" x2="${r.ax}" y2="${r.ay}"/><circle cx="${r.ax}" cy="${r.ay}" r="2.2" fill="var(--muted)"/>`;}
+    h+=`<text class="blab" data-l="${k}" x="${r.lx}" y="${r.ly}" text-anchor="${anc}">${r.l}</text>`});
+  h+=extra; svg.innerHTML=h; return svg;
+}
+function lightUp(svg,map){svg.querySelectorAll('.reg').forEach(el=>{const v=map[el.dataset.r];el.classList.toggle('on',v===1);el.classList.toggle('on2',v===2);el.style.opacity=(typeof v==='number'&&v<1&&v>0)?'':'';});}
+
+/* ================= nav / theme / present ================= */
+const secs=[...document.querySelectorAll('section.s')];
+$('navList').innerHTML=secs.map((s,i)=>`<li><a href="#${s.id}"><span class="i">${i+1}</span>${s.dataset.title}</a></li>`).join('');
+const navA=[...$('navList').querySelectorAll('a')];
+const io=new IntersectionObserver(es=>{es.forEach(e=>{if(e.isIntersecting){navA.forEach(a=>a.classList.toggle('on',a.getAttribute('href')==='#'+e.target.id));}})},{rootMargin:'-45% 0px -50% 0px'});
+secs.forEach(s=>io.observe(s));
+function setTheme(dark){document.documentElement.dataset.theme=dark?'dark':'light';$('themeBtn').textContent=dark?'Light theme':'Dark theme';store.set('emoTheme',dark?'dark':'light');setTimeout(()=>redrawHooks.forEach(f=>f()),30)}
+$('themeBtn').onclick=()=>setTheme(document.documentElement.dataset.theme!=='dark');
+function setPresent(on){document.documentElement.classList.toggle('present',on);$('presentBtn').setAttribute('aria-pressed',on);setTimeout(()=>redrawHooks.forEach(f=>f()),60)}
+$('presentBtn').onclick=()=>setPresent(!document.documentElement.classList.contains('present'));
+function curSec(){let best=0;secs.forEach((s,i)=>{if(s.getBoundingClientRect().top<innerHeight*.4)best=i});return best}
+addEventListener('keydown',e=>{const typing=/INPUT|TEXTAREA|SELECT/.test(document.activeElement.tagName)&&document.activeElement.type!=='range';if(typing||e.metaKey||e.ctrlKey||e.altKey)return;
+  if(e.key==='p'||e.key==='P'){setPresent(!document.documentElement.classList.contains('present'));e.preventDefault()}
+  else if(e.key==='t'||e.key==='T'){setTheme(document.documentElement.dataset.theme!=='dark')}
+  else if(document.activeElement.type!=='range'&&(e.key==='ArrowRight'||e.key==='ArrowLeft')&&document.documentElement.classList.contains('present')){const i=clamp(curSec()+(e.key==='ArrowRight'?1:-1),0,secs.length-1);secs[i].scrollIntoView({behavior:reduce?'auto':'smooth'});e.preventDefault()}});
+
+/* ================= 11 STRESS ================= */
+(()=>{
+  const svg=$('hpaSvg');
+  svg.innerHTML=`<defs><marker id="sa" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0,0 L10,5 L0,10z" fill="var(--muted)"/></marker></defs>
+    <path class="tissue" d="M60,140 C50,70 120,20 220,18 C320,16 390,60 400,130 C405,170 380,190 340,192 L120,196 C90,196 66,180 60,140Z"/>
+    <ellipse id="sHyp" class="reg" cx="210" cy="168" rx="34" ry="16"/><text x="250" y="196" class="blab">Hypothalamus</text>
+    <path id="sHip" class="reg line" d="M260,150 C300,156 340,140 360,118" style="stroke-width:16px"/><text x="362" y="104" class="blab">Hippocampus</text>
+    <circle id="sPit" class="reg" cx="200" cy="222" r="15"/><line x1="206" y1="184" x2="202" y2="207" stroke="var(--tissueLine)" stroke-width="3"/><text x="222" y="236" class="blab">Anterior pituitary</text>
+    <rect x="395" y="200" width="22" height="210" rx="10" fill="var(--tissue2)" stroke="var(--tissueLine)"/><text x="425" y="400" class="svgm">spinal cord</text>
+    <ellipse cx="190" cy="390" rx="62" ry="40" fill="#c98a7a" opacity=".55"/><text x="122" y="404" text-anchor="end" class="svgm">kidney</text>
+    <path id="sCortex" class="reg" d="M140,350 C150,300 230,300 240,350 C220,360 160,360 140,350Z"/>
+    <ellipse id="sMed" class="reg" cx="190" cy="340" rx="24" ry="9"/>
+    <text x="262" y="378" class="blab">Adrenal cortex (outer)</text><text x="262" y="398" class="blab">Medulla (middle)</text>
+    <line x1="226" y1="322" x2="258" y2="374" class="lead"/><line x1="196" y1="344" x2="258" y2="394" class="lead"/>
+    <path id="pFast" d="M240,172 C330,180 395,190 406,230 C412,290 300,330 214,340" class="edge" fill="none" marker-end="url(#sa)"/>
+    <path id="pCRH" d="M204,186 L201,206" class="edge" fill="none"/>
+    <path id="pACTH" d="M186,232 C140,270 150,300 168,322" class="edge" fill="none" marker-end="url(#sa)"/>
+    <path id="pCort" d="M140,345 C40,330 30,190 172,166" class="edge" fill="none" marker-end="url(#sa)" stroke-dasharray="7 6"/>
+    <path id="pCort2" d="M140,345 C70,300 90,150 260,150" class="edge" fill="none" stroke-dasharray="7 6"/>
+    <text x="426" y="250" class="svgt" style="fill:var(--accent)">FAST (seconds)</text><text x="426" y="268" class="svgm">sympathetic nerves</text><text x="426" y="284" class="svgm">→ epinephrine + NE</text>
+    <text x="70" y="262" class="svgt" style="fill:var(--accent2)">SLOW</text><text x="70" y="278" class="svgm">(minutes)</text><text x="132" y="258" class="svgm">ACTH</text><text x="160" y="204" class="svgm" text-anchor="end">CRH</text>
+    <text x="20" y="300" class="svgm">cortisol:</text><text x="20" y="316" class="svgm">"shut it off"</text>
+    <g id="sDots"></g>`;
+  let sim=null,chronic=false,hipHealth=1,hist=[],tt=0;
+  const dotsG=$('sDots');
+  function spawn(pid,cls,dur){const p=$(pid),L=p.getTotalLength(),d=document.createElementNS(NS,'circle');d.setAttribute('r',6);d.setAttribute('class',cls);dotsG.appendChild(d);let s=0;
+    const f=dt=>{s+=dt/dur;if(s>=1){d.remove();return true}const q=p.getPointAtLength(L*s);d.setAttribute('cx',q.x);d.setAttribute('cy',q.y);return false};flows.push(f);}
+  let flows=[];
+  let E=0,C=0,H=0,stress=0,stressT=0;
+  function stressor(){stressT=chronic?9999:2.2;sim=true;
+    const seq=[[0,'pFast','dot',1.2],[.2,'pFast','dot',1.2],[.4,'pFast','dot',1.2],[1.2,'pCRH','dot2',.5],[1.6,'pACTH','dot2',1.4],[3,'pCort','dot2',2],[3.2,'pCort2','dot2',2]];
+    seq.forEach(([d,p,c,du])=>setTimeout(()=>spawn(p,c,du),d*1000/(reduce?3:1)));}
+  $('stGo').onclick=stressor;
+  $('stChronic').onclick=()=>{chronic=!chronic;$('stChronic').setAttribute('aria-pressed',chronic);if(chronic){stressor();$('stNote').innerHTML='<b>Chronic stress:</b> the stressor never goes away. Cortisol stays high, slowly damaging the hippocampus. A weaker hippocampus means a weaker brake, so cortisol climbs even higher.';}else{stressT=0;$('stNote').innerHTML='Stressor removed. The brake still works, more weakly if the hippocampus was damaged.';}};
+  $('stReset').onclick=()=>{chronic=false;$('stChronic').setAttribute('aria-pressed',false);hipHealth=1;hist=[];E=C=H=0;stressT=0;tt=0;flows=[];dotsG.innerHTML='';$('sHip').style.strokeWidth='16px';$('stNote').innerHTML='Memory trick: <b>medulla = middle</b> (adrenaline, fast), <b>cortex = outer layer</b> (cortisol, slow).';draw();};
+  const c=$('stCan');
+  function draw(){const{x,w,h}=fitCanvas(c);x.clearRect(0,0,w,h);const m=30;x.strokeStyle=cssv('--line');x.beginPath();x.moveTo(m,8);x.lineTo(m,h-24);x.lineTo(w-4,h-24);x.stroke();
+    x.fillStyle=cssv('--muted');x.font='12px system-ui';x.fillText('time →',w-50,h-6);
+    const N=hist.length,X=i=>m+(i/Math.max(300,N))*(w-m-8),Y=v=>h-24-v*(h-40);
+    [['e',cssv('--accent'),'epinephrine (fast)'],['c',cssv('--accent2'),'cortisol (slow)']].forEach(([k,col,lab],j)=>{x.strokeStyle=col;x.lineWidth=2.5;x.beginPath();hist.forEach((p,i)=>i?x.lineTo(X(i),Y(p[k])):x.moveTo(X(i),Y(p[k])));x.stroke();
+      x.fillStyle=col;x.fillRect(m+12,10+j*18,10,10);x.fillStyle=cssv('--muted');x.fillText(lab,m+28,19+j*18);});
+    x.fillStyle=cssv('--muted');x.fillText('hippocampus health: '+Math.round(hipHealth*100)+'%',w-180,19);}
+  redrawHooks.push(draw);draw();
+  frameHooks.push(dt=>{flows=flows.filter(f=>!f(dt));if(!isVis(c))return;tt+=dt;
+    stressT-=dt;stress=stressT>0?1:0;
+    E+=dt*(stress*.95-E)*3;
+    const fb=1.6*hipHealth;H+=dt*(stress*1.2-fb*C*H-H*.4)*1.2;H=Math.max(0,H);C+=dt*(H*.9-C*.35)*.6;C=clamp(C,0,1);
+    if(chronic&&C>.5)hipHealth=Math.max(.35,hipHealth-dt*.012);
+    $('sHip').style.strokeWidth=(6+10*hipHealth).toFixed(1)+'px';
+    const lit=(id,on,cl)=>{$(id).classList.toggle(cl||'on',on)};
+    lit('sHyp',stress||H>.15);lit('sMed',E>.2);lit('sPit',H>.15,'on2');lit('sCortex',C>.15,'on2');lit('sHip',C>.3,'on2');
+    ['pFast'].forEach(p=>$(p).classList.toggle('on',E>.2));['pCRH','pACTH'].forEach(p=>$(p).classList.toggle('on',H>.15));['pCort','pCort2'].forEach(p=>$(p).classList.toggle('on',C>.2));
+    if(sim||chronic){hist.push({e:E,c:C});if(hist.length>600)hist.shift();draw();}});
+
+  // maternal care
+  const lc=$('lgCan');
+  function lg(){const v=+$('lgR').value/100;$('lgOut').textContent=v>.66?'high':v>.33?'medium':'low';const{x,w,h}=fitCanvas(lc);x.clearRect(0,0,w,h);
+    const half=w*.42;x.fillStyle=cssv('--muted');x.font='12px system-ui';x.fillText('receptors in the hippocampus',6,14);
+    const n=Math.round(6+v*30);let rng=7;const rnd=()=>{rng=(rng*16807)%2147483647;return rng/2147483647};
+    x.strokeStyle=cssv('--tissueLine');x.lineWidth=18;x.lineCap='round';x.beginPath();x.moveTo(20,h*.6);x.quadraticCurveTo(half*.5,h*.95,half-14,h*.35);x.stroke();
+    x.fillStyle=cssv('--accent2');for(let i=0;i<n;i++){const t=rnd();const px=20+(half-34)*t,py=h*.6+Math.sin(t*Math.PI)*h*.18-t*h*.2+(rnd()-.5)*12;x.beginPath();x.arc(px,py,3.2,0,7);x.fill();}
+    x.fillStyle=cssv('--muted');x.fillText('adult cortisol response to stress',half+10,14);
+    const m=half+16,bw=w-m-8,bh=h-40;x.strokeStyle=cssv('--line');x.lineWidth=1;x.beginPath();x.moveTo(m,22);x.lineTo(m,h-14);x.lineTo(w-4,h-14);x.stroke();
+    const peak=.45+.5*(1-v),decay=.06+.12*v;x.strokeStyle=cssv('--accent');x.lineWidth=2.5;x.beginPath();
+    for(let i=0;i<=100;i++){const t=i/100*40;const yv=t<5?peak*t/5:peak*Math.exp(-decay*(t-5));const px=m+i/100*bw,py=h-14-yv*bh;i?x.lineTo(px,py):x.moveTo(px,py);}x.stroke();
+    x.fillStyle=cssv('--muted');x.fillText(v>.5?'small peak, fast recovery':'big peak, slow recovery',m+bw*.3,30+(1-peak)*bh*.5);}
+  $('lgR').oninput=lg;redrawHooks.push(lg);lg();
+})();
+
+/* ================= 12 CYCLE + QUIZ ================= */
+(()=>{
+  const svg=$('cycleSvg');const pts=[[220,50,'Poor sleep'],[350,232,'Louder amygdala'],[90,232,'Cortisol (HPA axis)']];
+  let h='<defs><marker id="ca" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0,0 L10,5 L0,10z" fill="var(--accent)"/></marker></defs>';
+  h+='<path d="M290,70 C350,100 370,150 360,204" class="edge on" fill="none" marker-end="url(#ca)"/><path d="M280,252 C240,280 200,280 160,252" class="edge on" fill="none" marker-end="url(#ca)"/><path d="M70,204 C60,150 90,90 150,68" class="edge on" fill="none" marker-end="url(#ca)"/>';
+  pts.forEach(([x,y,l])=>{h+=`<g class="node"><rect x="${x-80}" y="${y-24}" width="160" height="48" rx="12"/><text x="${x}" y="${y+5}" text-anchor="middle" style="font-size:13px">${l}</text></g>`});
+  h+='<circle id="cyDot" class="dot" r="7" cx="-20" cy="-20"/>';svg.innerHTML=h;
+  const segs=['M290,70 C350,100 370,150 360,204','M280,252 C240,280 200,280 160,252','M70,204 C60,150 90,90 150,68'].map(d=>{const p=document.createElementNS(NS,'path');p.setAttribute('d',d);svg.appendChild(p);p.setAttribute('fill','none');return p;});
+  let t=0;frameHooks.push(dt=>{if(!isVis(svg)||reduce)return;t+=dt*.5;const i=Math.floor(t)%3,f=t%1;const p=segs[i],q=p.getPointAtLength(p.getTotalLength()*f);$('cyDot').setAttribute('cx',q.x);$('cyDot').setAttribute('cy',q.y);});
+
+})();
+
+/* ================= quiz ================= */
+(()=>{
+  const Q=[["Which part of the adrenal gland releases adrenaline (epinephrine) within seconds of a threat?", ["Adrenal cortex", "Adrenal medulla", "Anterior pituitary", "Hypothalamus"], 1, "Medulla = middle. It is driven directly by sympathetic nerves, so it acts in seconds. The cortex (outer layer) makes cortisol more slowly."], ["Cortisol is released by the ___ after the pituitary releases ___.", ["adrenal medulla; CRH", "adrenal cortex; ACTH", "hypothalamus; ACTH", "adrenal cortex; epinephrine"], 1, "HPA axis: hypothalamus (CRH) → anterior pituitary (ACTH) → adrenal cortex (cortisol). The medulla makes epinephrine via the fast neural route."], ["In a healthy stress response, what does cortisol do when it reaches the hippocampus and hypothalamus?", ["Excites them, so stress keeps building", "Signals them to turn the HPA axis off (negative feedback)", "Nothing; cortisol only acts on muscles", "Turns into adrenaline"], 1, "Negative feedback works like a thermostat: the end product shuts the system down so the stress response ends."], ["Short-term (acute) stress usually…", ["Shrinks the hippocampus within minutes", "Mobilizes energy and gets the body ready to act", "Permanently changes your DNA sequence", "Has no effect on the body"], 1, "Acute stress raises blood sugar, heart rate and breathing to help you cope. Harm comes when stress becomes chronic."], ["Why can chronic stress make the stress response even bigger over time?", ["Cortisol strengthens the hippocampus", "Prolonged cortisol can damage the hippocampus, weakening negative feedback", "The adrenal medulla runs out of epinephrine", "Chronic stress lowers CRH"], 1, "The hippocampus helps shut off the HPA axis. Damage to it weakens the brake, so cortisol stays high."], ["Rat pups that get little licking and grooming grow up with…", ["more hippocampal cortisol receptors and a smaller stress response", "fewer hippocampal cortisol receptors and a bigger stress response", "no change; genes alone decide", "a smaller amygdala and no fear"], 1, "Less care → fewer glucocorticoid receptors (an epigenetic change in gene expression) → weaker feedback → bigger stress response."]];
+  let qi=0;const ans={};
+  function show(){const[q,o,r,why]=Q[qi];$('qText').textContent=q;$('qCount').textContent=`${qi+1} / ${Q.length}`;$('qWhy').textContent=ans[qi]!==undefined?why:'';$('qOpts').innerHTML='';
+    o.forEach((t,i)=>{const b=document.createElement('button');b.textContent=String.fromCharCode(65+i)+')  '+t;if(ans[qi]!==undefined){if(i===r)b.classList.add('right');else if(i===ans[qi])b.classList.add('wrong');}b.onclick=()=>{ans[qi]=i;show();};$('qOpts').appendChild(b);});}
+  $('qPrev').onclick=()=>{qi=(qi-1+Q.length)%Q.length;show()};$('qNext').onclick=()=>{qi=(qi+1)%Q.length;show()};show();
+})();
+
+$('copyBtn').onclick=()=>{const t=$('embedCode').textContent;if(navigator.clipboard)navigator.clipboard.writeText(t).then(()=>{$('copyBtn').textContent='Copied';setTimeout(()=>$('copyBtn').textContent='Copy',1500)},()=>{})};
+let rz;addEventListener('resize',()=>{clearTimeout(rz);rz=setTimeout(()=>redrawHooks.forEach(f=>f()),120)});
+if(store.get('emoTheme')==='dark')setTheme(true);
+let prev=performance.now();
+function loop(now){const dt=Math.max(0,Math.min(.05,(now-prev)/1000));prev=now;frameHooks.forEach(f=>{try{f(dt)}catch(e){console.error(e)}});requestAnimationFrame(loop)}
+requestAnimationFrame(loop);
+})();
+</script>
+
+<script>
+/* Start-here demo: HPA relay */
+(()=>{
+'use strict';
+const $=id=>document.getElementById(id); const svg=$('relaySvg'); if(!svg) return;
+const NS='http://www.w3.org/2000/svg', INK='#231d3b';
+const reduce=matchMedia('(prefers-reduced-motion: reduce)').matches;
+const mk=(t,a,p)=>{const e=document.createElementNS(NS,t);for(const k in a)e.setAttribute(k,a[k]);(p||svg).appendChild(e);return e};
+const N={hyp:{x:30,y:30,t:'Hypothalamus',s:"brain's control center"},pit:{x:30,y:160,t:'Pituitary gland',s:'the “master gland”'},
+         adr:{x:30,y:290,t:'Adrenal cortex',s:'outer layer of the adrenal gland'},hip:{x:330,y:30,t:'Hippocampus',s:'helps hit the brakes'}};
+const W=200,Hh=62;
+const P={crh:'M130 92 V158',acth:'M130 222 V288',cort:'M232 320 C380 330 440 220 430 94',stop:'M328 61 H234'};
+const lab={crh:[140,130,'CRH'],acth:[140,260,'ACTH'],cort:[420,250,'cortisol'],stop:[281,52,'stop!']};
+const paths={};
+mk('defs',{}).innerHTML='<marker id="rAr" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto"><path d="M0 0L10 5L0 10z" fill="context-stroke"/></marker>';
+for(const k in P){paths[k]=mk('path',{d:P[k],fill:'none',stroke:'var(--line)','stroke-width':5,'stroke-dasharray':'8 8','stroke-linecap':'round','marker-end':'url(#rAr)'});
+  const [x,y,t]=lab[k];const tx=mk('text',{x,y,style:'font:700 15px var(--display,var(--sans));fill:var(--muted)'});tx.textContent=t;paths[k].lab=tx;}
+const nodes={};
+for(const k in N){const n=N[k];const g=mk('g',{class:'relay',tabindex:0,role:'button','aria-label':n.t});
+  mk('rect',{class:'rb',x:n.x,y:n.y,width:W,height:Hh,rx:16,fill:'#fff',stroke:INK,'stroke-width':3.5},g);
+  const a=mk('text',{x:n.x+W/2,y:n.y+27,'text-anchor':'middle',style:'font:700 17px var(--display,var(--sans));fill:#231d3b'},g);a.textContent=n.t;
+  const b=mk('text',{x:n.x+W/2,y:n.y+47,'text-anchor':'middle',style:'font:500 12px var(--sans);fill:#5d5875'},g);b.textContent=n.s;
+  nodes[k]=g;g.onclick=()=>pick(k);g.onkeydown=e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();pick(k)}};}
+const dot=mk('circle',{r:9,fill:'#ff6b6b',stroke:INK,'stroke-width':3,opacity:0});
+const ORDER=['hyp','pit','adr','hip'], PATH=['crh','acth','cort','stop'];
+const MSG=[
+ 'The <b>hypothalamus</b> releases <b>CRH</b> into tiny blood vessels that lead straight to the gland just below it. Who gets the message next?',
+ 'The <b>pituitary</b> releases <b>ACTH</b> into the bloodstream. It travels all the way down to a gland sitting on top of the kidneys. Which one?',
+ 'The <b>adrenal cortex</b> pours out <b>cortisol</b>: more energy, body on alert. But a stress response has to end. Where does cortisol send its “that’s enough” signal?',
+ '<b>Negative feedback!</b> Cortisol reaches the hippocampus (and the hypothalamus itself), and they tell the hypothalamus to stop making CRH, so the system shuts itself off. That’s the HPA axis: <b>H</b>ypothalamus → <b>P</b>ituitary → <b>A</b>drenal.'];
+const HINTS=['Hint: it’s the brain’s control center for the body.','Hint: the “master gland” just below the hypothalamus.','Hint: the outer layer of the adrenal gland makes cortisol.','Hint: this memory structure is packed with cortisol receptors.'];
+let step=0,busy=false;
+function ui(){$('relayStep').textContent=`Step ${step} of 4`;$('relayBar').style.width=(step/4*100||3)+'%'}
+function run(k){return new Promise(res=>{const p=paths[k];p.setAttribute('stroke',k==='stop'?'#ff6b6b':'#20b393');p.removeAttribute('stroke-dasharray');p.lab.style.fill='var(--ink)';
+  if(reduce){res();return}const L=p.getTotalLength(),t0=performance.now();dot.setAttribute('opacity',1);dot.setAttribute('fill',k==='stop'?'#ff6b6b':'#ffb627');
+  const f=t=>{const s=Math.min(1,(t-t0)/700),q=p.getPointAtLength(L*s);dot.setAttribute('cx',q.x);dot.setAttribute('cy',q.y);s<1?requestAnimationFrame(f):(dot.setAttribute('opacity',0),res())};requestAnimationFrame(f)})}
+async function pick(k){if(busy||step>=4)return;
+  if(k!==ORDER[step]){const g=nodes[k];g.classList.remove('shake');void g.getBBox();g.classList.add('shake');$('relayNote').innerHTML='Not quite. '+HINTS[step];return}
+  busy=true;nodes[k].classList.add('done');await run(PATH[step]);$('relayNote').innerHTML=MSG[step];step++;ui();busy=false;}
+$('relayReset').onclick=()=>{step=0;busy=false;for(const k in nodes)nodes[k].classList.remove('done','shake');for(const k in paths){paths[k].setAttribute('stroke','var(--line)');paths[k].setAttribute('stroke-dasharray','8 8');paths[k].lab.style.fill='var(--muted)'}
+  $('relayNote').innerHTML='A stressor appears! Where in the brain does the hormone chain start? Click it.';ui()};
+ui();
+})();
+</script>
+
+</body>
+</html>
