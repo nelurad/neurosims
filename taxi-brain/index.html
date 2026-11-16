@@ -1,0 +1,1203 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>The Taxi Driver's Brain</title>
+<link rel="icon" href="data:,">
+<meta name="description" content="What memorizing London did to taxi drivers' brains: the Knowledge, the front and back of the hippocampus, how a memory gets stored, the brain scans, grid cells and place cells, and which brain areas light up during a taxi ride. A NeuroSims learning and memory case study.">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@500;600;700&family=Nunito:ital,wght@0,400;0,600;0,700;0,800;1,400&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --serif:"Iowan Old Style","Palatino Linotype",Palatino,"Book Antiqua",Georgia,"Times New Roman",serif;
+    --sans:system-ui,-apple-system,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif;
+    --mono:ui-monospace,"SF Mono",Menlo,Consolas,monospace;
+    --bg:#fcfbf8; --band:#f3f1ec; --panel:#ffffff; --panel2:#f7f5f0; --line:#d9d4c8; --grid:rgba(60,50,30,.12);
+    --ink:#1d2230; --muted:#5a5f6c; --accent:#1f6a96; --accent2:#c0581f;
+    --good:#16864f; --bad:#c92a42;
+    --b1:#f7e6da; --b2:#ebcbb8; --b3:#c79c86; --sulc:#9c6a5c; --hl:#fff3ea;
+    --hip:#4f9d63; --hipD:#2f6e3e; --hipL:#a8dbb0; --mb:#4a7fc1;
+    --stm:#f0c48a; --ltm:#a9d6c9; --buf:#f6e9a6; --mtA:#f3ece4; --mtB:#e2d6ca; --mtC:#d9cabb;
+  }
+  :root[data-theme="dark"]{
+    --bg:#14161c; --band:#1a1d25; --panel:#20232c; --panel2:#262a34; --line:#383d4a; --grid:rgba(210,220,255,.12);
+    --ink:#eef0f6; --muted:#aab0c0; --accent:#6db8e6; --accent2:#ff9b5e;
+    --good:#5fe0a0; --bad:#ff6b7d;
+    --b1:#dcbcab; --b2:#bf9682; --b3:#8c6453; --sulc:#5a3a31; --hl:#f1d9c9;
+    --hip:#5fb874; --hipD:#2c6a3a; --hipL:#9fd7a9; --mb:#6d9be0;
+    --stm:#a7773d; --ltm:#4d8a7c; --buf:#8f8445; --mtA:#3b3640; --mtB:#2c2930; --mtC:#4a4350;
+  }
+  *{box-sizing:border-box}
+  html{-webkit-text-size-adjust:100%;scroll-behavior:smooth;font-size:clamp(16px,1.15vw,21px)}
+  html.present{font-size:clamp(18px,1.35vw,26px)}
+  html,body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--sans);line-height:1.5;-webkit-font-smoothing:antialiased}
+  body{overflow-x:hidden}
+  .wrap{margin:0 auto;padding:16px 24px 40px;max-width:1400px}
+  a{color:var(--accent)}
+  .back{font-size:.8rem;color:var(--muted);text-decoration:none}
+  .back:hover{text-decoration:underline}
+  :focus-visible{outline:3px solid var(--accent);outline-offset:2px}
+  svg{display:block;width:100%;height:auto;user-select:none;-webkit-user-select:none}
+  canvas{display:block;width:100%}
+  b,strong{font-weight:700}
+  .hero{padding:24px 0 30px}
+  .hero h1{font-family:var(--serif);font-weight:600;font-size:clamp(42px,5vw,86px);line-height:1.04;margin:.2em 0 .3em;letter-spacing:-.015em}
+  .hero p.big{font-size:1.2rem;max-width:42em;margin:0 0 .6em}
+  .hint{color:var(--muted);font-size:.85rem}
+  .kbd{display:inline-block;border:1.5px solid var(--line);border-bottom-width:3px;border-radius:6px;padding:0 .4em;font-family:var(--mono);font-size:.85em;background:var(--panel)}
+  .facts3{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:32px;margin:26px 0 14px;max-width:1100px}
+  .facts3 div{border-top:2px solid var(--line);padding:12px 0 0;color:var(--muted);font-size:.95rem}
+  .facts3 b{display:block;font-size:2rem;color:var(--ink);font-family:var(--serif);font-weight:600;line-height:1.1;margin-bottom:4px}
+  .pipe{position:sticky;top:0;z-index:20;background:color-mix(in srgb,var(--bg) 92%,transparent);backdrop-filter:blur(6px);border-bottom:1.5px solid var(--line);margin:0 -24px;padding:8px 24px;display:flex;gap:10px;align-items:center}
+  .pipe ol{list-style:none;margin:0;padding:0;display:flex;gap:1px;overflow-x:auto;scrollbar-width:none;flex:1}
+  .pipe ol::-webkit-scrollbar{display:none}
+  .pipe a{display:flex;align-items:center;gap:4px;text-decoration:none;color:var(--muted);font-size:.72rem;padding:5px 7px;border-radius:999px;white-space:nowrap;border:1.5px solid transparent}
+  .pipe a .i{font-family:var(--mono);font-size:.85em;opacity:.7}
+  .pipe a:hover{color:var(--ink);border-color:var(--line)}
+  .pipe a.on{color:#fff;background:var(--accent)}
+  :root[data-theme="dark"] .pipe a.on{color:#14161c}
+  .tools{display:flex;gap:6px;flex:none}
+  .tbtn{font:inherit;font-size:.78rem;background:var(--panel);color:var(--ink);border:1.5px solid var(--line);border-radius:999px;padding:5px 12px;cursor:pointer;white-space:nowrap}
+  .tbtn:hover{border-color:var(--accent)}
+  section.s{padding:80px 0 70px;scroll-margin-top:52px;border-top:1px solid var(--line)}
+  section.s.alt{background:var(--band);box-shadow:0 0 0 100vmax var(--band);clip-path:inset(0 -100vmax)}
+  html.present section.s{min-height:calc(100vh - 56px);padding:22px 0 26px;display:flex;flex-direction:column;justify-content:center}
+  html.present{scroll-snap-type:y proximity}
+  html.present section.s{scroll-snap-align:start}
+  .kicker{font:700 .72rem/1 var(--sans);letter-spacing:.16em;text-transform:uppercase;color:var(--accent);margin:0 0 14px;display:flex;align-items:center;gap:12px}
+  .kicker::before{content:"";width:36px;height:2px;background:var(--accent)}
+  h2.sec{font-family:var(--serif);font-weight:600;font-size:clamp(30px,3vw,52px);line-height:1.1;margin:0 0 .4em;letter-spacing:-.01em}
+  h3{font-family:var(--serif);font-weight:600;font-size:1.3rem;margin:0 0 .4em}
+  .lede{font-size:1.08rem;max-width:48em;margin:0 0 1.2em}
+  .note{color:var(--muted);font-size:.86rem;max-width:60em;margin:14px 0 0}
+  .stage{display:grid;grid-template-columns:minmax(0,1.35fr) minmax(0,1fr);gap:22px;align-items:start}
+  .stage.even{grid-template-columns:minmax(0,1fr) minmax(0,1fr)}
+  .box{background:var(--panel);border:1.5px solid var(--line);border-radius:14px;padding:16px;min-width:0}
+  .row{display:flex;flex-wrap:wrap;gap:8px;align-items:center}
+  .chip,.btn{font:inherit;font-size:.85rem;background:var(--panel2);color:var(--ink);border:1.5px solid var(--line);border-radius:999px;padding:6px 14px;cursor:pointer}
+  .chip:hover,.btn:hover{border-color:var(--accent)}
+  .chip[aria-pressed="true"]{background:var(--accent);border-color:var(--accent);color:#fff}
+  :root[data-theme="dark"] .chip[aria-pressed="true"]{color:#14161c}
+  .btn.primary{background:var(--accent);border-color:var(--accent);color:#fff}
+  :root[data-theme="dark"] .btn.primary{color:#14161c}
+  .ctrl{display:flex;align-items:center;gap:10px;margin:10px 0;font-size:.9rem}
+  .ctrl input[type=range]{flex:1;min-width:0;accent-color:var(--accent)}
+  .ctrl b{min-width:5.5em;text-align:right;font-variant-numeric:tabular-nums}
+  .callout{border-left:3px solid var(--accent);background:var(--panel2);padding:10px 14px;border-radius:0 10px 10px 0;font-size:.92rem;margin:12px 0 0}
+  .callout.warm{border-color:var(--accent2)}
+  .callout.green{border-color:var(--hip)}
+  dl.kv{display:grid;grid-template-columns:auto 1fr;gap:4px 14px;margin:8px 0;font-size:.92rem}
+  dl.kv dt{color:var(--muted)} dl.kv dd{margin:0;font-weight:600}
+  .meter{height:14px;background:var(--panel2);border:1.5px solid var(--line);border-radius:999px;overflow:hidden;margin:4px 0 10px}
+  .meter i{display:block;height:100%;width:0;background:var(--accent);border-radius:999px;transition:width .35s}
+  .meter.warm i{background:var(--accent2)}
+  .mlab{display:flex;justify-content:space-between;font-size:.85rem;color:var(--muted)}
+  .mlab b{color:var(--ink)}
+  .cols2{display:grid;grid-template-columns:1fr 1fr;gap:22px;margin-top:22px}
+  .cols3{display:grid;grid-template-columns:repeat(3,1fr);gap:18px;margin-top:22px}
+  .cols4{display:grid;grid-template-columns:repeat(4,1fr);gap:16px;margin-top:22px}
+  .card h4{margin:0 0 .3em;font-family:var(--serif);font-size:1.12rem}
+  .card p{margin:.2em 0;font-size:.92rem}
+  .tag{display:inline-block;font-size:.72rem;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--accent);margin-bottom:4px}
+  .lostkept{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin:10px 0}
+  .lostkept div{border-radius:10px;padding:10px 12px;font-size:.9rem;background:var(--panel2);border:1.5px solid var(--line)}
+  .lostkept b{display:block;margin-bottom:4px}
+  .svgt{font:600 14px var(--sans);fill:var(--ink)}
+  .svgm{font:500 12px var(--sans);fill:var(--muted)}
+  .blab{font:600 13px var(--sans);fill:var(--ink)}
+  .lead{stroke:var(--muted);stroke-width:1;fill:none}
+  /* lateral brain */
+  .bsulc{fill:none;stroke:var(--sulc);stroke-linecap:round;stroke-linejoin:round}
+  .bhl{fill:none;stroke:var(--hl);stroke-linecap:round;opacity:.55}
+  .tint{fill:var(--accent);opacity:0;transition:opacity .35s}
+  .tint.on{opacity:.42}
+  .tint.on2{fill:var(--accent2);opacity:.42}
+  .deep{transition:opacity .35s}
+  .deep.ghost{opacity:.28}
+  .deep.on .dfill{fill:var(--accent)!important;stroke:var(--accent)}
+  .deep.on2 .dfill{fill:var(--accent2)!important}
+  .reg-click{cursor:pointer}
+  /* tree */
+  .tnode{cursor:pointer}
+  .tnode rect{stroke-width:2;transition:fill .25s,stroke .25s}
+  .tnode text{font:600 12.5px var(--sans);fill:var(--ink);pointer-events:none}
+  .tnode .sub{font:500 11px var(--sans);fill:var(--muted)}
+  .tnode.sel rect{stroke:var(--accent)!important;stroke-width:3.5}
+  .tnode:hover rect{stroke:var(--accent)}
+  .tlink{fill:none;stroke:var(--line);stroke-width:2.5}
+  .tlink.flow{stroke:var(--accent);stroke-dasharray:6 6;animation:flow 1s linear infinite}
+  @keyframes flow{to{stroke-dashoffset:-24}}
+  .plus{font:700 13px var(--mono)!important;fill:var(--muted)!important}
+  /* stages */
+  .tok{transition:none}
+  /* quiz */
+  .quiz .qcard{background:var(--panel);border:1.5px solid var(--line);border-radius:14px;padding:22px;max-width:900px}
+  .q{font-size:1.1rem;font-weight:600;margin:0 0 12px}
+  .qopts{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+  .qopts button{font:inherit;text-align:left;background:var(--panel2);color:var(--ink);border:1.5px solid var(--line);border-radius:10px;padding:10px 14px;cursor:pointer}
+  .qopts button.right{border-color:var(--good);box-shadow:inset 0 0 0 1.5px var(--good)}
+  .qopts button.wrong{border-color:var(--bad);opacity:.7}
+  .why{min-height:1.5em;margin:12px 0 0;color:var(--muted)}
+  .qnav{display:flex;gap:12px;align-items:center;margin-top:12px;max-width:900px;justify-content:space-between}
+  table.sum{width:100%;border-collapse:collapse;font-size:.9rem}
+  table.sum th,table.sum td{text-align:left;padding:7px 8px;border-bottom:1px solid var(--line);vertical-align:top}
+  table.sum th{border-bottom:1.5px solid var(--line);color:var(--muted);font-weight:600}
+  .tablewrap{overflow-x:auto}
+  .foot{border-top:1px solid var(--line);margin-top:30px;padding-top:20px;font-size:.85rem;color:var(--muted)}
+  .embed{display:flex;flex-wrap:wrap;gap:8px;align-items:center}
+  .embed code{font-family:var(--mono);font-size:.75rem;background:var(--panel2);border:1px solid var(--line);border-radius:6px;padding:6px 8px;overflow-x:auto;max-width:100%;white-space:nowrap}
+  .embed button{font:inherit;font-size:.8rem;background:var(--panel);color:var(--ink);border:1.5px solid var(--line);border-radius:999px;padding:4px 12px;cursor:pointer}
+  .refs{padding-left:1.2em;margin:4px 0 12px}
+  .refs li{margin:3px 0}
+  .sgrid{font-family:var(--mono);font-size:1.7rem;letter-spacing:.5em;line-height:1.5;text-align:center;min-height:6.6em;display:flex;flex-direction:column;justify-content:center;background:var(--panel2);border-radius:10px;border:1.5px solid var(--line);margin:8px 0}
+  .sgrid .cue{font-family:var(--sans);font-size:1rem;letter-spacing:0;color:var(--accent)}
+  input[type=text]{font:inherit;font-size:1rem;padding:6px 10px;border-radius:8px;border:1.5px solid var(--line);background:var(--panel);color:var(--ink);min-width:0}
+  .drmbox{font-family:var(--serif);font-size:2.2rem;text-align:center;min-height:3.2em;display:flex;align-items:center;justify-content:center;background:var(--panel2);border-radius:10px;border:1.5px solid var(--line);margin:8px 0;flex-wrap:wrap;gap:8px;padding:10px}
+  .drmbox .w{font-family:var(--sans);font-size:1rem;display:flex;align-items:center;gap:6px;background:var(--panel);border:1.5px solid var(--line);border-radius:999px;padding:4px 6px 4px 12px}
+  .drmbox .w button{font:inherit;font-size:.8rem;border-radius:999px;border:1.5px solid var(--line);background:var(--panel2);color:var(--ink);padding:2px 9px;cursor:pointer}
+  .drmbox .w button[aria-pressed="true"]{background:var(--accent);color:#fff;border-color:var(--accent)}
+  @media (max-width:900px){
+    .stage,.stage.even,.cols2,.cols3{grid-template-columns:1fr}
+    .cols4{grid-template-columns:1fr 1fr}
+    .facts3{grid-template-columns:1fr;gap:12px}
+    .qopts{grid-template-columns:1fr}
+  }
+  @media (max-width:640px){
+    .wrap{padding:12px 16px 30px} .pipe{margin:0 -16px;padding:8px 16px}
+    section.s{padding:56px 0 50px}
+    .cols4,.lostkept{grid-template-columns:1fr}
+    .sgrid{font-size:1.3rem}
+  }
+  @media (prefers-reduced-motion:reduce){ html{scroll-behavior:auto} .tlink.flow{animation:none} }
+
+  /* ================= Playful redesign (shared by learning + memory) ================= */
+  :root{
+    --body:"Nunito",var(--sans);
+    --display:"Fredoka","Nunito",var(--sans);
+    --bg:#fbfaff; --panel:#ffffff; --panel2:#f3f1fb; --line:#dcd7ec; --grid:rgba(60,40,120,.10);
+    --ink:#231d3b; --muted:#5d5875;
+    --edge:#231d3b; --shadow:#231d3b; --dot:rgba(120,90,220,.16);
+    --c1:#ff6b6b; --c2:#ffb627; --c3:#20b393; --c4:#4d8dff; --c5:#9b5de5;
+    --note:#fff4b8; --noteInk:#2e2600;
+    --tint:var(--c4);
+  }
+  :root[data-theme="dark"]{
+    --bg:#17142a; --panel:#221e38; --panel2:#2a2545; --line:#3d3760; --grid:rgba(200,190,255,.12);
+    --ink:#f3f0ff; --muted:#b5afd0;
+    --edge:#7d74b8; --shadow:#07060f; --dot:rgba(185,160,255,.10);
+    --c1:#ff8a8a; --c2:#ffc857; --c3:#45d6b5; --c4:#7aa8ff; --c5:#b98af0;
+    --note:#3a3216; --noteInk:#fff1b8;
+  }
+  html,body{font-family:var(--body)}
+  body{overflow-x:hidden;background-color:var(--bg);background-image:radial-gradient(var(--dot) 1.3px,transparent 1.6px);background-size:22px 22px}
+  ::selection{background:color-mix(in srgb,var(--c2) 55%,transparent)}
+
+  /* per-section color */
+  section.s:nth-of-type(5n+1){--tint:var(--c4)}
+  section.s:nth-of-type(5n+2){--tint:var(--c3)}
+  section.s:nth-of-type(5n+3){--tint:var(--c1)}
+  section.s:nth-of-type(5n+4){--tint:var(--c5)}
+  section.s:nth-of-type(5n+5){--tint:var(--c2)}
+  section.s{border-top:0}
+  section.s.alt{--band:color-mix(in srgb,var(--tint) 11%,var(--bg))}
+
+  /* type */
+  .hero h1,h2.sec,h3,.card h4,.facts3 b,.q{font-family:var(--display);letter-spacing:0}
+  h2.sec{font-weight:700;font-size:clamp(30px,3.3vw,56px)}
+  h2.sec::after{content:"";display:block;width:160px;height:14px;margin-top:12px;background:var(--tint);
+    -webkit-mask:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='32' height='14' viewBox='0 0 32 14'%3E%3Cpath d='M0 7 Q8 0 16 7 T32 7' fill='none' stroke='black' stroke-width='4.5' stroke-linecap='round'/%3E%3C/svg%3E") repeat-x 0 0/32px 14px;
+            mask:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='32' height='14' viewBox='0 0 32 14'%3E%3Cpath d='M0 7 Q8 0 16 7 T32 7' fill='none' stroke='black' stroke-width='4.5' stroke-linecap='round'/%3E%3C/svg%3E") repeat-x 0 0/32px 14px}
+  h3{font-weight:600}
+  .kicker{font:700 .78rem/1 var(--display);letter-spacing:.08em;color:#231d3b;background:color-mix(in srgb,var(--tint) 45%,#fff);display:inline-flex;padding:7px 14px 7px 10px;border-radius:999px;border:2px solid var(--edge);transform:rotate(-2deg);box-shadow:2px 2px 0 var(--shadow);gap:8px}
+  .kicker::before{width:11px;height:11px;border-radius:50%;background:var(--tint);border:2px solid #231d3b}
+
+  /* hero */
+  .hero{display:grid;grid-template-columns:minmax(0,1.5fr) minmax(0,1fr);gap:10px 30px;align-items:center;padding:20px 0 34px}
+  .hero > .back{grid-column:1/-1}
+  .hero .heroText{min-width:0}
+  .hero .heroText .kicker{--tint:var(--c2);margin-top:6px!important}
+  .hero h1{font-weight:700;font-size:clamp(48px,6.6vw,108px);line-height:.98;margin:.25em 0 .35em}
+  .hero h1 .mark{position:relative;display:inline-block;z-index:0}
+  .hero h1 .mark::before{content:"";position:absolute;left:-.08em;right:-.08em;bottom:.06em;height:.36em;background:var(--hcol,var(--c2));border-radius:.2em;z-index:-1;transform:rotate(-1.5deg)}
+  .hero p.big{font-size:1.25rem}
+  .heroArt{min-width:0}
+  .heroArt svg{max-width:440px;margin:0 auto;overflow:visible}
+  .floaty{animation:floaty 5s ease-in-out infinite;transform-origin:50% 50%}
+  .twinkle{animation:twinkle 2.4s ease-in-out infinite}
+  .twinkle.d2{animation-delay:.8s}.twinkle.d3{animation-delay:1.6s}
+  @keyframes floaty{0%,100%{transform:translateY(0) rotate(-1.5deg)}50%{transform:translateY(-12px) rotate(1.5deg)}}
+  @keyframes twinkle{0%,100%{opacity:.25;transform:scale(.8)}50%{opacity:1;transform:scale(1.1)}}
+  .twinkle{transform-box:fill-box;transform-origin:center}
+  .facts3{grid-column:1/-1;gap:22px;max-width:none;margin-top:18px}
+  .facts3 div{border:2.5px solid var(--edge);border-radius:20px;padding:16px 18px;background:var(--panel);box-shadow:5px 5px 0 var(--shadow);color:var(--ink)}
+  .facts3 div:nth-child(1){background:color-mix(in srgb,var(--c2) 24%,var(--panel));transform:rotate(-1.2deg)}
+  .facts3 div:nth-child(2){background:color-mix(in srgb,var(--c3) 22%,var(--panel));transform:rotate(.8deg)}
+  .facts3 div:nth-child(3){background:color-mix(in srgb,var(--c1) 20%,var(--panel));transform:rotate(-.5deg)}
+  .facts3 b{font-weight:700;font-size:2.1rem}
+  .hero .hint{grid-column:1/-1;margin-top:10px}
+
+  /* nav */
+  .pipe{background:color-mix(in srgb,var(--bg) 94%,transparent);border-bottom:2.5px solid var(--edge)}
+  .pipe a{font-family:var(--display);font-weight:500;font-size:.78rem}
+  .pipe a.on{color:#fff;background:var(--ink)}
+  :root[data-theme="dark"] .pipe a.on{color:#17142a}
+
+  /* sticker boxes and buttons */
+  .box{border:2.5px solid var(--edge);border-radius:20px;box-shadow:5px 5px 0 var(--shadow)}
+  .chip,.btn,.tbtn,button.card,.qopts button,.embed button{border:2px solid var(--edge);box-shadow:2px 2px 0 var(--shadow);font-family:var(--body);font-weight:700;transition:transform .08s,box-shadow .08s,background .2s}
+  .chip:hover,.btn:hover,.tbtn:hover,button.card:hover,.qopts button:hover{transform:translate(-1px,-1px);box-shadow:3px 3px 0 var(--shadow);border-color:var(--edge)}
+  .chip:active,.btn:active,.tbtn:active,button.card:active,.qopts button:active{transform:translate(2px,2px);box-shadow:0 0 0 var(--shadow)}
+  .btn:disabled{opacity:.45;cursor:not-allowed;transform:none;box-shadow:2px 2px 0 var(--shadow)}
+  .chip[aria-pressed="true"],.btn.primary{border-color:var(--edge)}
+  button.card{border-radius:14px}
+  button.card[aria-pressed="true"]{background:color-mix(in srgb,var(--accent) 16%,var(--panel));box-shadow:3px 3px 0 var(--shadow)}
+  .callout{border-radius:14px;border-left-width:6px;background:var(--panel2)}
+  .meter{height:16px;border:2px solid var(--edge)}
+  .quiz .qcard{border:2.5px solid var(--edge);border-radius:22px;box-shadow:6px 6px 0 var(--shadow)}
+  .qopts button{border-radius:14px}
+  .qopts button.right{border-color:var(--good);box-shadow:3px 3px 0 var(--good)}
+  .qopts button.wrong{border-color:var(--bad)}
+  .card h4{font-weight:600}
+  .tag{color:var(--ink);background:color-mix(in srgb,var(--tint) 30%,transparent);border-radius:999px;padding:2px 9px}
+
+  /* "Go deeper" for the dense paragraphs */
+  p.note{background:color-mix(in srgb,var(--panel) 75%,transparent);border:2px dashed color-mix(in srgb,var(--tint) 60%,var(--line));border-radius:16px;padding:12px 16px}
+  p.note::before{content:"Go deeper";display:block;font:700 .72rem/1.4 var(--display);letter-spacing:.12em;text-transform:uppercase;color:var(--ink);margin-bottom:4px}
+  .box p.note{border:0;padding:0;background:none}
+  .box p.note::before{content:none}
+
+  /* "In plain words" sticky notes */
+  .plain{position:relative;max-width:46em;background:var(--note);color:var(--noteInk);border:2.5px solid var(--edge);border-radius:6px 20px 20px 20px;padding:20px 22px 16px;margin:14px 0 26px;box-shadow:5px 5px 0 var(--shadow);transform:rotate(-.5deg);font-size:1.1rem;line-height:1.55}
+  .plain .ptag{position:absolute;top:-15px;left:16px;font:700 .75rem/1 var(--display);letter-spacing:.1em;text-transform:uppercase;color:#231d3b;background:var(--tint);border:2px solid var(--edge);border-radius:999px;padding:6px 12px;transform:rotate(-2deg)}
+  .plain b{color:inherit}
+  .plain em{font-style:normal;background:color-mix(in srgb,var(--tint) 30%,transparent);border-radius:4px;padding:0 3px}
+
+  /* Start-here sections */
+  .steps{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:22px;margin:8px 0 26px}
+  .step{position:relative;background:var(--panel);border:2.5px solid var(--edge);border-radius:22px;padding:18px 20px 16px;box-shadow:5px 5px 0 var(--shadow);min-width:0}
+  .step:nth-child(1){--sc:var(--c2);transform:rotate(-.8deg)}
+  .step:nth-child(2){--sc:var(--c3);transform:rotate(.6deg)}
+  .step:nth-child(3){--sc:var(--c1);transform:rotate(-.4deg)}
+  .step .num{position:absolute;top:-16px;left:-12px;width:42px;height:42px;border-radius:50%;display:grid;place-items:center;font:700 1.25rem/1 var(--display);background:var(--sc);border:2.5px solid var(--edge);color:#231d3b;box-shadow:2px 2px 0 var(--shadow)}
+  .step .ico{width:100%;height:96px;margin:2px 0 8px}
+  .step h3{margin:0 0 .25em}
+  .step p{margin:.2em 0;font-size:.98rem}
+  .step .eg{display:block;margin-top:8px;font-size:.88rem;color:var(--muted)}
+  .vocab{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:14px;margin:14px 0 0}
+  .word{border:2px solid var(--edge);border-radius:16px;padding:12px 14px;background:var(--panel);box-shadow:3px 3px 0 var(--shadow);font-size:.92rem}
+  .word b{display:block;font-family:var(--display);font-weight:600;font-size:1.12rem;margin-bottom:2px}
+  .word:nth-child(5n+1){background:color-mix(in srgb,var(--c4) 13%,var(--panel))}
+  .word:nth-child(5n+2){background:color-mix(in srgb,var(--c3) 13%,var(--panel))}
+  .word:nth-child(5n+3){background:color-mix(in srgb,var(--c1) 12%,var(--panel))}
+  .word:nth-child(5n+4){background:color-mix(in srgb,var(--c5) 13%,var(--panel))}
+  .word:nth-child(5n+5){background:color-mix(in srgb,var(--c2) 16%,var(--panel))}
+  .roadmap{display:flex;flex-wrap:wrap;gap:8px 6px;align-items:center;margin:10px 0 0;font-family:var(--display);font-weight:500}
+  .roadmap a{color:var(--ink);text-decoration:none;border:2px solid var(--edge);border-radius:999px;padding:4px 12px;background:var(--panel);box-shadow:2px 2px 0 var(--shadow);font-size:.88rem}
+  .roadmap a:hover{background:color-mix(in srgb,var(--c2) 30%,var(--panel))}
+  .roadmap span{color:var(--muted)}
+  .bigq{font-family:var(--display);font-weight:600;font-size:1.25rem;margin:0 0 .3em}
+  .chunkShow{font:700 clamp(1.6rem,3.4vw,2.6rem)/1.2 var(--mono);letter-spacing:.18em;text-align:center;min-height:3.4em;display:flex;align-items:center;justify-content:center;background:var(--panel2);border:2px solid var(--edge);border-radius:16px;margin:10px 0;padding:10px;flex-wrap:wrap;word-break:break-all}
+  .chunkShow .cue{font:600 1rem var(--body);letter-spacing:0;color:var(--muted)}
+  .chunkShow .ch{display:inline-block;margin:0 .35em;padding:0 .15em;border-radius:8px;background:color-mix(in srgb,var(--c2) 35%,transparent)}
+  .scoreRow{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:10px}
+  .scoreRow div{border:2px solid var(--edge);border-radius:14px;padding:10px 12px;background:var(--panel2);text-align:center}
+  .scoreRow b{display:block;font:700 2rem/1.1 var(--display)}
+
+  /* dark theme: illustrations sit on light paper so their ink outlines stay visible */
+  :root[data-theme="dark"] .step .ico,:root[data-theme="dark"] #bxSvg{background:#f4f1ff;border-radius:14px}
+  :root[data-theme="dark"] .heroArt svg{filter:drop-shadow(0 0 1.5px #f3f0ff) drop-shadow(0 0 1px #f3f0ff)}
+  @media (max-width:900px){
+    .hero{grid-template-columns:1fr}
+    .heroArt{order:-1}
+    .heroArt svg{max-width:260px}
+    .steps{grid-template-columns:1fr;gap:28px}
+    .vocab{grid-template-columns:1fr 1fr}
+  }
+  @media (max-width:520px){ .vocab{grid-template-columns:1fr} .scoreRow b{font-size:1.5rem} }
+  @media (prefers-reduced-motion:reduce){ .floaty,.twinkle{animation:none} }
+  :root{--accent:#2f6bd8;--accent2:#d0581c}
+  :root[data-theme="dark"]{--accent:#7fb2ff;--accent2:#ff9b5e}
+
+  .series{grid-column:1/-1;display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin-top:16px}
+  .series .slab{font:700 .74rem/1 var(--display);letter-spacing:.1em;text-transform:uppercase;color:var(--muted);margin-right:4px}
+  .series a{font:600 .88rem/1.2 var(--display);color:var(--ink);text-decoration:none;border:2px solid var(--edge);border-radius:999px;padding:6px 14px;background:var(--panel);box-shadow:2px 2px 0 var(--shadow)}
+  .series a:hover{background:color-mix(in srgb,var(--c2) 30%,var(--panel))}
+  .series a.on{background:var(--ink);color:var(--bg)}
+  .nextup{display:flex;justify-content:space-between;align-items:center;gap:16px;margin:46px 0 10px;padding:22px 26px;border:2.5px solid var(--edge);border-radius:22px;background:color-mix(in srgb,var(--c3) 18%,var(--panel));box-shadow:6px 6px 0 var(--shadow);text-decoration:none;color:var(--ink);transition:transform .1s}
+  .nextup:hover{transform:translate(-2px,-2px)}
+  .nextup small{display:block;font:700 .75rem/1.4 var(--display);letter-spacing:.1em;text-transform:uppercase;color:var(--muted)}
+  .nextup b{font:700 clamp(1.2rem,2.4vw,1.7rem)/1.2 var(--display)}
+  .nextup .arr{font:700 2.2rem/1 var(--display)}
+  .relay{cursor:pointer}
+  .relay:focus-visible{outline:none}
+  .relay:focus-visible .rb{stroke:var(--c4);stroke-width:5}
+  .relay .rb{transition:fill .25s}
+  .relay.done .rb{fill:#ffd27a}
+  .relay.shake{animation:shake .35s}
+  @keyframes shake{25%{transform:translateX(-5px)}75%{transform:translateX(5px)}}
+  .cfx{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:16px;margin-top:6px}
+  .cfx .box h4{margin:0 0 .3em;font:600 1.12rem var(--display)}
+  .cfx .box p{margin:.25em 0;font-size:.92rem}
+  .cfx .good{color:var(--good);font-weight:700}.cfx .bad{color:var(--bad);font-weight:700}
+  @media (max-width:900px){.cfx{grid-template-columns:1fr 1fr}.nextup{padding:18px}}
+  @media (max-width:560px){.cfx{grid-template-columns:1fr}}
+
+  /* ================= Taxi brain ================= */
+  :root{--thames:#8cc8ef;--park:#bfe5b0;--street:#ffffff;--casing:#cfc8e6;--map:#f4f1fb;--cab:#2b2838;--busred:#e8483f}
+  :root[data-theme="dark"]{--thames:#2f5f86;--park:#2f5a3a;--street:#4a4470;--casing:#2a2545;--map:#1e1a33;--cab:#0e0c18}
+  .pipe{position:sticky}
+  .roadbar{position:absolute;left:0;right:0;bottom:-2px;height:3px;background:repeating-linear-gradient(90deg,var(--c2) 0 14px,transparent 14px 26px);opacity:.7;pointer-events:none}
+  .minicab{position:absolute;bottom:-9px;left:0;width:34px;height:18px;transition:left .25s linear;pointer-events:none}
+  .scene{display:grid;grid-template-columns:minmax(0,1.5fr) minmax(0,1fr);gap:28px;align-items:start}
+  .scene.flip{grid-template-columns:minmax(0,1fr) minmax(0,1.5fr)}
+  .scene.flip > :first-child{order:2}
+  .paper{background:var(--panel);border:2.5px solid var(--edge);border-radius:26px 18px 30px 20px;box-shadow:6px 6px 0 var(--shadow);padding:14px;min-width:0;position:relative}
+  .paper.tilt{transform:rotate(-.6deg)}
+  .paper.tilt2{transform:rotate(.5deg)}
+  .side p{margin:.2em 0 .8em;font-size:1.02rem}
+  .side h3{margin-top:.3em}
+  .tape{position:absolute;top:-13px;left:50%;width:90px;height:24px;margin-left:-45px;background:color-mix(in srgb,var(--c2) 55%,transparent);border:1.5px dashed color-mix(in srgb,var(--edge) 35%,transparent);transform:rotate(-3deg);border-radius:3px}
+  .bubble{position:relative;background:var(--panel);border:2.5px solid var(--edge);border-radius:22px;padding:14px 18px;box-shadow:4px 4px 0 var(--shadow);font-size:1rem;min-height:4.5em}
+  .bubble::after{content:"";position:absolute;left:34px;bottom:-14px;width:22px;height:22px;background:var(--panel);border-right:2.5px solid var(--edge);border-bottom:2.5px solid var(--edge);transform:rotate(45deg) skew(8deg,8deg)}
+  .bubble b.t{display:block;font-family:var(--display);font-weight:600;font-size:1.15rem;margin-bottom:2px}
+  .say{font-family:var(--display);font-weight:600;font-size:1.25rem;margin:0 0 .2em}
+  .readout{display:flex;flex-wrap:wrap;gap:10px;margin:10px 0 0}
+  .readout span{border:2px solid var(--edge);border-radius:999px;padding:3px 12px;font-weight:700;font-size:.88rem;background:var(--panel2)}
+  .readout span i{font-style:normal;color:var(--muted);font-weight:600}
+  #mapSvg{cursor:crosshair;border-radius:18px;touch-action:manipulation}
+  .street{stroke:var(--street);stroke-linecap:round}
+  .casing{stroke:var(--casing);stroke-linecap:round}
+  .known{stroke:var(--c2);stroke-linecap:round}
+  .pin{transform-box:fill-box;transform-origin:50% 100%;animation:drop .35s cubic-bezier(.3,1.6,.6,1)}
+  @keyframes drop{from{transform:translateY(-18px) scale(.6);opacity:0}}
+  .routeLine{fill:none;stroke-linecap:round;stroke-linejoin:round}
+  .routeLine.draw{stroke-dasharray:var(--len);stroke-dashoffset:var(--len);animation:drawl 1.1s ease forwards}
+  @keyframes drawl{to{stroke-dashoffset:0}}
+  .ghostRoute{fill:none;stroke:var(--ink);stroke-width:2.5;stroke-dasharray:3 7;stroke-linecap:round;opacity:.45}
+  .hipPart{cursor:pointer;transition:opacity .2s}
+  .hipPart:hover{opacity:1!important}
+  .zlab{font:700 15px var(--display);fill:var(--ink)}
+  .zsub{font:600 12px var(--body);fill:var(--muted)}
+  .circ .node circle,.circ .node ellipse,.circ .node rect,.circ .node path.nb{stroke:var(--edge);stroke-width:2.5;transition:fill .3s}
+  .circ .node text{font:700 14px var(--display);fill:var(--ink);text-anchor:middle;pointer-events:none}
+  .circ .node text.s{font:600 11px var(--body);fill:var(--muted)}
+  .circ .node.lit circle,.circ .node.lit ellipse,.circ .node.lit rect,.circ .node.lit path.nb{fill:var(--c2)!important}
+  .circ .arr{fill:none;stroke:var(--muted);stroke-width:3;stroke-linecap:round;opacity:.55;transition:stroke-width .4s,opacity .3s,stroke .3s}
+  .circ .arr.lit{stroke:var(--c1);opacity:1}
+  .stepper{display:flex;flex-wrap:wrap;gap:6px;margin:10px 0}
+  .stepper button{font:700 .82rem var(--display);border:2px solid var(--edge);border-radius:999px;background:var(--panel);color:var(--ink);padding:5px 12px;cursor:pointer;box-shadow:2px 2px 0 var(--shadow)}
+  .stepper button[aria-pressed="true"]{background:var(--c2);color:#231d3b}
+  .crew{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:18px;margin-top:6px}
+  .crew figure{margin:0;text-align:center}
+  .crew figcaption{font:600 1.05rem var(--display)}
+  .crew small{display:block;color:var(--muted);font:600 .85rem var(--body)}
+  .verdict{font-family:var(--display);font-weight:600;font-size:1.1rem;padding:6px 12px;border-radius:12px;display:inline-block;margin-top:6px}
+  .bars{display:grid;gap:8px;margin-top:6px}
+  .bars .b{display:grid;grid-template-columns:8.5em 1fr;align-items:center;gap:10px;font-size:.9rem;font-weight:700}
+  .bars .t{height:18px;border:2px solid var(--edge);border-radius:999px;background:var(--panel2);overflow:hidden}
+  .bars .t i{display:block;height:100%;border-radius:999px;transition:width .8s cubic-bezier(.3,1.3,.5,1)}
+  .stops{display:flex;gap:0;align-items:flex-start;justify-content:space-between;position:relative;margin:8px 0 18px;padding:0 6px}
+  .stops::before{content:"";position:absolute;left:24px;right:24px;top:24px;height:10px;background:var(--ink);border-radius:5px;opacity:.85}
+  .stops::after{content:"";position:absolute;left:24px;right:24px;top:28px;height:2px;background:repeating-linear-gradient(90deg,var(--c2) 0 10px,transparent 10px 20px)}
+  .stop{position:relative;z-index:1;display:flex;flex-direction:column;align-items:center;gap:6px;background:none;border:0;cursor:pointer;font:700 .78rem/1.2 var(--display);color:var(--ink);width:13%;padding:0}
+  .stop .dot{width:46px;height:46px;border-radius:50%;background:var(--panel);border:3px solid var(--edge);display:grid;place-items:center;font-size:1.05rem;box-shadow:2px 2px 0 var(--shadow);transition:transform .15s,background .2s}
+  .stop:hover .dot{transform:translateY(-3px)}
+  .stop[aria-pressed="true"] .dot{background:var(--c2);transform:scale(1.12)}
+  .spot{opacity:0;transition:opacity .45s}
+  .spot.on{opacity:1}
+  .spot.on .glow{animation:pulse 1.6s ease-in-out infinite;transform-box:fill-box;transform-origin:center}
+  @keyframes pulse{50%{transform:scale(1.18);opacity:.6}}
+  .spotlab{font:700 13px var(--display);fill:var(--ink);paint-order:stroke;stroke:var(--panel);stroke-width:4px;stroke-linejoin:round}
+  .cv{border-radius:18px;background:var(--map)}
+  .axisbar{display:flex;justify-content:space-between;font:700 .85rem var(--display);color:var(--muted);margin-top:-4px}
+  .hoverhint{font-size:.85rem;color:var(--muted);text-align:center;margin:6px 0 0}
+  .doodle{position:absolute;pointer-events:none}
+  @media (max-width:900px){
+    .scene,.scene.flip{grid-template-columns:1fr}
+    .scene.flip > :first-child{order:0}
+    .stop{font-size:.66rem}
+    .stop .dot{width:36px;height:36px;font-size:.9rem}
+    .stops::before{top:19px}.stops::after{top:23px}
+  }
+  @media (max-width:560px){.crew{grid-template-columns:1fr}.stop span.l{display:none}}
+  @media (prefers-reduced-motion:reduce){.spot.on .glow,.pin,.routeLine.draw{animation:none}.routeLine.draw{stroke-dashoffset:0}}
+  :root[data-theme="dark"] .stop .dot{background:#f4f1ff} :root[data-theme="dark"] .stop[aria-pressed="true"] .dot{background:var(--c2)}
+</style>
+</head>
+<body>
+<svg width="0" height="0" style="position:absolute" aria-hidden="true"><defs>
+  <symbol id="cabSym" viewBox="0 0 64 36"><path d="M6,24 C6,19 9,17 13,17 L19,9 C20,7.5 22,7 24,7 L42,7 C44,7 46,8 47,9.5 L52,17 C57,17.5 60,20 60,24 L60,27 C60,28.5 59,29.5 57.5,29.5 L8.5,29.5 C7,29.5 6,28.5 6,27Z" fill="#2b2838" stroke="#231d3b" stroke-width="2.2" stroke-linejoin="round"/><path d="M21,16 L25,10 L32,10 L32,16Z M35,16 L35,10 L42,10 L47,16Z" fill="#bfe3ff"/><rect x="27" y="2" width="12" height="5" rx="1.5" fill="#ffd23f" stroke="#231d3b" stroke-width="1.6"/><circle cx="17" cy="29.5" r="5.2" fill="#231d3b"/><circle cx="17" cy="29.5" r="2" fill="#d9dbe6"/><circle cx="49" cy="29.5" r="5.2" fill="#231d3b"/><circle cx="49" cy="29.5" r="2" fill="#d9dbe6"/><circle cx="58" cy="21" r="1.8" fill="#ffd23f"/></symbol>
+</defs></svg>
+<div class="wrap">
+
+  <header class="hero" id="top">
+    <a class="back" href="../">← All NeuroSims</a>
+    <div class="heroText">
+    <p class="kicker" style="margin-top:28px">NeuroSims · Learning and memory</p>
+    <h1>The <span class="mark" style="--hcol:var(--c2)">Taxi Driver's</span> Brain</h1>
+    <p class="big">To drive a black cab in London, you have to memorize the whole city. No sat-nav allowed. Scientists scanned these drivers' brains and found that all that learning had changed the shape of one small, seahorse-shaped part: the hippocampus. Hop in and we'll see how.</p>
+    </div>
+    <div class="heroArt" aria-hidden="true"><svg viewBox="0 0 430 360">
+      <path d="M20,330 C80,300 120,345 190,318 S300,300 410,330" fill="none" stroke="#231d3b" stroke-width="4" stroke-dasharray="2 12" stroke-linecap="round" opacity=".5"/>
+      <g class="twinkle"><path d="M62 70 l5 12 12 5 -12 5 -5 12 -5 -12 -12 -5 12 -5z" fill="#ffb627" stroke="#231d3b" stroke-width="3" stroke-linejoin="round"/></g>
+      <g class="twinkle d3"><path d="M388 60 l4 9 9 4 -9 4 -4 9 -4 -9 -9 -4 9 -4z" fill="#20b393" stroke="#231d3b" stroke-width="3" stroke-linejoin="round"/></g>
+      <g transform="translate(330,92)"><path d="M0,40 C-16,22 -20,12 -20,2 a20,20 0 0 1 40,0 C20,12 16,22 0,40Z" fill="#ff6b6b" stroke="#231d3b" stroke-width="4.5" stroke-linejoin="round"/><circle cx="0" cy="2" r="7" fill="#fff" stroke="#231d3b" stroke-width="3"/></g>
+      <path d="M90,150 C140,110 200,140 250,112 S320,120 330,128" fill="none" stroke="#ff6b6b" stroke-width="5" stroke-dasharray="10 9" stroke-linecap="round"/>
+      <g class="floaty">
+        <path d="M44,262 C44,230 66,214 98,212 L144,154 C152,144 164,139 178,139 L292,139 C306,139 318,145 325,156 L358,210 C390,213 410,230 410,258 L410,282 C410,294 402,301 390,301 L64,301 C52,301 44,294 44,282Z" fill="#2b2838" stroke="#231d3b" stroke-width="6" stroke-linejoin="round"/>
+        <path d="M66,236 C140,232 330,232 396,238" stroke="#4a4560" stroke-width="5" fill="none" stroke-linecap="round"/>
+        <path d="M152,206 L184,158 L238,158 L238,206Z" fill="#bfe3ff" stroke="#231d3b" stroke-width="4.5" stroke-linejoin="round"/>
+        <path d="M256,206 L256,158 L298,158 C306,158 312,162 316,168 L340,206Z" fill="#bfe3ff" stroke="#231d3b" stroke-width="4.5" stroke-linejoin="round"/>
+        <rect x="200" y="112" width="70" height="26" rx="7" fill="#ffd23f" stroke="#231d3b" stroke-width="4.5"/>
+        <text x="235" y="131" text-anchor="middle" font-family="Fredoka,Nunito,sans-serif" font-weight="700" font-size="17" fill="#231d3b">TAXI</text>
+        <!-- seahorse driver -->
+        <g>
+          <path d="M276,206 C270,190 272,176 282,170" fill="none" stroke="#231d3b" stroke-width="4"/>
+          <circle cx="292" cy="184" r="19" fill="#ffab85" stroke="#231d3b" stroke-width="4.5"/>
+          <rect x="300" y="178" width="34" height="13" rx="6.5" fill="#ffab85" stroke="#231d3b" stroke-width="4.5"/>
+          <path d="M275,172 C278,158 300,154 310,166 L318,168 C316,172 296,172 276,174Z" fill="#3d3a52" stroke="#231d3b" stroke-width="4" stroke-linejoin="round"/>
+          <circle cx="296" cy="180" r="3.4" fill="#231d3b"/><circle cx="297.2" cy="178.8" r="1.1" fill="#fff"/>
+          <ellipse cx="287" cy="190" rx="5" ry="3" fill="#ff7b9c" opacity=".7"/>
+        </g>
+        <circle cx="400" cy="250" r="9" fill="#ffd23f" stroke="#231d3b" stroke-width="4"/>
+        <circle cx="120" cy="301" r="31" fill="#231d3b"/><circle cx="120" cy="301" r="13" fill="#d9dbe6" stroke="#231d3b" stroke-width="4"/>
+        <circle cx="334" cy="301" r="31" fill="#231d3b"/><circle cx="334" cy="301" r="13" fill="#d9dbe6" stroke="#231d3b" stroke-width="4"/>
+        <path d="M232,214 L232,296" stroke="#4a4560" stroke-width="3"/>
+        <rect x="244" y="222" width="18" height="5" rx="2.5" fill="#d9dbe6"/>
+      </g>
+      <g stroke="#231d3b" stroke-width="4.5" stroke-linecap="round" opacity=".55"><path d="M8,214 L32,214"/><path d="M0,244 L28,244"/><path d="M12,274 L34,274"/></g>
+    </svg></div>
+    <div class="facts3">
+      <div><b>25,000 streets</b>within six miles of Charing Cross, plus thousands of landmarks. Learning them is called "the Knowledge."</div>
+      <div><b>3 to 4 years</b>of study, usually on a moped, before the exams. About half the trainees never pass.</div>
+      <div><b>Bigger at the back</b>Drivers have more gray matter in the back of the hippocampus, and more of it the longer they have been driving.</div>
+    </div>
+    <p class="hint">Teaching on a projector? Press <span class="kbd">P</span> for Present mode, then <span class="kbd">→</span>/<span class="kbd">←</span> to move between stops. <span class="kbd">T</span> switches between light and dark themes.</p>
+  </header>
+
+  <nav class="pipe" aria-label="Sections">
+    <ol id="navList"></ol>
+    <div class="tools">
+      <button class="tbtn" id="themeBtn">Dark theme</button>
+      <button class="tbtn" id="presentBtn" aria-pressed="false">Present</button>
+    </div>
+    <div class="roadbar"></div>
+    <svg class="minicab" id="miniCab" viewBox="0 0 64 36" aria-hidden="true"><use href="#cabSym"/></svg>
+  </nav>
+
+<!-- 1 -->
+<section class="s" id="knowledge" data-title="The Knowledge">
+  <p class="kicker">Stop 1</p>
+  <h2 class="sec">A city with no grid</h2>
+  <div class="plain"><span class="ptag">In plain words</span>Some cities are laid out like graph paper. If you know the street numbers, you can work out any route. London grew for 2,000 years without a plan, so its streets curve, merge and dead-end. The only way to get around is to <b>remember</b> the map.</div>
+  <div class="scene">
+    <div class="paper tilt">
+      <span class="tape"></span>
+      <svg id="mapSvg" viewBox="0 0 600 440" role="img" aria-label="Street map. Click two places to plan a route."></svg>
+      <p class="hoverhint">Click a pickup spot, then a drop-off spot.</p>
+    </div>
+    <div class="side">
+      <div class="row" style="margin-bottom:12px"><button class="chip" id="cityL" aria-pressed="true">London</button><button class="chip" id="cityG" aria-pressed="false">Grid city</button><button class="btn" id="randRun">Random fare</button></div>
+      <div class="bubble" id="mapNote"><b class="t">Where to, guv?</b>Pick two spots on the map.</div>
+      <div id="learnBox" style="margin-top:30px">
+        <h3>Learn the Knowledge</h3>
+        <p style="font-size:.95rem;margin:.2em 0 .4em">Trainees learn 320 set routes called <b>runs</b>, plus every street and landmark near each end. Slide to learn more runs. Streets you know turn yellow, and you can only drive on streets you know.</p>
+        <div class="ctrl"><span>Runs</span><input type="range" id="runs" min="0" max="320" value="40"><b id="runsV">40</b></div>
+        <div class="readout"><span><i>Streets known</i> <b id="covV">0%</b></span><span><i>Time in training</i> <b id="monV">~1 month</b></span></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- 2 -->
+<section class="s alt" id="anatomy" data-title="The hippocampus">
+  <p class="kicker">Stop 2</p>
+  <h2 class="sec">Meet the seahorse</h2>
+  <div class="plain"><span class="ptag">In plain words</span>Deep inside each temporal lobe sits a curled-up structure called the <b>hippocampus</b> (Greek for "seahorse"). You have two, one on each side. Its <em>front end</em> sits near your ears, close to the amygdala. Its <em>back end</em> curls up toward the middle of your head.</div>
+  <div class="scene flip">
+    <div class="side">
+      <h3>Drive for years. Watch it change.</h3>
+      <div class="row"><button class="chip" data-yrs="0" aria-pressed="true">Everyday person</button><button class="chip" data-yrs="14">Cabbie, 14 years</button><button class="chip" data-yrs="40">Cabbie, 40 years</button></div>
+      <div class="ctrl"><span>Years driving</span><input type="range" id="yrs" min="0" max="40" value="0"><b id="yrsV">0</b></div>
+      <div class="bubble" id="hipNote" style="margin-top:14px"></div>
+      <p class="note">In Maguire and colleagues' (2000) study, the more years someone had driven a cab, the bigger the back of their right hippocampus was. The front was a little smaller. The real differences are only a few percent, so the drawing makes them about five times bigger so you can see them.</p>
+    </div>
+    <div>
+      <div class="paper tilt2"><svg id="brainA" viewBox="-10 30 700 440" role="img" aria-label="See-through side view of the brain showing the hippocampus"></svg></div>
+      <div class="paper" style="margin-top:22px"><svg id="hipZoom" viewBox="0 0 560 300" role="img" aria-label="Close-up of the hippocampus. Click a part."></svg>
+      <p class="hoverhint">Click a part of the close-up.</p></div>
+    </div>
+  </div>
+</section>
+
+<!-- 3 -->
+<section class="s" id="storing" data-title="Storing a street">
+  <p class="kicker">Stop 3</p>
+  <h2 class="sec">How a new street gets stored</h2>
+  <div class="plain"><span class="ptag">In plain words</span>Meet Priya, a trainee. Today she rides her moped down Hatton Garden, a little street full of jewelry shops. Follow that memory step by step: in through the doorway, around the hippocampus, and back out to the cortex, where it will live for years.</div>
+  <div class="scene">
+    <div class="paper"><svg id="circ" class="circ" viewBox="0 0 640 340" role="img" aria-label="Memory circuit through the hippocampus"></svg></div>
+    <div class="side">
+      <div class="stepper" id="stepper"></div>
+      <div class="bubble" id="stepNote"></div>
+      <div class="row" style="margin-top:24px"><button class="btn" id="stepPrev">← Back</button><button class="btn primary" id="stepNext">Next step →</button></div>
+      <div id="strengthBox" style="margin-top:16px">
+        <div class="mlab"><span>How strong the memory is</span><b id="strV">weak</b></div>
+        <div class="meter warm"><i id="strBar"></i></div>
+      </div>
+    </div>
+  </div>
+  <p class="note">Strengthening synapses with repeated use is called long-term potentiation (LTP); see <a href="../learning/">The Learning Brain</a>. Dentate gyrus "pattern separation" and CA3 "pattern completion" are the leading ideas for what these areas do, but they are still models, not settled facts. Moving memories out to the cortex over time is called consolidation; see <a href="../memory-systems/">Kinds of Memory</a>.</p>
+</section>
+
+<!-- 4 -->
+<section class="s alt" id="scans" data-title="The brain scans">
+  <p class="kicker">Stop 4</p>
+  <h2 class="sec">What the scans showed</h2>
+  <div class="plain"><span class="ptag">In plain words</span>Eleanor Maguire's team put 16 London cabbies in an MRI scanner and compared them with 50 men who didn't drive taxis. The cabbies had <b>more gray matter at the back</b> of the hippocampus and <b>less at the front</b>. The longer they had been driving, the bigger the back part was.</div>
+  <div class="scene">
+    <div class="paper tilt"><span class="tape"></span>
+      <canvas id="scatter" style="height:330px" aria-label="Scatter plot of years driving against hippocampus size"></canvas>
+      <div class="row" style="justify-content:center;margin-top:8px"><button class="chip" id="scP" aria-pressed="true">Back (posterior)</button><button class="chip" id="scA" aria-pressed="false">Front (anterior)</button></div>
+    </div>
+    <div class="side">
+      <div class="bubble" id="scNote"></div>
+      <h3 style="margin-top:30px">But wait. Maybe it's just driving?</h3>
+      <p>Driving all day is stressful, and you sit in traffic. So in 2006 the team compared cabbies with London <b>bus drivers</b>. Bus drivers drive just as much, but on the same fixed routes. They don't need a mental map.</p>
+      <svg id="busVs" viewBox="0 0 420 150" role="img" aria-label="Back of the hippocampus in taxi drivers compared with bus drivers"></svg>
+      <p style="font-size:.95rem">Only the taxi drivers had the bigger back hippocampus, and only in taxi drivers did it grow with years on the job. So it's the <b>map</b>, not the driving.</p>
+    </div>
+  </div>
+  <p class="note">Each dot is a made-up driver, generated to match the pattern in Maguire et al. (2000): drivers had 1.5 to 42 years on the job, and right posterior hippocampus volume rose with years (r ≈ .6). The scans measured gray matter with voxel-based morphometry, which compares brain tissue point by point between groups.</p>
+</section>
+
+<!-- 5 -->
+<section class="s" id="born" data-title="Born that way?">
+  <p class="kicker">Stop 5</p>
+  <h2 class="sec">Chicken or egg?</h2>
+  <div class="plain"><span class="ptag">In plain words</span>Maybe people with a big hippocampus are just good at directions, so they become cabbies. To find out, scientists had to scan trainees <b>before</b> they learned the Knowledge, then again years later.</div>
+  <div class="row" style="margin:0 0 18px"><button class="chip" id="scan1" aria-pressed="true">Scan 1: day one of training</button><button class="chip" id="scan2" aria-pressed="false">Scan 2: about 4 years later</button></div>
+  <div class="paper"><div class="crew" id="crew"></div></div>
+  <div class="scene" style="margin-top:30px">
+    <div class="bubble" id="bornNote"></div>
+    <div class="side">
+      <h3>Nothing comes for free</h3>
+      <p style="font-size:.95rem">Everyone also copied a tricky made-up drawing, then drew it from memory 30 minutes later. At scan 2, the new cabbies had become <b>worse</b> at this than the others.</p>
+      <div class="bars" id="figBars"></div>
+      <p style="font-size:.85rem;color:var(--muted)">Bars show the direction of the result, not the exact scores.</p>
+    </div>
+  </div>
+  <p class="note">Woollett and Maguire (2011) followed 79 trainees and 31 non-drivers. On day one, the groups had the same hippocampus and the same memory scores. The 39 trainees who passed showed more gray matter in the posterior hippocampus 3 to 4 years later; the 20 who didn't pass and the controls showed no change. One idea for the memory cost is that a hippocampus packed with one huge map has less room for new visual information, but nobody knows for sure yet.</p>
+</section>
+
+<!-- 6 -->
+<section class="s alt" id="gridcells" data-title="Grid cells">
+  <p class="kicker">Stop 6</p>
+  <h2 class="sec">Graph paper inside your head</h2>
+  <div class="plain"><span class="ptag">In plain words</span>London has no grid, but your brain brings its own. Just next to the hippocampus, in the <b>entorhinal cortex</b>, <em>grid cells</em> fire at spots arranged in triangles, like a sheet of graph paper laid over the world. Next door, the hippocampus's <em>place cells</em> fire at one spot each. Together they work like a GPS.</div>
+  <div class="scene">
+    <div class="paper tilt2">
+      <canvas id="gridCv" class="cv" style="height:440px;cursor:crosshair" aria-label="Map with grid cell firing patterns. Move or tap to choose where the cab is."></canvas>
+      <p class="hoverhint">Move your mouse (or tap) to drive the cab around.</p>
+    </div>
+    <div class="side">
+      <p>Grid cells come in <b>sizes</b>: small grids, medium grids, large grids. One size alone can't tell you where you are, because its pattern repeats everywhere. Switch on more sizes and see where they all agree.</p>
+      <div class="row"><button class="chip" data-mod="0" aria-pressed="true" style="--accent:#ff6b6b">Small grid</button><button class="chip" data-mod="1" aria-pressed="false" style="--accent:#20b393">Medium grid</button><button class="chip" data-mod="2" aria-pressed="false" style="--accent:#4d8dff">Large grid</button></div>
+      <div class="bubble" id="gridNote" style="margin-top:16px"></div>
+      <p class="note">Grid cells were found in rats by May-Britt and Edvard Moser's lab (Hafting et al., 2005), and place cells by John O'Keefe (1971); they shared the 2014 Nobel Prize. Brain scans show grid-like signals in the human entorhinal cortex during virtual navigation too (Doeller et al., 2010). Real grid sizes step up by about 1.4 times from one module to the next (Stensola et al., 2012), which is what this drawing uses. Meet place cells in a running rat in <a href="../memory/#space">The Remembering Brain</a>.</p>
+    </div>
+  </div>
+</section>
+
+<!-- 7 -->
+<section class="s" id="axis" data-title="Front vs. back">
+  <p class="kicker">Stop 7</p>
+  <h2 class="sec">Zoomed out at the front, zoomed in at the back</h2>
+  <div class="plain"><span class="ptag">In plain words</span>The hippocampus isn't the same from end to end. Place cells near the <b>back</b> fire in small spots, so they know exactly which corner you're on. Place cells near the <b>front</b> fire across big areas, so they know the neighborhood. A cabbie needs a lot of street-level detail, and that's the part that grew.</div>
+  <div class="scene flip">
+    <div class="side">
+      <h3>Slide along the seahorse</h3>
+      <svg id="axHip" viewBox="200 250 300 130" style="max-width:420px" aria-hidden="true"></svg>
+      <div class="ctrl"><input type="range" id="axPos" min="0" max="100" value="80" aria-label="Position along the hippocampus, front to back"></div>
+      <div class="axisbar"><span>← Front (anterior)</span><span>Back (posterior) →</span></div>
+      <div class="bubble" id="axNote" style="margin-top:18px"></div>
+    </div>
+    <div class="paper"><canvas id="axCv" class="cv" style="height:420px" aria-label="Cab driving through a city with place fields"></canvas></div>
+  </div>
+  <p class="note">In rats, place fields grow from under a meter at one end of the hippocampus to around 10 meters at the other (Kjelstrup et al., 2008); the rat's "dorsal" end matches our posterior end. The idea that the human anterior hippocampus handles the big picture and the posterior handles fine detail is popular and fits a lot of data (Poppenk et al., 2013), but it is still being tested. The front end also connects strongly to the amygdala and hypothalamus, so it is more involved in emotion and stress.</p>
+</section>
+
+<!-- 8 -->
+<section class="s alt" id="ride" data-title="A ride in the scanner">
+  <p class="kicker">Stop 8</p>
+  <h2 class="sec">Take a ride in the scanner</h2>
+  <div class="plain"><span class="ptag">In plain words</span>Taxi drivers lay in an MRI scanner and drove around a very realistic video game version of London. Afterward, they described what they had been thinking at each moment. Different parts of the trip lit up different parts of the brain. Click each stop on the ride.</div>
+  <div class="stops" id="stops"></div>
+  <div class="scene">
+    <div class="paper tilt"><svg id="rideBrain" viewBox="20 30 740 440" role="img" aria-label="Side view of the brain, showing which areas are active"></svg></div>
+    <div class="side">
+      <div class="bubble" id="rideNote"></div>
+      <div class="row" style="margin-top:26px"><button class="btn primary" id="ridePlay">▶ Play the whole ride</button></div>
+    </div>
+  </div>
+  <p class="note">Based on Spiers and Maguire (2006), who scanned cabbies driving through a video game London; Javadi et al. (2017), who found that the posterior hippocampus tracks how many streets branch off as you enter a new one, the prefrontal cortex responds at forced detours, and both go quiet when you just follow directions; and Hartley et al. (2003), who found that following a well-learned route uses the caudate, while finding a new way uses the hippocampus. Areas on the inner surface of the brain are drawn as if seen through it.</p>
+</section>
+
+<!-- 9 -->
+<section class="s" id="review" data-title="Review">
+  <p class="kicker">Last stop</p>
+  <h2 class="sec">Check yourself</h2>
+  <div class="plain"><span class="ptag">In plain words</span>The big lesson: <b>the adult brain is not fixed.</b> Years of practice at one thing can change its structure, even if the change is small, and it may come with a cost.</div>
+  <div class="quiz" style="margin-top:30px">
+    <div class="qcard"><p class="q" id="qText"></p><div class="qopts" id="qOpts"></div><p class="why" id="qWhy"></p></div>
+    <div class="qnav"><button class="btn" id="qPrev">← Previous</button><span id="qCount"></span><button class="btn primary" id="qNext">Next question →</button></div>
+  </div>
+</section>
+
+  <a class="nextup" href="../memory/"><span><small>More about the hippocampus</small><b>The Remembering Brain: amnesia and place cells</b></span><span class="arr" aria-hidden="true">→</span></a>
+
+  <footer class="foot">
+    <p class="embed"><span>Embed:</span>
+      <code id="embedCode">&lt;iframe src="https://nelurad.github.io/neurosims/taxi-brain/" width="100%" height="7000" style="border:0" title="The Taxi Driver's Brain"&gt;&lt;/iframe&gt;</code>
+      <button id="copyBtn">Copy</button></p>
+    <p style="margin-bottom:2px">References</p>
+    <ul class="refs">
+      <li>Doeller, C. F., Barry, C., &amp; Burgess, N. (2010). Evidence for grid cells in a human memory network. <i>Nature</i>, 463, 657–661.</li>
+      <li>Hafting, T., Fyhn, M., Molden, S., Moser, M.-B., &amp; Moser, E. I. (2005). Microstructure of a spatial map in the entorhinal cortex. <i>Nature</i>, 436, 801–806.</li>
+      <li>Hartley, T., Maguire, E. A., Spiers, H. J., &amp; Burgess, N. (2003). The well-worn route and the path less traveled: Distinct neural bases of route following and wayfinding in humans. <i>Neuron</i>, 37, 877–888.</li>
+      <li>Javadi, A.-H., Emo, B., Howard, L. R., et al. (2017). Hippocampal and prefrontal processing of network topology to simulate the future. <i>Nature Communications</i>, 8, 14652.</li>
+      <li>Kjelstrup, K. B., Solstad, T., Brun, V. H., et al. (2008). Finite scale of spatial representation in the hippocampus. <i>Science</i>, 321, 140–143.</li>
+      <li>Maguire, E. A., Gadian, D. G., Johnsrude, I. S., et al. (2000). Navigation-related structural change in the hippocampi of taxi drivers. <i>PNAS</i>, 97, 4398–4403.</li>
+      <li>Maguire, E. A., Woollett, K., &amp; Spiers, H. J. (2006). London taxi drivers and bus drivers: A structural MRI and neuropsychological analysis. <i>Hippocampus</i>, 16, 1091–1101.</li>
+      <li>O'Keefe, J., &amp; Dostrovsky, J. (1971). The hippocampus as a spatial map. <i>Brain Research</i>, 34, 171–175.</li>
+      <li>Poppenk, J., Evensmoen, H. R., Moscovitch, M., &amp; Nadel, L. (2013). Long-axis specialization of the human hippocampus. <i>Trends in Cognitive Sciences</i>, 17, 230–240.</li>
+      <li>Spiers, H. J., &amp; Maguire, E. A. (2006). Thoughts, behaviour, and brain dynamics during navigation in the real world. <i>NeuroImage</i>, 31, 1826–1840.</li>
+      <li>Stensola, H., Stensola, T., Solstad, T., et al. (2012). The entorhinal grid map is discretized. <i>Nature</i>, 492, 72–78.</li>
+      <li>Woollett, K., &amp; Maguire, E. A. (2011). Acquiring "the Knowledge" of London's layout drives structural brain changes. <i>Current Biology</i>, 21, 2109–2114.</li>
+    </ul>
+    <p>All drawings and simulations are original, simplified illustrations; the street maps are made up, not real London streets, and brain regions deep inside the brain are shown as if seen through it. Free to use, share and adapt with credit to "Nelu Radpour, NeuroSims." Content <a href="https://creativecommons.org/licenses/by/4.0/">CC BY 4.0</a>, code MIT. Spot a bug or an inaccuracy? <a href="https://github.com/nelurad/neurosims/issues">Open an issue</a>.</p>
+  </footer>
+</div>
+
+<script>
+(()=>{
+'use strict';
+const $=id=>document.getElementById(id);
+const NS='http://www.w3.org/2000/svg';
+const cssv=n=>getComputedStyle(document.documentElement).getPropertyValue(n).trim();
+const clamp=(x,a,b)=>Math.max(a,Math.min(b,x));
+const lerp=(a,b,t)=>a+(b-a)*t;
+const reduce=matchMedia('(prefers-reduced-motion: reduce)').matches;
+const store={get(k){try{return localStorage.getItem(k)}catch(e){return null}},set(k,v){try{localStorage.setItem(k,v)}catch(e){}}};
+function setPressed(btns,on){btns.forEach(b=>b.setAttribute('aria-pressed',b===on))}
+function fitCanvas(c){const r=c.getBoundingClientRect(),d=devicePixelRatio||1;const w=Math.max(10,Math.round(r.width*d)),h=Math.max(10,Math.round(r.height*d));if(c.width!==w||c.height!==h){c.width=w;c.height=h}const x=c.getContext('2d');x.setTransform(d,0,0,d,0,0);return{x,w:r.width,h:r.height}}
+function isVis(el){const r=el.getBoundingClientRect();return r.bottom>-50&&r.top<innerHeight+50}
+function rng(seed){let a=seed>>>0;return()=>{a|=0;a=a+0x6D2B79F5|0;let t=Math.imul(a^a>>>15,1|a);t=t+Math.imul(t^t>>>7,61|t)^t;return((t^t>>>14)>>>0)/4294967296}}
+const frameHooks=[],redrawHooks=[];
+function axes(x,w,h,m,o={}){x.strokeStyle=cssv('--line');x.lineWidth=1;x.beginPath();x.moveTo(m.l,m.t);x.lineTo(m.l,h-m.b);x.lineTo(w-m.r,h-m.b);x.stroke();x.fillStyle=cssv('--muted');x.font='12px system-ui';
+  if(o.xl){x.textAlign='right';x.fillText(o.xl,w-m.r,h-4);} if(o.yl){x.save();x.translate(12,(h-m.b+m.t)/2);x.rotate(-Math.PI/2);x.textAlign='center';x.fillText(o.yl,0,0);x.restore();} x.textAlign='left';}
+
+/* ================= realistic lateral brain ================= */
+const OUT='M96,236 C88,160 150,86 252,64 C350,44 452,56 532,104 C592,142 624,204 612,264 C604,302 580,322 548,326 C520,328 498,320 476,328 C446,344 404,366 352,373 C300,379 244,376 210,358 C186,346 172,330 176,312 C178,302 186,296 198,294 C170,292 132,290 116,282 C100,272 96,256 96,236Z';
+const SULCI=[
+ ['M200,293 C260,280 330,262 410,236 C420,230 428,222 432,212',3.4], // lateral fissure
+ ['M352,50 C345,100 330,140 335,180 C338,205 330,225 322,250',2.8], // central
+ ['M300,58 C292,110 280,150 285,195 C287,215 280,235 276,256',2.2], // precentral
+ ['M404,60 C398,110 384,150 390,190 C392,205 386,222 382,238',2.2], // postcentral
+ ['M288,112 C240,104 190,112 142,140',2], ['M284,186 C240,180 190,190 140,212',2],
+ ['M396,150 C450,150 500,170 546,202',2.2], ['M560,178 C576,220 580,260 570,300',2],
+ ['M230,318 C300,305 380,290 450,266 C482,256 510,262 532,282',2.4], ['M240,350 C310,345 390,330 470,312',1.8],
+ ['M470,110 C480,130 500,140 520,150',1.6], ['M160,250 C180,240 200,238 230,244',1.6]
+];
+const MINOR=(()=>{const r=rng(11);const out=[];const cv=document.createElement('canvas');cv.width=760;cv.height=480;const cx=cv.getContext('2d');const P=new Path2D(OUT);
+  let tries=0;while(out.length<230&&tries<8000){tries++;const x=90+r()*530,y=50+r()*330;if(!cx.isPointInPath(P,x,y))continue;
+    let a=r()*Math.PI*2,px=x,py=y,d=`M${x.toFixed(1)},${y.toFixed(1)}`;const n=3+Math.floor(r()*4);
+    for(let i=0;i<n;i++){a+=(r()-.5)*1.9;const L=6+r()*6;const nx=px+Math.cos(a)*L,ny=py+Math.sin(a)*L;const qx=px+Math.cos(a-(r()-.5))*L*.6,qy=py+Math.sin(a-(r()-.5))*L*.6;d+=` Q${qx.toFixed(1)},${qy.toFixed(1)} ${nx.toFixed(1)},${ny.toFixed(1)}`;px=nx;py=ny;}
+    out.push([d,.9+r()*.9]);}
+  return out;})();
+function crSample(P,n){const out=[];for(let i=0;i<P.length-1;i++){const p0=P[i-1]||P[i],p1=P[i],p2=P[i+1],p3=P[i+2]||P[i+1];for(let k=0;k<n;k++){const t=k/n,t2=t*t,t3=t2*t;
+  const f=(a,b,c,d)=>.5*((2*b)+(-a+c)*t+(2*a-5*b+4*c-d)*t2+(-a+3*b-3*c+d)*t3);out.push([f(p0[0],p1[0],p2[0],p3[0]),f(p0[1],p1[1],p2[1],p3[1]),lerp(p1[2],p2[2],t)]);}}
+  const L=P[P.length-1];out.push([L[0],L[1],L[2]]);return out;}
+function tube(P,n=10){const s=crSample(P,n);const Lp=[],Rp=[];for(let i=0;i<s.length;i++){const a=s[Math.max(0,i-1)],b=s[Math.min(s.length-1,i+1)];let dx=b[0]-a[0],dy=b[1]-a[1];const l=Math.hypot(dx,dy)||1;dx/=l;dy/=l;const w=s[i][2]/2;Lp.push([s[i][0]-dy*w,s[i][1]+dx*w]);Rp.push([s[i][0]+dy*w,s[i][1]-dx*w]);}
+  const f=p=>p[0].toFixed(1)+','+p[1].toFixed(1);const r0=(s[0][2]/2).toFixed(1),r1=(s[s.length-1][2]/2).toFixed(1);const R=Rp.reverse();return{d:'M'+Lp.map(f).join(' L')+` A${r1},${r1} 0 0 0 `+f(R[0])+' L'+R.map(f).join(' L')+` A${r0},${r0} 0 0 0 `+f(Lp[0])+'Z',center:s};}
+const HIP=[[256,330,24],[296,336,22],[346,336,19],[396,328,16],[434,312,13],[454,290,10]];
+const FORNIX=[[454,290,8],[462,252,7],[442,206,6.5],[392,184,6],[334,188,6],[298,214,5.5],[288,250,5],[290,272,5]];
+const CAUD=[[262,212,24],[300,186,20],[356,180,15],[408,198,11],[432,232,8],[426,262,6],[404,286,4]];
+const CORTEX_TINTS={
+  pfc:'M80,100 L272,52 L284,190 L210,300 L80,310Z',
+  motor:'M300,58 C292,110 280,150 285,195 C287,215 280,235 276,256 L322,250 C330,225 338,205 335,180 C330,140 345,100 352,50Z',
+  somato:'M352,50 C345,100 330,140 335,180 C338,205 330,225 322,250 L382,238 C386,222 392,205 390,190 C384,150 398,110 404,60Z',
+  visual:'M548,104 L660,140 L660,340 L540,334 C566,290 576,232 548,104Z',
+  auditory:'M262,282 C330,264 380,250 410,236 L452,262 C380,290 300,306 232,320Z',
+  olf:'M96,256 C130,284 170,292 200,293 L206,272 C160,268 120,258 96,240Z',
+  temporal:'M200,293 C260,280 330,262 410,236 L476,300 L476,330 C446,344 404,366 352,373 C300,379 244,376 210,358 C186,346 172,330 176,312Z',
+  cortex:OUT
+};
+const LAB={hip:['Hippocampus',330,458,350,338],fornix:['Fornix',650,170,452,214],mamm:['Mammillary body',70,236,288,276],amy:['Amygdala',70,330,234,322],
+  temporal:['Temporal lobe',70,394,222,350],cereb:['Cerebellum',650,440,582,400],striatum:['Striatum (caudate)',70,160,272,206],thal:['Thalamus',650,250,382,236],
+  pfc:['Prefrontal cortex',70,110,150,150],motor:['Motor cortex',300,26,316,90],bs:['Brainstem',470,480,430,442],visual:['Visual cortex',650,112,592,200],auditory:['Auditory cortex',650,300,402,280],olf:['Smell (orbitofrontal)',70,290,140,282],somato:['Touch (somatosensory)',420,22,372,96]};
+function lateral(id,{deep=['hip','fornix','mamm'],ghost=[],labels=[],tints=[],extra=''}={}){
+  const svg=$(id);const p=id;
+  let h=`<defs>
+   <radialGradient id="${p}g" cx="38%" cy="32%" r="78%"><stop offset="0" stop-color="var(--hl)"/><stop offset=".45" stop-color="var(--b1)"/><stop offset=".85" stop-color="var(--b2)"/><stop offset="1" stop-color="var(--b3)"/></radialGradient>
+   <radialGradient id="${p}cg" cx="45%" cy="35%" r="75%"><stop offset="0" stop-color="var(--b1)"/><stop offset="1" stop-color="var(--b3)"/></radialGradient>
+   <linearGradient id="${p}hg" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="var(--hipL)"/><stop offset=".55" stop-color="var(--hip)"/><stop offset="1" stop-color="var(--hipD)"/></linearGradient>
+   <radialGradient id="${p}mb" cx="35%" cy="35%" r="70%"><stop offset="0" stop-color="#cfe0ff"/><stop offset="1" stop-color="var(--mb)"/></radialGradient>
+   <radialGradient id="${p}dg" cx="35%" cy="30%" r="75%"><stop offset="0" stop-color="#f4e7c8"/><stop offset="1" stop-color="#b8956a"/></radialGradient>
+   <radialGradient id="${p}ag" cx="35%" cy="30%" r="75%"><stop offset="0" stop-color="#f7c3b5"/><stop offset="1" stop-color="#c46a58"/></radialGradient>
+   <clipPath id="${p}clip"><path d="${OUT}"/></clipPath>
+   <filter id="${p}soft" x="-10%" y="-10%" width="120%" height="120%"><feGaussianBlur stdDeviation="9"/></filter>
+   <filter id="${p}blur2" x="-5%" y="-5%" width="110%" height="110%"><feGaussianBlur stdDeviation="1.6"/></filter>
+   <filter id="${p}sh" x="-20%" y="-20%" width="140%" height="140%"><feDropShadow dx="1" dy="2" stdDeviation="2" flood-color="#000" flood-opacity=".35"/></filter>
+  </defs>`;
+  // brainstem + spinal cord
+  h+=`<path data-r="bs" class="bstem" d="M402,352 C410,384 412,420 414,480 L452,480 C450,430 452,392 470,362 C450,350 424,346 402,352Z" fill="url(#${p}cg)" stroke="var(--b3)" stroke-width="1.5"/>
+      <path d="M408,372 C426,366 446,366 462,372" stroke="var(--sulc)" stroke-width="1.2" fill="none" opacity=".6"/>`;
+  // cerebellum
+  let fol='';for(let i=0;i<9;i++){const y=338+i*9;fol+=`<path d="M${478+i*2},${y} C${510},${y-6} ${560},${y-6} ${600-i*4},${y+2}" />`;}
+  h+=`<path data-r="cereb" d="M470,330 C500,318 560,316 604,330 C628,346 626,392 596,410 C560,428 500,426 470,404 C452,390 450,346 470,330Z" fill="url(#${p}cg)" stroke="var(--b3)" stroke-width="1.6"/>
+      <g fill="none" stroke="var(--sulc)" stroke-width="1.2" opacity=".75">${fol}</g>`;
+  h+=`<path d="M470,330 C500,318 560,316 604,330 C628,346 626,392 596,410 C560,428 500,426 470,404 C452,390 450,346 470,330Z" class="tint" data-t="cereb"/>`;
+  // cerebrum
+  h+=`<path d="${OUT}" fill="url(#${p}g)" stroke="var(--b3)" stroke-width="2"/>`;
+  h+=`<g clip-path="url(#${p}clip)"><path d="${OUT}" fill="none" stroke="#5b3a30" stroke-opacity=".35" stroke-width="26" filter="url(#${p}soft)"/>`;
+  h+=`<g opacity=".16">`+MINOR.map(([d,w])=>`<path class="bsulc" d="${d}" stroke-width="${(w*2.6).toFixed(2)}"/>`).join('')+SULCI.map(([d,w])=>`<path class="bsulc" d="${d}" stroke-width="${(w*2.4).toFixed(2)}"/>`).join('')+`</g>`;
+  MINOR.forEach(([d,w])=>{h+=`<path class="bsulc" d="${d}" stroke-width="${w}" opacity=".85"/><path class="bhl" d="${d}" stroke-width="${(w*.6).toFixed(2)}" transform="translate(1.2,1.4)"/>`;});
+  SULCI.forEach(([d,w])=>{h+=`<path class="bsulc" d="${d}" stroke-width="${w}"/><path class="bhl" d="${d}" stroke-width="${(w*.45).toFixed(2)}" transform="translate(1.6,1.8)"/>`;});
+  Object.entries(CORTEX_TINTS).forEach(([k,d])=>{h+=`<path class="tint" data-t="${k}" d="${d}"/>`;});
+  h+=`</g>`;
+  // deep structures
+  const dg=(k,inner)=>`<g class="deep${ghost.includes(k)?' ghost':''}" data-r="${k}" filter="url(#${p}sh)">${inner}</g>`;
+  if(deep.includes('striatum')){const t=tube(CAUD,8);h+=dg('striatum',`<path class="dfill" d="${t.d}" fill="url(#${p}dg)" stroke="#8a6b45" stroke-width="1"/><ellipse class="dfill" cx="304" cy="244" rx="30" ry="22" fill="url(#${p}dg)" stroke="#8a6b45"/>`);}
+  if(deep.includes('thal'))h+=dg('thal',`<ellipse class="dfill" cx="366" cy="236" rx="27" ry="18" fill="url(#${p}dg)" stroke="#8a6b45"/>`);
+  if(deep.includes('fornix')){const t=tube(FORNIX,8);h+=dg('fornix',`<path class="dfill" d="${t.d}" fill="url(#${p}hg)" stroke="var(--hipD)" stroke-width="1"/>`);}
+  if(deep.includes('hip')){const t=tube(HIP,10);let hl='';const c=t.center;hl='M'+c.map(q=>(q[0]).toFixed(1)+','+(q[1]-q[2]*.22).toFixed(1)).join(' L');
+    let dig='';[[252,338],[262,343],[273,346]].forEach(([x,y])=>{dig+=`<ellipse cx="${x}" cy="${y}" rx="7" ry="5" fill="url(#${p}hg)" stroke="var(--hipD)" stroke-width=".8"/>`;});
+    let seg='';for(let i=4;i<c.length-2;i+=5){const q=c[i];seg+=`<path d="M${q[0]-1},${q[1]-q[2]*.45} q3,${q[2]*.45} 0,${q[2]*.9}" />`;}
+    h+=dg('hip',`${dig}<path class="dfill" d="${t.d}" fill="url(#${p}hg)" stroke="var(--hipD)" stroke-width="1.2"/><g stroke="var(--hipD)" stroke-width=".9" fill="none" opacity=".55">${seg}</g><path d="${hl}" stroke="#fff" stroke-opacity=".45" stroke-width="3" fill="none" stroke-linecap="round"/>`);}
+  if(deep.includes('mamm'))h+=dg('mamm',`<circle class="dfill" cx="290" cy="276" r="8" fill="url(#${p}mb)" stroke="#2c5d9e"/>`);
+  if(deep.includes('amy'))h+=dg('amy',`<ellipse class="dfill" cx="236" cy="322" rx="14" ry="11" fill="url(#${p}ag)" stroke="#9a4a3c"/>`);
+  h+=extra;
+  labels.forEach(k=>{const[t,lx,ly,ax,ay]=LAB[k];const anc=lx<ax?'end':'start';const x0=anc==='end'?lx+4:lx-4;
+    h+=`<line class="lead" x1="${x0}" y1="${ly-4}" x2="${ax}" y2="${ay}"/><circle cx="${ax}" cy="${ay}" r="2.4" fill="var(--ink)"/><text class="blab" x="${lx}" y="${ly}" text-anchor="${anc}">${t}</text>`;});
+  svg.innerHTML=h;
+  if(tints.length)setLit(svg,Object.fromEntries(tints.map(k=>[k,1])));
+  return svg;
+}
+function setLit(svg,map){svg.querySelectorAll('.tint').forEach(el=>{const v=map[el.dataset.t];el.classList.toggle('on',v===1);el.classList.toggle('on2',v===2);});
+  svg.querySelectorAll('.deep').forEach(el=>{const v=map[el.dataset.r];el.classList.toggle('on',v===1);el.classList.toggle('on2',v===2);});}
+function setGhost(svg,keys,except){svg.querySelectorAll('.deep').forEach(el=>el.classList.toggle('ghost',keys.includes(el.dataset.r)&&!except.includes(el.dataset.r)));}
+
+/* ================= nav / theme / present ================= */
+const secs=[...document.querySelectorAll('section.s')];
+$('navList').innerHTML=secs.map((s,i)=>`<li><a href="#${s.id}"><span class="i">${i+1}</span>${s.dataset.title}</a></li>`).join('');
+const navA=[...$('navList').querySelectorAll('a')];
+const io=new IntersectionObserver(es=>{es.forEach(e=>{if(e.isIntersecting)navA.forEach(a=>a.classList.toggle('on',a.getAttribute('href')==='#'+e.target.id));})},{rootMargin:'-45% 0px -50% 0px'});
+secs.forEach(s=>io.observe(s));
+function setTheme(dark){document.documentElement.dataset.theme=dark?'dark':'light';$('themeBtn').textContent=dark?'Light theme':'Dark theme';store.set('memTheme',dark?'dark':'light');setTimeout(()=>redrawHooks.forEach(f=>f()),40)}
+$('themeBtn').onclick=()=>setTheme(document.documentElement.dataset.theme!=='dark');
+function setPresent(on){document.documentElement.classList.toggle('present',on);$('presentBtn').setAttribute('aria-pressed',on);setTimeout(()=>redrawHooks.forEach(f=>f()),60)}
+$('presentBtn').onclick=()=>setPresent(!document.documentElement.classList.contains('present'));
+function curSec(){let b=0;secs.forEach((s,i)=>{if(s.getBoundingClientRect().top<innerHeight*.4)b=i});return b}
+addEventListener('keydown',e=>{const ae=document.activeElement;const typing=/INPUT|TEXTAREA|SELECT/.test(ae.tagName)&&ae.type!=='range';if(typing||e.metaKey||e.ctrlKey||e.altKey)return;
+  if(e.key==='p'||e.key==='P'){setPresent(!document.documentElement.classList.contains('present'));e.preventDefault()}
+  else if(e.key==='t'||e.key==='T'){setTheme(document.documentElement.dataset.theme!=='dark')}
+  else if(ae.type!=='range'&&(e.key==='ArrowRight'||e.key==='ArrowLeft')&&document.documentElement.classList.contains('present')){const i=clamp(curSec()+(e.key==='ArrowRight'?1:-1),0,secs.length-1);secs[i].scrollIntoView({behavior:reduce?'auto':'smooth'});e.preventDefault()}});
+
+/* ================= nav cab ================= */
+(()=>{const cab=$('miniCab'),pipe=document.querySelector('.pipe');
+  function upd(){const h=document.documentElement.scrollHeight-innerHeight;const p=h>0?clamp(scrollY/h,0,1):0;cab.style.left=`calc(${(p*100).toFixed(2)}% - ${(p*34).toFixed(1)}px)`;}
+  addEventListener('scroll',upd,{passive:true});upd();})();
+
+/* ================= city ================= */
+const MW=600,MH=440,SP=34;
+function riverY(x){return 318+22*Math.sin(x/70+.6)+12*Math.sin(x/31)}
+function makeCity(kind){
+  const L=kind==='london',r=rng(L?29:3);
+  const cols=Math.floor((MW-20)/SP)+1,rows=Math.floor((MH-20)/SP)+1;const N=[];
+  for(let j=0;j<rows;j++)for(let i=0;i<cols;i++){let x=12+i*SP,y=12+j*SP;
+    if(L){x+=(r()-.5)*18;y+=(r()-.5)*18;const ox=x,oy=y;x+=13*Math.sin(oy/53+1.3)+8*Math.sin((ox+oy)/41);y+=13*Math.cos(ox/61)+8*Math.sin((ox-oy)/37);x=clamp(x,8,MW-8);y=clamp(y,8,MH-8);}
+    N.push({x,y,i,j,ok:true});}
+  if(L)N.forEach(n=>{if(Math.abs(n.y-riverY(n.x))<15)n.ok=false;});
+  const id=(i,j)=>j*cols+i;const E=new Map();const key=(a,b)=>a<b?a+'_'+b:b+'_'+a;
+  const add=(a,b)=>{if(a===b||!N[a].ok||!N[b].ok)return;if(L&&Math.sign(N[a].y-riverY(N[a].x))!==Math.sign(N[b].y-riverY(N[b].x)))return;E.set(key(a,b),[a,b]);};
+  for(let j=0;j<rows;j++)for(let i=0;i<cols;i++){if(i<cols-1)add(id(i,j),id(i+1,j));if(j<rows-1)add(id(i,j),id(i,j+1));
+    if(L&&i<cols-1&&j<rows-1&&r()<.33){if(r()<.5)add(id(i,j),id(i+1,j+1));else add(id(i+1,j),id(i,j+1));}}
+  if(L){ // bridges
+    [70,160,245,330,420,520].forEach(bx=>{let up=-1,dn=-1,bu=1e9,bd=1e9;N.forEach((n,k)=>{if(!n.ok)return;const ry=riverY(n.x),d=Math.abs(n.x-bx)+Math.abs(n.y-ry)*.6;if(n.y<ry&&d<bu){bu=d;up=k}if(n.y>ry&&d<bd){bd=d;dn=k}});if(up>=0&&dn>=0)E.set(key(up,dn),[up,dn]);});
+    const deg=new Array(N.length).fill(0);E.forEach(([a,b])=>{deg[a]++;deg[b]++});
+    const ks=[...E.keys()];for(let k=ks.length-1;k>0;k--){const m=Math.floor(r()*(k+1));[ks[k],ks[m]]=[ks[m],ks[k]];}
+    ks.forEach(k=>{const[a,b]=E.get(k);const isBridge=Math.sign(N[a].y-riverY(N[a].x))!==Math.sign(N[b].y-riverY(N[b].x));if(isBridge)return;if(r()<.3&&deg[a]>2&&deg[b]>2){E.delete(k);deg[a]--;deg[b]--;}});
+  }
+  // keep the component that contains the middle
+  const adj=N.map(()=>[]);E.forEach(([a,b])=>{const w=Math.hypot(N[a].x-N[b].x,N[a].y-N[b].y);adj[a].push([b,w]);adj[b].push([a,w]);});
+  let c0=0,bd=1e9;N.forEach((n,k)=>{if(!n.ok)return;const d=Math.hypot(n.x-MW/2,n.y-MH/2);if(d<bd){bd=d;c0=k}});
+  const seen=new Set([c0]),q=[c0];while(q.length){const a=q.pop();adj[a].forEach(([b])=>{if(!seen.has(b)){seen.add(b);q.push(b)}})}
+  N.forEach((n,k)=>{if(!seen.has(k))n.ok=false;});
+  for(const [k,[a,b]] of E)if(!N[a].ok||!N[b].ok)E.delete(k);
+  const adj2=N.map(()=>[]);E.forEach(([a,b],k)=>{const w=Math.hypot(N[a].x-N[b].x,N[a].y-N[b].y);adj2[a].push([b,w,k]);adj2[b].push([a,w,k]);});
+  return{kind,N,E,adj:adj2,key,center:c0,okIds:N.map((n,k)=>n.ok?k:-1).filter(k=>k>=0)};
+}
+function route(city,a,b,allowed){ // Dijkstra; allowed = Set of edge keys or null
+  const n=city.N.length,dist=new Float64Array(n).fill(Infinity),prev=new Int32Array(n).fill(-1),done=new Uint8Array(n);dist[a]=0;
+  for(;;){let u=-1,bd=Infinity;for(let i=0;i<n;i++)if(!done[i]&&dist[i]<bd){bd=dist[i];u=i}if(u<0||u===b)break;done[u]=1;
+    for(const[v,w,k]of city.adj[u]){if(allowed&&!allowed.has(k))continue;if(dist[u]+w<dist[v]){dist[v]=dist[u]+w;prev[v]=u}}}
+  if(!isFinite(dist[b]))return null;const p=[b];while(p[0]!==a)p.unshift(prev[p[0]]);return{path:p,len:dist[b]};
+}
+function countTurns(city,p){let t=0;for(let i=1;i<p.length-1;i++){const A=city.N[p[i-1]],B=city.N[p[i]],C=city.N[p[i+1]];
+  let d=Math.atan2(C.y-B.y,C.x-B.x)-Math.atan2(B.y-A.y,B.x-A.x);d=Math.atan2(Math.sin(d),Math.cos(d));if(Math.abs(d)>.6)t++;}return t;}
+const LONDON=makeCity('london'),GRID=makeCity('grid');
+const PARKS=[[96,120,58,40,.4],[262,46,50,30,0],[470,190,36,26,.3],[150,400,40,22,0]];
+
+function drawCityCanvas(x,city,w,h,{fade=1}={}){
+  const s=Math.min(w/MW,h/MH),ox=(w-MW*s)/2,oy=(h-MH*s)/2;
+  x.save();x.translate(ox,oy);x.scale(s,s);
+  x.fillStyle=cssv('--map');x.fillRect(0,0,MW,MH);
+  x.globalAlpha=fade;
+  x.fillStyle=cssv('--park');PARKS.forEach(([cx,cy,rx,ry,a])=>{x.beginPath();x.ellipse(cx,cy,rx,ry,a,0,7);x.fill();});
+  if(city.kind==='london'){x.strokeStyle=cssv('--thames');x.lineWidth=20;x.lineCap='round';x.beginPath();for(let X=-10;X<=MW+10;X+=6){const Y=riverY(X);X<=-10?x.moveTo(X,Y):x.lineTo(X,Y)}x.stroke();}
+  x.lineCap='round';
+  [[cssv('--casing'),6.5],[cssv('--street'),3.8]].forEach(([c,lw])=>{x.strokeStyle=c;x.lineWidth=lw;x.beginPath();city.E.forEach(([a,b])=>{x.moveTo(city.N[a].x,city.N[a].y);x.lineTo(city.N[b].x,city.N[b].y)});x.stroke();});
+  x.globalAlpha=1;x.restore();return{s,ox,oy};
+}
+function drawCab(x,px,py,sc=1,ang=0){x.save();x.translate(px,py);x.rotate(ang);x.scale(sc,sc);
+  x.lineJoin='round';x.fillStyle='#2b2838';x.strokeStyle='#231d3b';x.lineWidth=2;
+  x.beginPath();x.roundRect(-13,-8,26,16,5);x.fill();x.stroke();
+  x.fillStyle='#bfe3ff';x.beginPath();x.roundRect(2,-6,6,12,2);x.fill();
+  x.fillStyle='#ffd23f';x.beginPath();x.roundRect(-5,-3.5,6,7,1.5);x.fill();x.stroke();
+  x.restore();}
+
+/* ================= 1 · the Knowledge map ================= */
+(()=>{
+  const svg=$('mapSvg');let city=LONDON,A=null,B=null,K=40;
+  // 320 runs, seeded
+  const r=rng(101);const RUNS=[];const ids=LONDON.okIds;
+  while(RUNS.length<320){const a=ids[Math.floor(r()*ids.length)],b=ids[Math.floor(r()*ids.length)];const na=LONDON.N[a],nb=LONDON.N[b];if(Math.hypot(na.x-nb.x,na.y-nb.y)<170)continue;
+    const res=route(LONDON,a,b,null);if(!res)continue;const set=new Set();for(let i=0;i<res.path.length-1;i++)set.add(LONDON.key(res.path[i],res.path[i+1]));
+    LONDON.E.forEach(([u,v],k)=>{[na,nb].forEach(e=>{if(Math.hypot(LONDON.N[u].x-e.x,LONDON.N[u].y-e.y)<36&&Math.hypot(LONDON.N[v].x-e.x,LONDON.N[v].y-e.y)<36)set.add(k)})});
+    RUNS.push(set);}
+  const knownCache=[new Set()];function known(k){for(let i=knownCache.length;i<=k;i++){const s=new Set(knownCache[i-1]);RUNS[i-1].forEach(e=>s.add(e));knownCache.push(s);}return knownCache[k];}
+  const nearest=(px,py)=>{let best=-1,bd=1e9;city.okIds.forEach(k=>{const n=city.N[k];const d=Math.hypot(n.x-px,n.y-py);if(d<bd){bd=d;best=k}});return best;};
+  const pathD=p=>'M'+p.map(k=>city.N[k].x.toFixed(1)+','+city.N[k].y.toFixed(1)).join(' L');
+  const pin=(n,col,lab)=>`<g class="pin"><path d="M${n.x},${n.y} c-9,-12 -12,-17 -12,-23 a12,12 0 0 1 24,0 c0,6 -3,11 -12,23z" fill="${col}" stroke="#231d3b" stroke-width="3" stroke-linejoin="round"/><text x="${n.x}" y="${n.y-19}" text-anchor="middle" font-family="Fredoka,sans-serif" font-weight="700" font-size="12" fill="#231d3b">${lab}</text></g>`;
+  function draw(animate){
+    const L=city.kind==='london';const kn=L?known(K):null;
+    let h=`<rect width="600" height="440" fill="var(--map)"/>`;
+    h+=PARKS.map(([cx,cy,rx,ry,a])=>`<ellipse cx="${cx}" cy="${cy}" rx="${rx}" ry="${ry}" transform="rotate(${(a*57.3).toFixed(1)} ${cx} ${cy})" fill="var(--park)"/>`).join('');
+    if(L){let d='';for(let X=-10;X<=610;X+=6)d+=(X<=-10?'M':'L')+X+','+riverY(X).toFixed(1);h+=`<path d="${d}" fill="none" stroke="var(--thames)" stroke-width="20" stroke-linecap="round"/><text x="300" y="${riverY(300)+5}" text-anchor="middle" font-family="Fredoka,sans-serif" font-size="12" font-weight="600" fill="#1d5f8f" opacity=".8">the river</text>`;}
+    let cs='',ss='',ks='';city.E.forEach(([a,b],k)=>{const l=`M${city.N[a].x.toFixed(1)},${city.N[a].y.toFixed(1)}L${city.N[b].x.toFixed(1)},${city.N[b].y.toFixed(1)}`;cs+=l;ss+=l;if(kn&&kn.has(k))ks+=l;});
+    h+=`<path class="casing" d="${cs}" stroke-width="7"/><path class="street" d="${ss}" stroke-width="4"/>`;
+    if(ks)h+=`<path class="known" d="${ks}" stroke-width="4.5" opacity=".9"/>`;
+    const cc=city.N[city.center];h+=`<g opacity=".7"><circle cx="${cc.x}" cy="${cc.y}" r="5" fill="var(--ink)"/><text x="${cc.x+8}" y="${cc.y-7}" font-family="Fredoka,sans-serif" font-size="11" font-weight="600" fill="var(--ink)">Charing Cross</text></g>`;
+    let msg='';
+    if(A!==null&&B!==null){
+      const best=route(city,A,B,null);
+      const mine=L?route(city,A,B,kn):best;
+      const na=city.N[A],nb=city.N[B],crow=Math.hypot(na.x-nb.x,na.y-nb.y);
+      if(L&&mine&&K<320)h+=`<path class="ghostRoute" d="${pathD(best.path)}"/>`;
+      if(mine){const d=pathD(mine.path);h+=`<path class="routeLine" d="${d}" stroke="#231d3b" stroke-width="9" opacity=".25"/><path class="routeLine${animate?' draw':''}" d="${d}" stroke="var(--c1)" stroke-width="5.5" style="--len:${Math.ceil(mine.len)+10}"/>`;}
+      if(!L){const dx=Math.round((nb.x-na.x)/SP),dy=Math.round((na.y-nb.y)/SP);
+        const dir=(v,p,n)=>v===0?'':`${Math.abs(v)} block${Math.abs(v)>1?'s':''} ${v>0?p:n}`;
+        msg=`<b class="t">Easy: ${[dir(dx,'east','west'),dir(dy,'north','south')].filter(Boolean).join(' and ')}.</b>On a grid you can work out the route from the street numbers, even for streets you've never seen. ${countTurns(city,best.path)<=1?'One turn, done.':'Lots of routes tie for shortest.'} Now switch back to London.`;}
+      else if(!mine){msg=`<b class="t">"Sorry, I don't know the way yet!"</b>With only ${K} run${K===1?'':'s'} learned, there's no path you know that links these two spots. Learn more runs.`;}
+      else{const extra=Math.round((mine.len/best.len-1)*100),turns=countTurns(city,mine.path);
+        msg=`<b class="t">${turns} turns, and no rule to find them.</b>The road route is ${(mine.len/crow).toFixed(1)}× longer than flying straight there. `+(K>=320||extra<2?'You found the best route, because you know every street. That is what the exam tests: the shortest legal route, from memory.':`You're taking the long way, ${extra}% longer than the best route (dotted), because you only know some streets.`);}
+    }else msg=A===null?'<b class="t">Where to?</b>Click a pickup spot.':'<b class="t">And where are we going?</b>Now click a drop-off spot.';
+    if(A!==null)h+=pin(city.N[A],'#ffd23f','A');if(B!==null)h+=pin(city.N[B],'#ff6b6b','B');
+    svg.innerHTML=h;$('mapNote').innerHTML=msg;
+    if(L){const cov=K?Math.round(kn.size/city.E.size*100):0;$('covV').textContent=cov+'%';$('runsV').textContent=K;
+      const m=Math.max(1,Math.round(K/320*30));$('monV').textContent=K===320?'~2.5 years, then more':`~${m} month${m>1?'s':''}`;}
+    $('learnBox').style.display=L?'':'none';
+  }
+  svg.addEventListener('click',e=>{const pt=svg.createSVGPoint();pt.x=e.clientX;pt.y=e.clientY;const p=pt.matrixTransform(svg.getScreenCTM().inverse());const k=nearest(p.x,p.y);
+    if(A===null||B!==null){A=k;B=null;}else if(k!==A)B=k;draw(true);});
+  $('runs').oninput=e=>{K=+e.target.value;draw(false)};
+  const cb=[$('cityL'),$('cityG')];
+  const remap=(k,from,to)=>{const n=from.N[k];let best=-1,bd=1e9;to.okIds.forEach(j=>{const d=Math.hypot(to.N[j].x-n.x,to.N[j].y-n.y);if(d<bd){bd=d;best=j}});return best;};
+  cb[0].onclick=()=>{if(city===LONDON)return;if(A!==null)A=remap(A,GRID,LONDON);if(B!==null)B=remap(B,GRID,LONDON);city=LONDON;setPressed(cb,cb[0]);draw(true)};
+  cb[1].onclick=()=>{if(city===GRID)return;if(A!==null)A=remap(A,LONDON,GRID);if(B!==null)B=remap(B,LONDON,GRID);city=GRID;setPressed(cb,cb[1]);draw(true)};
+  const rr=rng(7);$('randRun').onclick=()=>{const ids=city.okIds;do{A=ids[Math.floor(rr()*ids.length)];B=ids[Math.floor(rr()*ids.length)];}while(Math.hypot(city.N[A].x-city.N[B].x,city.N[A].y-city.N[B].y)<220);draw(true)};
+  A=nearest(80,90);B=nearest(520,380);draw(false);
+  redrawHooks.push(()=>draw(false));
+})();
+
+/* ================= hippocampus drawing helpers ================= */
+function hipTube(aS,pS){const n=HIP.length;return tube(HIP.map(([x,y,r],i)=>{const t=i/(n-1);return[x,y,r*(aS*(1-t)+pS*t)]}),10)}
+const SPLIT=342;
+function hipSVG(uid,aS,pS,{sw=2.2,face=false,click=false}={}){
+  const t=hipTube(aS,pS),c=t.center;let seg='';for(let i=4;i<c.length-2;i+=5){const q=c[i];seg+=`<path d="M${(q[0]-1).toFixed(1)},${(q[1]-q[2]*.42).toFixed(1)} q3,${(q[2]*.42).toFixed(1)} 0,${(q[2]*.84).toFixed(1)}"/>`;}
+  const cl=click?' hipPart':'';
+  return `<defs><clipPath id="${uid}A"><rect x="0" y="0" width="${SPLIT}" height="700"/></clipPath><clipPath id="${uid}P"><rect x="${SPLIT}" y="0" width="500" height="700"/></clipPath></defs>
+   <path d="${t.d}" fill="#ffd46b" clip-path="url(#${uid}A)" class="${cl}" data-part="head"/>
+   <path d="${t.d}" fill="#8db8ff" clip-path="url(#${uid}P)" class="${cl}" data-part="tail"/>
+   <g stroke="var(--edge)" stroke-width="${sw*.5}" fill="none" opacity=".5" pointer-events="none">${seg}</g>
+   <path d="${t.d}" fill="none" stroke="var(--edge)" stroke-width="${sw}" pointer-events="none"/>`+
+   (face?`<g pointer-events="none"><circle cx="246" cy="326" r="3" fill="#231d3b"/><circle cx="247" cy="325" r="1" fill="#fff"/><ellipse cx="256" cy="335" rx="4" ry="2.4" fill="#ff7b9c" opacity=".7"/><path d="M238,334 q4,4 8,0" stroke="#231d3b" stroke-width="1.4" fill="none" stroke-linecap="round"/></g>`:'');
+}
+
+/* ================= 2 · anatomy ================= */
+(()=>{
+  let Y=0,sel=null;
+  lateral('brainA',{deep:['amy'],labels:['amy'],extra:'<g id="hipLatG"></g><g id="hipLatLab"></g>'});
+  const zoom=$('hipZoom');
+  const T=(x,y)=>[2*x-430,2*y-520];
+  const INFO={
+    head:['Front end (anterior), the "head"','The wide front end, next to the amygdala. It seems to handle the <b>big picture</b>: the gist of a place, whether something is new, and how it feels. In cabbies it was slightly <b>smaller</b>.'],
+    tail:['Back end (posterior), the "tail"','The thin back end that curls up toward the middle of the brain. It seems to hold the <b>fine detail</b> of a spatial map, street by street. In cabbies it was <b>bigger</b>, and bigger still with more years of driving.'],
+    erc:['Entorhinal cortex: the doorway','Almost everything going into or out of the hippocampus passes through here. It is home to <b>grid cells</b> (Stop 6), and it is one of the first places damaged in Alzheimer\'s disease, which is why getting lost is an early sign.'],
+    amy:['Amygdala: the neighbor','Not part of the hippocampus, but right in front of it. It tags memories with emotion. That close link is one reason the front of the hippocampus is tied to feelings and stress.']
+  };
+  function scales(){const f=Y/40;return[1-.22*f,1+.48*f];}
+  function draw(){
+    const[aS,pS]=scales();
+    $('hipLatG').innerHTML=hipSVG('hl',aS,pS,{sw:1.6});
+    $('hipLatLab').innerHTML=`<line class="lead" x1="234" y1="404" x2="268" y2="340"/><text class="blab" x="230" y="420" text-anchor="middle">front of hippocampus</text><line class="lead" x1="520" y1="300" x2="446" y2="302"/><text class="blab" x="524" y="304">back of hippocampus</text>`;
+    let z=`<g transform="translate(-430,-500) scale(2)">
+      <path d="M262,360 C300,372 370,370 430,352" fill="none" stroke="#c9b8e8" stroke-width="16" stroke-linecap="round" class="hipPart" data-part="erc" opacity=".9"/>
+      <path d="M262,360 C300,372 370,370 430,352" fill="none" stroke="var(--edge)" stroke-width="1" stroke-dasharray="3 3" pointer-events="none"/>
+      <ellipse cx="226" cy="318" rx="13" ry="11" fill="#f7a8a0" stroke="var(--edge)" stroke-width="1.6" class="hipPart" data-part="amy"/>
+      ${hipSVG('hz',aS,pS,{sw:1.4,face:true,click:true})}</g>`;
+    const lab=(x,y,t,s,anc='middle')=>`<text class="zlab" x="${x}" y="${y}" text-anchor="${anc}">${t}</text>`+(s?`<text class="zsub" x="${x}" y="${y+15}" text-anchor="${anc}">${s}</text>`:'');
+    z+=lab(120,40,'Head','front (anterior)')+lab(470,22,'Tail','back (posterior)')+lab(300,272,'Entorhinal cortex','the doorway')+lab(4,100,'Amygdala','','start');
+    z+=`<g stroke="var(--muted)" stroke-width="2" fill="none" stroke-linecap="round"><path d="M120,58 L104,104"/><path d="M470,40 L470,60"/><path d="M300,258 L300,246"/></g>`;
+    z+=`<text class="zsub" x="10" y="294">← toward your nose</text><text class="zsub" x="550" y="294" text-anchor="end">toward the back of your head →</text>`;
+    zoom.innerHTML=z;
+    zoom.querySelectorAll('.hipPart').forEach(el=>{el.style.opacity=sel&&el.dataset.part!==sel?'.45':'1';el.onclick=()=>{sel=el.dataset.part;draw();};});
+    let msg;
+    if(sel){const[t,d]=INFO[sel];msg=`<b class="t">${t}</b>${d}`;}
+    else if(Y===0)msg='<b class="t">An everyday hippocampus</b>Yellow is the front end and blue is the back end. Drag the slider to add years of taxi driving, or click a part of the close-up.';
+    else msg=`<b class="t">After ${Y} year${Y>1?'s':''} behind the wheel</b>The back (blue) has more gray matter and the front (yellow) has a little less. The whole hippocampus didn't grow; it shifted.`;
+    $('hipNote').innerHTML=msg;$('yrsV').textContent=Y;
+  }
+  const chips=[...document.querySelectorAll('[data-yrs]')];
+  const setY=v=>{Y=v;$('yrs').value=v;sel=null;chips.forEach(c=>c.setAttribute('aria-pressed',+c.dataset.yrs===v));draw();};
+  chips.forEach(c=>c.onclick=()=>setY(+c.dataset.yrs));
+  $('yrs').oninput=e=>setY(+e.target.value);
+  draw();
+})();
+
+/* ================= 3 · storing a street ================= */
+(()=>{
+  const svg=$('circ');
+  const NODES={ctx:[110,80,'Cortex','senses + long-term home'],erc:[150,250,'Entorhinal','the doorway'],dg:[330,280,'Dentate gyrus','keeps it separate'],ca3:[500,220,'CA3','ties it together'],ca1:[480,80,'CA1','sends it out']};
+  const ARR={ctx_erc:'M110,112 C100,160 112,200 140,222',erc_dg:'M190,262 C240,290 270,292 290,288',dg_ca3:'M372,272 C420,262 450,248 466,236',ca3_ca1:'M512,186 C524,150 512,120 494,108',ca1_ctx:'M440,72 C340,40 230,40 158,66',ca3_loop:'M532,236 C590,250 596,190 540,198'};
+  let h=`<defs><marker id="ah" viewBox="0 0 10 10" refX="7" refY="5" markerWidth="5" markerHeight="5" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10z" fill="var(--muted)"/></marker></defs>`;
+    h+=`<path d="M262,272 C250,200 330,150 420,60 C470,30 560,40 590,120 C620,200 600,300 500,320 C420,334 290,330 262,272Z" fill="color-mix(in srgb,var(--c3) 10%,transparent)" stroke="var(--c3)" stroke-width="2.5" stroke-dasharray="7 6"/><text x="566" y="298" text-anchor="end" font-family="Fredoka,sans-serif" font-weight="600" font-size="15" fill="var(--c3)">inside the hippocampus</text>`;
+  Object.entries(ARR).forEach(([k,d])=>{h+=`<path id="a_${k}" class="arr" d="${d}" marker-end="url(#ah)"/>`;});
+  Object.entries(NODES).forEach(([k,[x,y,t,s]])=>{const big=k==='ctx';
+    h+=`<g class="node" id="n_${k}">`+(big?`<path class="nb" d="M${x-70},${y+10} c-12,-34 20,-56 44,-40 c10,-28 58,-26 66,2 c30,-12 52,18 34,40 c10,26 -20,40 -40,30 c-14,22 -60,22 -70,0 c-26,8 -44,-14 -34,-32z" fill="#e6dcff"/>`:`<ellipse cx="${x}" cy="${y}" rx="58" ry="26" fill="${k==='erc'?'#e8dcff':'#cdeccf'}"/>`)+
+      `<text x="${x}" y="${y-1}">${t}</text><text class="s" x="${x}" y="${y+14}">${s}</text></g>`;});
+  h+=`<g id="packet" opacity="0"><circle r="15" fill="#ffd23f" stroke="#231d3b" stroke-width="3"/><path d="M-6,4 L-6,-6 L6,-6" fill="none" stroke="#231d3b" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/><circle cx="4" cy="3" r="2.2" fill="#ff6b6b"/></g>`;
+  h+=`<text id="cue" x="110" y="160" text-anchor="middle" font-family="Fredoka,sans-serif" font-weight="600" font-size="15" fill="var(--c1)" opacity="0">"Hatton Garden, please!"</text>`;
+  svg.innerHTML=h;
+  const STEPS=[
+    {lab:'Notice',at:'ctx',path:[],str:5,t:'1 · Notice it',d:'Priya turns left off a busy road into Hatton Garden. Her visual cortex sees shop windows full of rings, her ears hear the moped echo, and she feels the left turn. These pieces are spread across different parts of the <b>cortex</b>.'},
+    {lab:'Doorway',path:['ctx_erc'],str:8,t:'2 · Through the doorway',d:'All those pieces flow into the <b>entorhinal cortex</b>, the hippocampus\'s doorway. Grid cells here also add <i>where</i> on her mental map she is.'},
+    {lab:'Separate',path:['erc_dg'],str:12,t:'3 · Keep it separate',d:'The <b>dentate gyrus</b> makes the memory of Hatton Garden look different from similar streets nearby, so they don\'t blur together. It is also one of the few places where adult brains may grow new neurons.'},
+    {lab:'Tie together',path:['dg_ca3','ca3_loop'],str:18,t:'4 · Tie it together',d:'In <b>CA3</b>, neurons connect to each other in loops. They bind the street, the shops and the left turn into one memory. Later, one piece (the name) can bring back the whole thing.'},
+    {lab:'Send out',path:['ca3_ca1','ca1_ctx'],str:24,t:'5 · Send it back out',d:'<b>CA1</b> sends the bound memory back out to the cortex. For now, the cortex still needs the hippocampus to pull the pieces together.'},
+    {lab:'Practice + sleep',loop:true,str:80,t:'6 · Practice, then sleep on it',d:'Priya rides the run again and again. While she sleeps, her hippocampus <b>replays</b> the route. Each replay strengthens the synapses along the way (that\'s <b>LTP</b>). Over months, the memory gets stored in the cortex itself (<b>consolidation</b>).'},
+    {lab:'Recall',recall:true,str:100,t:'7 · Remember it',d:'Years later a passenger says "Hatton Garden, please!" That one cue is enough. CA3 fills in the rest, and the whole route comes back in a flash.'}
+  ];
+  const ORDER=['ctx_erc','erc_dg','dg_ca3','ca3_loop','ca3_ca1','ca1_ctx'];
+  const NODE_OF={ctx_erc:'erc',erc_dg:'dg',dg_ca3:'ca3',ca3_loop:'ca3',ca3_ca1:'ca1',ca1_ctx:'ctx'};
+  let si=0,anim=null;const pk=$('packet');
+  const sb=STEPS.map((s,i)=>{const b=document.createElement('button');b.textContent=(i+1)+' '+s.lab;b.onclick=()=>go(i);$('stepper').appendChild(b);return b;});
+  function lit(nodes,arrs,width){svg.querySelectorAll('.node').forEach(n=>n.classList.toggle('lit',nodes.includes(n.id.slice(2))));
+    svg.querySelectorAll('.arr').forEach(a=>{a.classList.toggle('lit',arrs.includes(a.id.slice(2)));a.style.strokeWidth=width||'';});}
+  function placeAt(node){const[x,y]=NODES[node];pk.setAttribute('transform',`translate(${x},${y-(node==='ctx'?64:40)})`);pk.setAttribute('opacity',1);}
+  function go(i){si=clamp(i,0,STEPS.length-1);const s=STEPS[si];setPressed(sb,sb[si]);
+    $('stepNote').innerHTML=`<b class="t">${s.t}</b>${s.d}`;
+    $('strBar').style.width=s.str+'%';$('strV').textContent=s.str<20?'weak':s.str<60?'getting stronger':'strong';
+    $('cue').setAttribute('opacity',s.recall?1:0);
+    $('stepPrev').disabled=si===0;$('stepNext').textContent=si===STEPS.length-1?'Start over ↺':'Next step →';
+    let seq;
+    if(s.loop)seq=[...ORDER,...ORDER,...ORDER];else if(s.recall)seq=ORDER;else seq=s.path;
+    const w=s.loop||s.recall?6:'';
+    if(!seq.length){anim=null;lit(['ctx'],[],'');placeAt('ctx');return;}
+    anim={seq,k:0,t:0,speed:s.loop?2.2:s.recall?2.6:1.1,w};
+    if(reduce){anim=null;const last=seq[seq.length-1];lit([NODE_OF[last]],seq,w);placeAt(NODE_OF[last]);}
+  }
+  frameHooks.push(dt=>{if(!anim)return;const a=anim;const key=a.seq[a.k];const p=$('a_'+key);const L=p.getTotalLength();a.t+=dt*a.speed;
+    const q=p.getPointAtLength(Math.min(1,a.t)*L);pk.setAttribute('transform',`translate(${q.x},${q.y})`);pk.setAttribute('opacity',1);
+    lit([NODE_OF[key]],a.seq.slice(0,a.k+1),a.w);
+    if(a.t>=1){a.t=0;a.k++;if(a.k>=a.seq.length){anim=null;placeAt(NODE_OF[key]);}}});
+  $('stepNext').onclick=()=>go(si===STEPS.length-1?0:si+1);$('stepPrev').onclick=()=>go(si-1);
+  go(0);
+})();
+
+/* ================= 4 · scans ================= */
+(()=>{
+  const cv=$('scatter');let mode='post',anim=1;
+  const YRS=[1.5,2,3,4,5,6,8,9,11,12,14,16,19,25,33,42];const r=rng(5);
+  const gauss=()=>{let u=0,v=0;while(!u)u=r();v=r();return Math.sqrt(-2*Math.log(u))*Math.cos(2*Math.PI*v)};
+  const mean=a=>a.reduce((s,v)=>s+v,0)/a.length,sd=a=>{const m=mean(a);return Math.sqrt(a.reduce((s,v)=>s+(v-m)**2,0)/a.length)};
+  const mk=(slope,target)=>{const xs=YRS,mx=mean(xs),e=xs.map(()=>gauss()),me=mean(e);const b=xs.reduce((s,x,i)=>s+(x-mx)*(e[i]-me),0)/xs.reduce((s,x)=>s+(x-mx)**2,0);
+    const res=e.map((v,i)=>v-me-b*(xs[i]-mx));const k=Math.abs(slope)*sd(xs)*Math.sqrt(1/target**2-1)/sd(res);return xs.map((x,i)=>[x,100+slope*(x-mx)+k*res[i]]);};
+  const D={post:mk(.42,.6),ant:mk(-.3,.55)};
+  const fit=pts=>{const n=pts.length,mx=pts.reduce((s,p)=>s+p[0],0)/n,my=pts.reduce((s,p)=>s+p[1],0)/n;let sxy=0,sxx=0,syy=0;pts.forEach(([x,y])=>{sxy+=(x-mx)*(y-my);sxx+=(x-mx)**2;syy+=(y-my)**2});const b=sxy/sxx;return{b,a:my-b*mx,r:sxy/Math.sqrt(sxx*syy)}};
+  const F={post:fit(D.post),ant:fit(D.ant)};let hover=-1;
+  function draw(){const{x,w,h}=fitCanvas(cv);x.clearRect(0,0,w,h);const m={l:52,r:16,t:16,b:40};
+    const X=v=>m.l+(v/45)*(w-m.l-m.r),Yp=v=>h-m.b-((v-82)/36)*(h-m.t-m.b);
+    x.strokeStyle=cssv('--grid');x.lineWidth=1;for(let v=85;v<=115;v+=5){x.beginPath();x.moveTo(m.l,Yp(v));x.lineTo(w-m.r,Yp(v));x.stroke();}
+    axes(x,w,h,m,{xl:'Years as a London cabbie',yl:mode==='post'?'Back of hippocampus (relative size)':'Front of hippocampus (relative size)'});
+    x.fillStyle=cssv('--muted');x.font='12px Nunito,system-ui';x.textAlign='center';[0,10,20,30,40].forEach(v=>x.fillText(v,X(v),h-m.b+16));x.textAlign='left';
+    const f=F[mode],col=mode==='post'?'#4d8dff':'#ffb627';
+    const e=Math.min(1,anim);x.strokeStyle=col;x.lineWidth=4;x.lineCap='round';x.beginPath();x.moveTo(X(0),Yp(f.a));x.lineTo(X(45*e),Yp(f.a+f.b*45*e));x.stroke();
+    D[mode].forEach(([a,b],i)=>{const bb=lerp(100,b,Math.min(1,anim*1.4));drawCab(x,X(a),Yp(bb),i===hover?1.15:.85);});
+    if(hover>=0){const[a,b]=D[mode][hover];x.fillStyle=cssv('--ink');x.font='700 13px Fredoka,system-ui';x.fillText(`${a} years`,X(a)+14,Yp(b)-10);}
+    x.fillStyle=col;x.font='700 15px Fredoka,system-ui';x.textAlign='right';x.fillText(`r = ${f.r.toFixed(2)}`,w-m.r-4,m.t+16);x.textAlign='left';
+    cv._X=X;cv._Y=Yp;}
+  function note(){$('scNote').innerHTML=mode==='post'?`<b class="t">More years, bigger back end</b>Each cab is one driver. Drivers with more years on the job tend to have a bigger posterior hippocampus. The line slopes up.`:`<b class="t">More years, slightly smaller front end</b>The front (anterior) hippocampus goes the other way: the longer someone has driven, the smaller it tends to be. The line slopes down.`;}
+  const btn=[$('scP'),$('scA')];
+  btn[0].onclick=()=>{mode='post';setPressed(btn,btn[0]);anim=0;note()};btn[1].onclick=()=>{mode='ant';setPressed(btn,btn[1]);anim=0;note()};
+  cv.addEventListener('mousemove',e=>{if(!cv._X)return;const rc=cv.getBoundingClientRect();const mx=e.clientX-rc.left,my=e.clientY-rc.top;let b=-1,bd=18;D[mode].forEach(([a,v],i)=>{const d=Math.hypot(cv._X(a)-mx,cv._Y(v)-my);if(d<bd){bd=d;b=i}});if(b!==hover){hover=b;draw();}});
+  cv.addEventListener('mouseleave',()=>{hover=-1;draw()});
+  frameHooks.push(dt=>{if(anim<1.2&&isVis(cv)){anim=Math.min(1.2,anim+dt*(reduce?99:1.3));draw();}});
+  redrawHooks.push(draw);note();draw();
+  // taxi vs bus
+  const bv=$('busVs');
+  bv.innerHTML=`<g transform="translate(-160,-200) scale(.8)">${hipSVG('bt',.8,1.55,{sw:2.6,face:true})}</g><g transform="translate(50,-200) scale(.8)">${hipSVG('bb',1,1,{sw:2.6,face:true})}</g>
+   <text class="zlab" x="105" y="122" text-anchor="middle">Taxi drivers</text><text class="zlab" x="315" y="122" text-anchor="middle">Bus drivers</text>
+   <text class="zsub" x="105" y="140" text-anchor="middle">bigger back, smaller front</text><text class="zsub" x="315" y="140" text-anchor="middle">about average</text>`;
+})();
+
+/* ================= 5 · born that way ================= */
+(()=>{
+  let scan=1;
+  const G=[
+    {name:'Passed the Knowledge',n:39,hat:'cap',grow:true},
+    {name:'Didn\'t pass',n:20,hat:'helmet',grow:false},
+    {name:'Not training (controls)',n:31,hat:'beanie',grow:false}];
+  const face=(hat,happy)=>{let h=`<circle cx="100" cy="58" r="34" fill="#ffd9c2" stroke="#231d3b" stroke-width="4"/><circle cx="88" cy="58" r="3.6" fill="#231d3b"/><circle cx="112" cy="58" r="3.6" fill="#231d3b"/><ellipse cx="80" cy="68" rx="5" ry="3" fill="#ff9bb3" opacity=".7"/><ellipse cx="120" cy="68" rx="5" ry="3" fill="#ff9bb3" opacity=".7"/>`;
+    h+=happy?`<path d="M90,72 q10,10 20,0" stroke="#231d3b" stroke-width="3.5" fill="none" stroke-linecap="round"/>`:`<path d="M92,75 q8,-4 16,0" stroke="#231d3b" stroke-width="3.5" fill="none" stroke-linecap="round"/>`;
+    if(hat==='cap')h+=`<path d="M64,48 C66,22 134,20 136,46 L150,50 C146,56 70,56 64,52Z" fill="#3d3a52" stroke="#231d3b" stroke-width="4" stroke-linejoin="round"/><rect x="88" y="34" width="22" height="9" rx="3" fill="#ffd23f" stroke="#231d3b" stroke-width="2.5"/>`;
+    if(hat==='helmet')h+=`<path d="M62,56 C60,14 140,14 138,56 Z" fill="#ff6b6b" stroke="#231d3b" stroke-width="4" stroke-linejoin="round"/><path d="M70,42 L130,42" stroke="#fff" stroke-width="4" stroke-linecap="round" opacity=".7"/>`;
+    if(hat==='beanie')h+=`<path d="M66,50 C64,18 136,18 134,50 Z" fill="#20b393" stroke="#231d3b" stroke-width="4" stroke-linejoin="round"/><circle cx="100" cy="20" r="8" fill="#20b393" stroke="#231d3b" stroke-width="3.5"/><rect x="64" y="44" width="72" height="11" rx="5" fill="#45d6b5" stroke="#231d3b" stroke-width="3.5"/>`;
+    return h;};
+  const crew=$('crew');
+  function draw(){
+    crew.innerHTML=G.map((g,i)=>{const pS=scan===2&&g.grow?1.4:1;
+      return `<figure><svg viewBox="0 0 200 190" style="max-width:240px;margin:0 auto">${face(g.hat,scan===1||g.grow||i===2)}<g transform="translate(-152,-94) scale(.72)">${hipSVG('cr'+i,1,pS,{sw:3})}</g>${scan===2&&g.grow?'<text x="168" y="118" font-family="Fredoka" font-weight="700" font-size="26" fill="#4d8dff">↑</text>':''}</svg>
+      <figcaption>${g.name}</figcaption><small>${g.n} people</small></figure>`;}).join('');
+    $('bornNote').innerHTML=scan===1?`<b class="t">Day one: everyone looks the same</b>Before training, the future cabbies had the same size hippocampus as everyone else, and the same memory scores. So they weren't born with a special brain. Now click Scan 2.`:
+      `<b class="t">The map built the brain</b>Only the trainees who <b>passed</b> grew more gray matter at the back of the hippocampus. Trainees who studied but didn't pass, and people who didn't train at all, didn't change. Learning the city caused the change.<br><span class="verdict" style="background:color-mix(in srgb,var(--c3) 30%,transparent)">Verdict: learning, not birth</span>`;
+    const v=scan===1?[78,78,78]:[60,77,79];
+    $('figBars').innerHTML=G.map((g,i)=>`<div class="b"><span>${g.name.replace(' (controls)','')}</span><span class="t"><i style="width:${v[i]}%;background:${['#ffb627','#ff6b6b','#20b393'][i]}"></i></span></div>`).join('');
+  }
+  const b=[$('scan1'),$('scan2')];b[0].onclick=()=>{scan=1;setPressed(b,b[0]);draw()};b[1].onclick=()=>{scan=2;setPressed(b,b[1]);draw()};
+  draw();
+})();
+
+/* ================= 6 · grid cells ================= */
+(()=>{
+  const cv=$('gridCv');const MODS=[{lam:58,th:.12,col:'#ff6b6b'},{lam:81,th:.31,col:'#20b393'},{lam:114,th:.52,col:'#4d8dff'}];
+  const on=[true,false,false];let P={x:300,y:200},dirty=true,ang=0,last={x:300,y:200};
+  const rate=(m,px,py,cx,cy)=>{const K=4*Math.PI/(Math.sqrt(3)*m.lam);let s=0;for(let k=0;k<3;k++){const a=m.th+k*Math.PI/3+Math.PI/6;s+=Math.cos(K*(Math.cos(a)*(px-cx)+Math.sin(a)*(py-cy)));}return(s+1.5)/4.5;};
+  const hex=(c,a)=>{const n=parseInt(c.slice(1),16);return`rgba(${n>>16},${n>>8&255},${n&255},${a})`};
+  const basis=m=>[m.lam*Math.cos(m.th),m.lam*Math.sin(m.th),m.lam*Math.cos(m.th+Math.PI/3),m.lam*Math.sin(m.th+Math.PI/3)];
+  const nearD=(m,px,py)=>{const[ax,ay,bx,by]=basis(m),dx=px-P.x,dy=py-P.y,det=ax*by-bx*ay,u=(dx*by-dy*bx)/det,v=(ax*dy-ay*dx)/det;let best=1e18;
+    for(const i of[Math.floor(u),Math.ceil(u)])for(const j of[Math.floor(v),Math.ceil(v)]){const ex=dx-i*ax-j*bx,ey=dy-i*ay-j*by;best=Math.min(best,ex*ex+ey*ey)}return Math.sqrt(best);};
+  function draw(){const{x,w,h}=fitCanvas(cv);x.clearRect(0,0,w,h);const T=drawCityCanvas(x,LONDON,w,h,{fade:.55});
+    x.save();x.translate(T.ox,T.oy);x.scale(T.s,T.s);x.beginPath();x.rect(0,0,MW,MH);x.clip();
+    const act=MODS.filter((m,i)=>on[i]);const multi=act.length>1;
+    act.forEach(m=>{const[ax,ay,bx,by]=basis(m),R=m.lam*.21;for(let i=-14;i<=14;i++)for(let j=-14;j<=14;j++){const cx=P.x+i*ax+j*bx,cy=P.y+i*ay+j*by;if(cx<-R||cy<-R||cx>MW+R||cy>MH+R)continue;
+      x.beginPath();x.arc(cx,cy,R,0,7);x.fillStyle=hex(m.col,multi?.16:.35);x.fill();x.lineWidth=2;x.strokeStyle=hex(m.col,multi?.5:.9);x.stroke();}});
+    const st=3;let match=0,tot=0;
+    for(let yy=st/2;yy<MH;yy+=st)for(let xx=st/2;xx<MW;xx+=st){tot++;if(!act.length)continue;let all=true;for(const m of act){if(nearD(m,xx,yy)>m.lam*.21){all=false;break;}}
+      if(all){match++;if(multi){x.fillStyle='#ffd23f';x.fillRect(xx-st/2-.3,yy-st/2-.3,st+.6,st+.6);}}}
+    drawCab(x,P.x,P.y,1.25,ang);x.restore();
+    const pct=act.length?match/tot*100:0;
+    let msg;
+    if(!act.length)msg='<b class="t">No grid cells on</b>Switch on at least one grid size.';
+    else if(act.length===1)msg=`<b class="t">"You're at one of these spots."</b>The colored blobs are every place where this one grid cell fires, all in neat triangles. The cab is on one of them, but the cell can't say which. It matches about <b>${pct.toFixed(0)}%</b> of the map.`;
+    else msg=`<b class="t">${act.length===3?'Got it!':'Getting closer…'}</b>Yellow shows where all ${act.length} grid sizes agree. That's down to about <b>${pct.toFixed(1)}%</b> of the map. ${act.length===3?'With three sizes, only a few spots are left. Real brains have several more sizes, and place cells in the hippocampus pick out the one spot that fits.':'Add the third size.'}`;
+    $('gridNote').innerHTML=msg;cv._T=T;dirty=false;}
+  const move=e=>{const T=cv._T;if(!T)return;const rc=cv.getBoundingClientRect();const nx=clamp((e.clientX-rc.left-T.ox)/T.s,0,MW),ny=clamp((e.clientY-rc.top-T.oy)/T.s,0,MH);
+    const dx=nx-last.x,dy=ny-last.y;if(Math.hypot(dx,dy)>3){ang=Math.atan2(dy,dx);last={x:nx,y:ny};}P={x:nx,y:ny};dirty=true;};
+  cv.addEventListener('pointermove',move);cv.addEventListener('pointerdown',move);
+  const chips=[...document.querySelectorAll('[data-mod]')];chips.forEach(c=>c.onclick=()=>{const i=+c.dataset.mod;on[i]=!on[i];c.setAttribute('aria-pressed',on[i]);dirty=true;});
+  frameHooks.push(()=>{if(dirty&&isVis(cv))draw();});redrawHooks.push(()=>{dirty=true});
+})();
+
+/* ================= 7 · front vs back ================= */
+(()=>{
+  const cv=$('axCv');let pos=.8;
+  const ids=LONDON.okIds;const ra=route(LONDON,ids.reduce((b,k)=>LONDON.N[k].x+LONDON.N[k].y<LONDON.N[b].x+LONDON.N[b].y?k:b,ids[0]),ids.reduce((b,k)=>LONDON.N[k].x+LONDON.N[k].y>LONDON.N[b].x+LONDON.N[b].y?k:b,ids[0]),null);
+  const pts=ra.path.map(k=>LONDON.N[k]);const loop=[...pts,...pts.slice(0,-1).reverse()];const segL=[];let tot=0;for(let i=0;i<loop.length-1;i++){const l=Math.hypot(loop[i+1].x-loop[i].x,loop[i+1].y-loop[i].y);segL.push(l);tot+=l;}
+  let s=0;
+  const at=d=>{d%=tot;for(let i=0;i<segL.length;i++){if(d<=segL[i]){const t=segL[i]?d/segL[i]:0;return{x:lerp(loop[i].x,loop[i+1].x,t),y:lerp(loop[i].y,loop[i+1].y,t),a:Math.atan2(loop[i+1].y-loop[i].y,loop[i+1].x-loop[i].x)}}d-=segL[i];}return{x:loop[0].x,y:loop[0].y,a:0}};
+  let fields=[];const COLS=['#ff6b6b','#ffb627','#20b393','#4d8dff','#9b5de5'];
+  function makeFields(){const R=lerp(140,13,pos);const r=rng(42);fields=[];const step=R*1.55;for(let y=step/2-20;y<MH+step;y+=step)for(let x=step/2-20;x<MW+step;x+=step)fields.push({x:x+(r()-.5)*step*.5,y:y+(r()-.5)*step*.5,r:R*(.85+r()*.3),c:COLS[fields.length%5]});}
+  function hip(){const aS=1,pS=1;let h=hipSVG('ax',aS,pS,{sw:2,face:true});const n=HIP.length,f=pos*(n-1),i=Math.min(n-2,Math.floor(f)),t=f-i;const x=lerp(HIP[i][0],HIP[i+1][0],t),y=lerp(HIP[i][1],HIP[i+1][1],t);
+    h+=`<g transform="translate(${x},${y})"><circle r="11" fill="none" stroke="#231d3b" stroke-width="3"/><circle r="11" fill="#ff6b6b" opacity=".45"/><path d="M0,-11 L0,-34" stroke="#231d3b" stroke-width="2.5"/><circle cy="-38" r="4" fill="#231d3b"/></g>`;$('axHip').innerHTML=h;}
+  function note(){const p=pos;$('axNote').innerHTML=p>.66?`<b class="t">Back end: street level</b>Each place cell here covers a small patch, about one corner. Lots of small fields means fine detail. Exactly what a cabbie needs for 25,000 streets.`:p>.33?`<b class="t">Middle: block level</b>Fields here are medium-sized. Each cell covers a few blocks.`:`<b class="t">Front end: neighborhood level</b>Each place cell fires across a huge area. It knows "I'm south of the river, near the park," but not which street. The front end also links to the amygdala, so it cares about how a place feels and whether it's new.`;}
+  function draw(){const{x,w,h}=fitCanvas(cv);x.clearRect(0,0,w,h);const T=drawCityCanvas(x,LONDON,w,h,{fade:.6});x.save();x.translate(T.ox,T.oy);x.scale(T.s,T.s);
+    const c=at(s);
+    fields.forEach(f=>{const inside=Math.hypot(c.x-f.x,c.y-f.y)<f.r;x.beginPath();x.arc(f.x,f.y,f.r,0,7);if(inside){x.fillStyle=f.c+'aa';x.fill();x.lineWidth=3;x.strokeStyle='#231d3b';x.setLineDash([]);}else{if(Math.hypot(c.x-f.x,c.y-f.y)>f.r*3.2)return;x.lineWidth=1.5;x.strokeStyle=f.c+'88';x.setLineDash([4,4]);}x.stroke();x.setLineDash([]);});
+    drawCab(x,c.x,c.y,1.3,c.a);x.restore();}
+  $('axPos').oninput=e=>{pos=+e.target.value/100;makeFields();hip();note();draw();};
+  makeFields();hip();note();
+  frameHooks.push(dt=>{if(!isVis(cv))return;s+=dt*(reduce?0:55);draw();});redrawHooks.push(draw);
+})();
+
+/* ================= 8 · ride ================= */
+(()=>{
+  const SPOTS={lpfc:[180,140,52,36,'Lateral prefrontal cortex','start',110,92],mpfc:[150,222,28,24,'Medial prefrontal (inner surface)','start',60,268],rsc:[480,232,22,18,'Retrosplenial cortex (inner surface)','start',500,196],
+    phc:[404,352,32,11,'Parahippocampal cortex','start',448,380],tpj:[474,190,32,24,'Temporoparietal junction','start',500,150],
+    hip:[350,330,104,24,'Hippocampus','middle',350,410],hipP:[426,316,40,18,'Back of hippocampus','start',470,342],caud:[300,214,48,30,'Caudate (striatum)','middle',300,170]};
+  let ex='<defs><radialGradient id="spg"><stop offset="0" stop-color="#ffd23f" stop-opacity=".95"/><stop offset=".6" stop-color="#ff9b3d" stop-opacity=".6"/><stop offset="1" stop-color="#ff6b6b" stop-opacity="0"/></radialGradient></defs>';
+  Object.entries(SPOTS).forEach(([k,[x,y,rx,ry]])=>{ex+=`<g class="spot" data-s="${k}"><ellipse class="glow" cx="${x}" cy="${y}" rx="${rx*1.35}" ry="${ry*1.5}" fill="url(#spg)"/><ellipse cx="${x}" cy="${y}" rx="${rx*.8}" ry="${ry*.8}" fill="#ffd23f" opacity=".55" stroke="#231d3b" stroke-width="2" stroke-dasharray="4 3"/></g>`;});
+  ex+='<g id="spotLabs"></g>';
+  const svg=lateral('rideBrain',{deep:['hip','striatum','thal'],extra:ex});
+  const EV=[
+    {ic:'<svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="#231d3b" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="6" r="3.2"/><path d="M12 10v7M12 12l5-6M12 12l-4 3M12 17l-3 5M12 17l3 5"/></svg>',lab:'Pickup',t:'"St Paul\'s Cathedral, please!"',on:['hip','lpfc','rsc','phc'],d:'Planning the route at the start of a trip lit up the <b>hippocampus</b>, along with the prefrontal, retrosplenial and parahippocampal cortex. The driver is pulling up the map and plotting a path.'},
+    {ic:'<svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="#231d3b" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22V13M12 13L5 4M12 13L19 4M12 13H3M12 13h9"/></svg>',lab:'Busy junction',t:'A junction with six roads',on:['hipP'],d:'Turning into a street with lots of side streets boosts activity in the <b>back of the hippocampus</b>. The more options branch off, the more it has to keep track of.'},
+    {ic:'<svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="#231d3b" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M8 14q4 4 8 0"/><path d="M8 10q1-1 2 0M14 10q1-1 2 0"/></svg>',lab:'Easy stretch',t:'A road you\'ve driven a thousand times',on:['caud'],d:'Following a well-worn route runs more on habit, which uses the <b>caudate</b> (part of the striatum). The hippocampus is needed less when you\'re on autopilot.'},
+    {ic:'<svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="#231d3b" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M8.5 19L12 4l3.5 15Z" fill="#ff9b3d"/><path d="M9.6 14h4.8M4 20h16"/></svg>',lab:'Road closed',t:'Road closed! Find a detour',on:['lpfc'],d:'A sudden detour fires up the <b>lateral prefrontal cortex</b>, which helps you switch plans and pick a new route.'},
+    {ic:'<svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="#231d3b" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="7" width="6" height="15"/><path d="M9 7l3-5 3 5"/><circle cx="12" cy="11" r="1.8"/></svg>',lab:'Landmark',t:'Oh look, Big Ben',on:['phc','rsc'],d:'Seeing a landmark uses the <b>parahippocampal cortex</b> (recognizing places and scenes) and the <b>retrosplenial cortex</b> (working out which way you\'re facing from it).'},
+    {ic:'<svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="#231d3b" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 15a4.5 4.5 0 0 1 .5-9 5.5 5.5 0 0 1 10.5 1 4 4 0 0 1 0 8Z"/><circle cx="7" cy="19" r="1.4"/><circle cx="4.5" cy="22" r=".9"/></svg>',lab:'Passenger',t:'"Is my passenger in a rush?"',on:['mpfc','tpj'],d:'Thinking about what the passenger wants uses the brain\'s <b>"other minds" network</b>, including the medial prefrontal cortex and the temporoparietal junction. These have nothing to do with maps.'},
+    {ic:'<svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="#231d3b" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="7" y="2" width="10" height="20" rx="2.5"/><path d="M10 15l2-6 2 6-2-1.2Z" fill="#231d3b"/></svg>',lab:'Sat-nav',t:'Just follow the sat-nav',on:[],d:'When people simply followed directions, the hippocampus and prefrontal cortex <b>stopped tracking the street layout</b>. Nothing to plan, so they stay quiet. Cabbies aren\'t allowed to use sat-nav during the Knowledge.'}
+  ];
+  const stops=$('stops');let cur=0,timer=null;
+  const bs=EV.map((e,i)=>{const b=document.createElement('button');b.className='stop';b.innerHTML=`<span class="dot">${e.ic}</span><span class="l">${e.lab}</span>`;b.setAttribute('aria-label',e.lab);b.onclick=()=>{stopPlay();show(i)};stops.appendChild(b);return b;});
+  function show(i){cur=i;const e=EV[i];setPressed(bs,bs[i]);
+    svg.querySelectorAll('.spot').forEach(s=>s.classList.toggle('on',e.on.includes(s.dataset.s)));
+    $('spotLabs').innerHTML=e.on.map(k=>{const[x,y,rx,ry,t,anc,lx,ly]=SPOTS[k];return`<line class="lead" x1="${lx}" y1="${ly+(ly<y?4:-14)}" x2="${x}" y2="${y}"/><text class="spotlab" x="${lx}" y="${ly}" text-anchor="${anc}">${t}</text>`}).join('');
+    $('rideNote').innerHTML=`<p class="say">${e.t}</p>${e.d}`;}
+  function stopPlay(){clearInterval(timer);timer=null;$('ridePlay').textContent='▶ Play the whole ride';}
+  $('ridePlay').onclick=()=>{if(timer){stopPlay();return;}show(0);$('ridePlay').textContent='■ Stop';timer=setInterval(()=>{if(cur>=EV.length-1){stopPlay();return;}show(cur+1);},4200);};
+  show(0);
+})();
+
+/* ================= quiz ================= */
+(()=>{
+  const Q=[
+    ["Which part of the hippocampus was bigger in London taxi drivers?",["The front (anterior) end","The back (posterior) end","The whole thing, evenly","Neither; only the amygdala changed"],1,"The posterior hippocampus had more gray matter, and more with each year of driving. The anterior end was slightly smaller."],
+    ["Why did researchers compare taxi drivers with bus drivers?",["Bus drivers are older","Bus drivers drive as much, with the same stress, but follow fixed routes","Bus drivers can't use sat-nav","Bus drivers have smaller brains"],1,"Bus drivers matched the driving and stress, but don't need a mental map. Only the taxi drivers showed the change, so the map is what mattered."],
+    ["How did scientists show that the Knowledge caused the change, rather than people with a big hippocampus choosing to be cabbies?",["They scanned trainees before and after training","They asked drivers about their childhood","They measured the size of drivers' heads","They scanned drivers once, after retirement"],0,"Woollett and Maguire scanned trainees on day one (no differences) and 3–4 years later. Only those who qualified showed growth."],
+    ["Why is navigating London so hard compared with a grid city?",["London has more cars","London's streets have no regular grid, so routes can't be worked out from coordinates","London has no street names","London's streets are all one-way"],1,"On a grid you can compute a route from the numbers. In London's tangle, you have to memorize the network itself."],
+    ["Grid cells, which fire in a triangular pattern across space, are found mainly in the…",["Entorhinal cortex","Amygdala","Cerebellum","Primary visual cortex"],0,"Grid cells live in the entorhinal cortex, the hippocampus's doorway. Place cells are in the hippocampus itself."],
+    ["Why does the brain use grid cells of several different sizes?",["Bigger ones are faster","Each size repeats, but together they pin down one location","Small ones are for day and big ones for night","Each size handles a different city"],1,"One grid size alone is ambiguous because its pattern repeats. Where several sizes agree, there's only one spot left."],
+    ["Place cells at the back (posterior) end of the hippocampus tend to have…",["Huge fields covering a whole neighborhood","Small fields, giving fine detail","No fields at all","Fields only for faces"],1,"Posterior fields are small (fine detail); anterior fields are big (gist and big picture). Cabbies grew the fine-detail end."],
+    ["What happened to the newly qualified cabbies' memory for a complicated new drawing?",["It got much better","It got worse","It didn't change at all","They couldn't see the drawing"],1,"They got worse at remembering new complex visual information. One idea is that there's a trade-off, but the reason isn't known for sure."],
+    ["When people just followed sat-nav directions, their hippocampus…",["Worked harder than ever","Stopped tracking the street layout","Shrank immediately","Took over vision"],1,"With nothing to plan, the hippocampus and prefrontal cortex stopped tracking the streets (Javadi et al., 2017)."],
+    ["Priya's memory of Hatton Garden comes back in a flash from just the street name. Which hippocampal area is thought to fill in the whole memory from one piece?",["CA3","Cerebellum","Dentate gyrus","Primary motor cortex"],0,"CA3's looping connections are thought to do 'pattern completion': one cue reactivates the whole memory."]
+  ];
+  let qi=0;const ans={};
+  function show(){const[q,o,r,why]=Q[qi];$('qText').textContent=q;$('qCount').textContent=`${qi+1} / ${Q.length}`;$('qWhy').textContent=ans[qi]!==undefined?(ans[qi]===r?'Yes! ':'Not quite. ')+why:'';$('qOpts').innerHTML='';
+    o.forEach((t,i)=>{const b=document.createElement('button');b.textContent=String.fromCharCode(65+i)+')  '+t;if(ans[qi]!==undefined){if(i===r)b.classList.add('right');else if(i===ans[qi])b.classList.add('wrong');}b.onclick=()=>{ans[qi]=i;show();};$('qOpts').appendChild(b);});}
+  $('qPrev').onclick=()=>{qi=(qi-1+Q.length)%Q.length;show()};$('qNext').onclick=()=>{qi=(qi+1)%Q.length;show()};show();
+})();
+
+$('copyBtn').onclick=()=>{const t=$('embedCode').textContent;if(navigator.clipboard)navigator.clipboard.writeText(t).then(()=>{$('copyBtn').textContent='Copied';setTimeout(()=>$('copyBtn').textContent='Copy',1500)},()=>{})};
+let rz;addEventListener('resize',()=>{clearTimeout(rz);rz=setTimeout(()=>redrawHooks.forEach(f=>f()),120)});
+if(store.get('memTheme')==='dark')setTheme(true);
+let prev=performance.now();
+function loop(now){const dt=Math.max(0,Math.min(.05,(now-prev)/1000));prev=now;frameHooks.forEach(f=>{try{f(dt)}catch(e){console.error(e)}});requestAnimationFrame(loop)}
+requestAnimationFrame(loop);
+})();
+</script>
+</body>
+</html>
