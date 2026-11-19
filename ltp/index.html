@@ -1,0 +1,1514 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>The Spine That Learned: LTP, LTD &amp; Plasticity</title>
+<link rel="icon" href="data:,">
+<meta name="description" content="Zoom in on one synapse and watch it learn: glutamate, AMPA and NMDA receptors, the magnesium cork, calcium, CaMKII, long-term potentiation (LTP), long-term depression (LTD), spike-timing, memory networks, growing spines and cortical maps. A NeuroSims learning and memory simulation.">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,400;12..96,600;12..96,800&family=Caveat:wght@500;700&family=Fraunces:ital,opsz,wght@0,9..144,600;0,9..144,900;1,9..144,500;1,9..144,800&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --ink:#2b2320; --paper:#f3ead8; --paper2:#eadfc7; --cream:#fbf5e8; --muted:#6b5e53;
+    --tom:#e4572e; --mus:#f2b134; --teal:#1f7a74; --cob:#2f5d9e; --nm:#86a9d9; --blush:#f2b8a2; --butter:#f7dc9a; --sage:#8fbf6f;
+    --disp:"Fraunces",Georgia,"Times New Roman",serif;
+    --body:"Bricolage Grotesque",system-ui,-apple-system,"Segoe UI",sans-serif;
+    --hand:"Caveat","Comic Sans MS",cursive;
+    --mono:ui-monospace,"SF Mono",Menlo,Consolas,monospace;
+    color-scheme:light;
+  }
+  *{box-sizing:border-box}
+  html{-webkit-text-size-adjust:100%;scroll-behavior:smooth}
+  body{margin:0;color:var(--ink);font-family:var(--body);font-size:17px;line-height:1.55;-webkit-font-smoothing:antialiased;overflow-x:hidden;
+    background-color:var(--paper);
+    background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='240' height='240'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='.8' numOctaves='3' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 .17 0 0 0 0 .13 0 0 0 0 .1 0 0 0 .11 0'/></filter><rect width='100%' height='100%' filter='url(%23n)'/></svg>");}
+  a{color:var(--cob);text-decoration-thickness:2px;text-underline-offset:3px}
+  a:hover{color:var(--tom)}
+  :focus-visible{outline:3px solid var(--tom);outline-offset:3px}
+  ::selection{background:var(--mus)}
+  sup,sub{line-height:0}
+
+  /* top bar */
+  .topbar{position:sticky;top:0;z-index:30;display:flex;align-items:center;gap:12px;padding:8px 20px;background:color-mix(in srgb,var(--paper) 90%,transparent);backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px);border-bottom:2px solid var(--ink)}
+  .back{font-size:.85rem;font-weight:600;color:var(--ink);text-decoration:none;white-space:nowrap}
+  .back:hover{color:var(--tom)}
+  .chaps{display:flex;gap:6px;overflow-x:auto;scrollbar-width:none;flex:1;min-width:0;padding:2px}
+  .chaps::-webkit-scrollbar{display:none}
+  .chaps a{flex:0 0 auto;font-size:.8rem;font-weight:600;color:var(--ink);text-decoration:none;border:2px solid var(--ink);border-radius:999px;padding:3px 11px;background:var(--cream);white-space:nowrap}
+  .chaps a b{font-family:var(--disp);font-style:italic;color:var(--tom);margin-right:3px}
+  .chaps a.on{background:var(--ink);color:var(--cream)}
+  .chaps a.on b{color:var(--mus)}
+  .tiny{font:600 .8rem var(--body);border:2px solid var(--ink);border-radius:999px;background:var(--cream);color:var(--ink);padding:5px 12px;cursor:pointer;white-space:nowrap;min-height:34px}
+  .tiny[aria-pressed="true"]{background:var(--mus)}
+
+  .wrap{max-width:1180px;margin:0 auto;padding:0 20px 40px}
+
+  /* hero */
+  .hero{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.08fr);gap:36px;align-items:center;padding:42px 0 30px}
+  .kick{font:700 1.35rem/1 var(--hand);color:var(--tom);margin:0 0 10px;transform:rotate(-2deg);display:inline-block}
+  .hero h1{font-family:var(--disp);font-weight:900;font-size:clamp(48px,7.4vw,98px);line-height:.92;letter-spacing:-.025em;margin:0 0 14px}
+  .hero h1 em{font-style:italic;font-weight:800;color:var(--tom);position:relative;white-space:nowrap}
+  .hero h1 em svg{position:absolute;left:-2%;bottom:-.16em;width:104%;height:.3em;overflow:visible}
+  .hero .sub{font-family:var(--disp);font-style:italic;font-weight:500;font-size:clamp(19px,2vw,25px);margin:0 0 16px;color:var(--ink)}
+  .lede{font-size:1.06rem;max-width:56ch;margin:0 0 14px}
+  .start{font-size:.95rem;background:var(--cream);border:2px dashed var(--ink);border-radius:16px 12px 18px 10px;padding:10px 14px;max-width:56ch;margin:0}
+  .hero-plate{transform:rotate(1deg)}
+  .hint{font:700 1.15rem/1.2 var(--hand);color:var(--muted);text-align:center;margin:6px 0 0}
+
+  /* chapters */
+  .ch{padding:56px 0 18px;scroll-margin-top:56px;position:relative}
+  .ch-head{display:grid;grid-template-columns:auto minmax(0,1fr);gap:4px 18px;align-items:end;margin-bottom:14px}
+  .num{font-family:var(--disp);font-weight:900;font-style:italic;font-size:clamp(64px,9vw,112px);line-height:.8;color:var(--cream);-webkit-text-stroke:2.5px var(--ink);text-shadow:5px 5px 0 var(--tint,var(--tom));grid-row:span 2}
+  .ch-kick{font:700 1.3rem/1 var(--hand);color:var(--tint,var(--tom));margin:0}
+  .ch h2{font-family:var(--disp);font-weight:900;font-size:clamp(30px,4.2vw,50px);line-height:1;letter-spacing:-.02em;margin:0}
+  .squig{display:block;width:180px;height:16px;margin:4px 0 18px}
+  .cols{display:grid;grid-template-columns:minmax(0,1.1fr) minmax(0,1fr);gap:18px 34px;margin-bottom:20px}
+  .plain{font-size:1.12rem;margin:0}
+  .plain::before{content:"In plain words";display:block;font:700 1.3rem/1 var(--hand);color:var(--tint,var(--tom));margin-bottom:4px}
+  .terms{font-size:.95rem;margin:0;background:color-mix(in srgb,var(--cream) 80%,transparent);border:2px solid var(--ink);border-radius:14px 20px 12px 18px;padding:12px 16px}
+  .terms::before{content:"The real terms";display:block;font:700 1.25rem/1 var(--hand);color:var(--muted);margin-bottom:4px}
+  .terms b{background:linear-gradient(transparent 58%,color-mix(in srgb,var(--tint,var(--mus)) 40%,transparent) 58%)}
+
+  .bench{display:grid;grid-template-columns:minmax(0,1.55fr) minmax(0,1fr);gap:22px;align-items:start}
+  .bench.even{grid-template-columns:minmax(0,1fr) minmax(0,1fr)}
+  .plate{background:var(--cream);border:2.5px solid var(--ink);border-radius:20px 26px 18px 24px/24px 18px 26px 20px;box-shadow:6px 7px 0 var(--ink);padding:10px;min-width:0;position:relative}
+  .plate + .plate{margin-top:20px}
+  canvas{display:block;width:100%;height:auto;touch-action:manipulation;-webkit-tap-highlight-color:transparent;user-select:none;-webkit-user-select:none}
+  canvas.drag{touch-action:pan-y;cursor:ew-resize}
+  canvas.tap{cursor:pointer}
+  .panel{min-width:0;display:grid;gap:14px;align-content:start}
+  .row{display:flex;flex-wrap:wrap;gap:10px}
+  .btn{font:700 .98rem/1.15 var(--body);min-height:46px;padding:10px 16px;border:2.5px solid var(--ink);border-radius:14px 10px 15px 9px;background:var(--cream);color:var(--ink);box-shadow:3px 3px 0 var(--ink);cursor:pointer;transition:transform .07s,box-shadow .07s,background .2s;touch-action:manipulation}
+  .btn:hover{background:#fff}
+  .btn:active,.btn.press{transform:translate(3px,3px);box-shadow:0 0 0 var(--ink)}
+  .btn.hot{background:var(--tom);color:#fff8ee}
+  .btn.cool{background:var(--cob);color:#fff8ee}
+  .btn.sun{background:var(--mus)}
+  .btn.hot:hover{background:#ec6a43}.btn.cool:hover{background:#3a6cb0}.btn.sun:hover{background:#f6bf52}
+  .btn[aria-pressed="true"]{background:var(--ink);color:var(--cream)}
+  .btn:disabled{opacity:.45;cursor:default}
+  .btn small{display:block;font-weight:600;font-size:.74rem;opacity:.85}
+  .seg{justify-self:start;max-width:100%;display:inline-flex;border:2.5px solid var(--ink);border-radius:999px;overflow:hidden;background:var(--cream);box-shadow:3px 3px 0 var(--ink)}
+  .seg button{font:700 .9rem var(--body);border:0;background:transparent;color:var(--ink);padding:9px 14px;min-height:42px;cursor:pointer}
+  .seg button + button{border-left:2px solid var(--ink)}
+  .seg button[aria-pressed="true"]{background:var(--ink);color:var(--cream)}
+  .card{background:var(--cream);border:2px solid var(--ink);border-radius:14px 18px 12px 16px;padding:12px 14px;font-size:.95rem}
+  .card h4{margin:0 0 4px;font:700 1.3rem/1.1 var(--hand);color:var(--tint,var(--tom))}
+  .card p{margin:0 0 6px}.card p:last-child{margin:0}
+  .card ol,.card ul{margin:2px 0 0;padding-left:1.25em}.card li{margin:2px 0}
+  .msg{font-size:1rem;min-height:3.2em;background:var(--ink);color:var(--cream);border-radius:12px 16px 10px 14px;padding:10px 14px}
+  .msg b{color:var(--mus)}
+  .stats{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px}
+  .stat{background:var(--cream);border:2px solid var(--ink);border-radius:12px;padding:6px 8px;text-align:center;min-width:0}
+  .stat span{display:block;font:700 1.05rem/1 var(--hand);color:var(--muted)}
+  .stat b{display:block;font-family:var(--disp);font-weight:900;font-size:1.6rem;line-height:1.1}
+  .legend{display:flex;flex-wrap:wrap;gap:6px 14px;font-size:.85rem;margin:8px 4px 2px}
+  .legend i{display:inline-block;width:12px;height:12px;border-radius:50%;border:1.5px solid var(--ink);vertical-align:-1px;margin-right:5px}
+  .legend i.dia{border-radius:2px;transform:rotate(45deg) scale(.8)}
+  .range{display:grid;gap:4px;font-size:.92rem}
+  .range label{font-weight:700}
+  input[type=range]{width:100%;accent-color:var(--tom);height:30px;margin:0}
+  .nb{display:grid;gap:8px}
+  .nb div{display:grid;grid-template-columns:30px minmax(0,1fr);gap:8px;align-items:start;background:var(--cream);border:2px dashed var(--ink);border-radius:12px;padding:8px 10px;font-size:.92rem}
+  .nb div.done{border-style:solid}
+  .nb div.yes{background:color-mix(in srgb,var(--tom) 14%,var(--cream))}
+  .nb .box{width:26px;height:26px;border:2.5px solid var(--ink);border-radius:6px 8px 5px 7px;display:grid;place-items:center;font:700 1.4rem/1 var(--hand);background:#fff}
+  .nb b{display:block}
+  .link{font-size:.95rem}
+  .callout{border-left:6px solid var(--tint,var(--tom));background:var(--cream);border-radius:0 14px 14px 0;padding:10px 14px;font-size:.98rem;margin:20px 0 0;max-width:80ch}
+
+  /* recap + quiz */
+  .recap{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:16px;margin:8px 0 34px}
+  .recap div{background:var(--cream);border:2.5px solid var(--ink);border-radius:18px 14px 20px 12px;padding:14px;box-shadow:4px 5px 0 var(--c,var(--tom))}
+  .recap div:nth-child(odd){transform:rotate(-.8deg)}.recap div:nth-child(even){transform:rotate(.7deg)}
+  .recap b{display:block;font-family:var(--disp);font-size:1.25rem;line-height:1.1;margin-bottom:6px}
+  .recap p{margin:0;font-size:.93rem}
+  .quiz{display:grid;gap:16px;max-width:860px}
+  .q{background:var(--cream);border:2.5px solid var(--ink);border-radius:18px 14px 20px 12px;padding:16px 18px}
+  .q h3{font-family:var(--disp);font-size:1.15rem;margin:0 0 10px;line-height:1.25}
+  .q h3 span{font:700 1.3rem var(--hand);color:var(--tom);margin-right:6px}
+  .opts{display:grid;gap:8px}
+  .opts button{font:600 .97rem/1.3 var(--body);text-align:left;background:#fff;color:var(--ink);border:2px solid var(--ink);border-radius:12px;padding:10px 14px;min-height:44px;cursor:pointer;box-shadow:2px 2px 0 var(--ink)}
+  .opts button:hover{background:var(--paper)}
+  .opts button.right{background:color-mix(in srgb,var(--sage) 45%,#fff)}
+  .opts button.wrong{background:color-mix(in srgb,var(--tom) 25%,#fff)}
+  .opts button:disabled{cursor:default}
+  .fb{margin:10px 0 0;font-size:.95rem;display:none}
+  .fb.show{display:block}
+  .score{font:700 1.6rem var(--hand);color:var(--tom)}
+
+  .foot{border-top:2px solid var(--ink);margin-top:50px;padding-top:20px;font-size:.86rem;color:var(--muted)}
+  .embed{display:flex;flex-wrap:wrap;gap:8px;align-items:center}
+  .embed code{font-family:var(--mono);font-size:.75rem;background:var(--cream);border:1.5px solid var(--ink);border-radius:6px;padding:6px 8px;overflow-x:auto;max-width:100%;white-space:nowrap}
+  .embed button{font:700 .8rem var(--body);background:var(--mus);color:var(--ink);border:2px solid var(--ink);border-radius:999px;padding:5px 14px;cursor:pointer;min-height:34px}
+  .refs{padding-left:1.2em;margin:4px 0 12px}.refs li{margin:3px 0}
+
+  @media (max-width:900px){
+    .hero{grid-template-columns:1fr;gap:20px;padding-top:26px}
+    .bench,.bench.even,.cols{grid-template-columns:1fr}
+    .recap{grid-template-columns:repeat(2,minmax(0,1fr))}
+  }
+  @media (max-width:560px){
+    body{font-size:16px}
+    .wrap{padding:0 14px 30px}
+    .topbar{padding:7px 12px;gap:8px}
+    .back{font-size:.78rem}
+    .recap{grid-template-columns:1fr}
+    .plate{padding:6px;box-shadow:4px 5px 0 var(--ink)}
+    .ch{padding-top:40px}
+    .ch-head{gap:2px 12px}
+    .stat b{font-size:1.3rem}
+    .btn{padding:9px 13px;font-size:.93rem}
+    .seg button{padding:8px 10px;font-size:.84rem}
+  }
+  @media (prefers-reduced-motion:reduce){
+    html{scroll-behavior:auto}
+    .btn,.hero-plate{transition:none;transform:none}
+  }
+
+  /* thumbnail mode: just the hero, 900 x 600 */
+  html.thumb body{width:900px;height:600px;overflow:hidden}
+  html.thumb .topbar,html.thumb .ch,html.thumb .foot,html.thumb .lede,html.thumb .start,html.thumb .hint{display:none}
+  html.thumb .wrap{padding:0 34px;max-width:none}
+  html.thumb .hero{grid-template-columns:330px 1fr;gap:26px;padding:0;height:600px}
+  html.thumb .hero h1{font-size:76px}
+  html.thumb .hero .sub{font-size:23px}
+  html.thumb .kick{font-size:25px}
+</style>
+</head>
+<body>
+<header class="topbar">
+  <a class="back" href="../">&larr; All NeuroSims</a>
+  <nav class="chaps" aria-label="Chapters">
+    <a href="#c1"><b>1</b>Synapse</a>
+    <a href="#c2"><b>2</b>Two keys</a>
+    <a href="#c3"><b>3</b>LTP</a>
+    <a href="#c4"><b>4</b>LTD</a>
+    <a href="#c5"><b>5</b>Timing</a>
+    <a href="#c6"><b>6</b>Memories</a>
+    <a href="#c7"><b>7</b>Rewiring</a>
+    <a href="#c8"><b>8</b>Check</a>
+  </nav>
+  <button class="tiny" id="sndBtn" aria-pressed="false">Sound: off</button>
+</header>
+
+<main class="wrap">
+
+<section class="hero" id="top">
+  <div>
+    <p class="kick">NeuroSims &middot; learning &amp; memory</p>
+    <h1>The Spine<br>That <em>Learned<svg viewBox="0 0 200 20" preserveAspectRatio="none" aria-hidden="true"><path d="M3 12 C 40 4, 70 18, 105 10 S 165 4, 197 11" fill="none" stroke="#2b2320" stroke-width="4" stroke-linecap="round"/></svg></em></h1>
+    <p class="sub">LTP, LTD and the plastic brain, one synapse at a time</p>
+    <p class="lede">Everything you have ever learned, from your best friend's face to how to ride a bike, is stored as changes in <b>synapses</b>, the tiny junctions where neurons talk. Learning makes some of them stronger and others weaker. Zoom in on one synapse, poke it, and watch it learn.</p>
+    <p class="start"><b>New to this?</b> Start with <a href="../learning/">The Learning Brain</a> (Hebb's rule, Pavlov, the sea slug). This sim zooms in on the molecules.</p>
+  </div>
+  <div class="plate hero-plate">
+    <canvas id="heroCv" class="tap" role="img" aria-label="A drawing of a synapse: the sending terminal releases glutamate onto a dendritic spine covered in AMPA and NMDA receptors"></canvas>
+    <p class="hint">tap the synapse to fire it</p>
+  </div>
+</section>
+
+<!-- 1 -->
+<section class="ch" id="c1" style="--tint:var(--teal)">
+  <div class="ch-head"><div class="num">1</div><p class="ch-kick">the scene</p><h2>One synapse, up close</h2></div>
+  <svg class="squig" viewBox="0 0 180 16" aria-hidden="true"><path d="M2 9 q 11 -9 22 0 t 22 0 t 22 0 t 22 0 t 22 0 t 22 0 t 22 0 t 22 0" fill="none" stroke="var(--teal)" stroke-width="3.5" stroke-linecap="round"/></svg>
+  <div class="cols">
+    <p class="plain">A signal reaches the end of the sending neuron. It squirts a chemical messenger, <b>glutamate</b>, across a tiny gap onto a little bump on the receiving neuron. Little doors in the bump pop open, positive ions rush in, and the receiving neuron gets a small nudge of voltage.</p>
+    <p class="terms">The sending side is the <b>presynaptic terminal</b>; glutamate waits inside <b>vesicles</b>. The gap is the <b>synaptic cleft</b>. The bump is a <b>dendritic spine</b>. Its <b>AMPA receptors</b> open when glutamate binds and let <b>Na⁺</b> in. The small voltage bump is an <b>EPSP</b> (excitatory postsynaptic potential). Most excitatory synapses in the brain work like this.</p>
+  </div>
+  <div class="bench">
+    <div class="plate">
+      <canvas id="c1Cv" class="tap" role="img" aria-label="Animated synapse. Each spike releases glutamate that opens AMPA receptors."></canvas>
+      <div class="legend"><span><i class="dia" style="background:var(--teal)"></i>glutamate</span><span><i style="background:var(--mus)"></i>Na⁺</span><span><i style="background:var(--tom)"></i>Ca²⁺</span><span><i style="background:var(--cob)"></i>Mg²⁺ cork</span></div>
+    </div>
+    <div class="panel">
+      <div class="row">
+        <button class="btn hot" id="c1Fire">Fire one spike</button>
+        <button class="btn" id="c1Three">Fire 3, fast</button>
+      </div>
+      <div class="plate" style="padding:6px"><canvas id="c1Scope" role="img" aria-label="Live voltage of the spine over the last five seconds"></canvas></div>
+      <div class="msg" id="c1Msg">Tap <b>Fire one spike</b> (or the drawing itself). Watch glutamate land, the green AMPA gates open and yellow Na⁺ pour in. The trace shows the little voltage bump.</div>
+      <div class="card"><h4>Look closer</h4><p>Glutamate also lands on the blue <b>NMDA receptors</b>, but they stay shut. A magnesium ion (Mg²⁺) sits in their pore like a cork. One small EPSP is not enough to shift it. Why does that matter? Chapter 2.</p></div>
+    </div>
+  </div>
+</section>
+
+<!-- 2 -->
+<section class="ch" id="c2" style="--tint:var(--cob)">
+  <div class="ch-head"><div class="num">2</div><p class="ch-kick">the coincidence detector</p><h2>The door that needs two keys</h2></div>
+  <svg class="squig" viewBox="0 0 180 16" aria-hidden="true"><path d="M2 9 q 11 -9 22 0 t 22 0 t 22 0 t 22 0 t 22 0 t 22 0 t 22 0 t 22 0" fill="none" stroke="var(--cob)" stroke-width="3.5" stroke-linecap="round"/></svg>
+  <div class="cols">
+    <p class="plain">The NMDA receptor only lets calcium in when two things happen at the same moment: <b>the sending neuron fired</b> (so glutamate is stuck on it) and <b>the receiving neuron is already excited</b> (so the inside of the spine is less negative). The excitement pushes the magnesium cork out. Only with both keys does the door open, and calcium floods in.</p>
+    <p class="terms">At rest (about −70 mV) <b>Mg²⁺</b> blocks the NMDA channel. <b>Depolarization</b> repels the positive Mg²⁺ out of the pore. With glutamate bound <i>and</i> the block removed, the channel passes <b>Ca²⁺</b> (and Na⁺). Because it needs pre <i>and</i> post activity, the NMDA receptor is a <b>coincidence detector</b>: Hebb's "fire together, wire together" built into one molecule.</p>
+  </div>
+  <div class="bench">
+    <div class="plate"><canvas id="c2Cv" role="img" aria-label="Zoomed-in membrane with one AMPA receptor and one NMDA receptor with a magnesium cork, and a voltage dial"></canvas></div>
+    <div class="panel">
+      <div class="row">
+        <button class="btn" id="c2Pre">Glutamate only<small>sending neuron fires</small></button>
+        <button class="btn" id="c2Post">Depolarize only<small>receiving neuron fires</small></button>
+        <button class="btn hot" id="c2Both">Both together</button>
+      </div>
+      <div class="range"><label for="c2V">Or hold the spine's voltage yourself: <span id="c2Vv">−70 mV</span></label><input type="range" id="c2V" min="-80" max="0" step="1" value="-70"></div>
+      <div class="msg" id="c2Msg">Try all three buttons and fill in the lab notebook.</div>
+      <div class="nb" aria-live="polite">
+        <div id="nbPre"><span class="box"></span><span><b>Glutamate only</b><span class="r">not tried yet</span></span></div>
+        <div id="nbPost"><span class="box"></span><span><b>Depolarize only</b><span class="r">not tried yet</span></span></div>
+        <div id="nbBoth"><span class="box"></span><span><b>Both together</b><span class="r">not tried yet</span></span></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- 3 -->
+<section class="ch" id="c3" style="--tint:var(--tom)">
+  <div class="ch-head"><div class="num">3</div><p class="ch-kick">long-term potentiation</p><h2>Fire together, wire together: LTP</h2></div>
+  <svg class="squig" viewBox="0 0 180 16" aria-hidden="true"><path d="M2 9 q 11 -9 22 0 t 22 0 t 22 0 t 22 0 t 22 0 t 22 0 t 22 0 t 22 0" fill="none" stroke="var(--tom)" stroke-width="3.5" stroke-linecap="round"/></svg>
+  <div class="cols">
+    <p class="plain">Hit the synapse with a short, intense burst and something lasting happens. The spine stays excited, the corks pop, and a big wave of calcium rushes in. Calcium flips a molecular switch, and the spine rebuilds itself: <b>more receptor doors</b>, <b>better doors</b>, and a <b>bigger spine</b>. Afterwards the very same input gives a bigger response, for hours or longer. That is a memory trace in the making.</p>
+    <p class="terms">A <b>high-frequency</b> burst (a "tetanus", e.g. 100 pulses in 1 s) causes <b>long-term potentiation (LTP)</b>, first shown by Bliss and Lømo (1973). Big Ca²⁺ activates <b>CaMKII</b>, an enzyme that can keep itself switched on by adding phosphates to itself. CaMKII phosphorylates AMPA receptors so they pass more current, and extra AMPA receptors are <b>inserted</b> into the membrane from stores inside the spine. The spine head <b>enlarges</b>. Early LTP (the first hour or so) uses proteins already present; <b>late LTP</b>, lasting days, needs <b>new protein synthesis</b>.</p>
+  </div>
+  <div class="bench">
+    <div class="plate">
+      <canvas id="c3Cv" class="tap" role="img" aria-label="Synapse with a calcium meter, CaMKII, phosphatase and spare AMPA receptors inside the spine"></canvas>
+      <div class="legend"><span><i class="dia" style="background:var(--teal)"></i>glutamate</span><span><i style="background:var(--mus)"></i>Na⁺</span><span><i style="background:var(--tom)"></i>Ca²⁺</span><span><i style="background:var(--cob)"></i>Mg²⁺</span><span><i style="background:var(--mus);border-radius:3px"></i>P = phosphate tag</span></div>
+    </div>
+    <div class="panel">
+      <div class="row">
+        <button class="btn" id="c3Test">Test pulse</button>
+        <button class="btn hot" id="c3Hfs">100 Hz burst<small>high-frequency stimulation</small></button>
+      </div>
+      <div class="stats"><div class="stat"><span>strength</span><b id="c3Str">100%</b></div><div class="stat"><span>AMPA doors</span><b id="c3Amp">4</b></div><div class="stat"><span>spine size</span><b id="c3Sp">100%</b></div></div>
+      <div class="msg" id="c3Msg">This is a live experiment. A test pulse goes in every "minute" and the plot below records the response. Collect a flat baseline, then hit the <b>100 Hz burst</b>.</div>
+      <div class="row">
+        <button class="btn" id="c3Apv" aria-pressed="false">Block NMDA (APV)</button>
+        <button class="btn" id="c3Aniso" aria-pressed="false">Block protein synthesis</button>
+        <button class="btn sun" id="c3Skip">Skip ahead 3 hours</button>
+        <button class="btn" id="c3Reset">Reset</button>
+      </div>
+    </div>
+  </div>
+  <div class="bench" style="margin-top:22px">
+    <div class="plate"><canvas id="c3Plot" role="img" aria-label="Plot of response size as a percent of baseline over time, like a real LTP experiment"></canvas></div>
+    <div class="panel"><div class="card"><h4>Experiments to try</h4><ol>
+      <li>Burst once, and watch the plot jump to a new plateau and stay there.</li>
+      <li>Burst again, and again. LTP <b>saturates</b>: there is a ceiling.</li>
+      <li>Reset, turn on <b>APV</b>, then burst. Test pulses still work (AMPA is fine), but no LTP.</li>
+      <li>Reset, <b>block protein synthesis</b>, burst, then skip ahead 3 hours. Early LTP happens, then fades.</li>
+    </ol></div>
+    <div class="card"><h4>Why the spine "remembers"</h4><p>The calcium is gone within seconds, but the change stays. CaMKII adds phosphates to itself, so it stays active after the calcium leaves, and the extra receptors stay put. Making the change last for days takes new proteins, made from genes switched on by the same signals.</p></div>
+  </div></div>
+</section>
+
+<!-- 4 -->
+<section class="ch" id="c4" style="--tint:var(--cob)">
+  <div class="ch-head"><div class="num">4</div><p class="ch-kick">long-term depression</p><h2>Out of sync, lose your link: LTD</h2></div>
+  <svg class="squig" viewBox="0 0 180 16" aria-hidden="true"><path d="M2 9 q 11 -9 22 0 t 22 0 t 22 0 t 22 0 t 22 0 t 22 0 t 22 0 t 22 0" fill="none" stroke="var(--cob)" stroke-width="3.5" stroke-linecap="round"/></svg>
+  <div class="cols">
+    <p class="plain">If synapses could only get stronger, they would all max out and nothing new could be stored. So synapses can also get <b>weaker</b>. Slow, steady, unremarkable activity lets in just a <b>little calcium, for a long time</b>. That calls in a different crew of enzymes, which pull receptor doors back inside. The response shrinks, and so does the spine.</p>
+    <p class="terms"><b>Low-frequency stimulation</b> (1 Hz for 15 minutes, as in Dudek &amp; Bear, 1992) causes <b>long-term depression (LTD)</b>. A modest, prolonged rise in Ca²⁺ activates <b>phosphatases</b> (<b>calcineurin</b> and <b>PP1</b>), which remove phosphates and trigger <b>endocytosis</b> of AMPA receptors. Which way a synapse goes depends on the calcium signal: a little does nothing, a moderate long rise gives LTD, a big fast rise gives LTP. This is the <b>calcium control hypothesis</b> (related to the BCM theory).</p>
+  </div>
+  <div class="bench">
+    <div class="plate">
+      <canvas id="c4Cv" class="tap" role="img" aria-label="Synapse used for the LTD experiment"></canvas>
+    </div>
+    <div class="panel">
+      <div class="row">
+        <button class="btn" id="c4Test">Test pulse</button>
+        <button class="btn cool" id="c4Lfs">1 Hz for 15 min<small>low-frequency, sped up</small></button>
+        <button class="btn hot" id="c4Hfs">100 Hz burst</button>
+        <button class="btn" id="c4Reset">Reset</button>
+      </div>
+      <div class="stats"><div class="stat"><span>strength</span><b id="c4Str">100%</b></div><div class="stat"><span>AMPA doors</span><b id="c4Amp">4</b></div><div class="stat"><span>spine size</span><b id="c4Sp">100%</b></div></div>
+      <div class="msg" id="c4Msg">Press <b>1 Hz for 15 min</b>. Watch the calcium meter on the left of the drawing: it sits in the blue LTD zone, the phosphatase wakes up, and AMPA doors get pulled inside.</div>
+    </div>
+  </div>
+  <div class="bench even" style="margin-top:22px">
+    <div class="plate"><canvas id="c4Plot" role="img" aria-label="Plot of response size over time for the LTD experiment"></canvas></div>
+    <div class="plate"><canvas id="c4Rule" class="drag" role="img" aria-label="The calcium rule: change in synaptic strength plotted against calcium level. Low calcium gives no change, moderate gives LTD, high gives LTP. Drag along the curve."></canvas>
+      <p class="hint" id="c4RuleMsg" style="font-size:1.05rem;color:var(--ink)">The dot follows the spine's live calcium. Drag along the curve to explore.</p></div>
+  </div>
+  <p class="callout">LTD is not "damage". It is just as much a part of learning as LTP: it clears space, sharpens which inputs matter, and is essential for some kinds of learning (for example, motor learning in the cerebellum depends on LTD). LTP and LTD also undo each other: slow stimulation after a burst can reverse LTP (called <b>depotentiation</b>). Try it: burst, then 1 Hz.</p>
+</section>
+
+<!-- 5 -->
+<section class="ch" id="c5" style="--tint:var(--teal)">
+  <div class="ch-head"><div class="num">5</div><p class="ch-kick">spike-timing-dependent plasticity</p><h2>Timing is everything</h2></div>
+  <svg class="squig" viewBox="0 0 180 16" aria-hidden="true"><path d="M2 9 q 11 -9 22 0 t 22 0 t 22 0 t 22 0 t 22 0 t 22 0 t 22 0 t 22 0" fill="none" stroke="var(--teal)" stroke-width="3.5" stroke-linecap="round"/></svg>
+  <div class="cols">
+    <p class="plain">Order matters, down to the millisecond. If the sending neuron fires <b>just before</b> the receiving neuron, it probably helped make it fire, so the connection gets stronger. If it fires <b>just after</b>, it was too late to matter, and the connection gets weaker. Hebb's rule, with a stopwatch.</p>
+    <p class="terms">This is <b>spike-timing-dependent plasticity (STDP)</b> (Markram et al., 1997; Bi &amp; Poo, 1998). <b>Pre before post</b> (Δt &gt; 0): glutamate is already bound when the receiving neuron's spike travels back into the dendrite, so the Mg²⁺ cork pops and lots of Ca²⁺ enters, giving LTP. <b>Post before pre</b> (Δt &lt; 0): the spike is over before glutamate arrives, so only a little Ca²⁺ gets in, giving LTD. The effect fades over a few tens of milliseconds.</p>
+  </div>
+  <div class="bench">
+    <div class="plate"><canvas id="c5Cv" class="drag" role="img" aria-label="Two spike trains, pre and post, with a draggable receiving spike, and the STDP window curve below"></canvas></div>
+    <div class="panel">
+      <div class="range"><label for="c5R">Receiving spike timing: <span id="c5Rv">+15 ms</span></label><input type="range" id="c5R" min="-100" max="100" step="1" value="15"></div>
+      <div class="row"><button class="btn hot" id="c5Pair">Pair them 60 times</button><button class="btn" id="c5Reset">Reset</button></div>
+      <div class="plate" style="padding:6px"><canvas id="c5Sp" role="img" aria-label="The synapse's spine, which grows or shrinks with its strength"></canvas></div>
+      <div class="msg" id="c5Msg">Drag the red receiving spike (or use the slider), then pair them. Each run adds a dot to the plot, like a real experiment.</div>
+    </div>
+  </div>
+</section>
+
+<!-- 6 -->
+<section class="ch" id="c6" style="--tint:var(--tom)">
+  <div class="ch-head"><div class="num">6</div><p class="ch-kick">from synapses to memories</p><h2>A memory is a team of neurons</h2></div>
+  <svg class="squig" viewBox="0 0 180 16" aria-hidden="true"><path d="M2 9 q 11 -9 22 0 t 22 0 t 22 0 t 22 0 t 22 0 t 22 0 t 22 0 t 22 0" fill="none" stroke="var(--tom)" stroke-width="3.5" stroke-linecap="round"/></svg>
+  <div class="cols">
+    <p class="plain">A memory is not stored in one synapse. It is a <b>pattern</b>: a team of neurons that were active together and, thanks to LTP, are now strongly wired to each other. Later, a small piece of the experience, like a smell, can light up one member of the team, and the strong links bring back the rest. Links that are never used weaken and can be removed.</p>
+    <p class="terms">Hebb called such a team a <b>cell assembly</b>; today a stored memory trace is often called an <b>engram</b>. Bringing back a whole pattern from part of it is <b>pattern completion</b>, something the hippocampus is thought to be especially good at. Weak, unused synapses can be eliminated, which is <b>synaptic pruning</b> (see <a href="../synaptic-pruning/">Synaptic Pruning</a>). This little network is a cartoon model, not a real circuit.</p>
+  </div>
+  <div class="bench">
+    <div class="plate"><canvas id="c6Cv" class="tap" role="img" aria-label="A network of ten neurons, each standing for one feature of an experience, linked by connections whose thickness shows their strength"></canvas></div>
+    <div class="panel">
+      <div class="seg" role="group" aria-label="What tapping a neuron does"><button id="c6ModeCue" aria-pressed="true">Tap = cue a memory</button><button id="c6ModeBuild" aria-pressed="false">Tap = pick a team</button></div>
+      <div class="row">
+        <button class="btn hot" id="c6Kitchen">Live it: Grandma's kitchen</button>
+        <button class="btn cool" id="c6Beach">Live it: a day at the beach</button>
+        <button class="btn" id="c6Fire" disabled>Fire my team together</button>
+        <button class="btn sun" id="c6Month">A month passes</button>
+        <button class="btn" id="c6Reset">Reset</button>
+      </div>
+      <div class="msg" id="c6Msg">Tap "cinnamon". Nothing much happens: the links are weak. Now press <b>Live it: Grandma's kitchen</b> twice, then tap "cinnamon" again.</div>
+      <div class="card"><h4>Things to notice</h4><ul>
+        <li>One experience leaves weak links. A second one makes recall from a single cue possible.</li>
+        <li>"Summer" belongs to both memories, so cueing it can bring back both. Shared pieces cause blending.</li>
+        <li>After a month or two, unused links are pruned but practised ones survive.</li>
+      </ul></div>
+    </div>
+  </div>
+</section>
+
+<!-- 7 -->
+<section class="ch" id="c7" style="--tint:var(--teal)">
+  <div class="ch-head"><div class="num">7</div><p class="ch-kick">neuroplasticity, zoomed out</p><h2>The brain rewires itself</h2></div>
+  <svg class="squig" viewBox="0 0 180 16" aria-hidden="true"><path d="M2 9 q 11 -9 22 0 t 22 0 t 22 0 t 22 0 t 22 0 t 22 0 t 22 0 t 22 0" fill="none" stroke="var(--teal)" stroke-width="3.5" stroke-linecap="round"/></svg>
+  <div class="cols">
+    <p class="plain">LTP and LTD change how strong synapses are. Over days and weeks, the brain also changes its <b>shape</b>: new spines sprout and old ones vanish, and whole maps in the cortex shift towards whatever you use most. The general ability of the nervous system to change with experience is called <b>neuroplasticity</b>.</p>
+    <p class="terms"><b>Structural plasticity</b>: imaging of living mouse cortex shows that some spines appear and disappear every day, while most large spines last for months. Learning a new motor skill makes new spines grow, and some of them become stable (Xu et al., 2009; Yang et al., 2009). <b>Map plasticity</b>: in monkeys, training one fingertip enlarges its area in somatosensory cortex (Jenkins et al., 1990), and after a finger is lost its area is taken over by the neighbouring fingers (Merzenich et al., 1984).</p>
+  </div>
+  <h3 style="font-family:var(--disp);font-size:1.5rem;margin:6px 0 10px">A: Spines over a month</h3>
+  <div class="bench">
+    <div class="plate"><canvas id="c7aCv" role="img" aria-label="A stretch of dendrite with spines that appear, stabilize, or disappear day by day"></canvas></div>
+    <div class="panel">
+      <div class="seg" role="group" aria-label="What the animal is doing"><button id="c7Norm" aria-pressed="true">Ordinary life</button><button id="c7Learn" aria-pressed="false">Learning a new skill</button></div>
+      <div class="row"><button class="btn hot" id="c7Play">Play 30 days</button><button class="btn" id="c7Day">+1 day</button><button class="btn" id="c7aReset">Reset</button></div>
+      <div class="stats"><div class="stat"><span>day</span><b id="c7D">0</b></div><div class="stat"><span>spines born</span><b id="c7G">0</b></div><div class="stat"><span>spines lost</span><b id="c7L">0</b></div></div>
+      <div class="msg" id="c7aMsg">Red outlines are brand-new spines. Most new spines vanish within days; the ones that survive four days turn into stable mushroom spines. Compare a month of ordinary life with a month of learning.</div>
+    </div>
+  </div>
+  <h3 style="font-family:var(--disp);font-size:1.5rem;margin:34px 0 10px">B: The map in your cortex</h3>
+  <div class="bench">
+    <div class="plate"><canvas id="c7bCv" class="tap" role="img" aria-label="A hand with five fingers and the strip of touch cortex where each finger has its own territory"></canvas></div>
+    <div class="panel">
+      <div class="seg" role="group" aria-label="What tapping a finger does"><button id="c7Prac" aria-pressed="true">Tap = practise</button><button id="c7Lose" aria-pressed="false">Tap = lose finger</button></div>
+      <div class="row"><button class="btn" id="c7Rest">Stop practising for a while</button><button class="btn" id="c7bReset">Reset</button></div>
+      <div class="msg" id="c7bMsg">Tap the middle finger again and again (like a monkey trained to use one fingertip). Watch its territory spread into its neighbours'.</div>
+      <div class="card"><h4>Same idea, other places</h4><p>Musicians who started young have a larger hand area for their fingering hand. London taxi drivers who learned the city's streets have a larger back part of the hippocampus. Explore that story in <a href="../taxi-brain/">The Taxi Driver's Brain</a>.</p></div>
+    </div>
+  </div>
+</section>
+
+<!-- 8 -->
+<section class="ch" id="c8" style="--tint:var(--tom)">
+  <div class="ch-head"><div class="num">8</div><p class="ch-kick">the big picture</p><h2>What learning looks like in the brain</h2></div>
+  <svg class="squig" viewBox="0 0 180 16" aria-hidden="true"><path d="M2 9 q 11 -9 22 0 t 22 0 t 22 0 t 22 0 t 22 0 t 22 0 t 22 0 t 22 0" fill="none" stroke="var(--tom)" stroke-width="3.5" stroke-linecap="round"/></svg>
+  <div class="recap">
+    <div style="--c:var(--teal)"><b>1. Glutamate talks</b><p>Glutamate opens AMPA receptors: Na⁺ in, a small EPSP. NMDA receptors stay corked by Mg²⁺.</p></div>
+    <div style="--c:var(--cob)"><b>2. NMDA listens for teamwork</b><p>Glutamate + depolarization together pop the Mg²⁺ cork. Ca²⁺ enters. That is the "learn now" signal.</p></div>
+    <div style="--c:var(--tom)"><b>3. Lots of Ca²⁺ = LTP</b><p>Big, fast Ca²⁺ → CaMKII → more and better AMPA receptors, bigger spine. Lasting needs new proteins.</p></div>
+    <div style="--c:var(--mus)"><b>4. A little Ca²⁺ = LTD</b><p>Modest, long Ca²⁺ → phosphatases → AMPA receptors removed, smaller spine. Timing (STDP) sets the direction too.</p></div>
+  </div>
+  <p class="plain" style="max-width:75ch;margin-bottom:26px">Put together: experiences that make neurons fire together strengthen the links between them (LTP), links that do not fit get weaker (LTD), unused ones are pruned, and over weeks spines and whole maps reshape. <b>That is what learning looks like in the brain.</b></p>
+  <h3 style="font-family:var(--disp);font-size:1.6rem;margin:0 0 12px">Check yourself <span class="score" id="qScore"></span></h3>
+  <div class="quiz" id="quiz"></div>
+</section>
+
+<footer class="foot">
+  <p class="embed"><span>Embed:</span>
+    <code id="embedCode">&lt;iframe src="https://nelurad.github.io/neurosims/ltp/" width="100%" height="13000" style="border:0" title="The Spine That Learned: LTP, LTD &amp; Plasticity"&gt;&lt;/iframe&gt;</code>
+    <button id="copyBtn">Copy</button></p>
+  <p style="margin-bottom:2px">References</p>
+  <ul class="refs">
+    <li>Bi, G.-Q., &amp; Poo, M.-M. (1998). Synaptic modifications in cultured hippocampal neurons: Dependence on spike timing, synaptic strength, and postsynaptic cell type. <i>Journal of Neuroscience</i>, 18, 10464–10472.</li>
+    <li>Bliss, T. V. P., &amp; Lømo, T. (1973). Long-lasting potentiation of synaptic transmission in the dentate area of the anaesthetized rabbit following stimulation of the perforant path. <i>Journal of Physiology</i>, 232, 331–356.</li>
+    <li>Dudek, S. M., &amp; Bear, M. F. (1992). Homosynaptic long-term depression in area CA1 of hippocampus and effects of N-methyl-D-aspartate receptor blockade. <i>PNAS</i>, 89, 4363–4367.</li>
+    <li>Frey, U., Krug, M., Reymann, K. G., &amp; Matthies, H. (1988). Anisomycin, an inhibitor of protein synthesis, blocks late phases of LTP phenomena in the hippocampal CA1 region in vitro. <i>Brain Research</i>, 452, 57–65.</li>
+    <li>Jahr, C. E., &amp; Stevens, C. F. (1990). Voltage dependence of NMDA-activated macroscopic conductances predicted by single-channel kinetics. <i>Journal of Neuroscience</i>, 10, 3178–3182.</li>
+    <li>Jenkins, W. M., Merzenich, M. M., Ochs, M. T., Allard, T., &amp; Guíc-Robles, E. (1990). Functional reorganization of primary somatosensory cortex in adult owl monkeys after behaviorally controlled tactile stimulation. <i>Journal of Neurophysiology</i>, 63, 82–104.</li>
+    <li>Lisman, J. (1989). A mechanism for the Hebb and the anti-Hebb processes underlying learning and memory. <i>PNAS</i>, 86, 9574–9578.</li>
+    <li>Lisman, J., Schulman, H., &amp; Cline, H. (2002). The molecular basis of CaMKII function in synaptic and behavioural memory. <i>Nature Reviews Neuroscience</i>, 3, 175–190.</li>
+    <li>Malenka, R. C., &amp; Bear, M. F. (2004). LTP and LTD: An embarrassment of riches. <i>Neuron</i>, 44, 5–21.</li>
+    <li>Markram, H., Lübke, J., Frotscher, M., &amp; Sakmann, B. (1997). Regulation of synaptic efficacy by coincidence of postsynaptic APs and EPSPs. <i>Science</i>, 275, 213–215.</li>
+    <li>Matsuzaki, M., Honkura, N., Ellis-Davies, G. C. R., &amp; Kasai, H. (2004). Structural basis of long-term potentiation in single dendritic spines. <i>Nature</i>, 429, 761–766.</li>
+    <li>Merzenich, M. M., Nelson, R. J., Stryker, M. P., Cynader, M. S., Schoppmann, A., &amp; Zook, J. M. (1984). Somatosensory cortical map changes following digit amputation in adult monkeys. <i>Journal of Comparative Neurology</i>, 224, 591–605.</li>
+    <li>Nowak, L., Bregestovski, P., Ascher, P., Herbet, A., &amp; Prochiantz, A. (1984). Magnesium gates glutamate-activated channels in mouse central neurones. <i>Nature</i>, 307, 462–465.</li>
+    <li>Shouval, H. Z., Bear, M. F., &amp; Cooper, L. N. (2002). A unified model of NMDA receptor-dependent bidirectional synaptic plasticity. <i>PNAS</i>, 99, 10831–10836.</li>
+    <li>Xu, T., Yu, X., Perlik, A. J., et al. (2009). Rapid formation and selective stabilization of synapses for enduring motor memories. <i>Nature</i>, 462, 915–919.</li>
+    <li>Yang, G., Pan, F., &amp; Gan, W.-B. (2009). Stably maintained dendritic spines are associated with lifelong memories. <i>Nature</i>, 462, 920–924.</li>
+  </ul>
+  <p>All drawings and simulations are original, simplified illustrations. Numbers in the simulations (receptor counts, calcium levels, timings) are made to show the idea, not measured values; the 100 Hz burst and 1 Hz stimulation are slowed down or sped up so you can see them. The Mg²⁺ block follows the measured voltage dependence (Jahr &amp; Stevens, 1990), and the calcium rule follows the shape proposed by Shouval, Bear and Cooper (2002). Free to use, share and adapt with credit to "Nelu Radpour, NeuroSims." Content <a href="https://creativecommons.org/licenses/by/4.0/">CC BY 4.0</a>, code MIT. Spot a bug or an inaccuracy? <a href="https://github.com/nelurad/neurosims/issues">Open an issue</a>.</p>
+</footer>
+</main>
+<script>
+(() => {
+'use strict';
+const $ = id => document.getElementById(id);
+const RM = matchMedia('(prefers-reduced-motion: reduce)').matches;
+const THUMB = /[?&]thumb\b/.test(location.search);
+if (THUMB) document.documentElement.classList.add('thumb');
+
+const TAU = Math.PI * 2;
+const clamp = (v, a, b) => v < a ? a : v > b ? b : v;
+const lerp = (a, b, t) => a + (b - a) * t;
+const smooth = (a, b, x) => { const t = clamp((x - a) / (b - a), 0, 1); return t * t * (3 - 2 * t); };
+const ease = (dt, rate) => 1 - Math.exp(-dt * rate);
+const K = { ink:'#2b2320', paper:'#f3ead8', cream:'#fbf5e8', tom:'#e4572e', mus:'#f2b134', teal:'#1f7a74', cob:'#2f5d9e', nm:'#86a9d9', blush:'#f2b8a2', butter:'#f7dc9a', sage:'#8fbf6f', grey:'#b5aa98', muted:'#6b5e53' };
+const HAND = 'Caveat, "Comic Sans MS", cursive';
+
+function hash(i) { let h = Math.imul((i | 0) ^ 0x9e3779b9, 0x85ebca6b); h ^= h >>> 13; h = Math.imul(h, 0xc2b2ae35); h ^= h >>> 16; return (h >>> 0) / 4294967295 * 2 - 1; }
+let BOIL = 0, NOW = 0, HS = 1;
+const jit = k => RM ? 0 : hash(k * 31 + BOIL * 977);
+// Mg2+ unblock fraction at 1 mM Mg (Jahr & Stevens 1990)
+const Bmg = V => 1 / (1 + Math.exp(-0.062 * V) / 3.57);
+
+/* ---------- sound (off by default) ---------- */
+let SND = false, AC = null;
+function beep(f = 440, d = .08, type = 'sine', g = .04) {
+  if (!SND) return;
+  try {
+    AC = AC || new (window.AudioContext || window.webkitAudioContext)();
+    const o = AC.createOscillator(), gn = AC.createGain(), t = AC.currentTime;
+    o.type = type; o.frequency.setValueAtTime(f, t);
+    gn.gain.setValueAtTime(g, t); gn.gain.exponentialRampToValueAtTime(.0001, t + d);
+    o.connect(gn); gn.connect(AC.destination); o.start(t); o.stop(t + d + .03);
+  } catch (e) { /* ignore */ }
+}
+$('sndBtn').onclick = () => { SND = !SND; $('sndBtn').setAttribute('aria-pressed', SND); $('sndBtn').textContent = 'Sound: ' + (SND ? 'on' : 'off'); if (SND) beep(660, .1, 'triangle', .05); };
+
+/* ---------- canvas stage ---------- */
+class Stage {
+  constructor(cv, W, H) {
+    this.cv = cv; this.W = W; this.H = H; this.ctx = cv.getContext('2d'); this.k = 1;
+    cv.style.aspectRatio = W + ' / ' + H;
+    this.resize();
+    if (window.ResizeObserver) new ResizeObserver(() => this.resize()).observe(cv);
+  }
+  resize() {
+    const w = this.cv.clientWidth || this.W, d = Math.min(2, window.devicePixelRatio || 1);
+    const pw = Math.max(1, Math.round(w * d)), ph = Math.max(1, Math.round(w * this.H / this.W * d));
+    if (pw !== this.cv.width || ph !== this.cv.height) { this.cv.width = pw; this.cv.height = ph; }
+    this.k = this.cv.width / this.W;
+  }
+  begin() { HS = this.cv.clientWidth && this.cv.clientWidth < 480 ? 1.25 : 1; const c = this.ctx; c.setTransform(1, 0, 0, 1, 0, 0); c.clearRect(0, 0, this.cv.width, this.cv.height); c.setTransform(this.k, 0, 0, this.k, 0, 0); return c; }
+  pt(e) { const r = this.cv.getBoundingClientRect(); return [(e.clientX - r.left) / r.width * this.W, (e.clientY - r.top) / r.height * this.H]; }
+}
+
+/* ---------- widget loop: only visible widgets run ---------- */
+const widgets = [];
+const io = new IntersectionObserver(es => es.forEach(e => { if (e.target.__w) e.target.__w.forEach(w => { w.vis = e.isIntersecting; }); }), { rootMargin: '80px' });
+function reg(el, w) { w.vis = false; widgets.push(w); (el.__w = el.__w || []).push(w); io.observe(el); }
+let last = performance.now(), boilAcc = 0;
+function frame(t) {
+  const dt = Math.min(.05, Math.max(0, (t - last) / 1000)); last = t; NOW = t / 1000;
+  boilAcc += dt; if (boilAcc > .12) { boilAcc = 0; BOIL = (BOIL + 1) % 997; }
+  for (const w of widgets) if (w.vis) { w.step(dt); w.draw(); }
+  requestAnimationFrame(frame);
+}
+
+/* ---------- hand-drawn helpers ---------- */
+function path(c, pts, closed) {
+  const n = pts.length; if (n < 2) return;
+  c.beginPath();
+  if (closed) {
+    c.moveTo((pts[n - 1][0] + pts[0][0]) / 2, (pts[n - 1][1] + pts[0][1]) / 2);
+    for (let i = 0; i < n; i++) { const p = pts[i], q = pts[(i + 1) % n]; c.quadraticCurveTo(p[0], p[1], (p[0] + q[0]) / 2, (p[1] + q[1]) / 2); }
+    c.closePath();
+  } else {
+    c.moveTo(pts[0][0], pts[0][1]);
+    for (let i = 1; i < n - 1; i++) { const p = pts[i], q = pts[i + 1]; c.quadraticCurveTo(p[0], p[1], (p[0] + q[0]) / 2, (p[1] + q[1]) / 2); }
+    c.lineTo(pts[n - 1][0], pts[n - 1][1]);
+  }
+}
+function blobPts(cx, cy, rx, ry, n, irr, seed, amp = 1.2) {
+  const pts = [];
+  for (let i = 0; i < n; i++) { const a = i / n * TAU, r = 1 + irr * hash(seed * 101 + i); pts.push([cx + Math.cos(a) * rx * r + amp * jit(seed * 53 + i), cy + Math.sin(a) * ry * r + amp * jit(seed * 57 + i)]); }
+  return pts;
+}
+const hatchCache = new Map();
+function hatch(c, col) {
+  let cv = hatchCache.get(col);
+  if (!cv) { cv = document.createElement('canvas'); cv.width = cv.height = 7; const x = cv.getContext('2d'); x.strokeStyle = col; x.lineWidth = 1; x.beginPath(); x.moveTo(-1, 8); x.lineTo(8, -1); x.moveTo(-1, 1); x.lineTo(1, -1); x.moveTo(6, 8); x.lineTo(8, 6); x.stroke(); hatchCache.set(col, cv); }
+  return c.createPattern(cv, 'repeat');
+}
+// riso-style: colour fill slightly off-register, ink line on top
+function ink(c, fn, fill, o = {}) {
+  const off = o.off ?? 2.6;
+  if (fill) { c.save(); c.translate(off, off * .75); fn(); c.fillStyle = fill; c.globalAlpha = o.alpha ?? 1; c.fill(); c.restore(); }
+  if (o.hatch) { c.save(); fn(); c.clip(); c.globalAlpha = o.hatchA ?? .2; c.fillStyle = hatch(c, o.hatch); c.fillRect(-50, -50, 1200, 1200); c.restore(); }
+  if (o.stroke !== false) { fn(); c.lineWidth = o.lw ?? 2.4; c.strokeStyle = o.stroke || K.ink; c.lineJoin = 'round'; c.lineCap = 'round'; c.stroke(); }
+}
+function wline(c, pts, col = K.ink, lw = 2, seed = 1, amp = .8, dash) {
+  const p = pts.map((q, i) => [q[0] + amp * jit(seed + i * 7), q[1] + amp * jit(seed + i * 7 + 3)]);
+  path(c, p, false); c.strokeStyle = col; c.lineWidth = lw; c.lineCap = 'round'; c.lineJoin = 'round';
+  if (dash) c.setLineDash(dash); c.stroke(); if (dash) c.setLineDash([]);
+}
+const SUPMAP = { '²': '2', '³': '3', '⁺': '+', '⁻': '−' };
+function hand(c, txt, x, y, size = 19, col = K.ink, align = 'center', rot = 0, halo) {
+  c.save(); c.translate(x, y); c.rotate(rot); c.textBaseline = 'middle';
+  const parts = String(txt).split(/([²³⁺⁻]+)/).filter(Boolean).map(t => /^[²³⁺⁻]+$/.test(t) ? { t: t.replace(/[²³⁺⁻]/g, ch => SUPMAP[ch]), s: 1 } : { t, s: 0 });
+  size = Math.round(size * HS); const f = p => `700 ${p.s ? Math.round(size * .62) : size}px ${HAND}`;
+  let W = 0; parts.forEach(p => { c.font = f(p); p.w = c.measureText(p.t).width; W += p.w; });
+  let px = align === 'center' ? -W / 2 : align === 'right' ? -W : 0;
+  c.textAlign = 'left'; c.lineJoin = 'round';
+  for (const p of parts) {
+    c.font = f(p); const py = p.s ? -size * .3 : 0;
+    if (halo) { c.strokeStyle = halo; c.lineWidth = 5; c.strokeText(p.t, px, py); }
+    c.fillStyle = col; c.fillText(p.t, px, py); px += p.w;
+  }
+  c.restore();
+}
+function sans(c, txt, x, y, size = 12, col = K.ink, align = 'center', weight = 700) {
+  c.font = `${weight} ${size}px "Bricolage Grotesque", system-ui, sans-serif`; c.fillStyle = col; c.textAlign = align; c.textBaseline = 'middle'; c.fillText(txt, x, y);
+}
+function arrow(c, x1, y1, x2, y2, col = K.ink, seed = 1, bend = .18) {
+  const mx = (x1 + x2) / 2 + (y2 - y1) * bend, my = (y1 + y2) / 2 - (x2 - x1) * bend;
+  wline(c, [[x1, y1], [mx, my], [x2, y2]], col, 1.8, seed, .6);
+  const a = Math.atan2(y2 - my, x2 - mx);
+  c.beginPath(); c.moveTo(x2 - 9 * Math.cos(a - .45), y2 - 9 * Math.sin(a - .45)); c.lineTo(x2, y2); c.lineTo(x2 - 9 * Math.cos(a + .45), y2 - 9 * Math.sin(a + .45)); c.stroke();
+}
+function rrect(c, x, y, w, h, r) {
+  c.beginPath(); c.moveTo(x + r, y); c.lineTo(x + w - r, y); c.quadraticCurveTo(x + w, y, x + w, y + r); c.lineTo(x + w, y + h - r); c.quadraticCurveTo(x + w, y + h, x + w - r, y + h);
+  c.lineTo(x + r, y + h); c.quadraticCurveTo(x, y + h, x, y + h - r); c.lineTo(x, y + r); c.quadraticCurveTo(x, y, x + r, y); c.closePath();
+}
+function dot(c, x, y, r, fill, lw = 1.2) { c.beginPath(); c.arc(x, y, r, 0, TAU); c.fillStyle = fill; c.fill(); if (lw) { c.lineWidth = lw; c.strokeStyle = K.ink; c.stroke(); } }
+function diamond(c, x, y, r, fill) { c.beginPath(); c.moveTo(x, y - r); c.lineTo(x + r, y); c.lineTo(x, y + r); c.lineTo(x - r, y); c.closePath(); c.fillStyle = fill; c.fill(); c.lineWidth = 1; c.strokeStyle = K.ink; c.stroke(); }
+function eyes(c, x, y, mood, s = 1) {
+  c.save(); c.translate(x, y); c.scale(s, s); c.strokeStyle = K.ink; c.fillStyle = K.ink; c.lineWidth = 1.2; c.lineCap = 'round';
+  for (const sx of [-1.9, 1.9]) {
+    if (mood === 'happy') { c.beginPath(); c.arc(sx, .8, 1.3, Math.PI * 1.1, Math.PI * 1.9); c.stroke(); }
+    else if (mood === 'wow') { c.beginPath(); c.arc(sx, 0, 1.4, 0, TAU); c.fillStyle = '#fff'; c.fill(); c.stroke(); c.beginPath(); c.arc(sx, .2, .6, 0, TAU); c.fillStyle = K.ink; c.fill(); }
+    else if (mood === 'grr') { c.beginPath(); c.moveTo(sx - 1.3, -1 * Math.sign(-sx) - .2); c.lineTo(sx + 1.3, 1 * Math.sign(-sx) - .2); c.stroke(); c.beginPath(); c.arc(sx, .9, .65, 0, TAU); c.fill(); }
+    else { c.beginPath(); c.arc(sx, 0, .85, 0, TAU); c.fill(); }
+  }
+  c.restore();
+}
+function bump(el) { if (RM || !el) return; el.animate([{ transform: 'scale(1)' }, { transform: 'scale(1.012) rotate(-.3deg)' }, { transform: 'scale(1)' }], { duration: 220, easing: 'ease-out' }); }
+
+/* receptor characters. local frame: membrane at y=0, outside is -y */
+function drawRec(c, r, x, y, rot, sc, apv) {
+  c.save(); c.translate(x, y); c.rotate(rot); c.scale(sc, sc);
+  if (r.type === 'A') {
+    const g = 2.4 + r.open * 4.6;
+    for (const sg of [-1, 1]) { const px = sg * (g + 4.5); ink(c, () => rrect(c, px - 4.5, -22, 9, 27, 4.5), K.sage, { off: 1.2, lw: 1.6 }); }
+    eyes(c, -(g + 4.5), -14, r.open > .5 ? 'happy' : 'calm', .9);
+    if (r.P > .25) {
+      c.globalAlpha = Math.min(1, r.P * 1.3); dot(c, g + 11.5, -22, 4.8, K.mus, 1.2);
+      c.fillStyle = K.ink; c.font = '800 7px system-ui, sans-serif'; c.textAlign = 'center'; c.textBaseline = 'middle'; c.fillText('P', g + 11.5, -21.6); c.globalAlpha = 1;
+    }
+  } else {
+    const g = 3 + r.open * 3.6;
+    for (const sg of [-1, 1]) { const px = sg * (g + 5.5); ink(c, () => rrect(c, px - 5.5, -26, 11, 31, 5), K.nm, { off: 1.2, lw: 1.6 }); }
+    eyes(c, -(g + 5.5), -17, r.open > .5 ? 'wow' : (r.bound > 0 ? 'grr' : 'calm'), .9);
+    const wig = r.cork < .6 && r.cork > .05 ? Math.sin(NOW * 40) * 1.2 : 0;
+    const cy = lerp(-9, -42, r.cork), cx = lerp(0, 11, r.cork) + wig;
+    dot(c, cx, cy, 5.6, K.cob, 1.5);
+    c.fillStyle = '#fff'; c.font = '800 5.5px system-ui, sans-serif'; c.textAlign = 'center'; c.textBaseline = 'middle'; c.fillText('Mg', cx, cy + .3);
+    if (apv) {
+      c.beginPath(); for (let i = 0; i < 6; i++) { const a = i / 6 * TAU; c.lineTo(Math.cos(a) * 6, -33 + Math.sin(a) * 6); }
+      c.closePath(); c.fillStyle = K.grey; c.fill(); c.lineWidth = 1.3; c.strokeStyle = K.ink; c.stroke();
+    }
+  }
+  c.restore();
+}
+
+/* =================================================================
+   SYNAPSE: one bouton + one spine, with receptors, ions and plasticity
+   ================================================================= */
+const SEL = [5, 6, 3, 8, 2, 9, 1, 10, 0, 11];   // order AMPA receptors fill the PSD
+class Synapse {
+  constructor(cv, o = {}) {
+    this.st = new Stage(cv, 600, 470); this.o = o; this.apv = false; this.reset();
+    if (o.tap !== false) cv.addEventListener('pointerdown', () => { if (this.o.onTap) this.o.onTap(); else this.pulse(); bump(cv); });
+  }
+  reset() {
+    Object.assign(this, { w: 1, wE: 0, wL: 0, s: 1, V: -70, ca: 0, cam: 0, pp: 0, t: 0, extra: 0, burst: null, lfs: null, parts: [], pulses: [], lastTr: -1, decayE: false, demoT: .4, refill: 0 });
+    this.ves = [];
+    for (let i = 0; i < 9; i++) { const hx = 300 + (i - 4) * 30 + hash(i + 3) * 6, hy = 98 + (i % 2) * 24 + hash(i + 40) * 6; this.ves.push({ hx, hy, x: hx, y: hy, st: 0, k: 0 }); }
+    this.recs = [{ type: 'N', slot: 4 }, { type: 'N', slot: 7 }];
+    for (let i = 0; i < 4; i++) this.recs.push({ type: 'A', slot: SEL[i] });
+    this.recs.forEach(r => Object.assign(r, { pos: 1, dir: 0, open: 0, bound: 0, P: 0, cork: 0, acc: 0 }));
+    this.reserve = 4; this.trace = new Float32Array(300).fill(-70); this.ti = 0; this.tacc = 0;
+  }
+  geo() { const s = this.s, RX = 150 * s, RY = 88 * s; return { RX, RY, cx: 300, cy: 207 + RY }; }
+  slot(i) { const { RX, RY, cx, cy } = this.geo(); const a = lerp(-2.62, -.52, i / 11); return [cx + RX * Math.cos(a), cy + RY * Math.sin(a), Math.atan2(Math.sin(a) / RY, Math.cos(a) / RX)]; }
+  endo() { const { cx, cy, RY } = this.geo(); return [cx, cy + RY * .42]; }
+  camXY() { const { cx, cy, RX } = this.geo(); return [cx - RX * .5, cy + 4]; }
+  ppXY() { const { cx, cy, RX } = this.geo(); return [cx + RX * .5, cy + 6]; }
+  recXY(r) {
+    const [x, y, n] = this.slot(r.slot); if (r.pos >= 1) return [x, y, n];
+    const [ex, ey] = this.endo(), e = r.pos * r.pos * (3 - 2 * r.pos);
+    return [lerp(ex, x, e), lerp(ey, y, e), lerp(-Math.PI / 2, n, e)];
+  }
+  top(r) { const [x, y, n] = this.recXY(r); const d = r.type === 'A' ? 30 : 35; return [x + Math.cos(n) * d, y + Math.sin(n) * d]; }
+  get nT() { return clamp(Math.round(4 * this.w), 1, 10); }
+  pulse(quiet) {
+    const idle = this.ves.filter(v => v.st === 0);
+    if (idle.length) { idle.sort((a, b) => Math.abs(a.hx - 300) - Math.abs(b.hx - 300)); const v = idle[Math.floor(Math.random() * Math.min(3, idle.length))]; v.st = 1; v.k = 0; }
+    else this.release(300 + (Math.random() - .5) * 60);
+    this.pulses.push(this.t);
+    if (!quiet) beep(392 + Math.random() * 40, .07, 'triangle', .04);
+  }
+  startBurst() { if (this.burst || this.lfs) return false; this.burst = { t: 0, n: 0 }; beep(520, .5, 'sawtooth', .02); return true; }
+  startLfs(N = 28) { if (this.burst || this.lfs) return false; this.lfs = { t: 0, n: 0, N }; return true; }
+  release(x) {
+    const n = (this.burst || this.lfs) ? 6 : 12, surf = this.recs.filter(r => r.pos >= 1 && r.dir === 0);
+    for (let i = 0; i < n; i++) {
+      if (this.parts.length > 340) break;
+      const r = (Math.random() < .78 && surf.length) ? surf[Math.random() * surf.length | 0] : null, sx = x + (Math.random() - .5) * 18;
+      this.parts.push({ k: 'glu', ph: 'fly', x: sx, y: 156, sx, sy: 156, r, t: 0, d: .22 + Math.random() * .2, ox: (Math.random() - .5) * 170, life: 1 });
+    }
+  }
+  ion(k, r) {
+    if (this.parts.length > 340) return;
+    const [x, y, n] = this.recXY(r), ox = x + Math.cos(n) * 15, oy = y + Math.sin(n) * 15, [gx, gy] = this.camXY();
+    this.parts.push({ k, x: ox + (Math.random() - .5) * 5, y: oy, vx: -Math.cos(n) * 120, vy: -Math.sin(n) * 120, t: 0, life: k === 'ca' ? 1.5 : 1.0, gx: gx + (Math.random() - .5) * 34, gy: gy + (Math.random() - .5) * 24 });
+  }
+  step(dt) {
+    const o = this.o; this.t += dt;
+    if (o.demo) {
+      this.demoT -= dt;
+      if (this.demoT <= 0) { this.demoT = o.demoEvery || 1.3; if (o.demoBurst && Math.random() < o.demoBurst && !this.burst) this.startBurst(); else this.pulse(true); }
+    }
+    if (this.burst) { const b = this.burst; b.t += dt; while (b.n < 20 && b.t >= b.n * .07) { this.pulse(true); b.n++; } if (b.n >= 20 && b.t > 1.7) { this.burst = null; o.onBurstEnd && o.onBurstEnd(); } }
+    if (this.lfs) { const b = this.lfs; b.t += dt; while (b.n < b.N && b.t >= b.n * .35) { this.pulse(true); b.n++; beep(300, .03, 'sine', .02); } if (b.n >= b.N && b.t > b.N * .35 + .5) { this.lfs = null; o.onLfsEnd && o.onLfsEnd(); } }
+    this.extra = lerp(this.extra, this.burst ? 40 : 0, ease(dt, this.burst ? 12 : 4));
+    // vesicles
+    for (const v of this.ves) {
+      if (v.st === 1) { v.k += dt / .12; const ax = 300 + (v.hx - 300) * .45, e = Math.min(1, v.k); v.x = lerp(v.hx, ax, e); v.y = lerp(v.hy, 146, e); if (v.k >= 1) { v.st = 2; v.k = 0; this.release(ax); } }
+      else if (v.st === 2) { v.k += dt / .2; if (v.k >= 1) { v.st = 3; v.k = 0; } }
+      else if (v.st === 3) { v.k += dt / ((this.burst || this.lfs) ? .2 : .9); if (v.k >= 1) { v.st = 0; v.x = v.hx; v.y = v.hy; v.k = 0; } }
+    }
+    // membrane voltage: summed alpha-function EPSPs, saturating
+    const tau = .18; let S = 0;
+    if (this.pulses.length && this.t - this.pulses[0] > 2.4) this.pulses = this.pulses.filter(tp => this.t - tp < 2.4);
+    for (const tp of this.pulses) { const x = this.t - tp - .32; if (x > 0) S += 9 * this.w * (x / tau) * Math.exp(1 - x / tau); }
+    this.V = -70 + 75 * (1 - Math.exp(-(S + this.extra) / 75));
+    const B = Bmg(this.V);
+    // receptors
+    let caIn = 0;
+    for (const r of this.recs) {
+      r.bound = Math.max(0, r.bound - dt);
+      if (r.type === 'A') {
+        r.open = lerp(r.open, r.bound > 0 && r.pos >= 1 ? 1 : 0, ease(dt, 18));
+        if (r.open > .6) { r.acc += dt * 7; if (r.acc > 1) { r.acc -= 1; this.ion('na', r); } }
+        const Pt = (hash(r.slot * 13 + 7) * .5 + .5) < (this.w - 1) * 1.6 ? 1 : 0;
+        r.P = lerp(r.P, Pt, ease(dt, 3));
+      } else {
+        r.cork = lerp(r.cork, smooth(.12, .45, B), ease(dt, 8));
+        const on = r.bound > 0 && !this.apv;
+        r.open = lerp(r.open, on && r.cork > .7 ? 1 : 0, ease(dt, 14));
+        if (on) { caIn += .08 + B; r.acc += dt * (r.cork > .7 ? 16 : 1.4); if (r.acc > 1) { r.acc -= 1; this.ion('ca', r); } }
+      }
+    }
+    // calcium, CaMKII, phosphatase
+    this.ca = Math.min(1.4, Math.max(0, this.ca + (1.2 * caIn - this.ca / .8) * dt));
+    const ca = this.ca;
+    this.cam += (4 * smooth(.55, .8, ca) * (1 - this.cam) - .12 * this.cam) * dt;
+    this.pp += (3 * smooth(.22, .32, ca) * (1 - smooth(.5, .62, ca)) * (1 - this.pp) - .6 * this.pp) * dt;
+    if (o.plastic) {
+      const ltp = .35 * smooth(.58, .8, ca) * (2.2 - this.w) / 1.2;
+      const ltd = .035 * smooth(.22, .32, ca) * (1 - smooth(.5, .62, ca)) * Math.max(0, this.w - .4) / .6;
+      this.wE += (ltp - ltd) * dt;
+      if (this.decayE) { this.wE = lerp(this.wE, 0, ease(dt, 1.2)); if (Math.abs(this.wE) < .005) { this.wE = 0; this.decayE = false; } }
+      this.w = clamp(1 + this.wE + this.wL, .4, 2.2);
+    }
+    // receptor trafficking toward the target number
+    const nA = this.recs.filter(r => r.type === 'A' && r.dir >= 0).length, nT = this.nT;
+    if (this.t - this.lastTr > .22) {
+      if (nA < nT) {
+        const used = new Set(this.recs.map(r => r.slot)), sl = SEL.find(s => !used.has(s));
+        if (sl !== undefined) { this.recs.push({ type: 'A', slot: sl, pos: 0, dir: 1, open: 0, bound: 0, P: 0, cork: 0, acc: 0 }); this.reserve = Math.max(0, this.reserve - 1); this.lastTr = this.t; }
+      } else if (nA > nT) {
+        let best = null, bi = -1;
+        for (const r of this.recs) if (r.type === 'A' && r.dir === 0) { const i = SEL.indexOf(r.slot); if (i > bi) { bi = i; best = r; } }
+        if (best) { best.dir = -1; this.lastTr = this.t; beep(220, .12, 'sine', .03); }
+      }
+    }
+    for (let i = this.recs.length - 1; i >= 0; i--) {
+      const r = this.recs[i];
+      if (r.dir === 1) { r.pos += dt / .8; if (r.pos >= 1) { r.pos = 1; r.dir = 0; beep(880, .06, 'sine', .03); } }
+      else if (r.dir === -1) { r.pos -= dt / .9; if (r.pos <= 0) { this.recs.splice(i, 1); this.reserve = Math.min(6, this.reserve + 1); } }
+    }
+    this.refill += dt; if (this.refill > 3) { this.refill = 0; if (this.reserve < 3) this.reserve++; }
+    // spine size follows strength
+    this.s = lerp(this.s, clamp(.78 + .22 * this.w, .86, 1.28), ease(dt, 1.2));
+    // scope trace
+    this.tacc += dt; while (this.tacc > 1 / 60) { this.tacc -= 1 / 60; this.trace[this.ti] = this.V; this.ti = (this.ti + 1) % 300; }
+    this.stepParts(dt);
+  }
+  stepParts(dt) {
+    const P = this.parts, { cx, cy, RX, RY } = this.geo();
+    for (let i = P.length - 1; i >= 0; i--) {
+      const p = P[i];
+      if (p.k === 'glu') {
+        if (p.ph === 'fly') {
+          p.t += dt; const e = Math.min(1, p.t / p.d); let tx, ty;
+          if (p.r) [tx, ty] = this.top(p.r); else { tx = p.sx + p.ox; ty = 196; }
+          p.x = lerp(p.sx, tx, e) + Math.sin(e * 9 + p.d * 40) * 3 * (1 - e); p.y = lerp(p.sy, ty, e);
+          if (e >= 1) {
+            if (p.r && p.r.pos >= 1 && p.r.dir === 0 && !(p.r.type === 'N' && this.apv) && this.recs.includes(p.r)) { p.r.bound = Math.max(p.r.bound, p.r.type === 'A' ? .45 : .6); p.ph = 'stuck'; p.life = p.r.type === 'A' ? .45 : .6; }
+            else { p.ph = 'drift'; p.vx = (Math.random() - .5) * 120; p.vy = (Math.random() - .5) * 20; p.life = .6; }
+          }
+        } else if (p.ph === 'stuck') {
+          p.life -= dt; if (p.r) { const [tx, ty] = this.top(p.r); p.x = tx; p.y = ty; }
+          if (p.life <= 0) { p.ph = 'drift'; p.vx = (Math.random() - .5) * 100; p.vy = -25; p.life = .5; }
+        } else { p.x += p.vx * dt; p.y += p.vy * dt; p.life -= dt; if (p.life <= 0) P.splice(i, 1); }
+      } else {
+        p.t += dt;
+        if (p.t < .22) { p.x += p.vx * dt; p.y += p.vy * dt; }
+        else {
+          const pull = p.k === 'ca' ? .9 : 0;
+          p.x += ((Math.random() - .5) * 110 + (p.gx - p.x) * pull) * dt;
+          p.y += ((Math.random() - .5) * 110 + (p.k === 'ca' ? (p.gy - p.y) * pull : 14)) * dt;
+          const dx = (p.x - cx) / (RX * .9), dy = (p.y - cy) / (RY * .88);
+          if (dx * dx + dy * dy > 1) { p.x = lerp(p.x, cx, .06); p.y = lerp(p.y, cy, .06); }
+        }
+        if (p.t > p.life) P.splice(i, 1);
+      }
+    }
+  }
+  spinePts() {
+    const { RX, RY, cx, cy } = this.geo(), pts = [], a0 = 100 * Math.PI / 180, a1 = 440 * Math.PI / 180, N = 30;
+    for (let i = 0; i <= N; i++) { const a = lerp(a0, a1, i / N), irr = 1 + .012 * hash(i + 5); pts.push([cx + Math.cos(a) * RX * irr + jit(i) * 1.1, cy + Math.sin(a) * RY * irr + jit(i + 40) * 1.1]); }
+    const nb = cy + RY * Math.sin(a1), mid = (nb + 452) / 2;
+    pts.push([cx + 16, mid], [cx + 25, 453], [cx + 32, 476], [cx - 32, 476], [cx - 25, 453], [cx - 16, mid]);
+    return pts;
+  }
+  draw() {
+    const c = this.st.begin(), o = this.o, { RX, RY, cx, cy } = this.geo();
+    // cleft tint
+    c.fillStyle = 'rgba(31,122,116,.07)'; c.fillRect(0, 150, 600, 62);
+    // spine + dendrite shaft
+    const sp = this.spinePts(), shaft = [[-30, 451], [110, 447 + jit(1)], [cx - 30, 452], [cx + 30, 452], [470, 448 + jit(4)], [630, 450], [630, 490], [-30, 490]];
+    ink(c, () => path(c, sp, true), K.blush, { stroke: false, off: 3 });
+    ink(c, () => path(c, shaft, true), K.blush, { stroke: false, off: 0, hatch: K.ink, hatchA: .13 });
+    c.save(); c.beginPath(); c.rect(0, 0, 600, 452); c.clip();
+    ink(c, () => path(c, sp, true), null, { hatch: K.ink, hatchA: .08, lw: 2.6 });
+    c.restore();
+    wline(c, [[-30, 451], [110, 447], [cx - 29, 452]], K.ink, 2.6, 11); wline(c, [[cx + 29, 452], [470, 448], [630, 450]], K.ink, 2.6, 17);
+    // presynaptic bouton
+    const bt = blobPts(300, 6, 210, 150, 28, .025, 7, 1.2);
+    ink(c, () => path(c, bt, true), K.butter, { hatch: K.ink, hatchA: .1, lw: 2.6 });
+    c.lineWidth = 3.2; c.strokeStyle = K.ink; c.lineCap = 'round';
+    for (let x = 254; x <= 346; x += 13) { const y = 6 + 150 * Math.sqrt(1 - ((x - 300) / 210) ** 2) - 3; c.beginPath(); c.moveTo(x, y); c.lineTo(x + 6, y); c.stroke(); }
+    // vesicles
+    for (const v of this.ves) {
+      if (v.st === 3) { if (v.k < .55) continue; c.globalAlpha = (v.k - .55) / .45; }
+      if (v.st === 2) {
+        const r = 11 * (1 - v.k); c.beginPath(); c.arc(v.x, 149, Math.max(1, r), Math.PI * .15, Math.PI * .85, true); c.lineWidth = 2; c.strokeStyle = K.ink; c.stroke(); continue;
+      }
+      const vx = v.st === 3 ? v.hx : v.x, vy = v.st === 3 ? v.hy : v.y;
+      dot(c, vx + 1.5, vy + 1.2, 11, 'rgba(31,122,116,.25)', 0); dot(c, vx, vy, 11, K.cream, 1.8);
+      for (let j = 0; j < 3; j++) diamond(c, vx - 4 + j * 4, vy + (j === 1 ? -3 : 2), 2.3, K.teal);
+      c.globalAlpha = 1;
+    }
+    // inside the spine
+    if (o.inner !== false) {
+      const [ex, ey] = this.endo();
+      c.setLineDash([3, 3]); dot(c, ex, ey, 19, 'rgba(251,245,232,.8)', 1.6); c.setLineDash([]);
+      for (let i = 0; i < Math.min(4, this.reserve); i++) { const a = i / 4 * TAU + .6, mx = ex + Math.cos(a) * 9, my = ey + Math.sin(a) * 8; c.fillStyle = K.sage; c.strokeStyle = K.ink; c.lineWidth = 1; rrect(c, mx - 4, my - 3.5, 3, 7, 1.5); c.fill(); c.stroke(); rrect(c, mx + 1, my - 3.5, 3, 7, 1.5); c.fill(); c.stroke(); }
+      // CaMKII: 12-part wheel; lit parts = active
+      const [kx, ky] = this.camXY(), lit = Math.round(this.cam * 12);
+      if (this.cam > .25) { c.globalAlpha = .25 + .2 * Math.sin(NOW * 6); dot(c, kx, ky, 24, K.mus, 0); c.globalAlpha = 1; }
+      for (let i = 0; i < 12; i++) { const a = i / 12 * TAU + NOW * .2 * this.cam; dot(c, kx + Math.cos(a) * 11, ky + Math.sin(a) * 11, 4.4, i < lit ? (i % 2 ? K.tom : K.mus) : K.cream, 1.2); }
+      dot(c, kx, ky, 4.5, K.ink, 0);
+      // phosphatase: a chomping blob
+      const [qx, qy] = this.ppXY(), mouth = .25 + (this.pp > .2 ? .35 * Math.abs(Math.sin(NOW * 9)) : 0);
+      c.beginPath(); c.moveTo(qx, qy); c.arc(qx, qy, 12, mouth, TAU - mouth); c.closePath();
+      c.fillStyle = this.pp > .05 ? `rgba(47,93,158,${.3 + .7 * this.pp})` : K.cream; c.fill(); c.lineWidth = 1.6; c.strokeStyle = K.ink; c.stroke();
+      dot(c, qx - 2, qy - 6, 1.4, K.ink, 0);
+      if (o.innerLabels) {
+        hand(c, 'CaMKII', kx, ky + 27, 17, K.ink, 'center', 0, K.blush);
+        hand(c, 'phosphatase', qx, qy + 25, 17, K.ink, 'center', 0, K.blush);
+        hand(c, 'spare AMPA', ex, ey + 29, 16, K.ink, 'center', 0, K.blush);
+      }
+    }
+    // receptors (in transit ones ride in little vesicles)
+    for (const r of this.recs) {
+      const [x, y, n] = this.recXY(r);
+      if (r.pos < 1) {
+        c.globalAlpha = .9; dot(c, x, y - 4, 16 * (1 - r.pos * .6), 'rgba(251,245,232,.7)', 1.2); c.globalAlpha = 1;
+        if (r.dir === -1) { c.strokeStyle = K.ink; c.lineWidth = 1.2; for (let j = 0; j < 9; j++) { const a = Math.PI * (.1 + .8 * j / 8); const rr = 14 * (1 - r.pos * .6); c.beginPath(); c.moveTo(x + Math.cos(a) * rr, y - 4 + Math.sin(a) * rr); c.lineTo(x + Math.cos(a) * (rr + 4), y - 4 + Math.sin(a) * (rr + 4)); c.stroke(); } }
+      }
+      drawRec(c, r, x, y, n + Math.PI / 2, 1.2, r.type === 'N' && this.apv);
+    }
+    // particles
+    for (const p of this.parts) {
+      if (p.k === 'glu') { c.globalAlpha = p.ph === 'drift' ? Math.max(0, p.life / .6) : 1; diamond(c, p.x, p.y, 4.2, K.teal); }
+      else { c.globalAlpha = clamp((p.life - p.t) / .4, 0, 1); dot(c, p.x, p.y, p.k === 'ca' ? 4.3 : 3.6, p.k === 'ca' ? K.tom : K.mus, 1.1); }
+    }
+    c.globalAlpha = 1;
+    // labels
+    if (o.labels) {
+      hand(c, 'presynaptic terminal', 300, 40, 23, K.ink); hand(c, '(the sending neuron)', 300, 62, 17, K.muted);
+      const v = this.ves[1]; hand(c, 'vesicles of', 70, 92, 18); hand(c, 'glutamate', 70, 110, 18); arrow(c, 105, 112, v.hx - 14, v.hy + 2, K.ink, 5, -.2);
+      hand(c, 'synaptic cleft', 520, 178, 18, K.teal);
+      const a = this.recs.find(r => r.type === 'A' && r.slot === 3 && r.pos >= 1) || this.recs.find(r => r.type === 'A' && r.pos >= 1);
+      if (a) { const [x, y] = this.recXY(a); hand(c, 'AMPA', 62, 222, 20, '#4f7f3a'); hand(c, 'receptor', 62, 240, 17, '#4f7f3a'); arrow(c, 88, 228, x - 12, y - 12, '#4f7f3a', 9, .2); }
+      const nmd = this.recs.find(r => r.type === 'N' && r.slot === 7);
+      if (nmd) { const [x, y] = this.recXY(nmd); hand(c, 'NMDA receptor', 532, 228, 20, K.cob); hand(c, 'with Mg²⁺ cork', 532, 247, 17, K.cob); arrow(c, 500, 236, x + 16, y - 14, K.cob, 13, -.2); }
+      hand(c, 'dendritic spine', cx, cy + 4, 22); hand(c, '(the receiving neuron)', cx, cy + 25, 17, K.muted);
+      hand(c, 'dendrite', 530, 466, 18, K.muted);
+    }
+    // calcium meter + strength readout
+    if (o.meter) {
+      const x0 = 24, x1 = 46, yb = 440, yt = 236, Y = v => yb - clamp(v / 1.2, 0, 1) * (yb - yt);
+      c.fillStyle = 'rgba(47,93,158,.22)'; c.fillRect(x0, Y(.56), x1 - x0, Y(.27) - Y(.56));
+      c.fillStyle = 'rgba(228,87,46,.22)'; c.fillRect(x0, Y(1.2), x1 - x0, Y(.68) - Y(1.2));
+      const lv = Y(this.ca); c.fillStyle = K.tom; c.fillRect(x0 + 4, lv, x1 - x0 - 8, yb - lv);
+      ink(c, () => rrect(c, x0, yt - 4, x1 - x0, yb - yt + 8, 9), null, { lw: 2.2 });
+      hand(c, 'Ca²⁺', (x0 + x1) / 2, yt - 16, 19, K.tom);
+      hand(c, 'LTP', x1 + 6, Y(.92), 16, K.tom, 'left'); hand(c, 'LTD', x1 + 6, Y(.42), 16, K.cob, 'left'); hand(c, 'none', x1 + 6, Y(.1), 15, K.muted, 'left');
+      hand(c, 'strength', 556, 236, 18, K.muted); hand(c, Math.round(this.w * 100) + '%', 556, 262, 30, this.w > 1.08 ? K.tom : this.w < .92 ? K.cob : K.ink);
+    }
+  }
+}
+
+/* =================== HERO =================== */
+const hero = new Synapse($('heroCv'), { demo: true, demoEvery: THUMB ? .45 : 1.4, demoBurst: THUMB ? 0 : .1, inner: true });
+if (THUMB) { hero.w = 1.6; hero.s = 1.13; hero.cam = .8; hero.reserve = 3; }
+reg($('heroCv'), hero);
+
+/* =================== 1: one synapse + scope =================== */
+const c1 = new Synapse($('c1Cv'), { labels: true, inner: false, onTap: () => fire1() });
+const scope = new Stage($('c1Scope'), 600, 170);
+let c1Count = 0;
+function fire1() { c1.pulse(); c1Count++; if (c1Count === 1) $('c1Msg').innerHTML = 'Glutamate crosses the cleft in well under a millisecond in real life (slowed way down here). The AMPA gates open, Na⁺ flows in, and the voltage rises a few mV: an <b>EPSP</b>. Then it fades. Try <b>Fire 3, fast</b>.'; }
+$('c1Fire').onclick = () => fire1();
+$('c1Three').onclick = () => { fire1(); setTimeout(() => c1.pulse(), 160); setTimeout(() => c1.pulse(), 320); $('c1Msg').innerHTML = 'Three spikes close together and the EPSPs <b>add up</b> (temporal summation). But look at the NMDA corks: they barely budge. Summing many inputs is what it takes, which is where chapter 2 starts.'; };
+reg($('c1Cv'), {
+  step: dt => c1.step(dt),
+  draw() {
+    c1.draw();
+    const c = scope.begin(), Y = v => 146 - (v + 72) * 5.5;
+    c.strokeStyle = 'rgba(43,35,32,.12)'; c.lineWidth = 1;
+    for (let x = 40; x < 600; x += 40) { c.beginPath(); c.moveTo(x, 18); c.lineTo(x, 150); c.stroke(); }
+    wline(c, [[30, Y(-70)], [590, Y(-70)]], K.muted, 1.5, 3, .3, [5, 5]);
+    hand(c, '−70 mV (rest)', 36, Y(-70) + 14, 16, K.muted, 'left');
+    hand(c, 'voltage inside the spine', 300, 12, 18, K.ink);
+    hand(c, 'now', 584, 160, 15, K.muted, 'right');
+    c.beginPath();
+    for (let i = 0; i < 300; i++) { const v = c1.trace[(c1.ti + i) % 300], x = 30 + i / 299 * 560, y = Math.max(16, Y(v)); i ? c.lineTo(x, y) : c.moveTo(x, y); }
+    c.strokeStyle = K.tom; c.lineWidth = 3; c.lineJoin = 'round'; c.stroke();
+    let mx = -70; for (let i = 240; i < 300; i++) mx = Math.max(mx, c1.trace[(c1.ti + i) % 300]);
+    if (mx > -68.5) hand(c, 'EPSP  +' + (mx + 70).toFixed(0) + ' mV', 470, Math.max(30, Y(mx) - 12), 18, K.tom);
+  }
+});
+
+/* =================== 2: the two-key door =================== */
+const c2 = {
+  st: new Stage($('c2Cv'), 600, 380), glu: 0, dep: 0, Vh: -70, V: -70, cork: 0, open: 0, ampaOpen: 0, parts: [], pop: 0, trial: null, done: {},
+  step(dt) {
+    this.glu = Math.max(0, this.glu - dt); this.dep = Math.max(0, this.dep - dt);
+    const depEnv = this.dep > 0 ? smooth(0, .25, 1.6 - this.dep) * smooth(0, .3, this.dep) : 0;
+    const Vt = Math.min(10, this.Vh + 62 * depEnv + (this.glu > 0 ? 8 : 0));
+    this.V = lerp(this.V, Vt, ease(dt, 10));
+    const B = Bmg(this.V), prev = this.cork;
+    this.cork = lerp(this.cork, smooth(.12, .45, B), ease(dt, 7));
+    if (prev < .5 && this.cork >= .5) { this.pop = 1; beep(990, .08, 'square', .03); }
+    this.pop = Math.max(0, this.pop - dt * 1.4);
+    this.ampaOpen = lerp(this.ampaOpen, this.glu > 0 ? 1 : 0, ease(dt, 12));
+    const on = this.glu > 0 && this.cork > .75;
+    this.open = lerp(this.open, on ? 1 : 0, ease(dt, 10));
+    if (this.ampaOpen > .6 && Math.random() < dt * 14) this.parts.push({ k: 'na', x: 182 + (Math.random() - .5) * 8, y: 175, vx: (Math.random() - .5) * 30, vy: 150, t: 0 });
+    if (this.open > .6 && Math.random() < dt * 60) this.parts.push({ k: 'ca', x: 420 + (Math.random() - .5) * 8, y: 170, vx: (Math.random() - .5) * 50, vy: 160 + Math.random() * 40, t: 0 });
+    for (let i = this.parts.length - 1; i >= 0; i--) { const p = this.parts[i]; p.t += dt; if (p.k === 'glu') { if (p.t < p.d) { const e = p.t / p.d; p.x = lerp(p.sx, p.tx, e); p.y = lerp(p.sy, p.ty, e * e); } else if (this.glu <= 0) { p.y -= 40 * dt; p.x += p.vx * dt; } if (this.glu <= 0 && p.t > p.d) p.fade = (p.fade || 0) + dt; if (p.fade > .6) this.parts.splice(i, 1); continue; }
+      p.x += p.vx * dt; p.y += p.vy * dt; p.vx *= .98; p.vy *= .97; if (p.t > 1.6) this.parts.splice(i, 1); }
+    if (this.trial) {
+      const tr = this.trial; tr.t += dt; tr.ca = Math.max(tr.ca, this.open); tr.vmax = Math.max(tr.vmax, this.V); tr.corkMax = Math.max(tr.corkMax, this.cork);
+      if (tr.t > 1.9) this.finish();
+    }
+    $('c2Vv').textContent = (this.V < 0 ? '−' : '') + Math.abs(Math.round(this.V)) + ' mV';
+  },
+  press(g, d) {
+    if (g) { this.glu = 1.6; for (let i = 0; i < 14; i++) { const tgt = i % 2 ? 420 : 182, side = i % 4 < 2 ? -1 : 1; this.parts.push({ k: 'glu', sx: tgt + (Math.random() - .5) * 140, sy: -10 - Math.random() * 30, tx: tgt + side * (i % 2 ? 22 : 19) + (Math.random() - .5) * 6, ty: (i % 2 ? 158 : 168) + (Math.random() - .5) * 6, d: .45 + Math.random() * .25, t: 0, vx: (Math.random() - .5) * 40 }); } beep(392, .07, 'triangle', .04); }
+    if (d) { this.dep = 1.6; beep(260, .2, 'sine', .04); }
+    if (!this.trial) this.trial = { t: 0, g: false, d: false, ca: 0, vmax: -90, corkMax: 0 };
+    this.trial.t = 0; this.trial.g ||= g; this.trial.d ||= d;
+  },
+  finish() {
+    const tr = this.trial; this.trial = null;
+    const held = this.Vh > -45, ca = tr.ca > .5;
+    let key = tr.g && tr.d ? 'Both' : tr.g ? 'Pre' : 'Post', txt, msg;
+    if (key === 'Pre' && held) key = 'Both';
+    if (key === 'Pre') { txt = 'AMPA opens, Na⁺ in, small blip (to about −62 mV). NMDA has glutamate but stays corked. No Ca²⁺.'; msg = '<b>Glutamate alone:</b> one key. The Mg²⁺ cork stays put at this voltage, so the NMDA receptor stays shut.'; }
+    else if (key === 'Post') { txt = 'Voltage jumps, the Mg²⁺ cork pops out, but no glutamate is bound, so the gate stays closed. No Ca²⁺.'; msg = '<b>Depolarization alone:</b> the other key. The cork is out but the gate itself needs glutamate to open.'; }
+    else { txt = ca ? 'Glutamate bound AND spine depolarized: cork out, gate open, Ca²⁺ floods in!' : 'Close, but the calcium never really flowed. Try again.'; msg = ca ? '<b>Both keys:</b> calcium pours in. This is the signal that tells the synapse "this input mattered, strengthen it". Hebb\'s rule, in one molecule.' : 'Try pressing <b>Both together</b>.'; }
+    if (key === 'Both' && held && !tr.d) msg += ' (You held the spine depolarized with the slider, which counts as the second key.)';
+    this.done[key] = true;
+    const row = $('nb' + key); row.classList.add('done'); row.classList.toggle('yes', key === 'Both' && ca);
+    row.querySelector('.box').textContent = key === 'Both' && ca ? '✓' : '×'; row.querySelector('.r').textContent = txt;
+    const n = Object.keys(this.done).length;
+    $('c2Msg').innerHTML = msg + (n === 3 ? ' <br>Notebook complete. That is coincidence detection.' : '');
+  },
+  draw() {
+    const c = this.st.begin(), V = this.V;
+    c.fillStyle = 'rgba(31,122,116,.07)'; c.fillRect(0, 0, 600, 196);
+    c.fillStyle = 'rgba(242,184,162,.45)'; c.fillRect(0, 236, 600, 144);
+    hand(c, 'outside: the synaptic cleft', 16, 22, 20, K.teal, 'left');
+    hand(c, 'inside the spine', 16, 362, 20, K.ink, 'left');
+    // charges lining the inner membrane
+    const nPlus = Math.round(smooth(-72, 0, V) * 16);
+    for (let i = 0; i < 16; i++) { const x = 20 + i * 36 + (i > 3 ? 20 : 0); if (Math.abs(x - 182) < 34 || Math.abs(x - 420) < 40) continue; hand(c, i < nPlus ? '+' : '−', x, 252 + (i % 2) * 6, 22, i < nPlus ? K.tom : K.cob); }
+    // lipid bilayer
+    for (let x = 6; x < 600; x += 13) {
+      if (Math.abs(x - 182) < 26 || Math.abs(x - 420) < 32) continue;
+      for (const [y, d] of [[201, 1], [231, -1]]) { c.strokeStyle = K.ink; c.lineWidth = 1.2; c.beginPath(); c.moveTo(x - 2, y + 5 * d); c.lineTo(x - 2 + jit(x) * .6, y + 13 * d); c.moveTo(x + 2, y + 5 * d); c.lineTo(x + 2, y + 13 * d); c.stroke(); dot(c, x, y, 5, K.butter, 1.2); }
+    }
+    // receptors, big
+    drawRec(c, { type: 'A', open: this.ampaOpen, P: 0, bound: this.glu }, 182, 232, 0, 2.6);
+    drawRec(c, { type: 'N', open: this.open, cork: this.cork, bound: this.glu }, 420, 232, 0, 2.6);
+    hand(c, 'AMPA', 182, 300, 24, '#4f7f3a'); hand(c, 'NMDA', 420, 300, 24, K.cob);
+    if (this.pop > 0) { const px = 420 + 11 * 2.6, py = 232 - 42 * 2.6; c.globalAlpha = this.pop; hand(c, 'pop!', px + 34, py - 14, 26, K.cob, 'center', -.2); c.strokeStyle = K.cob; c.lineWidth = 2; for (let i = 0; i < 6; i++) { const a = i / 6 * TAU; c.beginPath(); c.moveTo(px + Math.cos(a) * 20, py + Math.sin(a) * 20); c.lineTo(px + Math.cos(a) * 28, py + Math.sin(a) * 28); c.stroke(); } c.globalAlpha = 1; }
+    // particles
+    for (const p of this.parts) {
+      if (p.k === 'glu') { c.globalAlpha = 1 - clamp((p.fade || 0) / .6, 0, 1); diamond(c, p.x, p.y, 5.5, K.teal); }
+      else { c.globalAlpha = clamp((1.6 - p.t) / .5, 0, 1); dot(c, p.x, p.y, p.k === 'ca' ? 5 : 4, p.k === 'ca' ? K.tom : K.mus, 1.2); }
+    }
+    c.globalAlpha = 1;
+    if (this.open > .6) hand(c, 'Ca²⁺ in!', 505, 330, 26, K.tom, 'center', -.08);
+    // voltmeter
+    const gx = 528, gy = 118, R = 52, a = v => Math.PI * (1 + (clamp(v, -80, 20) + 80) / 100);
+    c.beginPath(); c.arc(gx, gy, R, Math.PI, TAU); c.closePath(); c.fillStyle = K.cream; c.fill(); c.lineWidth = 2.4; c.strokeStyle = K.ink; c.stroke();
+    c.beginPath(); c.arc(gx, gy, R - 8, a(-45), a(20)); c.strokeStyle = 'rgba(228,87,46,.5)'; c.lineWidth = 7; c.stroke();
+    for (const v of [-80, -60, -40, -20, 0, 20]) { const an = a(v); c.beginPath(); c.moveTo(gx + Math.cos(an) * (R - 2), gy + Math.sin(an) * (R - 2)); c.lineTo(gx + Math.cos(an) * (R - 11), gy + Math.sin(an) * (R - 11)); c.lineWidth = 1.5; c.strokeStyle = K.ink; c.stroke(); }
+    const an = a(V); c.beginPath(); c.moveTo(gx, gy); c.lineTo(gx + Math.cos(an) * (R - 6), gy + Math.sin(an) * (R - 6)); c.lineWidth = 3; c.strokeStyle = K.tom; c.stroke(); dot(c, gx, gy, 4, K.ink, 0);
+    hand(c, (V < 0 ? '−' : '') + Math.abs(Math.round(V)) + ' mV', gx, gy + 18, 22, K.ink); hand(c, 'spine voltage', gx, gy - R - 12, 17, K.muted);
+    // checklist
+    const ok = (b, t, y) => { hand(c, (b ? '✓ ' : '· ') + t, 16, y, 19, b ? K.tom : K.muted, 'left'); };
+    ok(this.glu > 0, 'glutamate bound', 52); ok(this.cork > .75, 'Mg²⁺ cork out', 74); ok(this.open > .6, 'Ca²⁺ flowing', 96);
+  }
+};
+$('c2Pre').onclick = () => c2.press(true, false);
+$('c2Post').onclick = () => c2.press(false, true);
+$('c2Both').onclick = () => c2.press(true, true);
+$('c2V').oninput = e => { c2.Vh = +e.target.value; };
+reg($('c2Cv'), c2);
+
+/* =================== LTP / LTD lab bench =================== */
+class Lab {
+  constructor(p, opt) {
+    this.p = p; this.opt = opt;
+    this.syn = new Synapse($(p + 'Cv'), { meter: true, plastic: true, inner: true, innerLabels: true, onTap: () => this.test(), onBurstEnd: () => { this.pend = true; }, onLfsEnd: () => this.lfsEnd() });
+    this.plot = new Stage($(p + 'Plot'), 600, opt.plotH || 260);
+    this.resetAll();
+    reg($(p + 'Cv'), this);
+    reg($(p + 'Plot'), { step: () => {}, draw: () => this.drawPlot() });
+  }
+  resetAll() { this.syn.reset(); this.pts = []; this.marks = []; this.T = 0; this.acc = 0; this.ui = 0; this.pend = false; for (let m = 0; m < 6; m++) { this.T = m; this.addPt(); } this.T = 6; }
+  test() { this.syn.pulse(); this.addPt(); }
+  addPt() { this.pts.push({ x: this.T, v: 100 * this.syn.w * (1 + (Math.random() - .5) * .07) }); if (this.pts.length > 400) this.pts.shift(); }
+  hfs() { if (this.syn.startBurst()) { this.marks.push({ k: 'H', x: this.T }); this.say(this.syn.apv ? 'Burst delivered with <b>APV</b> on. Watch the Ca²⁺ meter…' : 'Burst! Glutamate everywhere, the spine stays depolarized, corks pop, <b>Ca²⁺ floods in</b> and CaMKII lights up…'); } }
+  lfs() { if (this.syn.startLfs()) { this.marks.push({ k: 'L', x: this.T, x2: this.T + 15 }); this.say('Slow, steady pulses (900 of them in a real experiment, sped up here). Ca²⁺ creeps up into the <b>blue LTD zone</b> and stays there. The phosphatase starts chomping…'); } }
+  burstEnd() {
+    const s = this.syn;
+    if (s.apv) this.say('No LTP. With NMDA receptors blocked by APV, the Mg²⁺ corks popped but no Ca²⁺ could enter, so nothing changed. Test pulses still work, because they use AMPA receptors.');
+    else if (s.w > 2.05) this.say('<b>Saturated.</b> The synapse is near its ceiling: there are only so many slots for AMPA receptors. This is one reason LTD matters.');
+    else this.say(`<b>LTP!</b> Strength is now <b>${Math.round(s.w * 100)}%</b>. CaMKII added phosphates (P) to AMPA receptors, carried in new ones from the stores, and the spine grew. Every test pulse now gives a bigger EPSP.`);
+  }
+  lfsEnd() { const s = this.syn; this.say(s.w < .95 ? `<b>LTD.</b> Strength fell to <b>${Math.round(s.w * 100)}%</b>. Phosphatases (calcineurin, PP1) removed phosphates and AMPA receptors were pulled inside in little coated pits (endocytosis). The spine shrank.` : 'Hmm, not much change. Try again from a fresh synapse.'); }
+  say(h) { $(this.p + 'Msg').innerHTML = h; }
+  step(dt) {
+    const s = this.syn; s.step(dt);
+    if (this.pend && s.ca < .3) { this.pend = false; this.burstEnd(); }
+    if (s.lfs) this.T += dt * 1.5;
+    else if (!s.burst) { this.T += dt / 1.5; this.acc += dt; if (this.acc >= 1.5) { this.acc = 0; s.pulse(true); this.addPt(); } }
+    this.ui += dt;
+    if (this.ui > .25) {
+      this.ui = 0;
+      $(this.p + 'Str').textContent = Math.round(s.w * 100) + '%';
+      $(this.p + 'Amp').textContent = s.recs.filter(r => r.type === 'A' && r.dir >= 0).length;
+      $(this.p + 'Sp').textContent = Math.round(s.s * 100) + '%';
+    }
+  }
+  draw() { this.syn.draw(); }
+  drawPlot() {
+    const st = this.plot, c = st.begin(), H = st.H, L = 60, R = 586, T = 22, Bt = H - 44;
+    const x0 = Math.max(0, this.T - 54), X = t => L + (t - x0) / 60 * (R - L), Y = v => Bt - (v - 30) / 200 * (Bt - T);
+    // grid + axes
+    c.strokeStyle = 'rgba(43,35,32,.1)'; c.lineWidth = 1;
+    for (const v of [50, 100, 150, 200]) { c.beginPath(); c.moveTo(L, Y(v)); c.lineTo(R, Y(v)); c.stroke(); sans(c, v + '%', L - 8, Y(v), 12, K.muted, 'right', 600); }
+    wline(c, [[L, Y(100)], [R, Y(100)]], K.muted, 1.4, 21, .3, [6, 5]);
+    wline(c, [[L, T - 6], [L, Bt]], K.ink, 2.2, 23); wline(c, [[L, Bt], [R, Bt]], K.ink, 2.2, 29);
+    for (let m = Math.ceil(x0 / 10) * 10; m <= x0 + 60; m += 10) { const x = X(m); if (x < L || x > R) continue; c.beginPath(); c.moveTo(x, Bt); c.lineTo(x, Bt + 5); c.strokeStyle = K.ink; c.lineWidth = 1.5; c.stroke(); sans(c, String(m), x, Bt + 15, 12, K.muted, 'center', 600); }
+    hand(c, 'time (minutes)', (L + R) / 2, H - 11, 18, K.muted);
+    c.save(); c.translate(16, (T + Bt) / 2); c.rotate(-Math.PI / 2); hand(c, 'response size', 0, 0, 18, K.muted); c.restore();
+    c.save(); c.beginPath(); c.rect(L, 0, R - L, H); c.clip();
+    for (const m of this.marks) {
+      if (m.k === 'H') { const x = X(m.x); arrow(c, x, T - 4, x, T + 30, K.tom, 31, 0); hand(c, '100 Hz', x + 4, T + 2, 17, K.tom, 'left'); }
+      else if (m.k === 'L') { c.fillStyle = 'rgba(47,93,158,.18)'; c.fillRect(X(m.x), T - 6, X(m.x2) - X(m.x), Bt - T + 6); hand(c, '1 Hz', X(m.x) + 4, Bt - 10, 17, K.cob, 'left'); }
+      else if (m.k === 'G') { const x = X(m.x); wline(c, [[x, T], [x, Bt]], K.muted, 1.4, 41, .3, [3, 4]); c.fillStyle = K.cream; c.fillRect(x - 5, Bt - 6, 10, 12); c.beginPath(); c.moveTo(x - 7, Bt + 5); c.lineTo(x - 2, Bt - 5); c.moveTo(x + 2, Bt + 5); c.lineTo(x + 7, Bt - 5); c.strokeStyle = K.ink; c.lineWidth = 1.6; c.stroke(); hand(c, '3 h later', x + 4, T + 4, 16, K.ink, 'left'); }
+      else if (m.k === 'D' || m.k === 'S') { const x2 = m.x2 == null ? this.T : m.x2; c.fillStyle = m.k === 'D' ? 'rgba(181,170,152,.35)' : 'rgba(242,177,52,.25)'; const yy = m.k === 'D' ? Bt - 16 : Bt - 32; c.fillRect(X(m.x), yy, X(x2) - X(m.x), 14); hand(c, m.k === 'D' ? 'APV' : 'no new proteins', X(m.x) + 4, yy + 7, 14, K.ink, 'left'); }
+    }
+    for (const p of this.pts) { if (p.x < x0 - 1) continue; const v = p.v; dot(c, X(p.x), Y(clamp(v, 30, 235)), 3.8, v > 112 ? K.tom : v < 88 ? K.nm : K.cream, 1.3); }
+    c.restore();
+    if (!this.pts.length) hand(c, 'recording starts… a dot appears every "minute"', (L + R) / 2, (T + Bt) / 2, 20, K.muted);
+  }
+}
+
+const lab3 = new Lab('c3', { plotH: 300 });
+$('c3Test').onclick = () => lab3.test();
+$('c3Hfs').onclick = () => lab3.hfs();
+$('c3Apv').onclick = e => {
+  const s = lab3.syn; s.apv = !s.apv; e.currentTarget.setAttribute('aria-pressed', s.apv);
+  if (s.apv) { lab3.marks.push({ k: 'D', x: lab3.T, x2: null }); lab3.say('<b>APV</b> sits on the NMDA receptors\' glutamate site (grey hexagons), so glutamate cannot open them. Now try the 100 Hz burst.'); }
+  else { const m = [...lab3.marks].reverse().find(m => m.k === 'D' && m.x2 == null); if (m) m.x2 = lab3.T; lab3.say('APV washed out. NMDA receptors work again.'); }
+};
+$('c3Aniso').onclick = e => {
+  lab3.aniso = !lab3.aniso; e.currentTarget.setAttribute('aria-pressed', lab3.aniso);
+  if (lab3.aniso) { lab3.marks.push({ k: 'S', x: lab3.T, x2: null }); lab3.say('Protein synthesis blocked (a drug like anisomycin). The cell can\'t make new proteins. Burst, then <b>skip ahead 3 hours</b>.'); }
+  else { const m = [...lab3.marks].reverse().find(m => m.k === 'S' && m.x2 == null); if (m) m.x2 = lab3.T; lab3.say('Protein synthesis back on.'); }
+};
+$('c3Skip').onclick = () => {
+  const s = lab3.syn; if (s.burst) return;
+  const had = s.wE;
+  lab3.T += 6; lab3.marks.push({ k: 'G', x: lab3.T - 3 }); lab3.acc = 1.4;
+  if (lab3.aniso) { s.decayE = true; lab3.say(had > .1 ? '3 hours later: <b>the LTP faded.</b> Without new proteins, early LTP cannot be turned into lasting late LTP. The extra receptors are removed.' : '3 hours later. (Burst first to see what happens to LTP without new proteins.)'); }
+  else { s.wL += s.wE; s.wE = 0; lab3.say(had > .1 ? '3 hours later: <b>still potentiated.</b> New proteins were made, so early LTP became late LTP. In a real brain this can last days or longer.' : '3 hours later. Nothing to consolidate yet: try a burst first.'); }
+};
+$('c3Reset').onclick = () => { lab3.resetAll(); lab3.aniso = false; ['c3Apv', 'c3Aniso'].forEach(id => $(id).setAttribute('aria-pressed', 'false')); lab3.say('Fresh synapse. Collect a baseline, then burst.'); };
+
+const lab4 = new Lab('c4', { plotH: 300 });
+$('c4Test').onclick = () => lab4.test();
+$('c4Lfs').onclick = () => lab4.lfs();
+$('c4Hfs').onclick = () => lab4.hfs();
+$('c4Reset').onclick = () => { lab4.resetAll(); lab4.say('Fresh synapse. Try <b>1 Hz for 15 min</b>, or burst first and then 1 Hz to reverse the LTP.'); };
+
+/* the calcium rule curve */
+const omega = ca => smooth(.58, .8, ca) - .45 * smooth(.22, .32, ca) * (1 - smooth(.5, .62, ca));
+const rule = {
+  st: new Stage($('c4Rule'), 600, 300), drag: null, dragT: 0, trail: [], acc: 0, lastZone: '',
+  X: ca => 56 + ca / 1.2 * 524, Y: w => 150 - w * 105,
+  step(dt) {
+    this.dragT = Math.max(0, this.dragT - dt);
+    this.acc += dt; if (this.acc > .08) { this.acc = 0; this.trail.push(lab4.syn.ca); if (this.trail.length > 40) this.trail.shift(); }
+    const ca = this.cur(), z = ca < .22 ? 'none' : ca < .56 ? 'ltd' : ca < .68 ? 'mid' : 'ltp';
+    if (z !== this.lastZone) {
+      this.lastZone = z;
+      $('c4RuleMsg').innerHTML = { none: '<b>A little Ca²⁺:</b> nothing happens. Single test pulses live here.', ltd: '<b>Moderate Ca²⁺ for a long time:</b> phosphatases win → AMPA receptors removed → <b style="color:var(--cob)">LTD</b>.', mid: 'In between: the two enzyme teams roughly cancel.', ltp: '<b>Lots of Ca²⁺, fast:</b> CaMKII wins → AMPA receptors added → <b style="color:var(--tom)">LTP</b>.' }[z];
+    }
+  },
+  cur() { return this.dragT > 0 && this.drag != null ? this.drag : lab4.syn.ca; },
+  draw() {
+    const c = this.st.begin(), X = this.X, Y = this.Y;
+    c.fillStyle = 'rgba(47,93,158,.12)'; c.fillRect(X(.22), 20, X(.56) - X(.22), 240);
+    c.fillStyle = 'rgba(228,87,46,.12)'; c.fillRect(X(.68), 20, X(1.2) - X(.68), 240);
+    hand(c, 'nothing', X(.11), 250, 18, K.muted); hand(c, 'LTD zone', X(.39), 250, 19, K.cob); hand(c, 'LTP zone', X(.94), 250, 19, K.tom);
+    wline(c, [[X(0), Y(0)], [X(1.2), Y(0)]], K.ink, 2, 51, .3);
+    wline(c, [[X(0), 22], [X(0), 262]], K.ink, 2, 53, .3);
+    c.save(); c.translate(X(0) - 18, Y(0)); c.rotate(-Math.PI / 2); hand(c, '← weaker   stronger →', 0, 0, 16, K.ink); c.restore();
+    hand(c, 'calcium in the spine →', X(.6), 282, 19, K.ink);
+    c.beginPath(); for (let i = 0; i <= 120; i++) { const ca = i / 100, x = X(ca), y = Y(omega(ca)); i ? c.lineTo(x, y) : c.moveTo(x, y); }
+    c.strokeStyle = K.ink; c.lineWidth = 3.4; c.lineJoin = 'round'; c.stroke();
+    this.trail.forEach((ca, i) => { c.globalAlpha = i / this.trail.length * .5; dot(c, X(Math.min(1.2, ca)), Y(omega(ca)), 3.5, K.mus, 0); });
+    c.globalAlpha = 1;
+    const ca = Math.min(1.2, this.cur()), w = omega(ca), x = X(ca), y = Y(w);
+    wline(c, [[x, y], [x, 262]], K.muted, 1.2, 55, .2, [3, 4]);
+    dot(c, x + 2, y + 2, 11, K.ink, 0); dot(c, x, y, 11, w > .05 ? K.tom : w < -.05 ? K.cob : K.mus, 2);
+    hand(c, this.dragT > 0 ? 'you' : 'live', x, y - 22, 17, K.ink, 'center', 0, K.cream);
+  }
+};
+(() => {
+  const cv = $('c4Rule'); let down = false;
+  const set = e => { const [x] = rule.st.pt(e); rule.drag = clamp((x - 56) / 524 * 1.2, 0, 1.2); rule.dragT = 4; };
+  cv.addEventListener('pointerdown', e => { down = true; cv.setPointerCapture(e.pointerId); set(e); });
+  cv.addEventListener('pointermove', e => { if (down) set(e); });
+  cv.addEventListener('pointerup', () => { down = false; });
+  cv.addEventListener('pointercancel', () => { down = false; });
+})();
+reg($('c4Rule'), rule);
+
+/* =================== 5: STDP =================== */
+const stdpW = d => d > 0 ? 80 * Math.exp(-d / 17) : d < 0 ? -40 * Math.exp(d / 34) : 0;
+function spikeGlyph(c, x, y, col, glow) {
+  if (glow > 0) { c.globalAlpha = glow * .5; dot(c, x, y - 16, 22, col, 0); c.globalAlpha = 1; }
+  wline(c, [[x - 14, y], [x - 4, y], [x - 1, y - 36], [x + 3, y + 9], [x + 7, y], [x + 16, y]], col, 3.2, Math.round(x), .4);
+}
+function miniSpine(c, cx, base, w, col) {
+  const sw = Math.sqrt(w), rx = 40 * sw, ry = 27 * sw, cy = base - 30 - ry;
+  ink(c, () => { c.beginPath(); c.rect(-5, base, 610, 60); }, K.blush, { stroke: false, off: 0, hatch: K.ink, hatchA: .12 });
+  const pts = []; for (let i = 0; i <= 24; i++) { const a = lerp(100, 440, i / 24) * Math.PI / 180; pts.push([cx + Math.cos(a) * rx + jit(i) * .8, cy + Math.sin(a) * ry + jit(i + 9) * .8]); }
+  pts.push([cx + 9, (cy + ry + base) / 2], [cx + 15, base + 2], [cx + 18, base + 16], [cx - 18, base + 16], [cx - 15, base + 2], [cx - 9, (cy + ry + base) / 2]);
+  ink(c, () => path(c, pts, true), col || K.blush, { lw: 2.4, off: 2.5 });
+  wline(c, [[0, base], [cx - 17, base]], K.ink, 2.4, 61); wline(c, [[cx + 17, base], [600, base]], K.ink, 2.4, 63);
+  const n = clamp(Math.round(4 * w), 1, 12);
+  for (let i = 0; i < n; i++) { const a = lerp(-2.5, -.64, n === 1 ? .5 : i / (n - 1)); drawRec(c, { type: 'A', open: 0, P: 0 }, cx + Math.cos(a) * rx, cy + Math.sin(a) * ry, a + Math.PI / 2, .7); }
+}
+const c5 = {
+  st: new Stage($('c5Cv'), 600, 330), sp: new Stage($('c5Sp'), 300, 200), d: 15, w: 1, wd: 1, runs: [], anim: null,
+  X: d => 300 + d * 2.3, Y: v => 254 - v * .85,
+  set(d) { this.d = clamp(Math.round(d), -100, 100); $('c5R').value = this.d; $('c5Rv').textContent = (this.d > 0 ? '+' : this.d < 0 ? '−' : '') + Math.abs(this.d) + ' ms'; },
+  pair() {
+    if (this.anim) return; this.anim = { t: 0 };
+    const v = stdpW(this.d);
+    setTimeout(() => {
+      const dw = v * (1 + (Math.random() - .5) * .3);
+      this.w = clamp(this.w * (1 + dw / 100), .3, 3); this.runs.push({ d: this.d, v: dw }); if (this.runs.length > 60) this.runs.shift();
+      const ad = Math.abs(this.d), pct = Math.round(this.w * 100);
+      let m;
+      if (this.d === 0) m = 'Exactly simultaneous is too close to call, so nothing changed here. Real data near zero are messy.';
+      else if (this.d > 0) m = ad > 60 ? `Pre first, but ${ad} ms is too long a gap: only a tiny boost. Strength ${pct}%.` : `<b>Pre before post by ${ad} ms → stronger (LTP).</b> Glutamate was already sitting on the NMDA receptors when the receiving spike shook the Mg²⁺ out: lots of Ca²⁺. Strength now ${pct}%.`;
+      else m = ad > 80 ? `Post first, but ${ad} ms apart is barely related: almost no change. Strength ${pct}%.` : `<b>Post before pre by ${ad} ms → weaker (LTD).</b> The receiving spike was already over when glutamate arrived, so the cork was back in and only a trickle of Ca²⁺ got in. Strength now ${pct}%.`;
+      $('c5Msg').innerHTML = m; beep(v > 0 ? 784 : 330, .15, 'triangle', .04);
+    }, RM ? 0 : 1250);
+  },
+  step(dt) { if (this.anim) { this.anim.t += dt; if (this.anim.t > 1.35) this.anim = null; } this.wd = lerp(this.wd, this.w, ease(dt, 4)); },
+  draw() {
+    const c = this.st.begin(), X = this.X, Y = this.Y, d = this.d;
+    hand(c, 'sending neuron (pre)', 22, 22, 18, K.teal, 'left'); hand(c, 'receiving neuron (post)', 22, 84, 18, K.tom, 'left');
+    wline(c, [[20, 56], [580, 56]], K.ink, 1.6, 71, .5); wline(c, [[20, 118], [580, 118]], K.ink, 1.6, 73, .5);
+    let gp = 0, gq = 0;
+    if (this.anim) { const ph = (this.anim.t % .27) / .27, sp = .5 + d / 100 * .35; gp = Math.max(0, 1 - Math.abs(ph - .5) * 8); gq = Math.max(0, 1 - Math.abs(ph - sp) * 8); }
+    spikeGlyph(c, X(0), 56, K.teal, gp); spikeGlyph(c, X(d), 118, K.tom, gq);
+    if (!this.anim) { c.globalAlpha = .55 + .45 * Math.sin(NOW * 4); hand(c, '↔ drag me', X(d) + 22, 104, 17, K.tom, 'left'); c.globalAlpha = 1; }
+    // bracket
+    if (d !== 0) { wline(c, [[X(0), 140], [X(d), 140]], K.ink, 1.8, 75, .3); [X(0), X(d)].forEach(x => { c.beginPath(); c.moveTo(x, 134); c.lineTo(x, 146); c.lineWidth = 1.8; c.strokeStyle = K.ink; c.stroke(); }); }
+    hand(c, d > 0 ? 'pre fires first → strengthen' : d < 0 ? 'post fires first → weaken' : 'at the same moment', 300, 158, 19, d > 0 ? K.tom : d < 0 ? K.cob : K.muted);
+    // window curve
+    const y0 = Y(0);
+    c.fillStyle = 'rgba(228,87,46,.16)'; c.beginPath(); c.moveTo(X(0), y0); for (let t = 0; t <= 100; t += 2) c.lineTo(X(t), Y(stdpW(t || .01))); c.lineTo(X(100), y0); c.fill();
+    c.fillStyle = 'rgba(47,93,158,.26)'; c.beginPath(); c.moveTo(X(-100), y0); for (let t = -100; t <= 0; t += 2) c.lineTo(X(t), Y(stdpW(t || -.01))); c.lineTo(X(0), y0); c.fill();
+    wline(c, [[X(-100), y0], [X(100), y0]], K.ink, 2, 77, .3); wline(c, [[X(0), Y(92)], [X(0), Y(-48)]], K.muted, 1.2, 79, .3, [3, 4]);
+    c.lineWidth = 3.2; c.strokeStyle = K.ink; c.lineJoin = 'round';
+    c.beginPath(); for (let t = 1; t <= 100; t++) { const p = [X(t), Y(stdpW(t))]; t === 1 ? c.moveTo(...p) : c.lineTo(...p); } c.stroke();
+    c.beginPath(); for (let t = -100; t <= -1; t++) { const p = [X(t), Y(stdpW(t))]; t === -100 ? c.moveTo(...p) : c.lineTo(...p); } c.stroke();
+    sans(c, '+80%', X(0) + 8, Y(80) - 2, 11, K.tom, 'left'); sans(c, '−40%', X(0) - 8, Y(-40) + 4, 11, K.cob, 'right');
+    hand(c, 'change in strength', X(-100), Y(40), 16, K.muted, 'left');
+    hand(c, '−100 ms', X(-100), 318, 15, K.muted, 'left'); hand(c, '+100 ms', X(100), 318, 15, K.muted, 'right'); hand(c, 'Δt = post minus pre', 300, 318, 17, K.ink);
+    for (const r of this.runs) dot(c, X(r.d), Y(clamp(r.v, -48, 95)), 3.6, r.v > 0 ? K.tom : K.nm, 1.2);
+    const v = stdpW(d); dot(c, X(d) + 2, Y(v) + 2, 9, K.ink, 0); dot(c, X(d), Y(v), 9, K.mus, 2);
+    // mini spine
+    const s = this.sp.begin(); miniSpine(s, 190, 172, this.wd);
+    hand(s, 'strength ' + Math.round(this.wd * 100) + '%', 18, 24, 22, this.wd > 1.05 ? K.tom : this.wd < .95 ? K.cob : K.ink, 'left');
+  }
+};
+(() => {
+  const cv = $('c5Cv'); let down = false;
+  const set = e => { const [x] = c5.st.pt(e); c5.set((x - 300) / 2.3); };
+  cv.addEventListener('pointerdown', e => { down = true; cv.setPointerCapture(e.pointerId); set(e); });
+  cv.addEventListener('pointermove', e => { if (down) set(e); });
+  cv.addEventListener('pointerup', () => { down = false; }); cv.addEventListener('pointercancel', () => { down = false; });
+  $('c5R').oninput = e => c5.set(+e.target.value);
+  $('c5Pair').onclick = () => c5.pair();
+  $('c5Reset').onclick = () => { c5.w = 1; c5.runs = []; $('c5Msg').innerHTML = 'Fresh synapse. Try a few positive and a few negative timings and watch the window appear in your dots.'; };
+  c5.set(15);
+})();
+reg($('c5Cv'), c5);
+
+/* =================== 6: memory network =================== */
+const NODES = [
+  { x: 92, y: 96, t: 'cinnamon' }, { x: 190, y: 50, t: 'yellow curtains' }, { x: 226, y: 166, t: "Grandma's laugh" }, { x: 96, y: 240, t: 'old radio song' },
+  { x: 410, y: 62, t: 'salty wind' }, { x: 520, y: 118, t: 'gull cries' }, { x: 500, y: 262, t: 'hot sand' }, { x: 384, y: 300, t: 'sunburn' },
+  { x: 318, y: 196, t: 'summer' }, { x: 210, y: 352, t: 'math homework' }
+];
+const MEM = { kitchen: [0, 1, 2, 3, 8], beach: [4, 5, 6, 7, 8] };
+const net = {
+  st: new Stage($('c6Cv'), 600, 420), mode: 'cue', sel: new Set(), act: new Float32Array(10), W: [], alive: [], disp: [], dying: [],
+  sparks: [], learn: null, rec: null, cueSet: new Set(), cueTimer: 0, exp: { kitchen: 0, beach: 0 },
+  reset() {
+    this.W = []; this.alive = []; this.disp = []; this.dying = [];
+    for (let i = 0; i < 10; i++) { this.W.push([]); this.alive.push([]); this.disp.push([]); this.dying.push([]); for (let j = 0; j < 10; j++) { const v = .12 + .05 * hash(Math.min(i, j) * 17 + Math.max(i, j) * 131); this.W[i][j] = v; this.alive[i][j] = i !== j; this.disp[i][j] = v; this.dying[i][j] = 0; } }
+    this.sel.clear(); this.act.fill(0); this.sparks = []; this.learn = null; this.rec = null; this.cueSet.clear(); this.exp = { kitchen: 0, beach: 0 };
+  },
+  experience(set, name) {
+    if (this.learn) return; this.learn = { set, t: 0, applied: false, name }; this.rec = null;
+    for (const i of set) for (const j of set) if (i < j && this.alive[i][j]) this.sparks.push({ i, j, t: -Math.random() * .4 });
+    beep(523, .12, 'triangle', .04); setTimeout(() => beep(659, .12, 'triangle', .04), 120); setTimeout(() => beep(784, .16, 'triangle', .04), 240);
+  },
+  apply(set) {
+    const S = new Set(set);
+    for (let i = 0; i < 10; i++) for (let j = 0; j < 10; j++) {
+      if (i === j || !this.alive[i][j]) continue;
+      if (S.has(i) && S.has(j)) this.W[i][j] += .25 * (1 - this.W[i][j]);           // fire together: LTP
+      else if (S.has(i) !== S.has(j)) this.W[i][j] = Math.max(0, this.W[i][j] - .03); // out of sync: a little LTD
+    }
+  },
+  cue(i) {
+    if (this.learn) return;
+    this.cueSet.add(i); this.act[i] = 1; this.cueTimer = .7; this.rec = null; beep(440 + i * 30, .07, 'sine', .04);
+  },
+  startRecall() {
+    const A = new Set(this.cueSet); this.cueSet.clear(); this.rec = { A, t: 0, steps: 0, cue: new Set(A), hold: 0 };
+  },
+  recallStep() {
+    const r = this.rec, A = r.A, add = [];
+    for (let j = 0; j < 10; j++) { if (A.has(j)) continue; let inp = 0; for (const k of A) if (this.alive[k][j]) inp += this.W[k][j]; if (inp > .45) add.push(j); }
+    add.forEach(j => { A.add(j); for (const k of A) if (k !== j && this.alive[k][j] && this.W[k][j] > .3) this.sparks.push({ i: k, j, t: 0 }); });
+    if (add.length) beep(600 + A.size * 40, .08, 'triangle', .03);
+    r.steps++;
+    return add.length > 0;
+  },
+  describe() {
+    const A = this.rec.A, cue = [...this.rec.cue].map(i => NODES[i].t).join(' + ');
+    const k = MEM.kitchen.filter(i => A.has(i)).length, b = MEM.beach.filter(i => A.has(i)).length;
+    if (A.size === this.rec.cue.size) return `Cue "${cue}": <b>nothing else lit up.</b> The links are too weak to pass the activity on. ${this.exp.kitchen + this.exp.beach === 0 ? 'Live through an experience first.' : 'Live it again to strengthen them, or cue two neurons at once.'}`;
+    if (k >= 4 && b >= 4) return `Cue "${cue}": <b>both memories came back at once.</b> "Summer" is part of both teams, so it calls up both. Overlapping memories can blend or interfere.`;
+    if (k >= 4) return `Cue "${cue}": <b>pattern completion!</b> The whole kitchen memory came back (${k} of 5 parts) from just a piece of it.`;
+    if (b >= 4) return `Cue "${cue}": <b>pattern completion!</b> The whole beach day came back (${b} of 5 parts) from just a piece of it.`;
+    return `Cue "${cue}": part of a memory came back (${A.size} neurons). Strengthen the links with another experience.`;
+  },
+  month() {
+    let pruned = 0, kept = 0;
+    for (let i = 0; i < 10; i++) for (let j = i + 1; j < 10; j++) {
+      if (!this.alive[i][j]) continue;
+      const v = Math.max(0, this.W[i][j] - .05); this.W[i][j] = this.W[j][i] = v;
+      if (v < .1) { this.alive[i][j] = this.alive[j][i] = false; this.dying[i][j] = this.dying[j][i] = 1; pruned++; } else kept++;
+    }
+    beep(200, .25, 'sine', .04);
+    return [pruned, kept];
+  },
+  step(dt) {
+    for (let i = 0; i < 10; i++) for (let j = 0; j < 10; j++) { this.disp[i][j] = lerp(this.disp[i][j], this.W[i][j], ease(dt, 3)); this.dying[i][j] = Math.max(0, this.dying[i][j] - dt * .6); }
+    for (let i = this.sparks.length - 1; i >= 0; i--) { const s = this.sparks[i]; s.t += dt * 1.6; if (s.t > 1) this.sparks.splice(i, 1); }
+    const target = new Float32Array(10);
+    if (this.learn) {
+      const L = this.learn; L.t += dt; L.set.forEach(i => target[i] = .6 + .4 * Math.abs(Math.sin(L.t * 9)));
+      if (!L.applied && L.t > .7) { L.applied = true; this.apply(L.set); }
+      if (L.t > 1.5) {
+        this.learn = null;
+        if (L.name) { this.exp[L.name]++; const n = this.exp[L.name], nm = L.name === 'kitchen' ? "Grandma's kitchen" : 'the beach day';
+          $('c6Msg').innerHTML = n === 1 ? `You lived through ${nm} once. Its neurons fired together and their links got a bit stronger (LTP). Cue one of them: is one experience enough?` : `${nm[0].toUpperCase() + nm.slice(1)}, ${n} times. The links are thick now. Tap just one of its neurons and watch the rest come back.`; }
+        else $('c6Msg').innerHTML = 'Your team fired together, and their links strengthened. Switch to "cue" mode and test it.';
+      }
+    }
+    if (this.cueTimer > 0) { this.cueTimer -= dt; if (this.cueTimer <= 0 && this.cueSet.size) this.startRecall(); }
+    for (const i of this.cueSet) target[i] = 1;
+    if (this.rec) {
+      const r = this.rec; r.t += dt;
+      if (!r.done && r.t > .38) { r.t = 0; if (!this.recallStep() || r.steps > 6) { r.done = true; $('c6Msg').innerHTML = this.describe(); } }
+      if (r.done) { r.hold += dt; if (r.hold > 3.2) this.rec = null; }
+      if (this.rec) r.A.forEach(i => target[i] = r.done ? Math.max(.25, 1 - Math.max(0, r.hold - 2.2)) : 1);
+    }
+    if (this.mode === 'build') this.sel.forEach(i => target[i] = Math.max(target[i], .35));
+    for (let i = 0; i < 10; i++) this.act[i] = lerp(this.act[i], target[i], ease(dt, 10));
+  },
+  draw() {
+    const c = this.st.begin();
+    // links
+    for (let i = 0; i < 10; i++) for (let j = i + 1; j < 10; j++) {
+      const a = NODES[i], b = NODES[j], mx = (a.x + b.x) / 2 + hash(i * 10 + j) * 14, my = (a.y + b.y) / 2 + hash(j * 10 + i) * 14;
+      if (!this.alive[i][j]) {
+        if (this.dying[i][j] > 0) { c.globalAlpha = this.dying[i][j]; wline(c, [[a.x, a.y], [mx, my], [b.x, b.y]], K.grey, 1.5, i * 10 + j, .8, [2, 6]); hand(c, '✂', mx, my, 18, K.muted); c.globalAlpha = 1; }
+        continue;
+      }
+      const w = this.disp[i][j], strong = w > .4;
+      c.globalAlpha = clamp(.18 + w * 1.4, .18, 1);
+      wline(c, [[a.x, a.y], [mx, my], [b.x, b.y]], strong ? K.tom : K.ink, .6 + w * 9, i * 10 + j, strong ? 1 : .6);
+      c.globalAlpha = 1;
+    }
+    for (const s of this.sparks) { if (s.t < 0) continue; const a = NODES[s.i], b = NODES[s.j]; dot(c, lerp(a.x, b.x, s.t), lerp(a.y, b.y, s.t), 4.5, K.mus, 1.2); }
+    // neurons
+    NODES.forEach((n, i) => {
+      const a = this.act[i];
+      if (a > .05) { c.globalAlpha = a * .45; dot(c, n.x, n.y, 30 + a * 8, K.mus, 0); c.globalAlpha = 1; }
+      for (let k = 0; k < 4; k++) { const an = k / 4 * TAU + hash(i + 7) * 2; wline(c, [[n.x + Math.cos(an) * 16, n.y + Math.sin(an) * 16], [n.x + Math.cos(an + .3) * 25, n.y + Math.sin(an + .3) * 25], [n.x + Math.cos(an - .1) * 31, n.y + Math.sin(an - .1) * 31]], K.ink, 1.8, i * 40 + k, .6); }
+      ink(c, () => path(c, blobPts(n.x, n.y, 18, 16, 9, .12, i + 3, 1), true), a > .3 ? K.mus : (i === 9 ? '#e2d9c6' : K.cream), { lw: 2.4 });
+      if (this.mode === 'build' && this.sel.has(i)) { c.setLineDash([4, 4]); c.beginPath(); c.arc(n.x, n.y, 25, 0, TAU); c.strokeStyle = K.tom; c.lineWidth = 2.4; c.stroke(); c.setLineDash([]); }
+      eyes(c, n.x, n.y - 1, a > .5 ? 'happy' : 'calm', 1.5);
+      hand(c, n.t, n.x, n.y + 33, 18, K.ink, 'center', 0, K.cream);
+    });
+  },
+  hit(x, y) { let best = -1, bd = 1e9; NODES.forEach((n, i) => { const d = (n.x - x) ** 2 + (n.y - y) ** 2; if (d < bd) { bd = d; best = i; } }); return bd < 44 * 44 ? best : -1; }
+};
+net.reset();
+$('c6Cv').addEventListener('pointerdown', e => {
+  const [x, y] = net.st.pt(e), i = net.hit(x, y); if (i < 0) return;
+  if (net.mode === 'cue') net.cue(i);
+  else { net.sel.has(i) ? net.sel.delete(i) : net.sel.add(i); $('c6Fire').disabled = net.sel.size < 2; beep(500, .05, 'sine', .03); }
+});
+const setNetMode = m => { net.mode = m; $('c6ModeCue').setAttribute('aria-pressed', m === 'cue'); $('c6ModeBuild').setAttribute('aria-pressed', m === 'build'); $('c6Fire').disabled = m !== 'build' || net.sel.size < 2; $('c6Msg').innerHTML = m === 'build' ? 'Tap two or more neurons to pick a team, then press <b>Fire my team together</b>.' : 'Tap a neuron to use it as a memory cue. (Tap two quickly to give a bigger cue.)'; };
+$('c6ModeCue').onclick = () => setNetMode('cue');
+$('c6ModeBuild').onclick = () => setNetMode('build');
+$('c6Kitchen').onclick = () => net.experience(MEM.kitchen, 'kitchen');
+$('c6Beach').onclick = () => net.experience(MEM.beach, 'beach');
+$('c6Fire').onclick = () => { if (net.sel.size > 1) net.experience([...net.sel], null); };
+$('c6Month').onclick = () => { const [p, k] = net.month(); $('c6Msg').innerHTML = p ? `A month with no practice. Everything weakened a little; <b>${p} weak, unused links were pruned</b> (snip). ${k} survived. Practised links stay strong. See <a href="../synaptic-pruning/" style="color:var(--mus)">Synaptic Pruning</a> for how the developing brain does this on a huge scale.` : 'Another month. The links that are left are the well-used ones; they hold on.'; };
+$('c6Reset').onclick = () => { net.reset(); setNetMode('cue'); $('c6Msg').innerHTML = 'Fresh network: every link is weak. Tap "cinnamon", then live through Grandma\'s kitchen twice and tap it again.'; };
+reg($('c6Cv'), net);
+
+/* =================== 7A: spines over a month =================== */
+const dend = {
+  st: new Stage($('c7aCv'), 600, 260), day: 0, env: 'norm', sp: [], born: 0, lost: 0, play: 0, acc: 0,
+  shaftY: x => 132 + Math.sin(x / 70) * 8 + Math.sin(x / 23) * 2,
+  reset() {
+    this.sp = []; this.day = 0; this.born = 0; this.lost = 0; this.play = 0;
+    for (let i = 0; i < 24; i++) { const x = 30 + i * 23 + hash(i) * 6; this.sp.push({ x, side: i % 2 ? 1 : -1, st: 'stable', b: -99, g: 1, L: 26 + hash(i + 50) * 6, h: 7 + hash(i + 80) * 2 }); }
+  },
+  free(x, side) { return this.sp.every(s => s.st === 'gone' || s.side !== side || Math.abs(s.x - x) > 17) && x > 20 && x < 580; },
+  addDay() {
+    const L = this.env === 'learn', R = Math.random;
+    this.day++;
+    for (const s of this.sp) {
+      if (s.st === 'gone') continue;
+      const age = this.day - s.b;
+      if (s.st === 'new' && age >= 4) s.st = 'stable';
+      const pl = s.st === 'stable' ? (L ? .025 : .008) : (L ? .2 : .32);
+      if (R() < pl) { s.st = 'gone'; s.goneAt = this.day; this.lost++; }
+    }
+    const births = L ? 1.5 : .6; let n = Math.floor(births) + (R() < births % 1 ? 1 : 0);
+    while (n-- > 0) { for (let k = 0; k < 14; k++) { const x = 25 + R() * 550, side = R() < .5 ? -1 : 1; if (this.free(x, side)) { this.sp.push({ x, side, st: 'new', b: this.day, g: 0, L: 20 + R() * 10, h: 4 + R() * 2 }); this.born++; break; } } }
+    this.sp = this.sp.filter(s => s.st !== 'gone' || this.day - s.goneAt < 3);
+    $('c7D').textContent = this.day; $('c7G').textContent = this.born; $('c7L').textContent = this.lost;
+    if (this.day === 30) { this.play = 0; $('c7Play').textContent = 'Play 30 days'; const stab = this.sp.filter(s => s.st === 'stable' && s.b > 0).length; $('c7aMsg').innerHTML = `<b>Day 30.</b> ${this.born} spines were born and ${this.lost} were lost; ${stab} of the newcomers made it to stable mushroom spines. ${this.env === 'learn' ? 'Learning made many more new spines, and the survivors are thought to help hold the new skill.' : 'In ordinary life the dendrite looks almost the same as on day 0: a little turnover, mostly stable.'} Switch conditions and compare.`; }
+  },
+  step(dt) {
+    if (this.play) { this.acc += dt; if (this.acc > (RM ? .25 : .45)) { this.acc = 0; if (this.day < 30) this.addDay(); else { this.play = 0; $('c7Play').textContent = 'Play 30 days'; } } }
+    for (const s of this.sp) s.g = lerp(s.g, s.st === 'gone' ? 0 : 1, ease(dt, 3));
+  },
+  draw() {
+    const c = this.st.begin(), Y = this.shaftY;
+    hand(c, this.env === 'learn' ? 'learning a new skill' : 'ordinary life', 16, 20, 20, this.env === 'learn' ? K.tom : K.muted, 'left');
+    hand(c, 'day ' + this.day, 584, 22, 30, K.ink, 'right');
+    const top = [], bot = []; for (let x = -10; x <= 610; x += 20) { top.push([x, Y(x) - 13]); bot.push([x, Y(x) + 13]); }
+    for (const s of this.sp) {
+      const y0 = Y(s.x) + s.side * 11, g = s.g, len = s.L * g, hx = s.x + s.side * 3 * g, hy = y0 + s.side * len;
+      if (s.st === 'gone') { c.globalAlpha = .7 * (1 - (this.day - s.goneAt) / 3); wline(c, [[s.x, y0], [hx, y0 + s.side * s.L]], K.grey, 2, s.x | 0, .5, [2, 4]); c.setLineDash([2, 3]); c.beginPath(); c.arc(hx, y0 + s.side * s.L, 6, 0, TAU); c.strokeStyle = K.grey; c.lineWidth = 1.5; c.stroke(); c.setLineDash([]); c.globalAlpha = 1; continue; }
+      const fresh = s.st === 'new', col = fresh ? K.tom : K.ink;
+      c.beginPath(); c.moveTo(s.x - 3, y0); c.quadraticCurveTo(s.x - 1, (y0 + hy) / 2, hx - 1.5, hy); c.lineTo(hx + 1.5, hy); c.quadraticCurveTo(s.x + 1, (y0 + hy) / 2, s.x + 3, y0); c.fillStyle = K.blush; c.fill(); c.strokeStyle = col; c.lineWidth = 1.6; c.stroke();
+      const r = (fresh ? s.h : s.h + 1) * g;
+      ink(c, () => { c.beginPath(); c.ellipse(hx, hy + s.side * r * .6, r * (fresh ? .8 : 1.15), r, 0, 0, TAU); }, fresh ? K.mus : K.blush, { stroke: col, lw: fresh ? 2.2 : 1.8, off: 1.2 });
+    }
+    const outline = top.concat(bot.reverse()); ink(c, () => { path(c, outline, true); }, K.blush, { hatch: K.ink, hatchA: .12, lw: 2.6 });
+    hand(c, 'a short stretch of dendrite (seen from above, over many days)', 300, 248, 17, K.muted);
+  }
+};
+dend.reset();
+const setEnv = m => { dend.env = m; $('c7Norm').setAttribute('aria-pressed', m === 'norm'); $('c7Learn').setAttribute('aria-pressed', m === 'learn'); };
+$('c7Norm').onclick = () => setEnv('norm');
+$('c7Learn').onclick = () => setEnv('learn');
+$('c7Play').onclick = () => { if (dend.day >= 30) { dend.reset(); ['c7D', 'c7G', 'c7L'].forEach(id => $(id).textContent = 0); } dend.play = dend.play ? 0 : 1; $('c7Play').textContent = dend.play ? 'Pause' : 'Play 30 days'; };
+$('c7Day').onclick = () => { if (dend.day < 30) dend.addDay(); };
+$('c7aReset').onclick = () => { dend.reset(); ['c7D', 'c7G', 'c7L'].forEach(id => $(id).textContent = 0); $('c7Play').textContent = 'Play 30 days'; $('c7aMsg').innerHTML = 'Back to day 0. Pick a condition and press play.'; };
+reg($('c7aCv'), dend);
+
+/* =================== 7B: the finger map =================== */
+const FING = [
+  { b: [78, 236], t: [30, 176], n: 'thumb' }, { b: [96, 190], t: [80, 78], n: 'index' }, { b: [124, 182], t: [126, 58], n: 'middle' },
+  { b: [152, 188], t: [170, 74], n: 'ring' }, { b: [174, 206], t: [210, 128], n: 'little' }
+];
+const FCOL = [K.mus, K.tom, K.teal, K.cob, K.sage];
+const map = {
+  st: new Stage($('c7bCv'), 600, 330), f: [1, 1, 1, 1, 1], disp: [1, 1, 1, 1, 1], lost: [false, false, false, false, false], mode: 'prac', N: 30, col: [], wig: [0, 0, 0, 0, 0], sparks: [], taps: 0,
+  reset() { this.f = [1, 1, 1, 1, 1]; this.disp = [1, 1, 1, 1, 1]; this.lost = [false, false, false, false, false]; this.col = Array.from({ length: this.N }, (_, i) => Math.floor(i / this.N * 5)); this.sparks = []; this.taps = 0; },
+  U: u => [282 + 296 * u, 222 - 92 * Math.sin(Math.PI * u)],
+  owner(u) { const e = this.disp.map((v, i) => this.lost[i] ? Math.max(0, v) : v), S = e.reduce((a, b) => a + b, 0); let acc = 0; for (let i = 0; i < 5; i++) { acc += e[i] / S; if (u < acc) return i; } return 4; },
+  share(i) { const S = this.disp.reduce((a, b) => a + b, 0); return this.disp[i] / S; },
+  tap(i) {
+    if (this.mode === 'lose') {
+      this.lost[i] = !this.lost[i]; beep(this.lost[i] ? 180 : 500, .2, 'sine', .04);
+      $('c7bMsg').innerHTML = this.lost[i] ? `The ${FING[i].n} finger no longer sends any signals. Watch its patch of cortex: it doesn't go silent for long. The neighbouring fingers' inputs <b>take over</b> the territory.` : `The ${FING[i].n} finger is back, and its inputs win some territory back.`;
+      return;
+    }
+    if (this.lost[i]) return;
+    this.f[i] = Math.min(2.6, this.f[i] + .08);
+    [i - 1, i + 1].forEach(j => { if (j >= 0 && j < 5 && !this.lost[j]) this.f[j] = Math.max(.45, this.f[j] - .025); });
+    this.wig[i] = 1; this.taps++;
+    const [tx, ty] = FING[i].t; this.sparks.push({ i, t: 0, x: tx, y: ty });
+    beep(330 + i * 70, .06, 'triangle', .04);
+    if (this.taps === 6 || this.taps === 20) $('c7bMsg').innerHTML = `Practice is spreading the ${FING[i].n} finger's map: it now has <b>${Math.round(this.share(i) * 100)}%</b> of the strip (it started with 20%). Neurons at the borders switched to the busier finger. Try <b>Stop practising</b>, or switch to "lose finger".`;
+  },
+  step(dt) {
+    for (let i = 0; i < 5; i++) { const t = this.lost[i] ? 0 : this.f[i]; this.disp[i] = lerp(this.disp[i], t, ease(dt, this.lost[i] ? .9 : 2.5)); this.wig[i] = Math.max(0, this.wig[i] - dt * 3); }
+    for (let k = 0; k < this.N; k++) this.col[k] = this.owner((k + .5) / this.N);
+    for (let i = this.sparks.length - 1; i >= 0; i--) { const s = this.sparks[i]; s.t += dt * 1.6; if (s.t > 1) this.sparks.splice(i, 1); }
+  },
+  draw() {
+    const c = this.st.begin();
+    hand(c, 'your hand', 120, 316, 20, K.ink); hand(c, 'touch map in the cortex (S1)', 430, 316, 20, K.ink);
+    // palm + fingers
+    FING.forEach((F, i) => {
+      const w = Math.sin(this.wig[i] * 12) * this.wig[i] * 4, [bx, by] = F.b, tx = F.t[0] + w, ty = F.t[1] - Math.abs(w) * .5;
+      const a = Math.atan2(ty - by, tx - bx), nx = -Math.sin(a) * 12, ny = Math.cos(a) * 12;
+      const pts = [[bx + nx, by + ny], [lerp(bx, tx, .5) + nx * 1.05, lerp(by, ty, .5) + ny * 1.05], [tx + nx * .9, ty + ny * .9], [tx + Math.cos(a) * 12, ty + Math.sin(a) * 12], [tx - nx * .9, ty - ny * .9], [lerp(bx, tx, .5) - nx * 1.05, lerp(by, ty, .5) - ny * 1.05], [bx - nx, by - ny]];
+      if (this.lost[i]) { c.setLineDash([5, 5]); ink(c, () => path(c, pts, true), '#e6dccb', { lw: 2, stroke: K.grey }); c.setLineDash([]); }
+      else ink(c, () => path(c, pts, true), FCOL[i], { lw: 2.4, hatch: K.ink, hatchA: .08 });
+      hand(c, String(i + 1), lerp(bx, tx, .62), lerp(by, ty, .62), 20, this.lost[i] ? K.grey : K.ink);
+    });
+    ink(c, () => path(c, blobPts(126, 246, 64, 52, 14, .05, 33, 1), true), K.blush, { lw: 2.4, hatch: K.ink, hatchA: .1 });
+    // cortex ribbon
+    const top = [], bot = [];
+    for (let k = 0; k <= 20; k++) { const u = k / 20, [x, y] = this.U(u); top.push([x, y - 34]); bot.push([x, y + 34]); }
+    const rib = top.concat(bot.reverse()); ink(c, () => path(c, rib, true), K.cream, { lw: 2.6, off: 3 });
+    for (let k = 0; k < this.N; k++) {
+      const u = (k + .5) / this.N, [x, y] = this.U(u), o = this.col[k];
+      for (let r = 0; r < 4; r++) { const yy = y - 24 + r * 16 + (k % 2) * 3; ink(c, () => { c.beginPath(); c.arc(x + jit(k * 9 + r) * .5, yy, 4.2, 0, TAU); }, FCOL[o], { lw: 1.2, off: .8 }); }
+    }
+    // labels per territory
+    let acc = 0; const S = this.disp.reduce((a, b) => a + b, 0);
+    for (let i = 0; i < 5; i++) { const sh = this.disp[i] / S; if (sh > .035) { const [x, y] = this.U(acc + sh / 2); hand(c, (i + 1) + '', x, y - 50, 22, K.ink); sans(c, Math.round(sh * 100) + '%', x, y + 46, 12, K.muted); } acc += sh; }
+    for (const s of this.sparks) { const sh = this.share(s.i); let a2 = 0; for (let j = 0; j < s.i; j++) a2 += this.share(j); const [x, y] = this.U(a2 + sh / 2); const e = s.t, px = lerp(s.x, x, e), py = lerp(s.y, y, e) - Math.sin(e * Math.PI) * 60; dot(c, px, py, 5, FCOL[s.i], 1.4); }
+  },
+  hit(x, y) {
+    let best = -1, bd = 1e9;
+    FING.forEach((F, i) => { const [ax, ay] = F.b, [bx, by] = F.t, dx = bx - ax, dy = by - ay, t = clamp(((x - ax) * dx + (y - ay) * dy) / (dx * dx + dy * dy), 0, 1), d = (ax + dx * t - x) ** 2 + (ay + dy * t - y) ** 2; if (d < bd) { bd = d; best = i; } });
+    return bd < 26 * 26 ? best : -1;
+  }
+};
+map.reset();
+$('c7bCv').addEventListener('pointerdown', e => { const [x, y] = map.st.pt(e), i = map.hit(x, y); if (i >= 0) map.tap(i); });
+const setMapMode = m => { map.mode = m; $('c7Prac').setAttribute('aria-pressed', m === 'prac'); $('c7Lose').setAttribute('aria-pressed', m === 'lose'); $('c7bMsg').innerHTML = m === 'lose' ? 'Tap a finger to take away its input (like losing a finger or numbing its nerve). Tap again to bring it back.' : 'Tap a finger, again and again, to practise it.'; };
+$('c7Prac').onclick = () => setMapMode('prac');
+$('c7Lose').onclick = () => setMapMode('lose');
+$('c7Rest').onclick = () => { map.f = map.f.map(v => lerp(v, 1, .6)); $('c7bMsg').innerHTML = 'Weeks without the special practice: the map drifts back towards its old layout. Maps are kept in shape by use. That is why skills get rusty.'; };
+$('c7bReset').onclick = () => { map.reset(); setMapMode('prac'); };
+reg($('c7bCv'), map);
+
+/* =================== 8: quiz =================== */
+const QUIZ = [
+  { q: 'What makes the NMDA receptor a "coincidence detector"?', o: ['It opens only when glutamate is bound AND the spine is depolarized enough to push out Mg²⁺', 'It opens whenever glutamate binds, like AMPA', 'It opens only when the presynaptic neuron is silent', 'It responds to calcium instead of glutamate'], a: 0, e: 'It needs two things at once: glutamate from the sending neuron and depolarization of the receiving neuron to clear the Mg²⁺ block.' },
+  { q: 'Right after LTP, a single test pulse gives a bigger EPSP. Which change in the spine explains most of that?', o: ['Fewer NMDA receptors', 'More AMPA receptors in the membrane, and existing ones passing more current', 'The Mg²⁺ cork is permanently removed', 'The synaptic cleft gets wider'], a: 1, e: 'CaMKII phosphorylates AMPA receptors (more current each) and extra AMPA receptors are inserted into the membrane. The Mg²⁺ block itself works as normal.' },
+  { q: 'A synapse gets slow, steady 1 Hz stimulation for 15 minutes. The most likely result:', o: ['LTP', 'LTD', 'No change at all, ever', 'The neuron dies'], a: 1, e: 'Low-frequency stimulation gives a modest, prolonged Ca²⁺ rise that activates phosphatases: AMPA receptors are removed, which is LTD.' },
+  { q: 'Inside the spine, which ion is the key trigger for both LTP and LTD?', o: ['Na⁺', 'K⁺', 'Ca²⁺', 'Cl⁻'], a: 2, e: 'Calcium. How much enters, and how fast, decides the direction: a big, fast rise gives LTP; a modest, long one gives LTD.' },
+  { q: 'APV (an NMDA receptor blocker) is applied before a 100 Hz burst. What happens?', o: ['Normal LTP', 'No LTP, but test pulses still produce EPSPs', 'No EPSPs at all', 'Bigger LTP than normal'], a: 1, e: 'Normal transmission uses AMPA receptors, so EPSPs still happen. But no Ca²⁺ can enter through NMDA receptors, so no LTP is induced.' },
+  { q: 'In STDP, the sending neuron fires 10 ms AFTER the receiving neuron, over and over. The synapse will probably:', o: ['Get stronger', 'Get weaker', 'Stay exactly the same', 'Turn inhibitory'], a: 1, e: 'Post before pre gives LTD: the sending neuron could not have caused the spike, so its connection is weakened.' },
+  { q: 'Protein synthesis is blocked during an LTP experiment. What do you expect?', o: ['No LTP at all', 'LTP that lasts forever', 'Early LTP appears but fades within a few hours', 'LTD instead of LTP'], a: 2, e: 'Early LTP uses proteins already in the spine. Turning it into long-lasting late LTP needs new proteins.' },
+  { q: 'A monkey is trained for weeks to use one fingertip. In its touch cortex, that finger\'s area:', o: ['Shrinks', 'Expands into neighbouring territory', 'Moves to the other hemisphere', 'Stays the same; adult maps can\'t change'], a: 1, e: 'Map plasticity: heavily used inputs expand their territory (Jenkins et al., 1990). After a finger is lost, its neighbours take over its area (Merzenich et al., 1984).' }
+];
+(() => {
+  const box = $('quiz'); let right = 0, answered = 0;
+  QUIZ.forEach((Q, qi) => {
+    const d = document.createElement('div'); d.className = 'q';
+    d.innerHTML = `<h3><span>${qi + 1}.</span>${Q.q}</h3><div class="opts"></div><p class="fb"></p>`;
+    const opts = d.querySelector('.opts'), fb = d.querySelector('.fb');
+    Q.o.forEach((t, oi) => {
+      const b = document.createElement('button'); b.type = 'button'; b.textContent = t;
+      b.onclick = () => {
+        if (d.dataset.done) return; d.dataset.done = 1; answered++;
+        const ok = oi === Q.a; if (ok) right++;
+        b.classList.add(ok ? 'right' : 'wrong'); opts.children[Q.a].classList.add('right');
+        [...opts.children].forEach(x => x.disabled = true);
+        fb.innerHTML = (ok ? '<b style="color:#3f7a2a">Yes!</b> ' : '<b style="color:var(--tom)">Not quite.</b> ') + Q.e; fb.classList.add('show');
+        beep(ok ? 784 : 220, .15, 'triangle', .04);
+        $('qScore').textContent = `${right} / ${answered}` + (answered === QUIZ.length ? (right >= 7 ? ' · brilliant!' : right >= 5 ? ' · nice work' : ' · scroll up and try the sims again') : '');
+      };
+      opts.appendChild(b);
+    });
+    box.appendChild(d);
+  });
+})();
+
+/* =================== nav, embed, start =================== */
+(() => {
+  const links = [...document.querySelectorAll('.chaps a')], map2 = new Map(links.map(a => [a.getAttribute('href').slice(1), a]));
+  const ob = new IntersectionObserver(es => es.forEach(e => { if (e.isIntersecting) { links.forEach(a => a.classList.remove('on')); const a = map2.get(e.target.id); if (a) { a.classList.add('on'); const ch = a.parentElement; ch.scrollTo({ left: a.offsetLeft - ch.offsetLeft - ch.clientWidth / 2 + a.offsetWidth / 2, behavior: RM ? 'auto' : 'smooth' }); } } }), { rootMargin: '-45% 0px -50% 0px' });
+  document.querySelectorAll('.ch').forEach(s => ob.observe(s));
+})();
+document.querySelectorAll('.btn').forEach(b => b.addEventListener('pointerdown', () => { b.classList.add('press'); setTimeout(() => b.classList.remove('press'), 120); }));
+$('copyBtn').onclick = () => { const t = $('embedCode').textContent; if (navigator.clipboard) navigator.clipboard.writeText(t).then(() => { $('copyBtn').textContent = 'Copied'; setTimeout(() => $('copyBtn').textContent = 'Copy', 1500); }, () => {}); };
+requestAnimationFrame(frame);
+})();
+</script>
+</body>
+</html>
