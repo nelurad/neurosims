@@ -548,30 +548,7 @@
     </div>
   </div>
 
-  <h3><span class="n">2.2</span>What you don't see</h3>
-  <div class="twocol wide-r">
-    <div class="prose">
-      <p><b>Inattentional blindness</b>: missing something <i>fully visible</i> because attention is busy elsewhere. In the classic study by Simons and Chabris (1999), about half of viewers counting basketball passes never noticed a person in a gorilla suit walking through the game.</p>
-      <p><b>Change blindness</b>: failing to notice that something has <i>changed</i> between one view and the next, especially when the change happens during a blink, a cut or a flicker. We keep far less detail than it feels like we do.</p>
-    </div>
-    <div class="lab" data-task="u2-cb">
-      <h4><span class="try">Spot it</span>The flicker test</h4>
-      <p class="sub">Two versions of the same desk alternate with a blank flash. One thing is different. Tap it when you find it.</p>
-      <svg id="cbSvg" viewBox="0 0 600 340" role="img" aria-label="A hand-drawn study desk that flickers between two versions; tap the object that changes"></svg>
-      <div class="row"><button class="btn go" id="cbStart">Start flicker</button><button class="btn" id="cbNoFlick">Show without the blank</button></div>
-      <p class="readout" id="cbTxt" aria-live="polite"></p>
-    </div>
-  </div>
-  <div class="mixup">
-    <p class="mh">Mix-up alert: inattentional blindness vs change blindness</p>
-    <div class="vs">
-      <div><b>Inattentional blindness</b>Something new and unexpected is right there, and you never notice it because you're focused on something else. <i>"I never saw it."</i></div>
-      <div class="x">vs</div>
-      <div><b>Change blindness</b>Something was there before and now it's different, and you don't notice the difference. <i>"I didn't see it change."</i></div>
-    </div>
-  </div>
-
-  <h3><span class="n">2.3</span>The prefrontal cortex: executive control</h3>
+  <h3><span class="n">2.2</span>The prefrontal cortex: executive control</h3>
   <div class="twocol">
     <div class="lab" data-task="u2-pfc">
       <h4><span class="try">Tap</span>Who does what up front?</h4>
@@ -1046,7 +1023,6 @@
     <section style="--c:var(--u2)"><h3>2 &middot; Attention &amp; executive</h3><ul>
       <li><b>Bottom-up / exogenous</b>: stimulus grabs attention. <b>Top-down / endogenous</b>: goal-driven.</li>
       <li>Selective attention: amplify one stream, dampen others.</li>
-      <li><b>Inattentional blindness</b>: miss an unexpected object (gorilla). <b>Change blindness</b>: miss a change (flicker).</li>
       <li>PFC: working memory, inhibition (Stroop), switching, planning. ADHD = executive or inhibitory deficits.</li>
       <li><b>Gage</b>: OFC/vmPFC: personality, judgement, social behaviour.</li>
       <li>Working memory (PFC, seconds, small) vs long-term memory (hippocampus to form, lasting).</li>
@@ -1103,7 +1079,6 @@
     <li>Rensink, R. A., O'Regan, J. K., &amp; Clark, J. J. (1997). To see or not to see: The need for attention to perceive changes in scenes. <i>Psychological Science</i>, 8, 368–373.</li>
     <li>Sapolsky, R. M. (2004). <i>Why Zebras Don't Get Ulcers</i> (3rd ed.). Henry Holt.</li>
     <li>Schultz, W., Dayan, P., &amp; Montague, P. R. (1997). A neural substrate of prediction and reward. <i>Science</i>, 275, 1593–1599.</li>
-    <li>Simons, D. J., &amp; Chabris, C. F. (1999). Gorillas in our midst. <i>Perception</i>, 28, 1059–1074.</li>
     <li>Thompson, R. F. (2005). In search of memory traces. <i>Annual Review of Psychology</i>, 56, 1–23.</li>
     <li>Xie, L., et al. (2013). Sleep drives metabolite clearance from the adult brain. <i>Science</i>, 342, 373–377.</li>
     <li>Yoo, S.-S., Gujar, N., Hu, P., Jolesz, F. A., &amp; Walker, M. P. (2007). The human emotional brain without sleep: A prefrontal amygdala disconnect. <i>Current Biology</i>, 17, R877–R878.</li>
@@ -1182,7 +1157,7 @@ requestAnimationFrame(frame);
 const KEY = 'neurosims-exam3-review-v1';
 let done = new Set();
 try { const s = localStorage.getItem(KEY); if (s) done = new Set(JSON.parse(s)); } catch (e) { /* storage blocked */ }
-if (THUMB) done = new Set(['u1-trans', 'u1-hom', 'u1-2pt', 'u1-rods', 'u1-lesion', 'u1-streams', 'u1-coch', 'u1-adapt', 'u1-mach', 'u1-ambig', 'u1-quiz', 'u2-spot', 'u2-cb', 'u2-pfc', 'u3-sort', 'u3-amn']);
+if (THUMB) done = new Set(['u1-trans', 'u1-hom', 'u1-2pt', 'u1-rods', 'u1-lesion', 'u1-streams', 'u1-coch', 'u1-adapt', 'u1-mach', 'u1-ambig', 'u1-quiz', 'u2-spot', 'u2-pfc', 'u3-sort', 'u3-amn']);
 const UNITS = ['u1', 'u2', 'u3', 'u4', 'u5', 'u6'];
 const tasksOf = {};
 UNITS.forEach(u => tasksOf[u] = [...$(u).querySelectorAll('[data-task]')].map(e => e.dataset.task));
@@ -1990,89 +1965,6 @@ sorter($('dvSort'), {
     mark('u2-spot');
   });
   $('spotFind').addEventListener('click', () => { finding = true; found = false; c._loop.dirty = true; txt.innerHTML = 'Somewhere there’s one <b>red triangle</b>. Move your spotlight to it.'; });
-})();
-
-/* 2.2 change blindness */
-(() => {
-  const svg = $('cbSvg'), txt = $('cbTxt'), go = $('cbStart'), nob = $('cbNoFlick');
-  const g = S('g', null, svg);
-  S('rect', { x: 0, y: 0, width: 600, height: 240, fill: '#f4ecd9' }, g);
-  S('rect', { x: 0, y: 236, width: 600, height: 104, fill: '#c49a6c' }, g);
-  S('rect', { x: 0, y: 230, width: 600, height: 12, fill: '#a87c50', stroke: INK, 'stroke-width': 1.5 }, g);
-  const ink = { stroke: INK, 'stroke-width': 2, 'stroke-linejoin': 'round', 'stroke-linecap': 'round' };
-  // picture frame
-  S('rect', Object.assign({ x: 40, y: 30, width: 130, height: 90, fill: '#dff0f7' }, ink), g);
-  S('path', Object.assign({ d: 'M44 116 L84 66 L110 96 L130 76 L166 116Z', fill: '#9cc28a' }, ink), g);
-  const sun = S('circle', Object.assign({ cx: 146, cy: 52, r: 11, fill: '#f2c94c' }, ink), g);
-  // sticky notes
-  S('rect', { x: 250, y: 44, width: 46, height: 46, fill: '#fbe98e', transform: 'rotate(-6 273 67)' }, g);
-  S('rect', { x: 304, y: 50, width: 46, height: 46, fill: '#f9cdd0', transform: 'rotate(5 327 73)' }, g);
-  S('path', { d: 'M258 62 h28 M258 72 h22 M312 68 h28 M312 78 h20', stroke: PENCIL, 'stroke-width': 1.5 }, g);
-  // clock
-  S('circle', Object.assign({ cx: 480, cy: 74, r: 38, fill: '#fff' }, ink), g);
-  for (let i = 0; i < 12; i++) { const a = i * Math.PI / 6; S('line', { x1: 480 + Math.cos(a) * 31, y1: 74 + Math.sin(a) * 31, x2: 480 + Math.cos(a) * 35, y2: 74 + Math.sin(a) * 35, stroke: INK, 'stroke-width': 2 }, g); }
-  S('line', Object.assign({ x1: 480, y1: 74, x2: 480, y2: 46 }, ink), g);
-  const handA = S('line', Object.assign({ x1: 480, y1: 74, x2: 500, y2: 74 }, ink, { 'stroke-width': 3.5 }), g);
-  const handB = S('line', Object.assign({ x1: 480, y1: 74, x2: 490, y2: 92 }, ink, { 'stroke-width': 3.5 }), g);
-  // lamp
-  S('path', Object.assign({ d: 'M70 230 h50 M95 230 L95 214 L130 168', fill: 'none' }, ink, { 'stroke-width': 3 }), g);
-  const shade = S('path', Object.assign({ d: 'M112 150 L150 150 L162 182 L100 182Z', fill: '#2f8584' }, ink), g);
-  // laptop
-  S('path', Object.assign({ d: 'M200 230 L210 150 L330 150 L320 230Z', fill: '#d9dde6' }, ink), g);
-  S('path', Object.assign({ d: 'M186 230 h150 l-8 10 h-134Z', fill: '#bfc6d3' }, ink), g);
-  S('path', { d: 'M222 168 h80 M222 180 h60 M222 192 h70', stroke: PENCIL, 'stroke-width': 2 }, g);
-  // pencil cup
-  S('path', Object.assign({ d: 'M352 230 L356 192 L384 192 L388 230Z', fill: '#e2d7f1' }, ink), g);
-  S('path', Object.assign({ d: 'M362 192 L358 160 M372 192 L374 154 M380 192 L388 164', fill: 'none' }, ink), g);
-  // books
-  S('rect', Object.assign({ x: 412, y: 210, width: 80, height: 20, fill: '#c2566f' }, ink), g);
-  S('rect', Object.assign({ x: 418, y: 192, width: 70, height: 18, fill: '#4f82bd' }, ink), g);
-  const topBook = S('rect', Object.assign({ x: 424, y: 176, width: 58, height: 16, fill: '#6c9a4c' }, ink), g);
-  // plant
-  S('path', Object.assign({ d: 'M520 230 L526 196 L570 196 L576 230Z', fill: '#d98a2b' }, ink), g);
-  S('path', Object.assign({ d: 'M548 196 C 540 170 520 160 512 150 C 534 152 548 168 548 196', fill: '#6c9a4c' }, ink), g);
-  S('path', Object.assign({ d: 'M548 196 C 556 168 572 158 584 154 C 578 174 562 184 548 196', fill: '#6c9a4c' }, ink), g);
-  const leaf = S('path', Object.assign({ d: 'M548 196 C 546 160 552 140 556 124 C 566 146 560 172 548 196', fill: '#6c9a4c' }, ink), g);
-  const blank = S('rect', { x: 0, y: 0, width: 600, height: 340, fill: '#e9e2d0', opacity: 0 }, svg);
-  const ring = S('ellipse', { cx: 0, cy: 0, rx: 0, ry: 0, fill: 'none', stroke: RED, 'stroke-width': 4, opacity: 0 }, svg);
-  const CH = [
-    { n: 'the sun in the picture', box: [146, 52, 24, 24], set: a => sun.setAttribute('opacity', a ? 1 : 0) },
-    { n: 'the clock’s hour hand', box: [488, 82, 30, 30], set: a => { handA.setAttribute('opacity', a ? 1 : 0); handB.setAttribute('opacity', a ? 0 : 1); } },
-    { n: 'the lampshade colour', box: [131, 166, 40, 24], set: a => shade.setAttribute('fill', a ? '#2f8584' : '#c0432f') },
-    { n: 'the top book', box: [453, 184, 40, 18], set: a => topBook.setAttribute('opacity', a ? 1 : 0) },
-    { n: 'the tall leaf on the plant', box: [554, 158, 22, 40], set: a => leaf.setAttribute('opacity', a ? 1 : 0) }
-  ];
-  let round = 0, running = false, blankMode = true, t0 = 0, found = false;
-  const reset = () => CH.forEach(ch => ch.set(true));
-  reset(); handB.setAttribute('opacity', 0);
-  function draw(t) {
-    if (!running) return;
-    const ch = CH[round % CH.length], A = 800, B = blankMode ? 140 : 0, cyc = 2 * (A + B), u = (t - t0) % cyc;
-    const showA = u < A, blankOn = (u >= A && u < A + B) || u >= 2 * A + B;
-    ch.set(showA); blank.setAttribute('opacity', blankOn ? 1 : 0);
-    if ((t - t0) > 40000 && !found) reveal(false);
-    c._loop.dirty = true;
-  }
-  const c = svg; loop(c, draw);
-  function start(withBlank) {
-    reset(); found = false; blankMode = withBlank; running = true; t0 = performance.now(); ring.setAttribute('opacity', 0); c._loop.dirty = true;
-    go.textContent = 'Give up and show me';
-    txt.innerHTML = withBlank ? 'Flickering. Tap the thing that changes.' : 'Same two pictures, no blank in between. Notice how the change jumps out?';
-  }
-  function reveal(win) {
-    running = false; found = true; blank.setAttribute('opacity', 0); const ch = CH[round % CH.length]; ch.set(true);
-    ring.setAttribute('cx', ch.box[0]); ring.setAttribute('cy', ch.box[1]); ring.setAttribute('rx', ch.box[2] + 8); ring.setAttribute('ry', ch.box[3] + 8); ring.setAttribute('opacity', 1);
-    const secs = ((performance.now() - t0) / 1000).toFixed(1);
-    txt.innerHTML = (win ? `<b>Got it in ${secs} s:</b> ${ch.n}.` : `<b>It was ${ch.n}.</b>`) + ' With the blank flash, the change has no motion signal to grab attention, so you have to check objects one by one. That’s <b>change blindness</b>. Without the blank, the change pops out bottom-up.';
-    go.textContent = 'Next round'; round++; mark('u2-cb');
-  }
-  go.addEventListener('click', () => { if (running) reveal(false); else start(true); });
-  nob.addEventListener('click', () => start(false));
-  svg.addEventListener('pointerdown', e => {
-    if (!running) return; const p = svgPt(svg, e), ch = CH[round % CH.length];
-    if (Math.abs(p.x - ch.box[0]) < ch.box[2] + 14 && Math.abs(p.y - ch.box[1]) < ch.box[3] + 14) reveal(true);
-    else txt.innerHTML = 'Not that. Keep looking: something is there in one picture and different in the other.';
-  });
 })();
 
 /* 2.3 PFC map */
@@ -2903,8 +2795,8 @@ const Q = {
     { type: 'mc', q: 'Hair cells near the <b>base</b> of the cochlea respond best to...', opts: ['High-pitched sounds', 'Low-pitched sounds', 'Loud sounds of any pitch', 'Sounds from the left side'], a: 0, why: 'The base of the basilar membrane is narrow and stiff, so it vibrates most to high frequencies; the wide, floppy apex responds to low frequencies. This place code gives a tonotopic map.' }
   ],
   q2: [
-    { type: 'mc', q: 'You’re scanning a shelf for a book with a green spine when a book suddenly topples off the top shelf, and your eyes jump to it. The falling book is an example of...', opts: ['Top-down (endogenous) attention', 'Bottom-up (exogenous) capture', 'Inattentional blindness', 'Change blindness'], a: 1, why: 'A sudden, salient event grabbed attention automatically: bottom-up capture. Searching for the green spine was the top-down part.' },
-    { type: 'mc', q: 'A website swaps the photo on its homepage during a page reload, and most visitors never notice the new photo. This is...', opts: ['Change blindness', 'Inattentional blindness', 'Sensory adaptation', 'Visual agnosia'], a: 0, why: 'Failing to notice that something changed between two views (here, across the reload’s interruption) is change blindness.' },
+    { type: 'mc', q: 'You’re scanning a shelf for a book with a green spine when a book suddenly topples off the top shelf, and your eyes jump to it. The falling book is an example of...', opts: ['Top-down (endogenous) attention', 'Bottom-up (exogenous) capture', 'Working memory', 'Sensory adaptation'], a: 1, why: 'A sudden, salient event grabbed attention automatically: bottom-up capture. Searching for the green spine was the top-down part.' },
+    { type: 'mc', q: 'Your phone buzzes while you’re reading, and you glance at it before deciding to. Ten seconds later you choose to look back at your page. In order, these are...', opts: ['Bottom-up, then top-down attention', 'Top-down, then bottom-up attention', 'Both bottom-up', 'Both top-down'], a: 0, why: 'The buzz grabbed attention automatically (bottom-up); returning to the page was a goal-driven choice (top-down), steered by prefrontal and parietal cortex.' },
     { type: 'tf', q: 'Damage to the dorsolateral prefrontal cortex mainly wipes out old long-term memories.', a: false, why: 'The dorsolateral PFC supports working memory, planning, rule switching and inhibition. Long-term memories are stored across the cortex, and forming new ones depends on the hippocampus.' },
     { type: 'mc', q: 'After damage to the ventromedial prefrontal cortex, a careful accountant still scores normally on IQ tests but starts making reckless bets and rude remarks at work. This fits the idea that this region...', opts: ['Stores factual knowledge', 'Controls eye movements', 'Links emotion and value to judgement and social behaviour', 'Is needed for working memory span'], a: 2, why: 'The vmPFC/orbitofrontal cortex ties emotional value to decisions and social conduct, as in Phineas Gage. Intelligence and memory can look intact.' },
     { type: 'match', q: 'Match each executive function to an example.', pairs: [['Working memory', 'Keeping a phone number in mind while you dial'], ['Inhibitory control', 'Not blurting out an answer before the question is finished'], ['Task switching', 'Sorting cards by colour, then suddenly by shape'], ['Planning', 'Mapping out the steps of moving apartments']], why: 'All four rely on the prefrontal cortex. ADHD is best understood as trouble with these executive skills, especially inhibition.' }
@@ -2950,13 +2842,13 @@ const RAPID = [
   { u: 1, type: 'tf', q: 'Red-green colour blindness is more common in men because the genes for those cone pigments are on the X chromosome.', a: true, why: 'Men have one X, so a single faulty copy causes it; women usually have a working copy on their other X.' },
   { u: 1, type: 'mc', q: 'Which part of the cochlea vibrates most to a low hum?', opts: ['The base', 'The apex', 'The eardrum', 'The whole membrane equally'], a: 1, why: 'Low frequencies peak near the wide, floppy apex; high frequencies near the narrow, stiff base.' },
   { u: 1, type: 'tf', q: 'The ventral stream runs from the occipital lobe up into the parietal lobe.', a: false, why: 'The ventral ("what") stream runs into the temporal lobe. The dorsal ("where/how") stream goes to the parietal lobe.' },
-  { u: 1, type: 'mc', q: 'The smell of a bakery fades within minutes of walking in, even though it hasn’t gone. This is...', opts: ['Lateral inhibition', 'Sensory adaptation', 'Change blindness', 'Top-down processing'], a: 1, why: 'Receptors and circuits reduce their response to a constant stimulus: sensory adaptation.' },
+  { u: 1, type: 'mc', q: 'The smell of a bakery fades within minutes of walking in, even though it hasn’t gone. This is...', opts: ['Lateral inhibition', 'Sensory adaptation', 'Labeled lines', 'Top-down processing'], a: 1, why: 'Receptors and circuits reduce their response to a constant stimulus: sensory adaptation.' },
   { u: 1, type: 'mc', q: 'What does lateral inhibition do for perception?', opts: ['Makes all signals weaker equally', 'Sharpens edges and boosts contrast', 'Codes stimulus intensity', 'Sends signals across the optic chiasm'], a: 1, why: 'Neighbouring cells suppress each other, which exaggerates differences at edges.' },
   { u: 1, type: 'tf', q: 'If the image on your retina stays the same, your perception of it stays the same too.', a: false, why: 'Bistable figures flip between interpretations with an unchanged retinal image. Perception is constructed by the brain.' },
-  { u: 2, type: 'mc', q: 'While hunting for your bus, you don’t notice a person on a unicycle crossing right in front of you. This is...', opts: ['Change blindness', 'Inattentional blindness', 'Visual agnosia', 'Optic ataxia'], a: 1, why: 'A fully visible, unexpected object was missed because attention was busy elsewhere.' },
+  { u: 2, type: 'mc', q: 'Planning a route, resisting the urge to check your phone, and juggling two sets of instructions all rely mainly on...', opts: ['The prefrontal cortex (executive functions)', 'The cerebellum', 'The primary visual cortex', 'The hippocampus alone'], a: 0, why: 'Planning, inhibitory control and switching between rules are executive functions, run largely by the prefrontal cortex.' },
   { u: 2, type: 'tf', q: 'Working memory holds a small amount of information for a few seconds while you use it.', a: true, why: 'It’s the brief, limited mental scratchpad supported by the prefrontal cortex.' },
   { u: 2, type: 'mc', q: 'ADHD is best described as a difficulty with...', opts: ['Forming new long-term memories', 'Executive control, especially inhibiting responses and sustaining attention', 'Seeing colour', 'Recognising faces'], a: 1, why: 'ADHD involves prefrontal executive and inhibitory control and its frontal-striatal circuits.' },
-  { u: 2, type: 'mc', q: 'In the Stroop effect, naming the ink colour of a clashing colour word is slow because...', opts: ['Colour vision is slower than reading', 'Reading is automatic, so the PFC must inhibit the word', 'The word causes change blindness', 'The ink colour is processed by the dorsal stream'], a: 1, why: 'It shows interference from an automatic process and the inhibitory control needed to override it.' },
+  { u: 2, type: 'mc', q: 'In the Stroop effect, naming the ink colour of a clashing colour word is slow because...', opts: ['Colour vision is slower than reading', 'Reading is automatic, so the PFC must inhibit the word', 'The word is processed by the cerebellum', 'The ink colour is processed by the dorsal stream'], a: 1, why: 'It shows interference from an automatic process and the inhibitory control needed to override it.' },
   { u: 3, type: 'mc', q: 'A pianist with hippocampal damage learns a new piece over a week of practice, yet insists she’s never seen the music before. This shows that...', opts: ['Procedural learning doesn’t depend on the hippocampus', 'Her retrograde amnesia is temporally graded', 'She has a retrieval failure', 'Semantic memory is intact'], a: 0, why: 'The skill (procedural, nondeclarative) improves without any declarative memory of learning it.' },
   { u: 3, type: 'tf', q: 'In temporally graded retrograde amnesia, the oldest memories are the most likely to be lost.', a: false, why: 'The most recent memories, which haven’t finished consolidating, are lost first; old ones survive.' },
   { u: 3, type: 'tf', q: 'Recent memories are more fragile than older ones because they haven’t finished consolidating.', a: true, why: 'Consolidation takes time, which is why injuries tend to erase the period just before them.' },
