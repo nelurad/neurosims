@@ -90,6 +90,7 @@
   .btn:disabled{opacity:.45;cursor:default}
   .btn small{display:block;font-weight:600;font-size:.74rem;opacity:.85}
   .seg{justify-self:start;max-width:100%;display:inline-flex;border:2.5px solid var(--ink);border-radius:999px;overflow:hidden;background:var(--cream);box-shadow:3px 3px 0 var(--ink)}
+  .seg[hidden]{display:none}
   .seg button{font:700 .9rem var(--body);border:0;background:transparent;color:var(--ink);padding:9px 14px;min-height:42px;cursor:pointer}
   .seg button + button{border-left:2px solid var(--ink)}
   .seg button[aria-pressed="true"]{background:var(--ink);color:var(--cream)}
@@ -142,6 +143,13 @@
   .embed{display:flex;flex-wrap:wrap;gap:8px;align-items:center}
   .embed code{font-family:var(--mono);font-size:.75rem;background:var(--cream);border:1.5px solid var(--ink);border-radius:6px;padding:6px 8px;overflow-x:auto;max-width:100%;white-space:nowrap}
   .embed button{font:700 .8rem var(--body);background:var(--mus);color:var(--ink);border:2px solid var(--ink);border-radius:999px;padding:5px 14px;cursor:pointer;min-height:34px}
+  .cmp{background:var(--cream);border:2.5px solid var(--ink);border-radius:18px 14px 20px 12px;box-shadow:5px 6px 0 var(--ink);overflow:hidden;font-size:.95rem;max-width:980px}
+  .cmp > div{display:grid;grid-template-columns:minmax(0,.8fr) minmax(0,1fr) minmax(0,1fr);gap:4px 16px;padding:9px 14px;border-top:1.5px dashed color-mix(in srgb,var(--ink) 35%,transparent)}
+  .cmp > div:first-child{border-top:0}
+  .cmp .cmp-h{background:var(--ink);color:var(--cream);font:700 1.3rem/1.1 var(--hand)}
+  .cmp .cmp-h span:nth-child(2){color:var(--blush)}.cmp .cmp-h span:nth-child(3){color:var(--nm)}
+  .cmp b{font-weight:700}
+  @media (max-width:560px){.cmp > div{grid-template-columns:minmax(0,1fr) minmax(0,1fr)}.cmp > div > :first-child{grid-column:1 / -1}.cmp .cmp-h span:first-child{display:none}}
   .refs{padding-left:1.2em;margin:4px 0 12px}.refs li{margin:3px 0}
 
   @media (max-width:900px){
@@ -188,7 +196,8 @@
     <a href="#c5"><b>5</b>Timing</a>
     <a href="#c6"><b>6</b>Memories</a>
     <a href="#c7"><b>7</b>Rewiring</a>
-    <a href="#c8"><b>8</b>Check</a>
+    <a href="#c8"><b>8</b>Real life</a>
+    <a href="#c9"><b>9</b>Check</a>
   </nav>
   <button class="tiny" id="sndBtn" aria-pressed="false">Sound: off</button>
 </header>
@@ -411,8 +420,45 @@
 </section>
 
 <!-- 8 -->
-<section class="ch" id="c8" style="--tint:var(--tom)">
-  <div class="ch-head"><div class="num">8</div><p class="ch-kick">the big picture</p><h2>What learning looks like in the brain</h2></div>
+<section class="ch" id="c8" style="--tint:var(--cob)">
+  <div class="ch-head"><div class="num">8</div><p class="ch-kick">a worked example</p><h2>Riding a bike vs. learning a capital</h2></div>
+  <svg class="squig" viewBox="0 0 180 16" aria-hidden="true"><path d="M2 9 q 11 -9 22 0 t 22 0 t 22 0 t 22 0 t 22 0 t 22 0 t 22 0 t 22 0" fill="none" stroke="var(--cob)" stroke-width="3.5" stroke-linecap="round"/></svg>
+  <div class="cols">
+    <p class="plain">So far everything has happened in one synapse or a cartoon network. Here is how it plays out when you actually learn something. Pick a memory, <b>learning to ride a bike</b> or <b>learning that the capital of Australia is Canberra</b>, then step through time: the first try, the first hour, that night, weeks later, years later. Watch which parts of the brain are busy, and what happens to two key synapses.</p>
+    <p class="terms">Riding a bike is a <b>procedural memory</b> ("knowing how"). It is built slowly by practice, mostly in <b>motor cortex</b>, the <b>cerebellum</b> and the <b>basal ganglia</b>. A capital city is a <b>declarative</b> (more exactly, <b>semantic</b>) memory ("knowing that"). The <b>hippocampus</b> can grab it in one go and then slowly hand it over to the cortex, a process called <b>systems consolidation</b>. Both run on the same NMDA, Ca²⁺, LTP and LTD machinery from chapters 2 to 5. What differs is <i>where</i> it happens, <i>how often</i> it is repeated, and what acts as the <i>teacher</i>.</p>
+  </div>
+  <div class="bench">
+    <div class="plate">
+      <canvas id="c8Cv" role="img" aria-label="Side view of a brain with prefrontal cortex, motor cortex, basal ganglia, temporal lobe, hippocampus and cerebellum that light up depending on what is being learned, next to two zoomed-in synapses that grow or shrink"></canvas>
+    </div>
+    <div class="panel">
+      <div class="seg" role="group" aria-label="What you are learning"><button id="c8Bike" aria-pressed="true">Riding a bike</button><button id="c8Cap" aria-pressed="false">A capital city</button></div>
+      <div class="seg" role="group" aria-label="Point in time" id="c8Stages"><button aria-pressed="true">1st try</button><button aria-pressed="false">1 hour</button><button aria-pressed="false">Sleep</button><button aria-pressed="false">Weeks</button><button aria-pressed="false">Years</button></div>
+      <div class="seg" role="group" aria-label="Do you review the fact?" id="c8RevG" hidden><button id="c8Rev" aria-pressed="false">Review it a few times</button><button id="c8NoRev" aria-pressed="true">Never look again</button></div>
+      <div class="row"><button class="btn hot" id="c8Next">Next: 1 hour later &rarr;</button></div>
+      <div class="card"><h4 id="c8SeeH">What you notice</h4><p id="c8See"></p></div>
+      <div class="card"><h4>Inside your brain</h4><p id="c8Brain"></p></div>
+    </div>
+  </div>
+  <div class="plate" style="margin-top:22px"><canvas id="c8Plot" role="img" aria-label="How well each memory works over time: the bike skill rises slowly and then stays for years; the capital city is known at once, fades fast without review, and lasts with spaced review"></canvas></div>
+  <h3 style="font-family:var(--disp);font-size:1.5rem;margin:30px 0 10px">Side by side</h3>
+  <div class="cmp">
+    <div class="cmp-h"><span></span><span>Riding a bike</span><span>Canberra is the capital</span></div>
+    <div><b>Kind of memory</b><span>Procedural: knowing <i>how</i></span><span>Declarative (semantic): knowing <i>that</i></span></div>
+    <div><b>How many tries?</b><span>Hundreds of wobbly attempts</span><span>Can stick after one exposure</span></div>
+    <div><b>Who is the teacher?</b><span>Falling over. The cerebellum gets an error signal every time you tip</span><span>No built-in teacher. You only find out you forgot when you are tested</span></div>
+    <div><b>Main places</b><span>Motor cortex, cerebellum, basal ganglia</span><span>Hippocampus first, then the temporal-lobe cortex</span></div>
+    <div><b>Main synaptic changes</b><span>LTP in motor cortex and striatum, LTD in the cerebellum, new spines that become stable</span><span>Fast LTP in the hippocampus, then slow strengthening of cortical links during sleep replay</span></div>
+    <div><b>Can you explain it?</b><span>Barely. Try telling someone how you balance</span><span>Yes, in one sentence</span></div>
+    <div><b>Forgetting</b><span>Very slow. Rusty for a minute, then back</span><span>Fast without review; lasting with spaced review</span></div>
+    <div><b>Patient H.M. (no hippocampus)</b><span>Could still learn new motor skills, like mirror drawing</span><span>Could not learn new facts</span></div>
+  </div>
+  <p class="callout">Real learning is usually a mix. Your first bike lesson is full of facts ("look ahead, not at your feet"), held by the hippocampus and prefrontal cortex until practice makes them unnecessary. And a fact you use every day becomes almost automatic. For more on the different kinds of memory, see <a href="../memory-systems/">Kinds of Memory</a> and <a href="../memory-real-life/">Memory in Real Life</a>.</p>
+</section>
+
+<!-- 9 -->
+<section class="ch" id="c9" style="--tint:var(--tom)">
+  <div class="ch-head"><div class="num">9</div><p class="ch-kick">the big picture</p><h2>What learning looks like in the brain</h2></div>
   <svg class="squig" viewBox="0 0 180 16" aria-hidden="true"><path d="M2 9 q 11 -9 22 0 t 22 0 t 22 0 t 22 0 t 22 0 t 22 0 t 22 0 t 22 0" fill="none" stroke="var(--tom)" stroke-width="3.5" stroke-linecap="round"/></svg>
   <div class="recap">
     <div style="--c:var(--teal)"><b>1. Glutamate talks</b><p>Glutamate opens AMPA receptors: Na⁺ in, a small EPSP. NMDA receptors stay corked by Mg²⁺.</p></div>
@@ -427,16 +473,20 @@
 
 <footer class="foot">
   <p class="embed"><span>Embed:</span>
-    <code id="embedCode">&lt;iframe src="https://nelurad.github.io/neurosims/ltp/" width="100%" height="13000" style="border:0" title="The Spine That Learned: LTP, LTD &amp; Plasticity"&gt;&lt;/iframe&gt;</code>
+    <code id="embedCode">&lt;iframe src="https://nelurad.github.io/neurosims/ltp/" width="100%" height="15000" style="border:0" title="The Spine That Learned: LTP, LTD &amp; Plasticity"&gt;&lt;/iframe&gt;</code>
     <button id="copyBtn">Copy</button></p>
   <p style="margin-bottom:2px">References</p>
   <ul class="refs">
     <li>Bi, G.-Q., &amp; Poo, M.-M. (1998). Synaptic modifications in cultured hippocampal neurons: Dependence on spike timing, synaptic strength, and postsynaptic cell type. <i>Journal of Neuroscience</i>, 18, 10464–10472.</li>
     <li>Bliss, T. V. P., &amp; Lømo, T. (1973). Long-lasting potentiation of synaptic transmission in the dentate area of the anaesthetized rabbit following stimulation of the perforant path. <i>Journal of Physiology</i>, 232, 331–356.</li>
     <li>Dudek, S. M., &amp; Bear, M. F. (1992). Homosynaptic long-term depression in area CA1 of hippocampus and effects of N-methyl-D-aspartate receptor blockade. <i>PNAS</i>, 89, 4363–4367.</li>
+    <li>Ebbinghaus, H. (1885/1913). <i>Memory: A contribution to experimental psychology</i> (H. A. Ruger &amp; C. E. Bussenius, Trans.). Teachers College, Columbia University.</li>
     <li>Frey, U., Krug, M., Reymann, K. G., &amp; Matthies, H. (1988). Anisomycin, an inhibitor of protein synthesis, blocks late phases of LTP phenomena in the hippocampal CA1 region in vitro. <i>Brain Research</i>, 452, 57–65.</li>
+    <li>Ito, M. (2001). Cerebellar long-term depression: Characterization, signal transduction, and functional roles. <i>Physiological Reviews</i>, 81, 1143–1195.</li>
     <li>Jahr, C. E., &amp; Stevens, C. F. (1990). Voltage dependence of NMDA-activated macroscopic conductances predicted by single-channel kinetics. <i>Journal of Neuroscience</i>, 10, 3178–3182.</li>
     <li>Jenkins, W. M., Merzenich, M. M., Ochs, M. T., Allard, T., &amp; Guíc-Robles, E. (1990). Functional reorganization of primary somatosensory cortex in adult owl monkeys after behaviorally controlled tactile stimulation. <i>Journal of Neurophysiology</i>, 63, 82–104.</li>
+    <li>Karpicke, J. D., &amp; Roediger, H. L. (2008). The critical importance of retrieval for learning. <i>Science</i>, 319, 966–968.</li>
+    <li>Kramár, E. A., Babayan, A. H., Gavin, C. F., et al. (2012). Synaptic evidence for the efficacy of spaced learning. <i>PNAS</i>, 109, 5121–5126.</li>
     <li>Lisman, J. (1989). A mechanism for the Hebb and the anti-Hebb processes underlying learning and memory. <i>PNAS</i>, 86, 9574–9578.</li>
     <li>Lisman, J., Schulman, H., &amp; Cline, H. (2002). The molecular basis of CaMKII function in synaptic and behavioural memory. <i>Nature Reviews Neuroscience</i>, 3, 175–190.</li>
     <li>Malenka, R. C., &amp; Bear, M. F. (2004). LTP and LTD: An embarrassment of riches. <i>Neuron</i>, 44, 5–21.</li>
@@ -444,9 +494,13 @@
     <li>Matsuzaki, M., Honkura, N., Ellis-Davies, G. C. R., &amp; Kasai, H. (2004). Structural basis of long-term potentiation in single dendritic spines. <i>Nature</i>, 429, 761–766.</li>
     <li>Merzenich, M. M., Nelson, R. J., Stryker, M. P., Cynader, M. S., Schoppmann, A., &amp; Zook, J. M. (1984). Somatosensory cortical map changes following digit amputation in adult monkeys. <i>Journal of Comparative Neurology</i>, 224, 591–605.</li>
     <li>Nowak, L., Bregestovski, P., Ascher, P., Herbet, A., &amp; Prochiantz, A. (1984). Magnesium gates glutamate-activated channels in mouse central neurones. <i>Nature</i>, 307, 462–465.</li>
+    <li>Scoville, W. B., &amp; Milner, B. (1957). Loss of recent memory after bilateral hippocampal lesions. <i>Journal of Neurology, Neurosurgery, and Psychiatry</i>, 20, 11–21.</li>
     <li>Shouval, H. Z., Bear, M. F., &amp; Cooper, L. N. (2002). A unified model of NMDA receptor-dependent bidirectional synaptic plasticity. <i>PNAS</i>, 99, 10831–10836.</li>
+    <li>Wilson, M. A., &amp; McNaughton, B. L. (1994). Reactivation of hippocampal ensemble memories during sleep. <i>Science</i>, 265, 676–679.</li>
     <li>Xu, T., Yu, X., Perlik, A. J., et al. (2009). Rapid formation and selective stabilization of synapses for enduring motor memories. <i>Nature</i>, 462, 915–919.</li>
+    <li>Yang, G., Lai, C. S. W., Cichon, J., Ma, L., Li, W., &amp; Gan, W.-B. (2014). Sleep promotes branch-specific formation of dendritic spines after learning. <i>Science</i>, 344, 1173–1178.</li>
     <li>Yang, G., Pan, F., &amp; Gan, W.-B. (2009). Stably maintained dendritic spines are associated with lifelong memories. <i>Nature</i>, 462, 920–924.</li>
+    <li>Yin, H. H., &amp; Knowlton, B. J. (2006). The role of the basal ganglia in habit formation. <i>Nature Reviews Neuroscience</i>, 7, 464–476.</li>
   </ul>
   <p>All drawings and simulations are original, simplified illustrations. Numbers in the simulations (receptor counts, calcium levels, timings) are made to show the idea, not measured values; the 100 Hz burst and 1 Hz stimulation are slowed down or sped up so you can see them. The Mg²⁺ block follows the measured voltage dependence (Jahr &amp; Stevens, 1990), and the calcium rule follows the shape proposed by Shouval, Bear and Cooper (2002). Free to use, share and adapt with credit to "Nelu Radpour, NeuroSims." Content <a href="https://creativecommons.org/licenses/by/4.0/">CC BY 4.0</a>, code MIT. Spot a bug or an inaccuracy? <a href="https://github.com/nelurad/neurosims/issues">Open an issue</a>.</p>
 </footer>
@@ -1465,7 +1519,186 @@ $('c7Rest').onclick = () => { map.f = map.f.map(v => lerp(v, 1, .6)); $('c7bMsg'
 $('c7bReset').onclick = () => { map.reset(); setMapMode('prac'); };
 reg($('c7bCv'), map);
 
-/* =================== 8: quiz =================== */
+/* =================== 8: bike vs. capital =================== */
+const C8 = {
+  bike: {
+    syn: [{ t: 'motor cortex', s: 'synapses for moves that worked' }, { t: 'cerebellum', s: 'synapses for wrong corrections' }],
+    y: [.08, .3, .38, .92, .86], eff: [.95, .82, .72, .2, .28],
+    st: [
+      { a: { pfc: .95, mot: .7, bg: .45, cb: .8, hip: .4, tmp: .2 }, w: [1, 1],
+        see: 'You wobble, oversteer and put a foot down every few metres. You are consciously thinking about everything at once: pedal, steer, look ahead, don\'t lean too far.',
+        brain: 'The <b>prefrontal cortex</b> is working flat out (attention, step-by-step control), and the hippocampus is holding the instructions you were just given. <b>Motor cortex</b> sends clumsy commands. Every time you start to tip, the <b>cerebellum</b> gets an error signal ("that was wrong!") through its climbing fibres. No synapse has changed yet.' },
+      { a: { pfc: .8, mot: .9, bg: .75, cb: .95, hip: .3, tmp: .15 }, w: [1.35, .75],
+        see: 'An hour of practice. Fewer falls, and you can manage ten metres before the wobble starts.',
+        brain: 'Motor cortex synapses that took part in moves that worked get <b>LTP</b> (<a href="#c3">ch. 3</a>), and new spines sprout within the hour (<a href="#c7">ch. 7</a>). In the cerebellum, synapses whose input kept arriving <i>together with</i> the error signal get <b>LTD</b> (<a href="#c4">ch. 4</a>): the wrong corrections are turned down. Dopamine in the <b>basal ganglia</b> tags the moves that paid off.' },
+      { a: { pfc: .1, mot: .55, bg: .35, cb: .45, hip: .35, tmp: .1 }, w: [1.5, .7], sleep: 1,
+        see: 'You are asleep. The next morning you are, oddly, a bit better than when you stopped.',
+        brain: 'During sleep, the activity patterns from practice are replayed, and many of the new spines are <b>stabilised</b> (Yang et al., 2014); the rest disappear. Turning early LTP into lasting <b>late LTP</b> needs new proteins, which are made over these hours (<a href="#c3">ch. 3</a>).' },
+      { a: { pfc: .2, mot: .75, bg: .95, cb: .85, hip: .1, tmp: .1 }, w: [1.9, .55],
+        see: 'Weeks of riding. You don\'t think about it any more: you can chat, look around and ring the bell at the same time.',
+        brain: 'Control has moved away from the prefrontal cortex. Within the basal ganglia it shifts from the "goal-directed" part of the striatum to the "habit" part (the dorsolateral striatum), and the cerebellum runs the fine balance corrections. The practised links survived pruning (<a href="#c6">ch. 6</a>) and the surviving new spines are now stable mushroom spines.' },
+      { a: { pfc: .25, mot: .8, bg: .9, cb: .85, hip: .1, tmp: .1 }, w: [1.85, .58],
+        see: 'Ten years without riding. You hop on, feel rusty for about a minute, and then it all comes back. "It\'s like riding a bike."',
+        brain: 'Skills are very resistant to forgetting. The skill is spread across motor cortex, cerebellum and basal ganglia, it was practised thousands of times, and spines formed during skill learning can last for a lifetime (Yang et al., 2009). Notice that you still can\'t really explain how you balance: this is <b>knowing how</b>, not <b>knowing that</b>.' }
+    ]
+  },
+  cap: {
+    syn: [{ t: 'hippocampus', s: 'Australia ↔ Canberra link' }, { t: 'temporal cortex', s: 'Australia ↔ Canberra link' }],
+    y: [.95, .55, .45, .2, .06], yr: [.95, .85, .8, .92, .85],
+    st: [
+      { a: { pfc: .75, mot: .1, bg: .2, cb: .1, hip: .95, tmp: .85 }, w: [1.6, 1],
+        see: 'You read: "The capital of Australia is Canberra." (You had guessed Sydney.) Ask yourself straight away and you know it.',
+        brain: 'Neurons in the cortex that stand for "Australia" and for "Canberra" fire at the same moment. The <b>hippocampus</b>, which receives input from all over the cortex, links them <b>in one go</b>: its synapses can show NMDA-dependent LTP after a single event (<a href="#c2">ch. 2</a>, <a href="#c3">3</a>). One exposure can be enough. The bike needed hundreds.' },
+      { a: { pfc: .55, mot: .1, bg: .15, cb: .1, hip: .55, tmp: .5 }, w: [1.35, 1],
+        see: 'Ten minutes later: easy. An hour later: "Canberra... I think?"',
+        brain: 'The new link is <b>early LTP</b>, held by changes to proteins already in the spine, and it fades unless something makes it stick (<a href="#c3">ch. 3</a>). This is the steep start of the <b>forgetting curve</b> that Ebbinghaus measured in 1885.',
+        r: { a: { pfc: .7, mot: .1, bg: .15, cb: .1, hip: .85, tmp: .8 }, w: [1.6, 1.05],
+          see: 'You test yourself after ten minutes and again after an hour. Still "Canberra", instantly.',
+          brain: 'Each time you pull the answer back out, the same team of neurons fires together again and the link gets another push towards LTP (<a href="#c6">ch. 6</a>). In experiments, testing yourself beats simply rereading (Karpicke &amp; Roediger, 2008).' } },
+      { a: { pfc: .1, mot: .05, bg: .05, cb: .05, hip: .85, tmp: .6 }, w: [1.25, 1.15], sleep: 1,
+        see: 'You are asleep.',
+        brain: 'In deep sleep the hippocampus <b>replays</b> the day\'s new patterns in fast bursts (Wilson &amp; McNaughton, 1994), reactivating "Australia–Canberra" in the cortex again and again. Each replay strengthens the <b>cortical</b> link a little: the hippocampus is slowly teaching the cortex. A fact that felt unimportant gets replayed less.',
+        r: { a: { pfc: .1, mot: .05, bg: .05, cb: .05, hip: .9, tmp: .7 }, w: [1.5, 1.3] } },
+      { a: { pfc: .75, mot: .1, bg: .15, cb: .1, hip: .35, tmp: .4 }, w: [1.05, 1.05],
+        see: 'A friend asks. "Uh... Sydney? No, wait..." The more familiar Sydney gets in the way.',
+        brain: 'Unused, the link drifts back towards baseline: weak synapses that are not re-used are weakened by <b>LTD</b> and depotentiation (<a href="#c4">ch. 4</a>). Meanwhile the older, stronger "Australia–Sydney" team shares the "Australia" neurons and wins the competition. Shared pieces cause mix-ups (<a href="#c6">ch. 6</a>).',
+        r: { a: { pfc: .25, mot: .1, bg: .15, cb: .1, hip: .4, tmp: .85 }, w: [1.35, 1.6],
+          see: 'You reviewed it after a day, three days and a week. Someone asks: "Canberra", no hesitation.',
+          brain: 'Each <b>spaced review</b> re-fires the same team and adds more lasting strengthening. Even in brain slices, bursts of stimulation spaced an hour apart give more LTP than the same bursts crammed together (Kramár et al., 2012), a cellular version of why spacing beats cramming.' } },
+      { a: { pfc: .6, mot: .1, bg: .15, cb: .1, hip: .2, tmp: .25 }, w: [.95, 1],
+        see: 'Years later: gone, or just a vague "something with a C?". You would have to learn it again (though relearning is faster the second time).',
+        brain: 'The hippocampal link has faded and the cortical one never got strong. Faster relearning ("savings") suggests some trace may survive, but not enough to bring the answer back on its own.',
+        r: { a: { pfc: .2, mot: .1, bg: .15, cb: .1, hip: .15, tmp: .9 }, w: [1.1, 1.85],
+          see: 'Years later: it\'s simply something you know. You can\'t remember when or where you learned it.',
+          brain: '<b>Systems consolidation</b>: the fact is now held mainly by links within the temporal-lobe cortex, and the hippocampus is needed much less. This is why patient H.M., whose hippocampi were removed, kept facts from long before his surgery but could not learn new ones, yet could still get better at a new motor skill.' } }
+    ]
+  }
+};
+const C8STG = ['first try', 'first hour', 'that night', 'weeks later', 'years later'];
+const C8NEXT = ['1 hour later', 'that night', 'weeks later', 'years later', 'start again'];
+const REG = {
+  pfc: { col: K.mus, c: [108, 140], r: [40, 48], f: c => path(c, [[64, 190], [58, 140], [82, 92], [130, 58], [178, 46], [168, 112], [146, 170], [104, 206]], true) },
+  mot: { col: K.tom, c: [222, 108], r: [12, 60], f: c => path(c, [[214, 38], [256, 36], [226, 182], [190, 176]], true), line: 1 },
+  bg: { col: K.sage, c: [262, 150], r: [30, 20], f: c => { c.beginPath(); c.ellipse(262, 150, 34, 23, -.2, 0, TAU); }, deep: 1 },
+  tmp: { col: K.nm, c: [190, 270], r: [55, 14], f: c => path(c, [[122, 258], [170, 248], [240, 226], [312, 232], [302, 272], [240, 298], [180, 296], [136, 276]], true) },
+  hip: { col: K.teal, c: [262, 246], r: [34, 6], f: c => { c.beginPath(); c.ellipse(262, 246, 40, 11, -.22, 0, TAU); }, deep: 1 },
+  cb: { col: K.cob, c: [388, 296], r: [46, 24], f: c => path(c, blobPts(388, 296, 62, 36, 14, .04, 81, 1), true) }
+};
+const BRAIN = [[60, 192], [55, 140], [80, 90], [130, 55], [200, 34], [282, 34], [352, 50], [410, 86], [442, 136], [446, 186], [426, 230], [386, 255], [330, 262], [300, 280], [240, 302], [178, 300], [132, 278], [112, 252], [84, 236]];
+const life = {
+  st: new Stage($('c8Cv'), 760, 400), mode: 'bike', stage: 0, rev: false,
+  act: { pfc: 0, mot: 0, bg: 0, cb: 0, hip: 0, tmp: 0 }, w: [1, 1], sparks: [], sl: 0,
+  cur() { const S = C8[this.mode].st[this.stage]; return this.mode === 'cap' && this.rev && S.r ? Object.assign({}, S, S.r) : S; },
+  ys(mode, rev) { return mode === 'bike' ? C8.bike.y : rev ? C8.cap.yr : C8.cap.y; },
+  set() {
+    const S = this.cur();
+    $('c8See').innerHTML = S.see; $('c8Brain').innerHTML = S.brain;
+    $('c8SeeH').textContent = 'What you notice: ' + C8STG[this.stage];
+    [...$('c8Stages').children].forEach((b, i) => b.setAttribute('aria-pressed', i === this.stage));
+    $('c8Bike').setAttribute('aria-pressed', this.mode === 'bike'); $('c8Cap').setAttribute('aria-pressed', this.mode === 'cap');
+    $('c8RevG').hidden = this.mode !== 'cap';
+    $('c8Rev').setAttribute('aria-pressed', this.rev); $('c8NoRev').setAttribute('aria-pressed', !this.rev);
+    $('c8Next').innerHTML = 'Next: ' + C8NEXT[this.stage] + ' &rarr;';
+  },
+  go(i) { this.stage = i; this.set(); beep(i === 2 ? 260 : 440 + i * 60, .1, 'triangle', .04); },
+  step(dt) {
+    const S = this.cur();
+    for (const k in this.act) this.act[k] = lerp(this.act[k], S.a[k], ease(dt, 3));
+    this.w = this.w.map((v, i) => lerp(v, S.w[i], ease(dt, 2.5)));
+    this.sl = lerp(this.sl, S.sleep ? 1 : 0, ease(dt, 3));
+    if (!RM) for (const k in REG) {
+      const R = REG[k], a = this.act[k];
+      if (Math.random() < a * a * dt * 14) {
+        const u = Math.random() * 2 - 1, v = Math.random() * 2 - 1;
+        const x = R.line ? lerp(240, 206, (u + 1) / 2) + v * 8 : R.c[0] + u * R.r[0], y = R.line ? lerp(46, 172, (u + 1) / 2) : R.c[1] + v * R.r[1];
+        this.sparks.push({ x, y, t: 0, col: R.col });
+      }
+    }
+    for (let i = this.sparks.length - 1; i >= 0; i--) { const s = this.sparks[i]; s.t += dt * 2.2; if (s.t > 1) this.sparks.splice(i, 1); }
+  },
+  draw() {
+    const c = this.st.begin();
+    hand(c, C8STG[this.stage], 18, 352, 26, K.tom, 'left', -.03);
+    hand(c, this.mode === 'bike' ? 'learning to ride a bike' : 'learning "Canberra"', 18, 380, 17, K.muted, 'left', -.03);
+    // brainstem, cerebellum, cerebrum
+    ink(c, () => path(c, [[296, 262], [330, 268], [326, 330], [320, 384], [296, 384], [298, 320]], true), K.blush, { lw: 2.2 });
+    const glow = (k, i) => { const a = this.act[k]; return clamp(.1 + .85 * a * (RM || a < .5 ? 1 : .88 + .12 * Math.sin(NOW * 5 + i * 1.7)), 0, 1); };
+    ink(c, () => path(c, BRAIN, true), K.blush, { lw: 2.8, hatch: K.ink, hatchA: .08 });
+    ink(c, REG.cb.f.bind(null, c), K.blush, { lw: 2.4 });
+    Object.keys(REG).forEach((k, i) => {
+      const R = REG[k];
+      if (R.deep) c.setLineDash([5, 4]);
+      ink(c, () => R.f(c), R.col, { alpha: glow(k, i), lw: R.deep ? 1.8 : 1.6, off: 1.5, stroke: R.deep ? K.ink : 'rgba(43,35,32,.45)' });
+      if (R.deep) c.setLineDash([]);
+    });
+    for (let j = 0; j < 4; j++) wline(c, [[340 + j * 10, 272 + j * 2], [388, 266 + j * 9], [438 - j * 4, 280 + j * 8]], 'rgba(43,35,32,.35)', 1.4, 300 + j * 9, .5);
+    wline(c, [[150, 246], [220, 222], [300, 214], [340, 226]], K.ink, 1.8, 91, .6);
+    wline(c, [[258, 36], [244, 100], [228, 180]], 'rgba(43,35,32,.5)', 1.6, 95, .6);
+    for (const s of this.sparks) { c.globalAlpha = 1 - s.t; dot(c, s.x, s.y, 2.5 + s.t * 4, s.col, 0); c.globalAlpha = (1 - s.t) * .9; dot(c, s.x, s.y, 1.6, '#fff', 0); c.globalAlpha = 1; }
+    // labels
+    const H = '#fbf5e8';
+    hand(c, 'prefrontal', 108, 128, 18, K.ink, 'center', 0, H); hand(c, 'cortex', 108, 146, 18, K.ink, 'center', 0, H);
+    hand(c, 'motor cortex', 310, 22, 18, K.ink, 'center', 0, H); arrow(c, 280, 26, 242, 46, K.ink, 7, -.2);
+    hand(c, 'basal ganglia', 268, 150, 16, K.ink, 'center', 0, H);
+    hand(c, 'temporal lobe', 168, 276, 16, K.ink, 'center', 0, H);
+    hand(c, 'hippocampus', 236, 344, 18, K.ink, 'center', 0, H); arrow(c, 240, 332, 258, 256, K.ink, 11, .12);
+    hand(c, 'cerebellum', 404, 350, 18, K.ink, 'center', 0, H);
+    hand(c, 'front', 40, 214, 15, K.muted, 'center', -1.2);
+    if (this.sl > .05) { c.globalAlpha = this.sl; for (let j = 0; j < 3; j++) hand(c, 'z', 420 + j * 16, 70 - j * 16 + Math.sin(NOW * 2 + j) * (RM ? 0 : 3), 20 + j * 6, K.cob); c.globalAlpha = 1; }
+    // zoomed synapses
+    const D = C8[this.mode];
+    D.syn.forEach((sy, i) => {
+      const x0 = 492, y0 = 14 + i * 192, bw = 256, bh = 180, w = this.w[i];
+      ink(c, () => rrect(c, x0, y0, bw, bh, 16), K.cream, { lw: 2.2, off: 0 });
+      c.save(); rrect(c, x0, y0, bw, bh, 16); c.clip(); c.translate(x0 - 4, y0 + 34); c.scale(.88, .88);
+      miniSpine(c, 108, 150, w, w > 1.05 ? '#f6a98e' : w < .95 ? '#c3d3ea' : K.blush);
+      c.restore();
+      hand(c, 'zoom: ' + sy.t, x0 + 12, y0 + 18, 19, i ? K.cob : K.tom, 'left');
+      sans(c, sy.s, x0 + 12, y0 + 38, 11.5, K.muted, 'left', 600);
+      const pc = Math.round(w * 100), d = pc - 100;
+      hand(c, pc + '%', x0 + bw - 14, y0 + 68, 24, K.ink, 'right');
+      sans(c, d > 4 ? 'stronger (LTP)' : d < -4 ? 'weaker (LTD)' : 'no change', x0 + bw - 14, y0 + 88, 11.5, d > 4 ? K.tom : d < -4 ? K.cob : K.muted, 'right', 700);
+    });
+  }
+};
+const plot8 = {
+  st: new Stage($('c8Plot'), 760, 250), pos: 0,
+  X: u => 80 + u * 130, Y: v => 196 - v * 156,
+  f(ys, u) { const n = ys.length - 1, i = clamp(Math.floor(u), 0, n - 1), t = u - i, p0 = ys[Math.max(i - 1, 0)], p1 = ys[i], p2 = ys[i + 1], p3 = ys[Math.min(i + 2, n)]; return clamp(.5 * (2 * p1 + (-p0 + p2) * t + (2 * p0 - 5 * p1 + 4 * p2 - p3) * t * t + (-p0 + 3 * p1 - 3 * p2 + p3) * t * t * t), 0, 1); },
+  step(dt) { this.pos = lerp(this.pos, life.stage, ease(dt, 4)); },
+  curve(c, ys, col, lw, alpha, dash) { const pts = []; for (let k = 0; k <= 64; k++) { const u = k / 16; pts.push([this.X(u), this.Y(this.f(ys, u))]); } c.globalAlpha = alpha; wline(c, pts, col, lw, 17, .3, dash); c.globalAlpha = 1; },
+  draw() {
+    const c = this.st.begin(), m = life.mode;
+    c.globalAlpha = .5; ink(c, () => rrect(c, this.X(life.stage) - 52, 30, 104, 176, 12), K.butter, { stroke: false, off: 0 }); c.globalAlpha = 1;
+    wline(c, [[70, 34], [70, 200]], K.ink, 2.2, 3, .5); wline(c, [[70, 200], [612, 200]], K.ink, 2.2, 5, .5);
+    hand(c, 'how well it works', 44, 118, 18, K.ink, 'center', -Math.PI / 2);
+    sans(c, 'perfect', 64, this.Y(1), 10.5, K.muted, 'right', 600); sans(c, 'none', 64, this.Y(0), 10.5, K.muted, 'right', 600);
+    C8STG.forEach((t, i) => { hand(c, t, this.X(i), 220, 17, i === life.stage ? K.tom : K.ink); });
+    sans(c, '(time not to scale)', 612, 242, 10.5, K.muted, 'right', 600);
+    const bike = m === 'bike', on = (b) => b ? [4, 1] : [2.2, .3];
+    if (bike) this.curve(c, C8.bike.eff, K.mus, 2.4, .95, [3, 6]);
+    this.curve(c, C8.cap.y, K.cob, ...on(!bike && !life.rev), [8, 6]);
+    this.curve(c, C8.cap.yr, K.cob, ...on(!bike && life.rev));
+    this.curve(c, C8.bike.y, K.tom, ...on(bike));
+    const lab = (txt, ys, col, active, dy = 0) => { c.globalAlpha = active ? 1 : .45; hand(c, txt, 628, this.Y(ys[4]) + dy, 17, col, 'left'); c.globalAlpha = 1; };
+    lab('bike', C8.bike.y, K.tom, bike, -10);
+    lab('capital, reviewed', C8.cap.yr, K.cob, !bike && life.rev, 12);
+    lab('capital, never', C8.cap.y, K.cob, !bike && !life.rev, -6);
+    if (bike) hand(c, 'attention it takes', 628, this.Y(C8.bike.eff[4]) + 6, 16, '#b07a10', 'left');
+    const ys = life.ys(m, life.rev), px = this.X(this.pos), py = this.Y(this.f(ys, this.pos));
+    dot(c, px, py, 8, bike ? K.tom : K.cob, 2);
+  }
+};
+$('c8Bike').onclick = () => { life.mode = 'bike'; life.go(life.stage); };
+$('c8Cap').onclick = () => { life.mode = 'cap'; life.go(life.stage); };
+$('c8Rev').onclick = () => { life.rev = true; life.set(); };
+$('c8NoRev').onclick = () => { life.rev = false; life.set(); };
+[...$('c8Stages').children].forEach((b, i) => b.onclick = () => life.go(i));
+$('c8Next').onclick = () => life.go((life.stage + 1) % 5);
+life.set();
+reg($('c8Cv'), life); reg($('c8Plot'), plot8);
+
+/* =================== 9: quiz =================== */
 const QUIZ = [
   { q: 'What makes the NMDA receptor a "coincidence detector"?', o: ['It opens only when glutamate is bound AND the spine is depolarized enough to push out Mg²⁺', 'It opens whenever glutamate binds, like AMPA', 'It opens only when the presynaptic neuron is silent', 'It responds to calcium instead of glutamate'], a: 0, e: 'It needs two things at once: glutamate from the sending neuron and depolarization of the receiving neuron to clear the Mg²⁺ block.' },
   { q: 'Right after LTP, a single test pulse gives a bigger EPSP. Which change in the spine explains most of that?', o: ['Fewer NMDA receptors', 'More AMPA receptors in the membrane, and existing ones passing more current', 'The Mg²⁺ cork is permanently removed', 'The synaptic cleft gets wider'], a: 1, e: 'CaMKII phosphorylates AMPA receptors (more current each) and extra AMPA receptors are inserted into the membrane. The Mg²⁺ block itself works as normal.' },
@@ -1474,6 +1707,7 @@ const QUIZ = [
   { q: 'APV (an NMDA receptor blocker) is applied before a 100 Hz burst. What happens?', o: ['Normal LTP', 'No LTP, but test pulses still produce EPSPs', 'No EPSPs at all', 'Bigger LTP than normal'], a: 1, e: 'Normal transmission uses AMPA receptors, so EPSPs still happen. But no Ca²⁺ can enter through NMDA receptors, so no LTP is induced.' },
   { q: 'In STDP, the sending neuron fires 10 ms AFTER the receiving neuron, over and over. The synapse will probably:', o: ['Get stronger', 'Get weaker', 'Stay exactly the same', 'Turn inhibitory'], a: 1, e: 'Post before pre gives LTD: the sending neuron could not have caused the spike, so its connection is weakened.' },
   { q: 'Protein synthesis is blocked during an LTP experiment. What do you expect?', o: ['No LTP at all', 'LTP that lasts forever', 'Early LTP appears but fades within a few hours', 'LTD instead of LTP'], a: 2, e: 'Early LTP uses proteins already in the spine. Turning it into long-lasting late LTP needs new proteins.' },
+  { q: 'Patient H.M., who had no working hippocampus, got better at mirror drawing day after day but never remembered having practised. What does this show?', o: ['Skills (procedural memories) can be learned without the hippocampus, but new facts and events cannot', 'The hippocampus stores motor skills', 'Practice never changes the brain', 'LTP only happens in the hippocampus'], a: 0, e: 'Skills like riding a bike rely on motor cortex, cerebellum and basal ganglia. The hippocampus is needed to learn new facts (like a capital city) and events, but not new skills.' },
   { q: 'A monkey is trained for weeks to use one fingertip. In its touch cortex, that finger\'s area:', o: ['Shrinks', 'Expands into neighbouring territory', 'Moves to the other hemisphere', 'Stays the same; adult maps can\'t change'], a: 1, e: 'Map plasticity: heavily used inputs expand their territory (Jenkins et al., 1990). After a finger is lost, its neighbours take over its area (Merzenich et al., 1984).' }
 ];
 (() => {
@@ -1491,7 +1725,7 @@ const QUIZ = [
         [...opts.children].forEach(x => x.disabled = true);
         fb.innerHTML = (ok ? '<b style="color:#3f7a2a">Yes!</b> ' : '<b style="color:var(--tom)">Not quite.</b> ') + Q.e; fb.classList.add('show');
         beep(ok ? 784 : 220, .15, 'triangle', .04);
-        $('qScore').textContent = `${right} / ${answered}` + (answered === QUIZ.length ? (right >= 7 ? ' · brilliant!' : right >= 5 ? ' · nice work' : ' · scroll up and try the sims again') : '');
+        $('qScore').textContent = `${right} / ${answered}` + (answered === QUIZ.length ? (right >= 8 ? ' · brilliant!' : right >= 6 ? ' · nice work' : ' · scroll up and try the sims again') : '');
       };
       opts.appendChild(b);
     });
